@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Tired City</string>
+
+    <!-- Greeting -->
+    <string name="greeting_morning">Good morning ☀️</string>
+    <string name="greeting_afternoon">Good afternoon 🌤️</string>
+    <string name="greeting_evening">Good evening 🌙</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_shop">Shop</string>
+    <string name="nav_styling">Styling</string>
+    <string name="nav_explore">Explore</string>
+    <string name="nav_about">About</string>
+
+    <!-- Home sections -->
+    <string name="section_recommended">Recommended for You</string>
+    <string name="section_hot">Featured Products</string>
+    <string name="section_categories">Categories</string>
+    <string name="see_all">See all</string>
+
+    <!-- Category names -->
+    <string name="category_all">All</string>
+    <string name="category_ao_dai">Áo Dài</string>
+    <string name="category_ao_tac">Áo Tấc</string>
+    <string name="category_nhat_binh">Nhật Bình</string>
+    <string name="category_accessories">Accessories</string>
+    <string name="category_set">Full Sets</string>
+
+    <!-- AI strip -->
+    <string name="ai_strip_title">✨ AI Style Advisor</string>
+    <string name="ai_strip_subtitle">Get outfit suggestions based on your element &amp; sign</string>
+
+    <!-- Menh banner -->
+    <string name="menh_label">Element: %s</string>
+    <string name="zodiac_label">Sign: %s</string>
+    <string name="menh_tap_hint">Tap to see outfit recommendations</string>
+
+    <!-- Banners (mock titles) -->
+    <string name="banner_title_1">Autumn – Winter Collection 2025</string>
+    <string name="banner_title_2">Nhật Bình – Imperial Beauty</string>
+    <string name="banner_title_3">Wedding Áo Dài – Elegant &amp; Refined</string>
+
+    <!-- Language toggle -->
+    <string name="language_toggle">Change language</string>
+
+    <!-- Buttons -->
+    <string name="btn_add_to_cart">Add to Cart</string>
+    <string name="btn_buy_now">Buy Now</string>
+    <string name="btn_checkout">Checkout</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="btn_get_started">Get Started</string>
+    <string name="btn_login">Log In</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_logout">Log Out</string>
+    <string name="btn_edit_profile">Edit Profile</string>
+    <string name="btn_view_order">View Order</string>
+    <string name="btn_continue_shopping">Continue Shopping</string>
+
+    <!-- Auth -->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_fullname">Full Name</string>
+    <string name="hint_phone">Phone Number</string>
+    <string name="hint_address">Delivery Address</string>
+
+    <!-- Order statuses -->
+    <string name="order_pending">Pending</string>
+    <string name="order_confirmed">Confirmed</string>
+    <string name="order_shipping">Shipping</string>
+    <string name="order_delivered">Delivered</string>
+    <string name="order_cancelled">Cancelled</string>
+
+    <!-- Error messages -->
+    <string name="error_network">No internet connection. Please try again.</string>
+    <string name="error_loading">Could not load data. Please try again.</string>
+    <string name="error_empty_cart">Your cart is empty.</string>
+    <string name="error_login_failed">Login failed. Please check your credentials.</string>
+    <string name="error_register_failed">Registration failed. Email may already be in use.</string>
+    <string name="error_update_failed">Update failed. Please try again.</string>
+    <string name="error_order_failed">Order failed. Please try again.</string>
+
+    <!-- Success messages -->
+    <string name="success_add_cart">Added to cart.</string>
+    <string name="success_order">Order placed successfully!</string>
+    <string name="success_profile_update">Profile updated successfully.</string>
+
+    <!-- Product detail -->
+    <string name="label_material">Material</string>
+    <string name="label_origin">Origin</string>
+    <string name="label_rating">Rating</string>
+    <string name="label_price">Price</string>
+    <string name="label_description">Description</string>
+    <string name="label_reviews">Customer Reviews</string>
+    <string name="label_menh_tags">Suitable Elements</string>
+    <string name="out_of_stock">Out of Stock</string>
+
+    <!-- Profile -->
+    <string name="label_my_orders">My Orders</string>
+    <string name="label_wardrobe">My Wardrobe</string>
+    <string name="label_settings">Settings</string>
+
+    <!-- Chatbot -->
+    <string name="chatbot_welcome">Hello! I\'m your Việt Phục style advisor. What outfit suits your element?</string>
+    <string name="hint_message">Type a message…</string>
+    <string name="btn_send">Send</string>
+</resources>

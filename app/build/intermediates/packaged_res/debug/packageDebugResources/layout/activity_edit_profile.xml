@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_primary">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/bg_surface"
+        android:elevation="4dp"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Chỉnh sửa hồ sơ"
+        app:titleTextColor="@color/text_primary"
+        app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Avatar section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="24dp">
+
+                <FrameLayout
+                    android:layout_width="100dp"
+                    android:layout_height="100dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/iv_avatar"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/ic_person_placeholder"
+                        app:civ_border_width="2dp"
+                        app:civ_border_color="@color/brand_gold" />
+
+                    <TextView
+                        android:id="@+id/tv_change_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="#AA1A1208"
+                        android:gravity="center"
+                        android:text="Đổi ảnh"
+                        android:textColor="@color/brand_gold"
+                        android:textSize="11sp"
+                        android:paddingVertical="4dp" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Full name -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Họ và tên"
+                android:textColor="@color/text_secondary" android:textSize="12sp"
+                android:layout_marginBottom="6dp" />
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input_field"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="14dp"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Email (readonly) -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="@color/text_secondary" android:textSize="12sp"
+                android:layout_marginBottom="6dp" />
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input_field"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="14dp"
+                android:textColor="@color/text_hint"
+                android:textSize="14sp"
+                android:enabled="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Phone -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Số điện thoại"
+                android:textColor="@color/text_secondary" android:textSize="12sp"
+                android:layout_marginBottom="6dp" />
+            <EditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input_field"
+                android:inputType="phone"
+                android:paddingHorizontal="14dp"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Date of birth -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Ngày sinh"
+                android:textColor="@color/text_secondary" android:textSize="12sp"
+                android:layout_marginBottom="6dp" />
+            <EditText
+                android:id="@+id/et_birth_date"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input_field"
+                android:hint="DD/MM/YYYY"
+                android:inputType="date"
+                android:paddingHorizontal="14dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Address -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Địa chỉ"
+                android:textColor="@color/text_secondary" android:textSize="12sp"
+                android:layout_marginBottom="6dp" />
+            <EditText
+                android:id="@+id/et_address"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/bg_input_field"
+                android:inputType="textPostalAddress|textMultiLine"
+                android:gravity="top"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="12dp"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:layout_marginBottom="24dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Save button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@color/bg_surface"
+        android:elevation="8dp">
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_button_gold"
+            android:text="Lưu thay đổi"
+            android:textColor="@color/brand_dark"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

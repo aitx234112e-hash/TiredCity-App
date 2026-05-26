@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand palette -->
+    <color name="brand_gold">#C9A96E</color>
+    <color name="brand_dark">#1A1208</color>
+    <color name="brand_cream">#F5EDE3</color>
+    <color name="brand_red">#C94F4F</color>
+
+    <!-- Backgrounds -->
+    <color name="bg_primary">#FEFAF5</color>
+    <color name="bg_surface">#FFFFFF</color>
+    <color name="bg_subtle">#F0E8DC</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1A1208</color>
+    <color name="text_secondary">#6B5C48</color>
+    <color name="text_hint">#A89880</color>
+
+    <!-- Navigation -->
+    <color name="nav_active">#C9A96E</color>
+    <color name="nav_inactive">#A89880</color>
+
+    <!-- Chip states (used in selectors) -->
+    <color name="chip_bg_selected">#C9A96E</color>
+    <color name="chip_bg_default">#F0E8DC</color>
+    <color name="chip_text_selected">#1A1208</color>
+    <color name="chip_text_default">#6B5C48</color>
+
+    <!-- Material theme roles (required by Material3) -->
+    <color name="colorPrimary">#C9A96E</color>
+    <color name="colorOnPrimary">#1A1208</color>
+    <color name="colorPrimaryContainer">#F5EDE3</color>
+    <color name="colorOnPrimaryContainer">#1A1208</color>
+    <color name="colorSecondary">#C94F4F</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#1A1208</color>
+    <color name="colorBackground">#FEFAF5</color>
+    <color name="colorOnBackground">#1A1208</color>
+    <color name="colorError">#C94F4F</color>
+    <color name="colorOnError">#FFFFFF</color>
+</resources>

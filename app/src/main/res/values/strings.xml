@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Tired City</string>
+
+    <!-- Greeting -->
+    <string name="greeting_morning">Chào buổi sáng ☀️</string>
+    <string name="greeting_afternoon">Chào buổi chiều 🌤️</string>
+    <string name="greeting_evening">Chào buổi tối 🌙</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_shop">Mua sắm</string>
+    <string name="nav_styling">Phong cách</string>
+    <string name="nav_explore">Khám phá</string>
+    <string name="nav_about">Giới thiệu</string>
+
+    <!-- Home sections -->
+    <string name="section_recommended">Gợi ý cho bạn</string>
+    <string name="section_hot">Sản phẩm nổi bật</string>
+    <string name="section_categories">Danh mục</string>
+    <string name="see_all">Xem tất cả</string>
+
+    <!-- Category names -->
+    <string name="category_all">Tất cả</string>
+    <string name="category_ao_dai">Áo Dài</string>
+    <string name="category_ao_tac">Áo Tấc</string>
+    <string name="category_nhat_binh">Nhật Bình</string>
+    <string name="category_accessories">Phụ Kiện</string>
+    <string name="category_set">Bộ Trọn</string>
+
+    <!-- AI strip -->
+    <string name="ai_strip_title">✨ Tư vấn phong cách AI</string>
+    <string name="ai_strip_subtitle">Gợi ý trang phục hợp mệnh, hợp cung</string>
+
+    <!-- Menh banner -->
+    <string name="menh_label">Mệnh %s</string>
+    <string name="zodiac_label">Cung %s</string>
+    <string name="menh_tap_hint">Nhấn để xem gợi ý trang phục</string>
+
+    <!-- Banners (mock titles) -->
+    <string name="banner_title_1">Bộ sưu tập Thu – Đông 2025</string>
+    <string name="banner_title_2">Nhật Bình – Vẻ đẹp Hoàng triều</string>
+    <string name="banner_title_3">Áo Dài Cưới – Sang trọng &amp; Tinh tế</string>
+
+    <!-- Language toggle -->
+    <string name="language_toggle">Đổi ngôn ngữ</string>
+
+    <!-- Buttons -->
+    <string name="btn_add_to_cart">Thêm vào giỏ</string>
+    <string name="btn_buy_now">Mua ngay</string>
+    <string name="btn_checkout">Thanh toán</string>
+    <string name="btn_save">Lưu</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="btn_confirm">Xác nhận</string>
+    <string name="btn_get_started">Bắt đầu</string>
+    <string name="btn_login">Đăng nhập</string>
+    <string name="btn_register">Đăng ký</string>
+    <string name="btn_logout">Đăng xuất</string>
+    <string name="btn_edit_profile">Chỉnh sửa</string>
+    <string name="btn_view_order">Xem đơn hàng</string>
+    <string name="btn_continue_shopping">Tiếp tục mua sắm</string>
+
+    <!-- Auth -->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="hint_fullname">Họ và tên</string>
+    <string name="hint_phone">Số điện thoại</string>
+    <string name="hint_address">Địa chỉ giao hàng</string>
+
+    <!-- Order statuses -->
+    <string name="order_pending">Chờ xác nhận</string>
+    <string name="order_confirmed">Đã xác nhận</string>
+    <string name="order_shipping">Đang giao</string>
+    <string name="order_delivered">Đã giao</string>
+    <string name="order_cancelled">Đã hủy</string>
+
+    <!-- Error messages -->
+    <string name="error_network">Không có kết nối mạng. Vui lòng thử lại.</string>
+    <string name="error_loading">Không thể tải dữ liệu. Vui lòng thử lại.</string>
+    <string name="error_empty_cart">Giỏ hàng trống.</string>
+    <string name="error_login_failed">Đăng nhập thất bại. Kiểm tra lại thông tin.</string>
+    <string name="error_register_failed">Đăng ký thất bại. Email có thể đã được sử dụng.</string>
+    <string name="error_update_failed">Cập nhật thất bại. Vui lòng thử lại.</string>
+    <string name="error_order_failed">Đặt hàng thất bại. Vui lòng thử lại.</string>
+
+    <!-- Success messages -->
+    <string name="success_add_cart">Đã thêm vào giỏ hàng.</string>
+    <string name="success_order">Đặt hàng thành công!</string>
+    <string name="success_profile_update">Cập nhật hồ sơ thành công.</string>
+
+    <!-- Product detail -->
+    <string name="label_material">Chất liệu</string>
+    <string name="label_origin">Xuất xứ</string>
+    <string name="label_rating">Đánh giá</string>
+    <string name="label_price">Giá</string>
+    <string name="label_description">Mô tả</string>
+    <string name="label_reviews">Đánh giá khách hàng</string>
+    <string name="label_menh_tags">Phù hợp mệnh</string>
+    <string name="out_of_stock">Hết hàng</string>
+
+    <!-- Profile -->
+    <string name="label_my_orders">Đơn hàng của tôi</string>
+    <string name="label_wardrobe">Tủ đồ của tôi</string>
+    <string name="label_settings">Cài đặt</string>
+
+    <!-- Chatbot -->
+    <string name="chatbot_welcome">Xin chào! Tôi là trợ lý thời trang Việt Phục. Bạn muốn tìm trang phục hợp mệnh nào?</string>
+    <string name="hint_message">Nhập tin nhắn…</string>
+    <string name="btn_send">Gửi</string>
+</resources>
