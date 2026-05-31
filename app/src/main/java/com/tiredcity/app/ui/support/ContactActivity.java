@@ -31,17 +31,34 @@ public class ContactActivity extends BaseActivity {
     }
 
     private void setupClickListeners() {
-        binding.cardEmail.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:contact@tiredcity.vn"));
-            startActivity(Intent.createChooser(intent, "Gửi email cho chúng tôi"));
+        binding.btnBack.setOnClickListener(v -> onBackPressed());
+
+        binding.btnSendMessage.setOnClickListener(v -> {
+            // Handle send message
         });
 
-        binding.cardPhone.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_DIAL);
-            intent.setData(Uri.parse("tel:0900000000"));
-            startActivity(intent);
-        });
+        // Map and Store clicks
+        binding.mapCard.setOnClickListener(v -> openMaps("TiredCity Hanoi"));
+
+        binding.layoutStore1.setOnClickListener(v -> openMaps("TiredCity 37 Hàng Hành"));
+        binding.layoutStore2.setOnClickListener(v -> openMaps("TiredCity 97 Hàng Gai"));
+        binding.layoutStore3.setOnClickListener(v -> openMaps("TiredCity 19 Nhà Thờ"));
+        binding.layoutStore4.setOnClickListener(v -> openMaps("TiredCity 100 Hàng Đào"));
+        binding.layoutStore5.setOnClickListener(v -> openMaps("TiredCity 8 Lương Ngọc Quyến"));
+    }
+
+    private void openMaps(String query) {
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(query));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        } else {
+            // Fallback to browser
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, 
+                Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Uri.encode(query)));
+            startActivity(browserIntent);
+        }
     }
 
     @Override

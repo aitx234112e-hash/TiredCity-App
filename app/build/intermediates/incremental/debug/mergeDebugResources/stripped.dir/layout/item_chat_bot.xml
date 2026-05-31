@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="start"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="4dp">
+
+    <TextView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:text="✨"
+        android:textSize="18sp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_circle_gold"
+        android:layout_marginTop="2dp" />
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="260dp"
+        android:background="@drawable/bg_rounded_surface"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        tools:text="Với mệnh Hỏa, bạn nên chọn màu đỏ, hồng hoặc tím. Áo dài lụa tơ tằm màu đỏ đô sẽ rất hợp với bạn!" />
+</LinearLayout>

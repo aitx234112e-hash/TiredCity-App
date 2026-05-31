@@ -1,230 +1,254 @@
 [
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_event.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_event.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_input_field.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_input_field.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_banner.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_banner.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_ic_explore.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/ic_explore.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_rounded_surface.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_rounded_surface.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_edit_profile.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_edit_profile.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_register.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_register.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_contact.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_contact.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_button_gold.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_button_gold.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_status_delivered.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_status_delivered.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_input_field.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_input_field.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_event.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_event.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_status_pending.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_status_pending.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_wardrobe.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_wardrobe.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_cart.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_cart.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_button_red_gradient.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_button_red_gradient.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_category.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_category.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_product_detail.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_product_detail.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_main.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_main.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_article.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_article.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_search.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_search.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_fragment_home.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/fragment_home.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_ic_style.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\ic_style.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_order_success.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_order_success.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_ic_shop.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\ic_shop.xml"
+        "merged": "com.tiredcity.app-debug-69:/color_selector_chip_bg.xml.flat",
+        "source": "com.tiredcity.app-main-71:/color/selector_chip_bg.xml"
     },
     {
         "merged": "com.tiredcity.app-debug-69:/layout_activity_main.xml.flat",
         "source": "com.tiredcity.app-main-71:/layout/activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_gradient_dark.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_gradient_dark.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_register.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_register.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_order.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_order.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_gradient_dark.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_gradient_dark.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_onboarding.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_onboarding.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_cart.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_cart.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_ic_person_placeholder.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\ic_person_placeholder.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_cart.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_cart.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_ic_back.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\ic_back.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_login.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_login.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_product_detail.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_product_detail.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_ic_home.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/ic_home.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_ic_home.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\ic_home.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_category.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_category.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_fragment_home.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\fragment_home.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_circle_bg.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/circle_bg.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_circle_gold.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_circle_gold.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_ic_shop.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/ic_shop.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_order_success.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_order_success.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_chatbot.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_chatbot.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_category.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_category.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_onboarding.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_onboarding.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_order_tracking.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_order_tracking.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_search.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_search.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_ai_styling.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_ai_styling.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_tracking_step.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_tracking_step.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_onboarding_page.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_onboarding_page.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_circle_gold.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_circle_gold.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_chat_bot.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_chat_bot.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_ic_style.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/ic_style.xml"
+    },
+    {
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_order_tracking.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_order_tracking.xml"
+    },
+    {
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_order_history.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_order_history.xml"
+    },
+    {
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_button_gold.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_button_gold.xml"
+    },
+    {
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_rounded_gold.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_rounded_gold.xml"
+    },
+    {
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_ai_styling.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_ai_styling.xml"
+    },
+    {
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_status_shipping.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_status_shipping.xml"
+    },
+    {
+        "merged": "com.tiredcity.app-debug-69:/layout_item_review.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_review.xml"
     },
     {
         "merged": "com.tiredcity.app-debug-69:/color_selector_nav_item.xml.flat",
         "source": "com.tiredcity.app-main-71:/color/selector_nav_item.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_ic_about.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\ic_about.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_profile.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_profile.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_fragment_shop.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\fragment_shop.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_fragment_about.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/fragment_about.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\color_selector_chip_bg.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\color\\selector_chip_bg.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_onboarding_page.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_onboarding_page.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_chatbot.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_chatbot.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_banner.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_banner.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_review.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_review.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_policy.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_policy.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_fragment_about.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\fragment_about.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_chat_user.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_chat_user.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_login.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_login.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_ic_about.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/ic_about.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_profile.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_profile.xml"
+        "merged": "com.tiredcity.app-debug-69:/mipmap-anydpi-v26_ic_logo.webp.flat",
+        "source": "com.tiredcity.app-main-71:/mipmap-anydpi-v26/ic_logo.webp"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_status_cancelled.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_status_cancelled.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_rounded_surface.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_rounded_surface.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\color_selector_chip_text.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\color\\selector_chip_text.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_order.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_order.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_order_history.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_order_history.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_chat_bot.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_chat_bot.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_tracking_step.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_tracking_step.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_splash.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_splash.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_product.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_product.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_fragment_shop.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/fragment_shop.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\menu_bottom_nav_menu.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\menu\\bottom_nav_menu.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_ic_person_placeholder.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/ic_person_placeholder.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_status_shipping.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_status_shipping.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_status_cancelled.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_status_cancelled.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_status_delivered.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_status_delivered.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_ic_back.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/ic_back.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_payment.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_payment.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_category.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_category.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_edit_profile.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_edit_profile.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_fragment_styling.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/fragment_styling.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_cart.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_cart.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_activity_payment.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/activity_payment.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_ic_explore.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\ic_explore.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_fragment_explore.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/fragment_explore.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_chat_user.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_chat_user.xml"
+        "merged": "com.tiredcity.app-debug-69:/layout_item_product.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_product.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_wardrobe.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_wardrobe.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_btn_contact_gradient.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/btn_contact_gradient.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_activity_splash.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\activity_splash.xml"
+        "merged": "com.tiredcity.app-debug-69:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.tiredcity.app-main-71:/menu/bottom_nav_menu.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\drawable_bg_rounded_gold.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\drawable\\bg_rounded_gold.xml"
+        "merged": "com.tiredcity.app-debug-69:/font_forma_djr_display.xml.flat",
+        "source": "com.tiredcity.app-main-71:/font/forma_djr_display.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_fragment_styling.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\fragment_styling.xml"
+        "merged": "com.tiredcity.app-debug-69:/color_selector_chip_text.xml.flat",
+        "source": "com.tiredcity.app-main-71:/color/selector_chip_text.xml"
     },
     {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_item_article.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\item_article.xml"
-    },
-    {
-        "merged": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-debug-69:\\layout_fragment_explore.xml.flat",
-        "source": "C:\\Users\\AI\\.gradle\\daemon\\8.13\\com.tiredcity.app-main-71:\\layout\\fragment_explore.xml"
+        "merged": "com.tiredcity.app-debug-69:/drawable_bg_status_pending.xml.flat",
+        "source": "com.tiredcity.app-main-71:/drawable/bg_status_pending.xml"
     }
 ]

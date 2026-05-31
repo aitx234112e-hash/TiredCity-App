@@ -108,4 +108,45 @@
     <string name="chatbot_welcome">Xin chào! Tôi là trợ lý thời trang Việt Phục. Bạn muốn tìm trang phục hợp mệnh nào?</string>
     <string name="hint_message">Nhập tin nhắn…</string>
     <string name="btn_send">Gửi</string>
+
+    <!-- Contact & Store Locator -->
+    <string name="contact_customer_care">CUSTOMER CARE</string>
+    <string name="contact_title">CONTACT TIREDCITY</string>
+    <string name="contact_subtitle">Leave a message, the TiredCity team will respond as soon as possible to support you.</string>
+    <string name="hint_name">Full Name *</string>
+    <string name="hint_phone_contact">Phone Number *</string>
+    <string name="hint_message_long">Your message *</string>
+    <string name="btn_send_message">SEND MESSAGE ✦</string>
+
+    <string name="title_store_locator">STORE LOCATOR</string>
+    <string name="label_address">Address: </string>
+    <string name="label_opening_hours">Opening hours: </string>
+    <string name="label_email">Email: </string>
+    <string name="label_mobile">Mobile: </string>
+    <string name="link_view_map">View map</string>
+    <string name="map_tap_hint">Tap to view all locations on Google Maps</string>
+
+    <string name="store_1_name">1. TiredCity 37 Hàng Hành</string>
+    <string name="store_1_details">Address: 37 P. Hàng Hành, Hàng Trống, Hoàn Kiếm, Hà Nội. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
+
+    <string name="store_2_name">2. TiredCity 97 Hàng Gai</string>
+    <string name="store_2_details">Address: 97 P. Hàng Gai, Hàng Trống, Hoàn Kiếm, Hà Nội. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
+
+    <string name="store_3_name">3. TiredCity 19 Nhà Thờ</string>
+    <string name="store_3_details">Address: 19 P. Nhà Thờ, Hàng Trống, Hoàn Kiếm, Hà Nội. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
+
+    <string name="store_4_name">4. TiredCity 100 Hàng Đào</string>
+    <string name="store_4_details">Address: 100 P. Hàng Đào, Hàng Đào, Hoàn Kiếm, Hà Nội. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
+
+    <string name="store_5_name">5. TiredCity 8 Lương Ngọc Quyến</string>
+    <string name="store_5_details">Address: 8 P. Lương Ngọc Quyến, Hàng Buồm, Hoàn Kiếm, Hà Nội. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
+
+    <!-- Policies -->
+    <string name="title_policies">Policies</string>
+    <string name="title_return_policy">Return &amp; Exchange Policy</string>
+    <string name="content_return_policy">You can return or exchange products within 7 days of receipt if the product is still in its original condition with tags attached and has not been used.</string>
+    <string name="title_privacy_policy">Privacy Policy</string>
+    <string name="content_privacy_policy">We are committed to protecting our customers\' personal information and only use it for the purpose of improving our services.</string>
+    <string name="title_terms_of_service">Terms of Service</string>
+    <string name="content_terms_of_service">By using the application, you agree to the terms and conditions set forth by us.</string>
 </resources>
