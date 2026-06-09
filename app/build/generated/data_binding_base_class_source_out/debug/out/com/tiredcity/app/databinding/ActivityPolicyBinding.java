@@ -4,12 +4,15 @@ package com.tiredcity.app.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.google.android.material.card.MaterialCardView;
 import com.tiredcity.app.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -20,11 +23,132 @@ public final class ActivityPolicyBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final ImageView btnBack;
+
+  @NonNull
+  public final MaterialCardView cardPayment;
+
+  @NonNull
+  public final MaterialCardView cardPrivacy;
+
+  @NonNull
+  public final MaterialCardView cardPurchase;
+
+  @NonNull
+  public final MaterialCardView cardReturn;
+
+  @NonNull
+  public final MaterialCardView cardShipping;
+
+  @NonNull
+  public final LinearLayout contentPayment;
+
+  @NonNull
+  public final LinearLayout contentPrivacy;
+
+  @NonNull
+  public final LinearLayout contentPurchase;
+
+  @NonNull
+  public final LinearLayout contentReturn;
+
+  @NonNull
+  public final LinearLayout contentShipping;
+
+  @NonNull
+  public final LinearLayout headerPayment;
+
+  @NonNull
+  public final LinearLayout headerPrivacy;
+
+  @NonNull
+  public final LinearLayout headerPurchase;
+
+  @NonNull
+  public final LinearLayout headerReturn;
+
+  @NonNull
+  public final LinearLayout headerShipping;
+
+  @NonNull
+  public final ImageView ivExpandPayment;
+
+  @NonNull
+  public final ImageView ivExpandPrivacy;
+
+  @NonNull
+  public final ImageView ivExpandPurchase;
+
+  @NonNull
+  public final ImageView ivExpandReturn;
+
+  @NonNull
+  public final ImageView ivExpandShipping;
+
+  @NonNull
+  public final ImageView ivLogo;
+
+  @NonNull
   public final Toolbar toolbar;
 
-  private ActivityPolicyBinding(@NonNull LinearLayout rootView, @NonNull Toolbar toolbar) {
+  @NonNull
+  public final TextView tvContentPayment;
+
+  @NonNull
+  public final TextView tvContentPrivacy;
+
+  @NonNull
+  public final TextView tvContentPurchase;
+
+  @NonNull
+  public final TextView tvContentReturn;
+
+  @NonNull
+  public final TextView tvContentShipping;
+
+  private ActivityPolicyBinding(@NonNull LinearLayout rootView, @NonNull ImageView btnBack,
+      @NonNull MaterialCardView cardPayment, @NonNull MaterialCardView cardPrivacy,
+      @NonNull MaterialCardView cardPurchase, @NonNull MaterialCardView cardReturn,
+      @NonNull MaterialCardView cardShipping, @NonNull LinearLayout contentPayment,
+      @NonNull LinearLayout contentPrivacy, @NonNull LinearLayout contentPurchase,
+      @NonNull LinearLayout contentReturn, @NonNull LinearLayout contentShipping,
+      @NonNull LinearLayout headerPayment, @NonNull LinearLayout headerPrivacy,
+      @NonNull LinearLayout headerPurchase, @NonNull LinearLayout headerReturn,
+      @NonNull LinearLayout headerShipping, @NonNull ImageView ivExpandPayment,
+      @NonNull ImageView ivExpandPrivacy, @NonNull ImageView ivExpandPurchase,
+      @NonNull ImageView ivExpandReturn, @NonNull ImageView ivExpandShipping,
+      @NonNull ImageView ivLogo, @NonNull Toolbar toolbar, @NonNull TextView tvContentPayment,
+      @NonNull TextView tvContentPrivacy, @NonNull TextView tvContentPurchase,
+      @NonNull TextView tvContentReturn, @NonNull TextView tvContentShipping) {
     this.rootView = rootView;
+    this.btnBack = btnBack;
+    this.cardPayment = cardPayment;
+    this.cardPrivacy = cardPrivacy;
+    this.cardPurchase = cardPurchase;
+    this.cardReturn = cardReturn;
+    this.cardShipping = cardShipping;
+    this.contentPayment = contentPayment;
+    this.contentPrivacy = contentPrivacy;
+    this.contentPurchase = contentPurchase;
+    this.contentReturn = contentReturn;
+    this.contentShipping = contentShipping;
+    this.headerPayment = headerPayment;
+    this.headerPrivacy = headerPrivacy;
+    this.headerPurchase = headerPurchase;
+    this.headerReturn = headerReturn;
+    this.headerShipping = headerShipping;
+    this.ivExpandPayment = ivExpandPayment;
+    this.ivExpandPrivacy = ivExpandPrivacy;
+    this.ivExpandPurchase = ivExpandPurchase;
+    this.ivExpandReturn = ivExpandReturn;
+    this.ivExpandShipping = ivExpandShipping;
+    this.ivLogo = ivLogo;
     this.toolbar = toolbar;
+    this.tvContentPayment = tvContentPayment;
+    this.tvContentPrivacy = tvContentPrivacy;
+    this.tvContentPurchase = tvContentPurchase;
+    this.tvContentReturn = tvContentReturn;
+    this.tvContentShipping = tvContentShipping;
   }
 
   @Override
@@ -54,13 +178,180 @@ public final class ActivityPolicyBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnBack;
+      ImageView btnBack = ViewBindings.findChildViewById(rootView, id);
+      if (btnBack == null) {
+        break missingId;
+      }
+
+      id = R.id.cardPayment;
+      MaterialCardView cardPayment = ViewBindings.findChildViewById(rootView, id);
+      if (cardPayment == null) {
+        break missingId;
+      }
+
+      id = R.id.cardPrivacy;
+      MaterialCardView cardPrivacy = ViewBindings.findChildViewById(rootView, id);
+      if (cardPrivacy == null) {
+        break missingId;
+      }
+
+      id = R.id.cardPurchase;
+      MaterialCardView cardPurchase = ViewBindings.findChildViewById(rootView, id);
+      if (cardPurchase == null) {
+        break missingId;
+      }
+
+      id = R.id.cardReturn;
+      MaterialCardView cardReturn = ViewBindings.findChildViewById(rootView, id);
+      if (cardReturn == null) {
+        break missingId;
+      }
+
+      id = R.id.cardShipping;
+      MaterialCardView cardShipping = ViewBindings.findChildViewById(rootView, id);
+      if (cardShipping == null) {
+        break missingId;
+      }
+
+      id = R.id.contentPayment;
+      LinearLayout contentPayment = ViewBindings.findChildViewById(rootView, id);
+      if (contentPayment == null) {
+        break missingId;
+      }
+
+      id = R.id.contentPrivacy;
+      LinearLayout contentPrivacy = ViewBindings.findChildViewById(rootView, id);
+      if (contentPrivacy == null) {
+        break missingId;
+      }
+
+      id = R.id.contentPurchase;
+      LinearLayout contentPurchase = ViewBindings.findChildViewById(rootView, id);
+      if (contentPurchase == null) {
+        break missingId;
+      }
+
+      id = R.id.contentReturn;
+      LinearLayout contentReturn = ViewBindings.findChildViewById(rootView, id);
+      if (contentReturn == null) {
+        break missingId;
+      }
+
+      id = R.id.contentShipping;
+      LinearLayout contentShipping = ViewBindings.findChildViewById(rootView, id);
+      if (contentShipping == null) {
+        break missingId;
+      }
+
+      id = R.id.headerPayment;
+      LinearLayout headerPayment = ViewBindings.findChildViewById(rootView, id);
+      if (headerPayment == null) {
+        break missingId;
+      }
+
+      id = R.id.headerPrivacy;
+      LinearLayout headerPrivacy = ViewBindings.findChildViewById(rootView, id);
+      if (headerPrivacy == null) {
+        break missingId;
+      }
+
+      id = R.id.headerPurchase;
+      LinearLayout headerPurchase = ViewBindings.findChildViewById(rootView, id);
+      if (headerPurchase == null) {
+        break missingId;
+      }
+
+      id = R.id.headerReturn;
+      LinearLayout headerReturn = ViewBindings.findChildViewById(rootView, id);
+      if (headerReturn == null) {
+        break missingId;
+      }
+
+      id = R.id.headerShipping;
+      LinearLayout headerShipping = ViewBindings.findChildViewById(rootView, id);
+      if (headerShipping == null) {
+        break missingId;
+      }
+
+      id = R.id.ivExpandPayment;
+      ImageView ivExpandPayment = ViewBindings.findChildViewById(rootView, id);
+      if (ivExpandPayment == null) {
+        break missingId;
+      }
+
+      id = R.id.ivExpandPrivacy;
+      ImageView ivExpandPrivacy = ViewBindings.findChildViewById(rootView, id);
+      if (ivExpandPrivacy == null) {
+        break missingId;
+      }
+
+      id = R.id.ivExpandPurchase;
+      ImageView ivExpandPurchase = ViewBindings.findChildViewById(rootView, id);
+      if (ivExpandPurchase == null) {
+        break missingId;
+      }
+
+      id = R.id.ivExpandReturn;
+      ImageView ivExpandReturn = ViewBindings.findChildViewById(rootView, id);
+      if (ivExpandReturn == null) {
+        break missingId;
+      }
+
+      id = R.id.ivExpandShipping;
+      ImageView ivExpandShipping = ViewBindings.findChildViewById(rootView, id);
+      if (ivExpandShipping == null) {
+        break missingId;
+      }
+
+      id = R.id.ivLogo;
+      ImageView ivLogo = ViewBindings.findChildViewById(rootView, id);
+      if (ivLogo == null) {
+        break missingId;
+      }
+
       id = R.id.toolbar;
       Toolbar toolbar = ViewBindings.findChildViewById(rootView, id);
       if (toolbar == null) {
         break missingId;
       }
 
-      return new ActivityPolicyBinding((LinearLayout) rootView, toolbar);
+      id = R.id.tvContentPayment;
+      TextView tvContentPayment = ViewBindings.findChildViewById(rootView, id);
+      if (tvContentPayment == null) {
+        break missingId;
+      }
+
+      id = R.id.tvContentPrivacy;
+      TextView tvContentPrivacy = ViewBindings.findChildViewById(rootView, id);
+      if (tvContentPrivacy == null) {
+        break missingId;
+      }
+
+      id = R.id.tvContentPurchase;
+      TextView tvContentPurchase = ViewBindings.findChildViewById(rootView, id);
+      if (tvContentPurchase == null) {
+        break missingId;
+      }
+
+      id = R.id.tvContentReturn;
+      TextView tvContentReturn = ViewBindings.findChildViewById(rootView, id);
+      if (tvContentReturn == null) {
+        break missingId;
+      }
+
+      id = R.id.tvContentShipping;
+      TextView tvContentShipping = ViewBindings.findChildViewById(rootView, id);
+      if (tvContentShipping == null) {
+        break missingId;
+      }
+
+      return new ActivityPolicyBinding((LinearLayout) rootView, btnBack, cardPayment, cardPrivacy,
+          cardPurchase, cardReturn, cardShipping, contentPayment, contentPrivacy, contentPurchase,
+          contentReturn, contentShipping, headerPayment, headerPrivacy, headerPurchase,
+          headerReturn, headerShipping, ivExpandPayment, ivExpandPrivacy, ivExpandPurchase,
+          ivExpandReturn, ivExpandShipping, ivLogo, toolbar, tvContentPayment, tvContentPrivacy,
+          tvContentPurchase, tvContentReturn, tvContentShipping);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

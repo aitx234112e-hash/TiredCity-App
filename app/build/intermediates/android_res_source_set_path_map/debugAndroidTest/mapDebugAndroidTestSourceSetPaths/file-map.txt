@@ -1,0 +1,6 @@
+com.tiredcity.app.test.app-androidTest-0 D:\TiredCity-App\app\build\generated\res\resValues\androidTest\debug
+com.tiredcity.app.test.app-updated_navigation_xml-1 D:\TiredCity-App\app\build\generated\updated_navigation_xml\debugAndroidTest
+com.tiredcity.app.test.app-mergeDebugAndroidTestResources-2 D:\TiredCity-App\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.tiredcity.app.test.app-mergeDebugAndroidTestResources-3 D:\TiredCity-App\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.tiredcity.app.test.app-debugAndroidTest-4 D:\TiredCity-App\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 C:\Users\ADMIN\.gradle

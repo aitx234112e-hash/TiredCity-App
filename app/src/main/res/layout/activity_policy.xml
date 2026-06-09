@@ -1,18 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_primary">
 
+    <!-- Header Đỏ (TIREDCITY) - Đồng bộ hoàn toàn với Contact -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="56dp"
+        android:background="@color/brand_red"
+        app:contentInsetStart="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_logo"
+                android:contentDescription="@null" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_menu_search" android:layout_marginEnd="16dp" app:tint="@android:color/white" android:contentDescription="@null"/>
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/sym_action_email" android:layout_marginEnd="16dp" app:tint="@android:color/white" android:contentDescription="@null"/>
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_menu_myplaces" app:tint="@android:color/white" android:contentDescription="@null"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Thanh Menu Trắng - Đồng bộ hoàn toàn với ảnh mẫu -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/bg_surface"
-        app:title="Chính sách"
-        app:navigationIcon="?attr/homeAsUpIndicator"/>
+        android:elevation="2dp"
+        android:paddingTop="12dp"
+        android:paddingHorizontal="16dp"
+        android:gravity="center_vertical">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_home" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_about" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_shop" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_collections" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_policies" android:textSize="10sp" android:textColor="@color/brand_red" android:textStyle="bold" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
+            <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/brand_red" android:layout_marginTop="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -22,60 +70,257 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="40dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chính sách đổi trả"
-                android:textColor="@color/brand_gold"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
+            <!-- 1. Chính sách mua hàng -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quý khách có thể đổi trả sản phẩm trong vòng 7 ngày kể từ ngày nhận hàng nếu sản phẩm còn nguyên tem mác và chưa qua sử dụng."
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
-                android:lineSpacingExtra="4dp"
-                android:layout_marginBottom="24dp"/>
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingVertical="24dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chính sách bảo mật"
-                android:textColor="@color/brand_gold"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@null"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/brand_red" />
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.15"
+                    android:text="@string/contact_customer_care"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:letterSpacing="-0.02"
+                    android:text="@string/str_policy_term"
+                    android:textColor="@color/brand_red"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:text="@string/policy_subtitle"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPurchase"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chúng tôi cam kết bảo mật thông tin cá nhân của khách hàng và chỉ sử dụng cho mục đích cải thiện dịch vụ."
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
-                android:lineSpacingExtra="4dp"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/bg_surface"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F5F5F5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <LinearLayout
+                        android:id="@+id/headerPurchase"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_menu_agenda" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        </FrameLayout>
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_purchase_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandPurchase" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/contentPurchase"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <TextView android:id="@+id/tvContentPurchase" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Điều khoản sử dụng"
-                android:textColor="@color/brand_gold"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
+            <!-- 2. Chính sách thanh toán -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPayment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bằng việc sử dụng ứng dụng, bạn đồng ý với các điều khoản và điều kiện mà chúng tôi đưa ra."
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
-                android:lineSpacingExtra="4dp"/>
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/bg_surface"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F5F5F5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <LinearLayout
+                        android:id="@+id/headerPayment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_menu_view" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        </FrameLayout>
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_payment_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandPayment" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/contentPayment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <TextView android:id="@+id/tvContentPayment" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Chính sách giao hàng -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardShipping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/bg_surface"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F5F5F5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <LinearLayout
+                        android:id="@+id/headerShipping"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_dialog_map" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        </FrameLayout>
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_shipping_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandShipping" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/contentShipping"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <TextView android:id="@+id/tvContentShipping" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Chính sách đổi trả -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardReturn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/bg_surface"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F5F5F5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <LinearLayout
+                        android:id="@+id/headerReturn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_menu_revert" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        </FrameLayout>
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_return_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandReturn" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/contentReturn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <TextView android:id="@+id/tvContentReturn" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 5. Chính sách bảo mật -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPrivacy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/bg_surface"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F5F5F5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <LinearLayout
+                        android:id="@+id/headerPrivacy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_lock_lock" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        </FrameLayout>
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_privacy_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandPrivacy" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/contentPrivacy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <TextView android:id="@+id/tvContentPrivacy" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

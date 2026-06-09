@@ -108,6 +108,10 @@
         "source": "com.tiredcity.app-main-71:/layout/item_tracking_step.xml"
     },
     {
+        "merged": "com.tiredcity.app-debug-69:/layout_item_policy.xml.flat",
+        "source": "com.tiredcity.app-main-71:/layout/item_policy.xml"
+    },
+    {
         "merged": "com.tiredcity.app-debug-69:/drawable_bg_circle_gold.xml.flat",
         "source": "com.tiredcity.app-main-71:/drawable/bg_circle_gold.xml"
     },
@@ -238,10 +242,6 @@
     {
         "merged": "com.tiredcity.app-debug-69:/menu_bottom_nav_menu.xml.flat",
         "source": "com.tiredcity.app-main-71:/menu/bottom_nav_menu.xml"
-    },
-    {
-        "merged": "com.tiredcity.app-debug-69:/font_forma_djr_display.xml.flat",
-        "source": "com.tiredcity.app-main-71:/font/forma_djr_display.xml"
     },
     {
         "merged": "com.tiredcity.app-debug-69:/color_selector_chip_text.xml.flat",

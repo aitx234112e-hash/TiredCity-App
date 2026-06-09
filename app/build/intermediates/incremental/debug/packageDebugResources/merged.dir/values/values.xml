@@ -59,9 +59,6 @@
     <string name="contact_customer_care">CUSTOMER CARE</string>
     <string name="contact_subtitle">Leave a message, the TiredCity team will respond as soon as possible to support you.</string>
     <string name="contact_title">CONTACT TIREDCITY</string>
-    <string name="content_privacy_policy">We are committed to protecting our customers\' personal information and only use it for the purpose of improving our services.</string>
-    <string name="content_return_policy">You can return or exchange products within 7 days of receipt if the product is still in its original condition with tags attached and has not been used.</string>
-    <string name="content_terms_of_service">By using the application, you agree to the terms and conditions set forth by us.</string>
     <string name="error_empty_cart">Giỏ hàng trống.</string>
     <string name="error_loading">Không thể tải dữ liệu. Vui lòng thử lại.</string>
     <string name="error_login_failed">Đăng nhập thất bại. Kiểm tra lại thông tin.</string>
@@ -111,6 +108,93 @@
     <string name="order_pending">Chờ xác nhận</string>
     <string name="order_shipping">Đang giao</string>
     <string name="out_of_stock">Hết hàng</string>
+    <string name="policy_payment_content"><![CDATA[
+        <b>Payment Methods</b><br/>
+        • Cash on Delivery (COD).<br/>
+        • Bank transfer.<br/>
+        • E-wallets (MoMo, ZaloPay, VNPay…).<br/>
+        • Credit/Debit cards.<br/><br/>
+        <b>Payment Security</b><br/>
+        • All online transactions are encrypted and secured.<br/>
+        • Customer payment information is not stored without authorization.<br/>
+        • Used payment gateways all meet safety standards.<br/><br/>
+        <b>Refund Policy</b><br/>
+        • Refunds will be processed after the return request is confirmed.<br/>
+        • Refund processing time is from 05 – 07 business days.<br/><br/>
+        <b>Note</b><br/>
+        Customers should keep transaction information for verification if needed.
+    ]]></string>
+    <string name="policy_payment_title">Payment Policy</string>
+    <string name="policy_privacy_content"><![CDATA[
+        <b>Purpose of Information Collection</b><br/>
+        • Process orders.<br/>
+        • Support customer care.<br/>
+        • Improve service quality.<br/>
+        • Send promotional information (if the customer agrees).<br/><br/>
+        <b>Scope of Information Use</b><br/>
+        • Used only for activities related to providing products and services.<br/>
+        • Do not share with third parties without customer consent, except as required by law.<br/><br/>
+        <b>Data Security</b><br/>
+        • Personal information is stored on a secure system.<br/>
+        • Apply technical measures to prevent unauthorized access.<br/>
+        • Regularly check and upgrade the security system.<br/><br/>
+        <b>Customer Rights</b><br/>
+        • Request correction or update of personal information.<br/>
+        • Request to stop receiving advertising information.<br/>
+        • Request deletion of personal data according to current regulations.
+    ]]></string>
+    <string name="policy_privacy_title">Privacy Policy</string>
+    <string name="policy_purchase_content"><![CDATA[
+        <b>Order Confirmation Time</b><br/>
+        After a customer successfully places an order, we will contact you for confirmation within 24 business hours.<br/><br/>
+        <b>Order Conditions</b><br/>
+        • Customers must provide complete delivery information.<br/>
+        • Phone number and address information must be accurate.<br/>
+        • Orders must be confirmed before delivery proceeds.<br/><br/>
+        <b>Purchase Process</b><br/>
+        1. Select the desired product.<br/>
+        2. Add the product to the cart.<br/>
+        3. Fill in the delivery information.<br/>
+        4. Choose a payment method.<br/>
+        5. Confirm the order.<br/>
+        6. Receive a confirmation notice from the store.<br/><br/>
+        <b>Note</b><br/>
+        The store reserves the right to refuse orders with signs of fraud or inaccurate information.
+    ]]></string>
+    <string name="policy_purchase_title">Purchase Policy</string>
+    <string name="policy_return_content"><![CDATA[
+        <b>Return Period</b><br/>
+        We accept returns within 07 days from the date the customer receives the product.<br/><br/>
+        <b>Product Return Conditions</b><br/>
+        • Product is in original condition with tags attached.<br/>
+        • Unused and unwashed.<br/>
+        • Not damaged by the customer.<br/>
+        • Have an invoice or proof of purchase.<br/><br/>
+        <b>Return Process</b><br/>
+        1. Contact the customer care department.<br/>
+        2. Provide images or videos of the product.<br/>
+        3. Pack and send the product to the store.<br/>
+        4. Receive a new product or a refund as regulated.<br/><br/>
+        <b>Note</b><br/>
+        Shipping costs incurred during the return process will be handled on a case-by-case basis.
+    ]]></string>
+    <string name="policy_return_title">Return And Refund Policy</string>
+    <string name="policy_shipping_content"><![CDATA[
+        <b>Delivery Time</b><br/>
+        • Inner City: 01 – 03 business days.<br/>
+        • Suburbs and other provinces: 03 – 07 business days.<br/><br/>
+        <b>Shipping Range</b><br/>
+        We support nationwide delivery through reputable shipping units.<br/><br/>
+        <b>Shipping Process</b><br/>
+        1. Order is confirmed.<br/>
+        2. Products are packaged and handed over to the shipping unit.<br/>
+        3. Customer receives order tracking information.<br/>
+        4. Delivery to the registered address.<br/><br/>
+        <b>Note</b><br/>
+        Delivery time may vary due to weather, holidays, or other objective factors.
+    ]]></string>
+    <string name="policy_shipping_title">Shipping Policy</string>
+    <string name="policy_subtitle">Learn about TiredCity\'s policies and terms to ensure a safe and meaningful shopping experience.</string>
     <string name="section_categories">Danh mục</string>
     <string name="section_hot">Sản phẩm nổi bật</string>
     <string name="section_recommended">Gợi ý cho bạn</string>
@@ -125,19 +209,15 @@
     <string name="store_4_name">4. TiredCity 100 Hàng Đào</string>
     <string name="store_5_details">Address: 8 P. Lương Ngọc Quyến, Hàng Buồm, Hoàn Kiếm, Hà Nội. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
     <string name="store_5_name">5. TiredCity 8 Lương Ngọc Quyến</string>
+    <string name="str_policy_term">POLICY &amp; TERMS</string>
     <string name="success_add_cart">Đã thêm vào giỏ hàng.</string>
     <string name="success_order">Đặt hàng thành công!</string>
     <string name="success_profile_update">Cập nhật hồ sơ thành công.</string>
-    <string name="title_policies">Policies</string>
-    <string name="title_privacy_policy">Privacy Policy</string>
-    <string name="title_return_policy">Return &amp; Exchange Policy</string>
     <string name="title_store_locator">STORE LOCATOR</string>
-    <string name="title_terms_of_service">Terms of Service</string>
     <string name="zodiac_label">Cung %s</string>
     <style name="TextAppearance.TiredCity.Toolbar" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">17sp</item>
-        <item name="android:fontFamily">@font/forma_djr_display</item>
     </style>
     <style name="Theme.TiredCity" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/brand_gold</item>
@@ -152,7 +232,6 @@
         <item name="android:statusBarColor">@color/brand_dark</item>
         <item name="android:navigationBarColor">@color/bg_surface</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:fontFamily">@font/forma_djr_display</item>
     </style>
     <style name="Theme.TiredCity.Splash" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:colorBackground">@color/brand_dark</item>

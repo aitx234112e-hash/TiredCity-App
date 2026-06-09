@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.google.android.material.button.MaterialButton;
@@ -61,13 +62,17 @@ public final class ActivityContactBinding implements ViewBinding {
   @NonNull
   public final MaterialCardView mapCard;
 
+  @NonNull
+  public final Toolbar toolbar;
+
   private ActivityContactBinding(@NonNull LinearLayout rootView, @NonNull ImageView btnBack,
       @NonNull MaterialButton btnSendMessage, @NonNull TextInputEditText etEmail,
       @NonNull TextInputEditText etMessage, @NonNull TextInputEditText etName,
       @NonNull TextInputEditText etPhone, @NonNull ImageView imageView,
       @NonNull LinearLayout layoutStore1, @NonNull LinearLayout layoutStore2,
       @NonNull LinearLayout layoutStore3, @NonNull LinearLayout layoutStore4,
-      @NonNull LinearLayout layoutStore5, @NonNull MaterialCardView mapCard) {
+      @NonNull LinearLayout layoutStore5, @NonNull MaterialCardView mapCard,
+      @NonNull Toolbar toolbar) {
     this.rootView = rootView;
     this.btnBack = btnBack;
     this.btnSendMessage = btnSendMessage;
@@ -82,6 +87,7 @@ public final class ActivityContactBinding implements ViewBinding {
     this.layoutStore4 = layoutStore4;
     this.layoutStore5 = layoutStore5;
     this.mapCard = mapCard;
+    this.toolbar = toolbar;
   }
 
   @Override
@@ -189,9 +195,15 @@ public final class ActivityContactBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.toolbar;
+      Toolbar toolbar = ViewBindings.findChildViewById(rootView, id);
+      if (toolbar == null) {
+        break missingId;
+      }
+
       return new ActivityContactBinding((LinearLayout) rootView, btnBack, btnSendMessage, etEmail,
           etMessage, etName, etPhone, imageView, layoutStore1, layoutStore2, layoutStore3,
-          layoutStore4, layoutStore5, mapCard);
+          layoutStore4, layoutStore5, mapCard, toolbar);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

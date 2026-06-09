@@ -108,4 +108,5 @@
     <string name="chatbot_welcome">Hello! I\'m your Việt Phục style advisor. What outfit suits your element?</string>
     <string name="hint_message">Type a message…</string>
     <string name="btn_send">Send</string>
+    <string name="str_policy_term" />
 </resources>

@@ -71,6 +71,7 @@
     <string name="section_hot">Featured Products</string>
     <string name="section_recommended">Recommended for You</string>
     <string name="see_all">See all</string>
+    <string name="str_policy_term"/>
     <string name="success_add_cart">Added to cart.</string>
     <string name="success_order">Order placed successfully!</string>
     <string name="success_profile_update">Profile updated successfully.</string>

@@ -88,6 +88,10 @@
         "source": "com.tiredcity.app-main-71:/layout/activity_wardrobe.xml"
     },
     {
+        "merged": "com.tiredcity.app-mergeDebugResources-68:/layout/item_policy.xml",
+        "source": "com.tiredcity.app-main-71:/layout/item_policy.xml"
+    },
+    {
         "merged": "com.tiredcity.app-mergeDebugResources-68:/layout/item_onboarding_page.xml",
         "source": "com.tiredcity.app-main-71:/layout/item_onboarding_page.xml"
     },
