@@ -14,7 +14,7 @@
         android:background="@color/bg_surface"
         android:elevation="4dp"
         app:navigationIcon="@drawable/ic_back"
-        app:title="Lịch sử đơn hàng"
+        app:title="@string/order_history_title"
         app:titleTextColor="@color/text_primary"
         app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
 
@@ -25,34 +25,34 @@
         android:layout_height="48dp"
         android:background="@color/bg_surface"
         app:tabTextColor="@color/text_secondary"
-        app:tabSelectedTextColor="@color/brand_gold"
-        app:tabIndicatorColor="@color/brand_gold"
+        app:tabSelectedTextColor="@color/tc_red"
+        app:tabIndicatorColor="@color/tc_red"
         app:tabMode="scrollable">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tất cả" />
+            android:text="@string/order_tab_all" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chờ xử lý" />
+            android:text="@string/order_tab_pending" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đang giao" />
+            android:text="@string/order_tab_shipping" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đã nhận" />
+            android:text="@string/order_tab_received" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đã hủy" />
+            android:text="@string/order_tab_cancelled" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -90,16 +90,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chưa có đơn hàng nào"
+            android:text="@string/order_empty_title"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
             android:layout_marginBottom="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hãy khám phá và đặt những trang phục\nViệt Phục đầu tiên của bạn"
+            android:text="@string/order_empty_desc"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             android:gravity="center"
@@ -108,12 +109,15 @@
         <Button
             android:id="@+id/btn_shop_now"
             android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:background="@drawable/bg_button_gold"
-            android:paddingHorizontal="24dp"
-            android:text="Mua sắm ngay"
-            android:textColor="@color/brand_dark"
+            android:layout_height="46dp"
+            android:background="@drawable/tc_btn_red_pill"
+            android:paddingHorizontal="28dp"
+            android:text="@string/order_shop_now"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:fontFamily="sans-serif-medium"
+            android:elevation="2dp" />
     </LinearLayout>
 </LinearLayout>

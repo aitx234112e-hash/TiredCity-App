@@ -1,38 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="32dp"
-    android:background="@color/brand_dark">
+    android:background="@color/tc_espresso">
 
-    <TextView
-        android:id="@+id/tv_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🏛️"
-        android:textSize="80sp"
-        android:layout_marginBottom="32dp" />
+    <!-- Ảnh nền slide -->
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null" />
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Khám phá Việt Phục"
-        android:textColor="@color/brand_gold"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="16dp" />
+    <!-- Lớp phủ tối dần ở đáy cho dễ đọc chữ -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/tc_gradient_overlay" />
 
-    <TextView
-        android:id="@+id/tv_description"
+    <!-- Tiêu đề + mô tả -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trải nghiệm vẻ đẹp truyền thống của trang phục Việt Nam qua bộ sưu tập được chế tác tinh xảo."
-        android:textColor="@color/brand_cream"
-        android:textSize="15sp"
-        android:gravity="center"
-        android:lineSpacingExtra="6dp" />
-</LinearLayout>
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:paddingBottom="36dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="6" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="#F2FFFFFF"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="5dp"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="5" />
+    </LinearLayout>
+</FrameLayout>

@@ -98,14 +98,14 @@ public class PaymentActivity extends BaseActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(PaymentActivity.this, "Đặt hàng thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PaymentActivity.this, getString(com.tiredcity.app.R.string.error_order_failed), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
                 binding.btnPlaceOrder.setEnabled(true);
-                Toast.makeText(PaymentActivity.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PaymentActivity.this, getString(com.tiredcity.app.R.string.error_network), Toast.LENGTH_SHORT).show();
             }
         });
     }

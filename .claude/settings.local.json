@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(MSYS_NO_PATHCONV=1 'C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell cat /sdcard/r.xml)",
+      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell *)",
+      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' exec-out *)"
+    ]
+  }
+}

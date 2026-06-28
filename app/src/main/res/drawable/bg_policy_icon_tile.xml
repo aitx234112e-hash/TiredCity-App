@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ô vuông bo góc nền đỏ nhạt cho icon chính sách -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_red_pale" />
+    <corners android:radius="12dp" />
+</shape>

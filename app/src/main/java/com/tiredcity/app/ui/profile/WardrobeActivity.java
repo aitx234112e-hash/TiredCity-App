@@ -29,7 +29,7 @@ public class WardrobeActivity extends BaseActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Tủ đồ của tôi");
+            getSupportActionBar().setTitle(getString(com.tiredcity.app.R.string.label_wardrobe));
         }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
@@ -53,7 +53,7 @@ public class WardrobeActivity extends BaseActivity {
         binding.rvSavedItems.setAdapter(productAdapter);
 
         binding.swipeRefresh.setColorSchemeColors(
-            getResources().getColor(com.tiredcity.app.R.color.brand_gold, getTheme()));
+            getResources().getColor(com.tiredcity.app.R.color.tc_red, getTheme()));
         binding.swipeRefresh.setOnRefreshListener(this::loadWardrobeItems);
 
         loadWardrobeItems();

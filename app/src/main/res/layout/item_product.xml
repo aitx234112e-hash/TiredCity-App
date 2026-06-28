@@ -3,22 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="160dp"
+    android:layout_width="165dp"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardBackgroundColor="@color/bg_surface"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp">
+    app:cardCornerRadius="@dimen/tc_radius_md"
+    app:cardElevation="@dimen/tc_elev_sm"
+    app:strokeColor="@color/tc_stroke"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Image + overlay badges -->
+        <!-- Ảnh + badge -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="135dp">
+            android:layout_height="180dp">
 
             <ImageView
                 android:id="@+id/iv_product_image"
@@ -26,46 +28,49 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:background="@color/bg_subtle"
+                android:contentDescription="@null"
                 tools:src="@android:drawable/ic_menu_gallery" />
 
-            <!-- Discount badge (top-right) -->
+            <!-- Badge giảm giá -->
             <TextView
                 android:id="@+id/tv_discount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
-                android:layout_margin="6dp"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="2dp"
-                android:background="@color/brand_red"
-                android:textColor="@android:color/white"
+                android:layout_margin="8dp"
+                android:background="@drawable/tc_bg_discount"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:textColor="@color/white"
                 android:textSize="11sp"
                 android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:visibility="gone"
                 tools:text="-15%"
                 tools:visibility="visible" />
 
-            <!-- Save / wishlist button (top-left) -->
+            <!-- Nút lưu yêu thích -->
             <ImageButton
                 android:id="@+id/ib_save"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="top|start"
-                android:layout_margin="4dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_margin="6dp"
+                android:background="@drawable/tc_bg_circle_white"
                 android:contentDescription="@string/btn_save"
-                android:padding="4dp"
-                android:src="@android:drawable/btn_star_big_off" />
+                android:padding="6dp"
+                android:src="@android:drawable/btn_star_big_off"
+                app:tint="@color/tc_red" />
         </FrameLayout>
 
-        <!-- Text info -->
+        <!-- Thông tin -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="10dp">
+            android:paddingHorizontal="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/tv_product_name"
@@ -73,18 +78,21 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:minLines="2"
                 android:textColor="@color/text_primary"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 tools:text="Áo Dài Cổ Truyền" />
 
             <TextView
                 android:id="@+id/tv_product_material"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="3dp"
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp"
+                android:letterSpacing="0.02"
                 tools:text="Lụa tơ tằm" />
 
             <RatingBar
@@ -92,10 +100,10 @@
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:isIndicator="true"
                 android:numStars="5"
-                android:progressTint="@color/brand_gold"
+                android:progressTint="@color/tc_gold"
                 android:secondaryProgressTint="@color/bg_subtle"
                 android:stepSize="0.5"
                 tools:rating="4.5" />
@@ -104,10 +112,11 @@
                 android:id="@+id/tv_product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/brand_gold"
-                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/tc_red"
+                android:textSize="15sp"
                 android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 tools:text="850.000 ₫" />
         </LinearLayout>
     </LinearLayout>

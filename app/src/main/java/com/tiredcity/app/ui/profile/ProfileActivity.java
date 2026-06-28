@@ -11,6 +11,13 @@ import com.tiredcity.app.data.network.ApiService;
 import com.tiredcity.app.databinding.ActivityProfileBinding;
 import com.tiredcity.app.ui.auth.LoginActivity;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.explore.ArticleActivity;
+import com.tiredcity.app.ui.main.MainActivity;
+import com.tiredcity.app.ui.reward.RewardActivity;
+import com.tiredcity.app.ui.styling.AiStylingActivity;
+import com.tiredcity.app.ui.styling.ChatBotActivity;
+import com.tiredcity.app.ui.support.ContactActivity;
+import com.tiredcity.app.ui.support.PolicyActivity;
 import com.tiredcity.app.utils.MenhCalculator;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,9 +40,41 @@ public class ProfileActivity extends BaseActivity {
 
         apiService = ApiClient.getApiService(preferenceManager.getToken());
 
-        binding.layoutEditProfile.setOnClickListener(v -> openEditProfile());
+        // Header (avatar + tên) → chỉnh sửa hồ sơ
+        binding.layoutAccountHeader.setOnClickListener(v -> openEditProfile());
+
+        // Lưới truy cập nhanh — mục đã code
+        binding.cardStyling.setOnClickListener(v ->
+                startActivity(new Intent(this, AiStylingActivity.class)));
+        binding.cardOrders.setOnClickListener(v -> openOrderHistory());
+        binding.cardFindStore.setOnClickListener(v ->
+                startActivity(new Intent(this, ContactActivity.class)));
+
+        // Sự kiện → mở tab Khám phá (tab "Cửa hàng" sẽ tự launch ContactActivity từ đó)
+        binding.itemEvents.setOnClickListener(v -> {
+            Intent i = new Intent(this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(i);
+        });
+        // Ưu đãi → trang Ưu đãi (RewardActivity)
+        binding.itemPromotions.setOnClickListener(v ->
+                startActivity(new Intent(this, RewardActivity.class)));
+        // Blogs → trang danh sách bài viết (ArticleActivity)
+        binding.itemBlogs.setOnClickListener(v ->
+                startActivity(new Intent(this, ArticleActivity.class)));
+
+        // Các mục đã code → mở trang tương ứng
         binding.layoutOrderHistory.setOnClickListener(v -> openOrderHistory());
         binding.layoutWardrobe.setOnClickListener(v -> openWardrobe());
+        binding.layoutChat.setOnClickListener(v ->
+                startActivity(new Intent(this, ChatBotActivity.class)));
+        binding.layoutContact.setOnClickListener(v ->
+                startActivity(new Intent(this, ContactActivity.class)));
+        binding.layoutPolicy.setOnClickListener(v ->
+                startActivity(new Intent(this, PolicyActivity.class)));
+
+        // Các mục chưa code (Cài đặt thông báo, Cài đặt chung, Điều khoản) → để trống
+
         binding.btnLogout.setOnClickListener(v -> logout());
 
         loadProfile();
@@ -78,18 +117,13 @@ public class ProfileActivity extends BaseActivity {
         String menh = preferenceManager.getMenh();
         if (menh != null) {
             String emoji = MenhCalculator.getEmojiMenh(menh);
-            binding.tvMenhBadge.setText(emoji + " Mệnh " + menh);
+            binding.tvMenhBadge.setText(emoji + " " + getString(
+                    com.tiredcity.app.R.string.menh_label, menh));
             binding.tvMenhBadge.setVisibility(View.VISIBLE);
         }
 
-        // Avatar
-        if (profile.getAvatar() != null && !profile.getAvatar().isEmpty()) {
-            Glide.with(this)
-                .load(profile.getAvatar())
-                .placeholder(com.tiredcity.app.R.drawable.ic_person_placeholder)
-                .circleCrop()
-                .into(binding.ivAvatar);
-        }
+        // Avatar: ảnh đã chọn nếu có, ngược lại logo gà TiredCity
+        com.tiredcity.app.utils.AvatarUtils.load(this, binding.ivAvatar);
     }
 
     private void openEditProfile() {

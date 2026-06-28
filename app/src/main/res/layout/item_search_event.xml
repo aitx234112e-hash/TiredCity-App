@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingVertical="16dp">
+
+    <!-- Banner image (left) -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_event_banner"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@color/bg_subtle"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Small" />
+
+    <!-- Eyebrow: SỰ KIỆN + calendar icon -->
+    <LinearLayout
+        android:id="@+id/ll_event_eyebrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="14dp"
+        app:layout_constraintStart_toEndOf="@id/iv_event_banner"
+        app:layout_constraintTop_toTopOf="@id/iv_event_banner">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_event"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:fontFamily="sans-serif-medium" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_calendar"
+            app:tint="@color/tc_red"
+            android:contentDescription="@null" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_event_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toEndOf="@id/iv_event_banner"
+        app:layout_constraintTop_toBottomOf="@id/ll_event_eyebrow"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_event_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@id/iv_event_banner"
+        app:layout_constraintTop_toBottomOf="@id/tv_event_title"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

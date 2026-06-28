@@ -17,11 +17,21 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.ViewHolder
         public final String imageUrl;
         public final String title;
         public final int    colorFallback;
+        public final int    imageRes;   // ảnh local trong drawable (0 = không dùng)
 
         public BannerItem(String imageUrl, String title, int colorFallback) {
             this.imageUrl      = imageUrl;
             this.title         = title;
             this.colorFallback = colorFallback;
+            this.imageRes      = 0;
+        }
+
+        /** Dùng ảnh local trong res/drawable (vd R.drawable.banner_1). */
+        public BannerItem(int imageRes, String title) {
+            this.imageRes      = imageRes;
+            this.title         = title;
+            this.imageUrl      = null;
+            this.colorFallback = 0;
         }
     }
 
@@ -53,7 +63,12 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.ViewHolder
         BannerItem item = items.get(position);
         holder.tvTitle.setText(item.title);
 
-        if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
+        if (item.imageRes != 0) {
+            Glide.with(holder.ivBanner.getContext())
+                    .load(item.imageRes)
+                    .centerCrop()
+                    .into(holder.ivBanner);
+        } else if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
             Glide.with(holder.ivBanner.getContext())
                     .load(item.imageUrl)
                     .centerCrop()

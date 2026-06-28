@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ChatMessageAdapter;
 import com.tiredcity.app.data.model.ChatMessage;
 import com.tiredcity.app.databinding.ActivityChatbotBinding;
@@ -24,16 +25,21 @@ public class ChatBotActivity extends BaseActivity {
         binding = ActivityChatbotBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Trợ lý thời trang AI");
-        }
-        binding.toolbar.setNavigationOnClickListener(v -> finish());
+        binding.btnBack.setOnClickListener(v -> finish());
 
         chatAdapter = new ChatMessageAdapter(messages);
         binding.rvMessages.setLayoutManager(new LinearLayoutManager(this));
         binding.rvMessages.setAdapter(chatAdapter);
+
+        // Khi bàn phím hiện lên (list bị thu nhỏ) → cuộn xuống tin nhắn mới nhất.
+        binding.rvMessages.addOnLayoutChangeListener(
+                (v, left, top, right, bottom, oldL, oldT, oldR, oldB) -> {
+                    if (bottom < oldB && chatAdapter.getItemCount() > 0) {
+                        binding.rvMessages.postDelayed(
+                                () -> binding.rvMessages.scrollToPosition(chatAdapter.getItemCount() - 1),
+                                100);
+                    }
+                });
 
         binding.btnSend.setOnClickListener(v -> sendUserMessage());
         binding.etMessage.setOnEditorActionListener((v, actionId, event) -> {
@@ -49,11 +55,12 @@ public class ChatBotActivity extends BaseActivity {
 
     private void sendWelcomeMessage() {
         String menh = preferenceManager.getMenh();
+        String intro = getString(R.string.bot_intro_message);
         String welcome = (menh != null)
-            ? "Xin chào! Tôi là trợ lý thời trang Việt Phục 🎨\n\nBạn mệnh " + menh
+            ? intro + "\n\nBạn mệnh " + menh
               + " " + MenhCalculator.getEmojiMenh(menh)
               + ". Tôi có thể giúp bạn chọn trang phục hợp mệnh và tư vấn phong cách cá nhân. Bạn muốn hỏi về điều gì?"
-            : "Xin chào! Tôi là trợ lý thời trang Việt Phục 🎨\n\nTôi có thể giúp bạn chọn trang phục phù hợp với mệnh và phong cách của bạn. Bạn muốn hỏi về điều gì?";
+            : intro + "\n\nTôi có thể giúp bạn chọn trang phục phù hợp với mệnh và phong cách của bạn. Bạn muốn hỏi về điều gì?";
         receiveMessage(welcome);
     }
 

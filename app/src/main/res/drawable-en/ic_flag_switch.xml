@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cờ Việt Nam — hiện ở chế độ English (bấm để về tiếng Việt) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="22dp"
+    android:height="15dp"
+    android:viewportWidth="30"
+    android:viewportHeight="20">
+
+    <!-- Nền đỏ -->
+    <path
+        android:fillColor="#DA251D"
+        android:pathData="M0,0 H30 V20 H0 Z" />
+
+    <!-- Ngôi sao vàng 5 cánh -->
+    <path
+        android:fillColor="#FFFF00"
+        android:pathData="M15,3 L16.65,7.73 L21.66,7.84 L17.66,10.87 L19.11,15.66 L15,12.8 L10.89,15.66 L12.34,10.87 L8.34,7.84 L13.35,7.73 Z" />
+</vector>

@@ -40,7 +40,7 @@ public class OrderHistoryActivity extends BaseActivity {
 
         binding.swipeRefresh.setOnRefreshListener(this::loadOrders);
         binding.swipeRefresh.setColorSchemeColors(
-            getResources().getColor(com.tiredcity.app.R.color.brand_gold, getTheme()));
+            getResources().getColor(com.tiredcity.app.R.color.tc_red, getTheme()));
 
         loadOrders();
     }

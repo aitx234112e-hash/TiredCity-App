@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Empty state: hộp quà mở nắp + sao lấp lánh (trang Ưu đãi) — bảng màu TiredCity -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Đốm vàng kem nền phía sau -->
+    <path
+        android:fillColor="@color/tc_gold_pale"
+        android:fillAlpha="0.5"
+        android:pathData="M40,70m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0" />
+
+    <!-- Thân hộp quà — đỏ son -->
+    <path
+        android:fillColor="@color/tc_red"
+        android:pathData="M30,58 h44 a3,3 0 0 1 3,3 v28 a4,4 0 0 1 -4,4 h-42 a4,4 0 0 1 -4,-4 v-28 a3,3 0 0 1 3,-3 z" />
+    <!-- Ruy băng dọc thân — kem -->
+    <path
+        android:fillColor="@color/bg_surface"
+        android:pathData="M48,58 h8 v35 h-8 z" />
+
+    <!-- Nắp hộp — đỏ thẫm -->
+    <path
+        android:fillColor="@color/tc_red_deep"
+        android:pathData="M25,48 h54 a3,3 0 0 1 3,3 v8 a2,2 0 0 1 -2,2 h-56 a2,2 0 0 1 -2,-2 v-8 a3,3 0 0 1 3,-3 z" />
+    <path
+        android:fillColor="@color/bg_surface"
+        android:pathData="M48,48 h8 v13 h-8 z" />
+
+    <!-- Nơ bên trái — đỏ thẫm -->
+    <path
+        android:fillColor="@color/tc_red_deep"
+        android:strokeColor="@color/tc_red_deep"
+        android:strokeWidth="3"
+        android:pathData="M48,48 C40,40 30,38 30,45 C30,51 40,49 48,48 Z" />
+
+    <!-- Sao lớn — vàng kim -->
+    <path
+        android:fillColor="@color/tc_gold"
+        android:pathData="M86,30 l3,7 l7,0.6 l-5.3,4.6 l1.7,7 l-6.4,-3.8 l-6.4,3.8 l1.7,-7 l-5.3,-4.6 l7,-0.6 z" />
+    <!-- Sao nhỏ — vàng kim -->
+    <path
+        android:fillColor="@color/tc_gold"
+        android:pathData="M64,24 l1.8,4.2 l4.2,0.3 l-3.2,2.8 l1,4.1 l-3.8,-2.3 l-3.8,2.3 l1,-4.1 l-3.2,-2.8 l4.2,-0.3 z" />
+    <!-- Vòng tròn nhỏ — vàng kim -->
+    <path
+        android:fillColor="@color/tc_gold"
+        android:pathData="M98,46 m-3.5,0 a3.5,3.5 0 1 1 7,0 a3.5,3.5 0 1 1 -7,0" />
+</vector>

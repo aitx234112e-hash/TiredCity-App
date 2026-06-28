@@ -10,21 +10,23 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
+        android:name=".TiredCityApp"
         android:allowBackup="true"
-        android:icon="@android:drawable/ic_menu_gallery"
+        android:icon="@drawable/ic_tc_logo"
         android:label="@string/app_name"
-        android:roundIcon="@android:drawable/ic_menu_gallery"
+        android:roundIcon="@drawable/ic_tc_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.TiredCity"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <!-- ── Launcher ─────────────────────────────────────────────────── -->
+        <!-- ── Launcher: Login kiêm splash overlay (gộp 1 activity để hết khung đen) ── -->
         <activity
-            android:name=".ui.onboarding.SplashActivity"
+            android:name=".ui.auth.LoginActivity"
             android:exported="true"
-            android:theme="@style/Theme.TiredCity.Splash"
-            android:screenOrientation="portrait">
+            android:theme="@style/Theme.TiredCity.Launcher"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -38,13 +40,13 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.auth.LoginActivity"
+            android:name=".ui.auth.RegisterActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".ui.auth.RegisterActivity"
+            android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
@@ -94,6 +96,23 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!-- ── Explore: News & Events ────────────────────────────────────── -->
+        <activity
+            android:name=".ui.explore.ArticleActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.explore.EventActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- ── Notifications ─────────────────────────────────────────────── -->
+        <activity
+            android:name=".ui.notification.NotificationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <!-- ── Profile ───────────────────────────────────────────────────── -->
         <activity
             android:name=".ui.profile.ProfileActivity"
@@ -116,6 +135,22 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!-- ── Rewards / Ưu đãi ──────────────────────────────────────────── -->
+        <activity
+            android:name=".ui.reward.RewardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.reward.VoucherDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.reward.BarcodeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <!-- ── Styling / AI ──────────────────────────────────────────────── -->
         <activity
             android:name=".ui.styling.AiStylingActivity"
@@ -124,6 +159,18 @@
 
         <activity
             android:name=".ui.styling.ChatBotActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- ── Support ───────────────────────────────────────────────────── -->
+        <activity
+            android:name=".ui.support.PolicyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.support.ContactActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />

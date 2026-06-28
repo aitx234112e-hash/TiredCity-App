@@ -9,7 +9,7 @@
     <!-- Search header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="8dp"
@@ -22,21 +22,26 @@
             android:layout_height="44dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back"
-            android:padding="10dp" />
+            app:tint="@color/tc_espresso"
+            android:padding="10dp"
+            android:contentDescription="@string/nav_back" />
 
         <EditText
             android:id="@+id/et_search"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
             android:layout_weight="1"
-            android:background="@drawable/bg_input_field"
-            android:hint="Tìm kiếm trang phục..."
+            android:background="@drawable/tc_bg_search"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:hint="@string/search_hint"
             android:inputType="text"
             android:imeOptions="actionSearch"
             android:paddingHorizontal="14dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_hint"
             android:textSize="14sp"
+            android:fontFamily="sans-serif"
             android:layout_marginHorizontal="8dp" />
 
         <ImageButton
@@ -44,12 +49,13 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:src="@drawable/ic_close"
             android:padding="12dp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@string/search_clear_all" />
     </LinearLayout>
 
-    <!-- Recent searches (shown when no query) -->
+    <!-- Discovery page (shown when no query): most-searched tags + suggestions -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/layout_recent"
         android:layout_width="match_parent"
@@ -60,53 +66,61 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Tìm kiếm gần đây"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_clear_history"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Xóa tất cả"
-                    android:textColor="@color/brand_gold"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_recent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp" />
-
+            <!-- Phần 2: Được tìm kiếm nhiều nhất -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tìm kiếm phổ biến"
+                android:text="@string/most_searched_title"
+                android:textAllCaps="true"
                 android:textColor="@color/text_primary"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="12dp" />
+                android:letterSpacing="0.02"
+                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="12dp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group_popular"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                app:chipSpacingHorizontal="10dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/tc_stroke" />
+
+            <!-- Phần 3: Gợi ý cho bạn -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/suggested_for_you"
+                android:textAllCaps="true"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.02"
+                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="4dp" />
+
+            <!-- Phần 4: Danh sách tổng hợp (multiple view types) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_suggestions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingBottom="20dp"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -119,16 +133,16 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <!-- Result count -->
         <TextView
             android:id="@+id/tv_result_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tìm thấy 12 kết quả"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="10dp" />
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="12dp"
+            tools:text="Tìm thấy 12 kết quả"
+            xmlns:tools="http://schemas.android.com/tools" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
@@ -155,27 +169,29 @@
         android:gravity="center"
         android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🔍"
-            android:textSize="64sp"
-            android:layout_marginBottom="16dp" />
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/ic_search"
+            app:tint="@color/tc_sand_light"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/tv_empty_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Không tìm thấy kết quả"
+            android:text="@string/search_empty_title"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
             android:layout_marginBottom="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thử tìm kiếm với từ khóa khác"
+            android:text="@string/search_empty_desc"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
     </LinearLayout>

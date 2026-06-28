@@ -1,15 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_primary"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_primary"
+        android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp">
+
+        <!-- Nút chuyển ngôn ngữ (góc trên phải) -->
+        <TextView
+            android:id="@+id/btn_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/tc_bg_lang_pill"
+            android:drawableStart="@drawable/ic_flag_switch"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="@string/switch_to_other_lang"
+            android:textColor="@color/tc_red"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:clickable="true"
+            android:focusable="true" />
 
         <!-- Header logo -->
         <LinearLayout
@@ -20,28 +46,48 @@
             android:paddingTop="40dp"
             android:paddingBottom="32dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🏛️"
-                android:textSize="52sp" />
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/ic_tc_logo"
+                android:contentDescription="@string/app_name"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TIRED CITY"
-                android:textColor="@color/brand_dark"
-                android:textSize="24sp"
+                android:text="@string/brand_name_caps"
+                android:textColor="@color/tc_red"
+                android:textSize="28sp"
                 android:textStyle="bold"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="0.1"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/brand_tagline"
+                android:textColor="@color/tc_gold_deep"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.2"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_subtitle"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
                 android:layout_marginTop="8dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Đăng nhập để tiếp tục"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp"
-                android:layout_marginTop="4dp" />
+            <View
+                android:layout_width="80dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/tc_divider_gold" />
         </LinearLayout>
 
         <!-- Email -->
@@ -49,8 +95,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hint_email"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/text_primary"
             android:textSize="13sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"
             android:layout_marginBottom="6dp" />
 
         <EditText
@@ -63,7 +112,8 @@
             android:paddingHorizontal="16dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_hint"
-            android:textSize="14sp"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif"
             android:layout_marginBottom="16dp" />
 
         <!-- Password -->
@@ -71,8 +121,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hint_password"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/text_primary"
             android:textSize="13sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"
             android:layout_marginBottom="6dp" />
 
         <EditText
@@ -85,20 +138,174 @@
             android:paddingHorizontal="16dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_hint"
-            android:textSize="14sp"
-            android:layout_marginBottom="24dp" />
+            android:textSize="15sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Remember me + Forgot password row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cb_remember_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/login_remember_me"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:buttonTint="@color/tc_red" />
+
+            <TextView
+                android:id="@+id/tv_forgot_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_forgot_password"
+                android:textColor="@color/tc_red"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:padding="4dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
 
         <!-- Login Button -->
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:background="@drawable/bg_button_gold"
+            android:layout_height="56dp"
+            android:background="@drawable/tc_btn_red_pill"
             android:text="@string/btn_login"
-            android:textColor="@color/brand_dark"
-            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:letterSpacing="0.1"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp" />
+
+        <!-- Divider: HOẶC ĐĂNG NHẬP VỚI -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/tc_stroke" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_or_with"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:letterSpacing="0.08"
+                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="12dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/tc_stroke" />
+        </LinearLayout>
+
+        <!-- 3 nút mạng xã hội -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/btn_google"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/tc_btn_google"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_google"
+                    android:contentDescription="Google" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Google"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_facebook"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/tc_btn_facebook"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_facebook"
+                    android:contentDescription="Facebook" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Facebook"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_apple"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/tc_btn_apple"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_apple"
+                    android:contentDescription="Apple" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Apple"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- Register link -->
         <LinearLayout
@@ -110,18 +317,76 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chưa có tài khoản? "
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
+                android:text="@string/login_no_account"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
                 android:text="@string/btn_register"
-                android:textColor="@color/brand_gold"
-                android:textSize="13sp"
+                android:textColor="@color/tc_red"
+                android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+    <!-- ═══ Lớp phủ Splash (đỏ) — gộp splash vào chính màn Login (1 activity) để KHÔNG
+         còn bàn giao Activity → hết khung đen. Hiện khi mở app rồi mờ dần lộ form. ═══ -->
+    <LinearLayout
+        android:id="@+id/splash_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/tc_gradient_red_lacquer">
+
+        <FrameLayout
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:background="@drawable/tc_bg_circle_white">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_tc_logo"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/app_name" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/brand_name_caps"
+            android:textColor="@color/white"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.15" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/brand_tagline"
+            android:textColor="@color/tc_gold_bright"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/splash_slogan"
+            android:textColor="@color/tc_on_red_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+</FrameLayout>

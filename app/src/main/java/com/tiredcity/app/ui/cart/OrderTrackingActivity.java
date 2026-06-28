@@ -47,13 +47,13 @@ public class OrderTrackingActivity extends BaseActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     bindOrder(response.body().getData());
                 } else {
-                    Toast.makeText(OrderTrackingActivity.this, "Không tải được đơn hàng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderTrackingActivity.this, getString(R.string.error_loading), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
-                Toast.makeText(OrderTrackingActivity.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderTrackingActivity.this, getString(R.string.error_network), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -74,10 +74,10 @@ public class OrderTrackingActivity extends BaseActivity {
                               || Constants.ORDER_DELIVERED.equals(status);
         boolean isDelivered = Constants.ORDER_DELIVERED.equals(status);
 
-        applyStep(binding.stepPlaced,    "Đã đặt hàng",    isPending);
-        applyStep(binding.stepConfirmed, "Đã xác nhận",    isConfirmed);
-        applyStep(binding.stepShipping,  "Đang giao hàng", isShipping);
-        applyStep(binding.stepDelivered, "Đã nhận hàng",   isDelivered);
+        applyStep(binding.stepPlaced,    getString(R.string.track_step_placed),    isPending);
+        applyStep(binding.stepConfirmed, getString(R.string.track_step_confirmed), isConfirmed);
+        applyStep(binding.stepShipping,  getString(R.string.track_step_shipping),  isShipping);
+        applyStep(binding.stepDelivered, getString(R.string.track_step_delivered), isDelivered);
     }
 
     private void applyStep(ItemTrackingStepBinding step, String label, boolean active) {
@@ -85,6 +85,6 @@ public class OrderTrackingActivity extends BaseActivity {
         step.tvStepTitle.setTextColor(getResources().getColor(
             active ? R.color.text_primary : R.color.text_hint, getTheme()));
         step.vStepDot.setBackgroundResource(
-            active ? R.drawable.bg_circle_gold : R.drawable.bg_rounded_surface);
+            active ? R.drawable.tc_bg_circle_red : R.drawable.tc_bg_circle_sand);
     }
 }

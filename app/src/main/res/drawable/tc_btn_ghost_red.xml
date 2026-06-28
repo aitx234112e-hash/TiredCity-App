@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nút viền đỏ trong suốt + ripple đỏ nhạt -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#22A80D15">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="@dimen/tc_stroke_w_thick" android:color="@color/tc_red" />
+            <corners android:radius="@dimen/tc_radius_xl" />
+        </shape>
+    </item>
+</ripple>

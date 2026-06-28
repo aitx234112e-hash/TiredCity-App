@@ -5,15 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
-import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+import com.bumptech.glide.Glide;
 import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.ActivityOnboardingBinding;
-import com.tiredcity.app.ui.auth.LoginActivity;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.main.MainActivity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,15 +22,7 @@ import java.util.List;
 public class OnboardingActivity extends BaseActivity {
 
     private ActivityOnboardingBinding binding;
-
-    private static final List<OnboardingPage> PAGES = Arrays.asList(
-        new OnboardingPage("🏛️", "Khám phá Việt Phục",
-            "Trải nghiệm vẻ đẹp truyền thống của trang phục Việt Nam qua bộ sưu tập được chế tác tinh xảo từ làng nghề lâu đời."),
-        new OnboardingPage("🎨", "Phong cách theo mệnh",
-            "AI của chúng tôi gợi ý trang phục hợp mệnh Ngũ Hành và cung hoàng đạo của bạn, mang lại may mắn và vẻ đẹp riêng."),
-        new OnboardingPage("✨", "Trợ lý thời trang AI",
-            "Chat trực tiếp với trợ lý AI để được tư vấn phong cách cá nhân hoá mọi lúc, mọi nơi.")
-    );
+    private List<OnboardingPage> pages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +30,38 @@ public class OnboardingActivity extends BaseActivity {
         binding = ActivityOnboardingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        OnboardingAdapter adapter = new OnboardingAdapter(PAGES);
+        // 5 slide — ảnh nền tự lấy theo tên onboarding_1 … onboarding_5 trong res/drawable.
+        // Chỉ cần bỏ ảnh vào là tự hiện; chưa có thì nền nâu mặc định.
+        pages = Arrays.asList(
+            new OnboardingPage("onboarding_1",
+                    getString(R.string.onboarding_title_1), getString(R.string.onboarding_desc_1)),
+            new OnboardingPage("onboarding_2",
+                    getString(R.string.onboarding_title_2), getString(R.string.onboarding_desc_2)),
+            new OnboardingPage("onboarding_3",
+                    getString(R.string.onboarding_title_3), getString(R.string.onboarding_desc_3)),
+            new OnboardingPage("onboarding_4",
+                    getString(R.string.onboarding_title_4), getString(R.string.onboarding_desc_4)),
+            new OnboardingPage("onboarding_5",
+                    getString(R.string.onboarding_title_5), getString(R.string.onboarding_desc_5))
+        );
+
+        OnboardingAdapter adapter = new OnboardingAdapter(pages);
         binding.vpOnboarding.setAdapter(adapter);
         binding.dotsIndicator.attachTo(binding.vpOnboarding);
 
         binding.vpOnboarding.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                boolean isLast = position == PAGES.size() - 1;
-                binding.btnNext.setText(isLast ? "Bắt đầu" : "Tiếp theo");
+                boolean isLast = position == pages.size() - 1;
+                binding.btnNext.setText(isLast
+                        ? getString(R.string.btn_get_started)
+                        : getString(R.string.onboarding_next));
             }
         });
 
         binding.btnNext.setOnClickListener(v -> {
             int current = binding.vpOnboarding.getCurrentItem();
-            if (current < PAGES.size() - 1) {
+            if (current < pages.size() - 1) {
                 binding.vpOnboarding.setCurrentItem(current + 1);
             } else {
                 finishOnboarding();
@@ -63,7 +73,7 @@ public class OnboardingActivity extends BaseActivity {
 
     private void finishOnboarding() {
         preferenceManager.setOnboardingShown(true);
-        startActivity(new Intent(this, LoginActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
@@ -86,7 +96,15 @@ public class OnboardingActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(@NonNull VH holder, int position) {
             OnboardingPage page = pages.get(position);
-            holder.tvEmoji.setText(page.emoji);
+
+            int imgId = holder.itemView.getResources().getIdentifier(
+                    page.imageName, "drawable", holder.itemView.getContext().getPackageName());
+            if (imgId != 0) {
+                Glide.with(holder.ivBg).load(imgId).centerCrop().into(holder.ivBg);
+            } else {
+                holder.ivBg.setImageDrawable(null); // chưa có ảnh → nền nâu mặc định
+            }
+
             holder.tvTitle.setText(page.title);
             holder.tvDescription.setText(page.description);
         }
@@ -95,11 +113,12 @@ public class OnboardingActivity extends BaseActivity {
         public int getItemCount() { return pages.size(); }
 
         static class VH extends RecyclerView.ViewHolder {
-            TextView tvEmoji, tvTitle, tvDescription;
+            ImageView ivBg;
+            TextView tvTitle, tvDescription;
 
             VH(@NonNull View itemView) {
                 super(itemView);
-                tvEmoji       = itemView.findViewById(R.id.tv_emoji);
+                ivBg          = itemView.findViewById(R.id.iv_bg);
                 tvTitle       = itemView.findViewById(R.id.tv_title);
                 tvDescription = itemView.findViewById(R.id.tv_description);
             }
@@ -107,9 +126,10 @@ public class OnboardingActivity extends BaseActivity {
     }
 
     private static class OnboardingPage {
-        final String emoji, title, description;
-        OnboardingPage(String emoji, String title, String description) {
-            this.emoji       = emoji;
+        final String imageName, title, description;
+
+        OnboardingPage(String imageName, String title, String description) {
+            this.imageName   = imageName;
             this.title       = title;
             this.description = description;
         }

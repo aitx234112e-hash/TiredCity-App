@@ -1,23 +1,31 @@
 package com.tiredcity.app.ui.profile;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
-import com.tiredcity.app.data.model.ApiResponse;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.UserProfile;
-import com.tiredcity.app.data.network.ApiClient;
-import com.tiredcity.app.data.network.ApiService;
 import com.tiredcity.app.databinding.ActivityEditProfileBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.tiredcity.app.utils.AddressData;
+import com.tiredcity.app.utils.AvatarUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditProfileActivity extends BaseActivity {
 
     private ActivityEditProfileBinding binding;
-    private ApiService apiService;
+
+    // Bộ chọn ảnh từ thư viện (không cần xin quyền — dùng system picker).
+    private final ActivityResultLauncher<String> pickAvatar =
+        registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if (uri != null) onAvatarPicked(uri);
+        });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,82 +37,87 @@ public class EditProfileActivity extends BaseActivity {
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
-        apiService = ApiClient.getApiService(preferenceManager.getToken());
+        // Đổi ảnh đại diện
+        binding.ivAvatar.setOnClickListener(v -> pickAvatar.launch("image/*"));
+        binding.ibChangeAvatar.setOnClickListener(v -> pickAvatar.launch("image/*"));
 
-        binding.btnSave.setOnClickListener(v -> {
-            String name    = binding.etName.getText().toString().trim();
-            String phone   = binding.etPhone.getText().toString().trim();
-            String address = binding.etAddress.getText().toString().trim();
-            String birth   = binding.etBirthDate.getText().toString().trim();
+        binding.btnSave.setOnClickListener(v -> saveProfileLocal());
 
-            if (TextUtils.isEmpty(name)) {
-                binding.etName.setError("Nhập họ và tên");
-                return;
-            }
-            UserProfile updated = new UserProfile();
-            updated.setName(name);
-            updated.setPhone(phone);
-            updated.setAddress(address);
-            updated.setBirthDate(birth);
-            saveProfile(updated);
+        // Dropdown địa chỉ 3 cấp: Tỉnh → Quận/Huyện → Phường/Xã
+        AddressData.init(this);
+        setDropdown(binding.actProvince,
+                new ArrayList<>(java.util.Arrays.asList(getResources().getStringArray(R.array.vn_provinces))));
+
+        binding.actProvince.setOnItemClickListener((parent, v, pos, id) -> {
+            String prov = binding.actProvince.getText().toString();
+            setDropdown(binding.actDistrict, AddressData.getDistricts(prov));
+            binding.actDistrict.setText("", false);
+            setDropdown(binding.actWard, new ArrayList<>());
+            binding.actWard.setText("", false);
+        });
+        binding.actDistrict.setOnItemClickListener((parent, v, pos, id) -> {
+            String prov = binding.actProvince.getText().toString();
+            String dist = binding.actDistrict.getText().toString();
+            setDropdown(binding.actWard, AddressData.getWards(prov, dist));
+            binding.actWard.setText("", false);
         });
 
-        // Pre-fill from cached profile
         UserProfile cached = preferenceManager.getUser();
         if (cached != null) bindProfileToForm(cached);
-        else loadCurrentProfile();
+        AvatarUtils.load(this, binding.ivAvatar);
     }
 
-    private void loadCurrentProfile() {
-        apiService.getProfile().enqueue(new Callback<ApiResponse<UserProfile>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<UserProfile>> call, Response<ApiResponse<UserProfile>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    bindProfileToForm(response.body().getData());
-                }
-            }
+    private void setDropdown(AutoCompleteTextView view, List<String> items) {
+        view.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items));
+    }
 
-            @Override
-            public void onFailure(Call<ApiResponse<UserProfile>> call, Throwable t) {}
-        });
+    private void onAvatarPicked(Uri uri) {
+        try {
+            String path = AvatarUtils.saveFromUri(this, uri);
+            preferenceManager.setAvatarPath(path);
+            AvatarUtils.load(this, binding.ivAvatar);
+        } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.error_update_failed), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void bindProfileToForm(UserProfile profile) {
         binding.etName.setText(profile.getName());
         binding.etEmail.setText(profile.getEmail());
         binding.etPhone.setText(profile.getPhone());
-        binding.etAddress.setText(profile.getAddress());
         binding.etBirthDate.setText(profile.getBirthDate());
 
-        if (profile.getAvatar() != null && !profile.getAvatar().isEmpty()) {
-            Glide.with(this)
-                .load(profile.getAvatar())
-                .placeholder(com.tiredcity.app.R.drawable.ic_person_placeholder)
-                .circleCrop()
-                .into(binding.ivAvatar);
-        }
+        // Địa chỉ tách phần — nạp sẵn dropdown theo dữ liệu đã lưu
+        binding.actProvince.setText(profile.getProvince(), false);
+        setDropdown(binding.actDistrict, AddressData.getDistricts(profile.getProvince()));
+        binding.actDistrict.setText(profile.getDistrict(), false);
+        setDropdown(binding.actWard, AddressData.getWards(profile.getProvince(), profile.getDistrict()));
+        binding.actWard.setText(profile.getWard(), false);
+        binding.etStreet.setText(profile.getStreet());
     }
 
-    private void saveProfile(UserProfile profile) {
-        binding.btnSave.setEnabled(false);
-        apiService.updateProfile(profile).enqueue(new Callback<ApiResponse<UserProfile>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<UserProfile>> call, Response<ApiResponse<UserProfile>> response) {
-                binding.btnSave.setEnabled(true);
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    preferenceManager.saveUser(response.body().getData());
-                    Toast.makeText(EditProfileActivity.this, "Cập nhật thành công ✓", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(EditProfileActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
-                }
-            }
+    /** Lưu hồ sơ cục bộ (offline, không phụ thuộc backend). */
+    private void saveProfileLocal() {
+        String name = binding.etName.getText().toString().trim();
+        if (TextUtils.isEmpty(name)) {
+            binding.etName.setError(getString(R.string.hint_fullname));
+            return;
+        }
+        UserProfile p = preferenceManager.getUser();
+        if (p == null) p = new UserProfile();
+        p.setName(name);
+        p.setPhone(binding.etPhone.getText().toString().trim());
+        p.setBirthDate(binding.etBirthDate.getText().toString().trim());
 
-            @Override
-            public void onFailure(Call<ApiResponse<UserProfile>> call, Throwable t) {
-                binding.btnSave.setEnabled(true);
-                Toast.makeText(EditProfileActivity.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Địa chỉ tách phần + gộp lại thành address đầy đủ để hiển thị/giao hàng
+        p.setProvince(binding.actProvince.getText().toString().trim());
+        p.setDistrict(binding.actDistrict.getText().toString().trim());
+        p.setWard(binding.actWard.getText().toString().trim());
+        p.setStreet(binding.etStreet.getText().toString().trim());
+        p.setAddress(p.getFullAddress());
+
+        preferenceManager.saveUser(p);
+        Toast.makeText(this, getString(R.string.success_profile_update), Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

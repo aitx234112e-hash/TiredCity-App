@@ -1,5 +1,11 @@
 package com.tiredcity.app.utils;
 
+import android.content.Context;
+
+import androidx.annotation.StringRes;
+
+import com.tiredcity.app.R;
+
 public class MenhCalculator {
     private MenhCalculator() {}
 
@@ -63,6 +69,87 @@ public class MenhCalculator {
             "Thìn", "Tỵ",  "Ngọ",  "Mùi"
         };
         return conGiap[namSinh % 12];
+    }
+
+    // ── Localization helpers ──────────────────────────────────────────────────
+    // Các giá trị mệnh / cung / màu được lưu dạng tiếng Việt (canonical).
+    // Những hàm dưới đây chuyển chúng sang chuỗi đa ngôn ngữ theo locale hiện tại.
+
+    /** Tên mệnh đã dịch theo ngôn ngữ ("Thủy" → "Water"). */
+    public static String localizeMenh(Context ctx, String menh) {
+        return localize(ctx, menhNameRes(menh), menh);
+    }
+
+    /** Tên cung hoàng đạo đã dịch ("Cự Giải" → "Cancer"). */
+    public static String localizeZodiac(Context ctx, String zodiac) {
+        return localize(ctx, zodiacNameRes(zodiac), zodiac);
+    }
+
+    /** Tên màu hợp mệnh đã dịch ("Đen" → "Black"). */
+    public static String localizeColor(Context ctx, String color) {
+        return localize(ctx, colorNameRes(color), color);
+    }
+
+    private static String localize(Context ctx, @StringRes int res, String fallback) {
+        return res != 0 ? ctx.getString(res) : fallback;
+    }
+
+    @StringRes
+    private static int menhNameRes(String menh) {
+        if (menh == null) return 0;
+        switch (menh) {
+            case "Kim":  return R.string.menh_name_kim;
+            case "Mộc":  return R.string.menh_name_moc;
+            case "Thủy": return R.string.menh_name_thuy;
+            case "Hỏa":  return R.string.menh_name_hoa;
+            case "Thổ":  return R.string.menh_name_tho;
+            default:     return 0;
+        }
+    }
+
+    @StringRes
+    private static int zodiacNameRes(String zodiac) {
+        if (zodiac == null) return 0;
+        switch (zodiac) {
+            case "Bạch Dương": return R.string.zodiac_aries;
+            case "Kim Ngưu":   return R.string.zodiac_taurus;
+            case "Song Tử":    return R.string.zodiac_gemini;
+            case "Cự Giải":    return R.string.zodiac_cancer;
+            case "Sư Tử":      return R.string.zodiac_leo;
+            case "Xử Nữ":      return R.string.zodiac_virgo;
+            case "Thiên Bình": return R.string.zodiac_libra;
+            case "Thiên Yết":  return R.string.zodiac_scorpio;
+            case "Nhân Mã":    return R.string.zodiac_sagittarius;
+            case "Ma Kết":     return R.string.zodiac_capricorn;
+            case "Bảo Bình":   return R.string.zodiac_aquarius;
+            case "Song Ngư":   return R.string.zodiac_pisces;
+            default:           return 0;
+        }
+    }
+
+    @StringRes
+    private static int colorNameRes(String color) {
+        if (color == null) return 0;
+        switch (color) {
+            case "Trắng":     return R.string.color_white;
+            case "Vàng":      return R.string.color_yellow;
+            case "Bạc":       return R.string.color_silver;
+            case "Xám":       return R.string.color_gray;
+            case "Xanh lá":   return R.string.color_green;
+            case "Xanh lam":  return R.string.color_blue;
+            case "Xanh rêu":  return R.string.color_moss;
+            case "Đen":       return R.string.color_black;
+            case "Xanh navy": return R.string.color_navy;
+            case "Tím":       return R.string.color_purple;
+            case "Đỏ":        return R.string.color_red;
+            case "Hồng":      return R.string.color_pink;
+            case "Cam":       return R.string.color_orange;
+            case "Vàng đất":  return R.string.color_earth_yellow;
+            case "Nâu":       return R.string.color_brown;
+            case "Be":        return R.string.color_beige;
+            case "Cam nhạt":  return R.string.color_light_orange;
+            default:          return 0;
+        }
     }
 
     /** Emoji đại diện cho mệnh. */

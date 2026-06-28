@@ -39,7 +39,8 @@ public class CategoryActivity extends BaseActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(categoryName != null ? categoryName : "Danh mục");
+            getSupportActionBar().setTitle(categoryName != null ? categoryName
+                    : getString(com.tiredcity.app.R.string.category_default_title));
         }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
@@ -62,7 +63,7 @@ public class CategoryActivity extends BaseActivity {
         binding.rvProducts.setAdapter(productAdapter);
 
         binding.swipeRefresh.setColorSchemeColors(
-            getResources().getColor(com.tiredcity.app.R.color.brand_gold, getTheme()));
+            getResources().getColor(com.tiredcity.app.R.color.tc_red, getTheme()));
         binding.swipeRefresh.setOnRefreshListener(this::loadProducts);
 
         loadProducts();

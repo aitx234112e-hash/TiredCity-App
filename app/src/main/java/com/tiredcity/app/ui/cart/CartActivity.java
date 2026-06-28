@@ -28,7 +28,7 @@ public class CartActivity extends BaseActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Giỏ hàng");
+            getSupportActionBar().setTitle(getString(com.tiredcity.app.R.string.cart_title));
         }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
@@ -64,7 +64,7 @@ public class CartActivity extends BaseActivity {
     private void proceedToPayment() {
         List<CartItem> items = cartLocalStore.getCartItems();
         if (items.isEmpty()) {
-            Toast.makeText(this, "Giỏ hàng trống", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(com.tiredcity.app.R.string.error_empty_cart), Toast.LENGTH_SHORT).show();
             return;
         }
         startActivity(new Intent(this, PaymentActivity.class));

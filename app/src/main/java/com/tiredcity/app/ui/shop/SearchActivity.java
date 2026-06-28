@@ -8,20 +8,31 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
+import com.tiredcity.app.adapter.SearchAdapter;
 import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.Product;
+import com.tiredcity.app.data.model.search.EventItem;
+import com.tiredcity.app.data.model.search.ProductItem;
+import com.tiredcity.app.data.model.search.PromotionItem;
+import com.tiredcity.app.data.model.search.SearchItem;
 import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.ActivitySearchBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.utils.Constants;
+import java.util.Arrays;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchActivity extends BaseActivity {
+
+    /** Optional pre-filled query, e.g. from a tapped tag on the Shop tab. */
+    public static final String EXTRA_QUERY = "extra_query";
 
     private ActivitySearchBinding binding;
     private ProductRepository productRepository;
@@ -82,15 +93,47 @@ public class SearchActivity extends BaseActivity {
         binding.swipeRefresh.setOnRefreshListener(() ->
             performSearch(binding.etSearch.getText().toString().trim()));
 
-        // Pre-populate popular searches
-        addPopularChip("Áo dài");
-        addPopularChip("Áo Tấc");
-        addPopularChip("Nhật Bình");
-        addPopularChip("Phụ kiện");
-        addPopularChip("Lụa tơ tằm");
+        // Phần 2 — "Được tìm kiếm nhiều nhất" tags
+        addPopularChip(getString(R.string.tag_ao_thun));
+        addPopularChip(getString(R.string.tag_ao_croptop));
+        addPopularChip(getString(R.string.tag_chan_vay));
 
-        // Focus search field
-        binding.etSearch.requestFocus();
+        // Phần 3 & 4 — "Gợi ý cho bạn" mixed-type suggestion list
+        setupSuggestions();
+
+        // Pre-filled query (e.g. tapped tag/product on the Shop tab) → search now
+        String initialQuery = getIntent().getStringExtra(EXTRA_QUERY);
+        if (initialQuery != null && !initialQuery.trim().isEmpty()) {
+            binding.etSearch.setText(initialQuery);
+            binding.etSearch.setSelection(initialQuery.length());
+            performSearch(initialQuery.trim());
+        } else {
+            binding.etSearch.requestFocus();
+        }
+    }
+
+    /** Builds the multi-view-type discovery list (promotion + event + product). */
+    private void setupSuggestions() {
+        List<SearchItem> suggestions = Arrays.asList(
+            new PromotionItem(R.string.search_promo_birthday),
+            new EventItem(R.string.search_event_coach_title,
+                          R.string.search_event_coach_time, 0),
+            new ProductItem(R.string.search_brand_kangol,
+                            R.string.search_product_skirt_pocket, 1_200_000, 0),
+            new ProductItem(R.string.search_brand_kangol,
+                            R.string.search_product_skirt_slit, 1_000_000, 0)
+        );
+
+        SearchAdapter adapter = new SearchAdapter(suggestions);
+        adapter.setOnItemClickListener(item -> {
+            // Products open search results for their brand; other types are informational.
+            if (item instanceof ProductItem) {
+                performSearch(getString(((ProductItem) item).getBrandResId()));
+            }
+        });
+        binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvSuggestions.setNestedScrollingEnabled(false);
+        binding.rvSuggestions.setAdapter(adapter);
     }
 
     private void performSearch(String keyword) {
@@ -98,7 +141,7 @@ public class SearchActivity extends BaseActivity {
 
         showResultsState();
         binding.swipeRefresh.setRefreshing(true);
-        binding.tvResultCount.setText("Đang tìm…");
+        binding.tvResultCount.setText(getString(com.tiredcity.app.R.string.search_searching));
 
         productRepository.getProducts(1, 40, null, keyword)
             .enqueue(new Callback<ApiListResponse<Product>>() {
@@ -110,7 +153,8 @@ public class SearchActivity extends BaseActivity {
                         if (results == null || results.isEmpty()) {
                             showEmptyState(keyword);
                         } else {
-                            binding.tvResultCount.setText("Tìm thấy " + results.size() + " kết quả");
+                            binding.tvResultCount.setText(getString(
+                                    com.tiredcity.app.R.string.search_result_count, results.size()));
                             productAdapter.updateData(results);
                         }
                     } else {
@@ -142,7 +186,8 @@ public class SearchActivity extends BaseActivity {
         binding.layoutRecent.setVisibility(View.GONE);
         binding.layoutResults.setVisibility(View.GONE);
         binding.layoutEmpty.setVisibility(View.VISIBLE);
-        binding.tvEmptyMessage.setText("Không tìm thấy \"" + keyword + "\"");
+        binding.tvEmptyMessage.setText(getString(
+                com.tiredcity.app.R.string.search_not_found, keyword));
     }
 
     private void addPopularChip(String label) {

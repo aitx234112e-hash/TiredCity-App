@@ -18,6 +18,10 @@ public final class Constants {
     public static final String KEY_ONBOARDING        = "key_onboarding";
     public static final String KEY_ONBOARDING_SHOWN  = "key_onboarding"; // alias
     public static final String KEY_USER_PROFILE     = "key_user_profile";
+    public static final String KEY_REMEMBER_ME      = "key_remember_me";
+    public static final String KEY_SAVED_EMAIL      = "key_saved_email";
+    public static final String KEY_SAVED_PASSWORD   = "key_saved_password";
+    public static final String KEY_AVATAR           = "key_avatar";
 
     // Intent extras
     public static final String EXTRA_PRODUCT_ID = "extra_product_id";

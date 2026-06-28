@@ -18,33 +18,20 @@ public class ContactActivity extends BaseActivity {
         binding = ActivityContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setupToolbar();
-        setupClickListeners();
-    }
-
-    private void setupToolbar() {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Liên hệ");
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-    }
 
-    private void setupClickListeners() {
-        binding.btnBack.setOnClickListener(v -> onBackPressed());
+        binding.layoutStore1.setOnClickListener(v ->
+                openMaps("TiredCity 37 Hàng Hành, Hà Nội"));
+        binding.layoutStore2.setOnClickListener(v ->
+                openMaps("TiredCity 97 Hàng Gai, Hà Nội"));
 
         binding.btnSendMessage.setOnClickListener(v -> {
-            // Handle send message
+            // TODO: gửi form liên hệ
         });
-
-        // Map and Store clicks
-        binding.mapCard.setOnClickListener(v -> openMaps("TiredCity Hanoi"));
-
-        binding.layoutStore1.setOnClickListener(v -> openMaps("TiredCity 37 Hàng Hành"));
-        binding.layoutStore2.setOnClickListener(v -> openMaps("TiredCity 97 Hàng Gai"));
-        binding.layoutStore3.setOnClickListener(v -> openMaps("TiredCity 19 Nhà Thờ"));
-        binding.layoutStore4.setOnClickListener(v -> openMaps("TiredCity 100 Hàng Đào"));
-        binding.layoutStore5.setOnClickListener(v -> openMaps("TiredCity 8 Lương Ngọc Quyến"));
     }
 
     private void openMaps(String query) {
@@ -54,9 +41,8 @@ public class ContactActivity extends BaseActivity {
         if (mapIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(mapIntent);
         } else {
-            // Fallback to browser
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, 
-                Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Uri.encode(query)));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Uri.encode(query)));
             startActivity(browserIntent);
         }
     }

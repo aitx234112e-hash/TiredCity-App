@@ -1,27 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/bg_primary">
 
+    <!-- Vùng chứa fragment -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
+        app:navGraph="@navigation/nav_graph"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavBar" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bg_surface"
-        app:itemIconTint="@color/selector_nav_item"
-        app:itemTextColor="@color/selector_nav_item"
-        app:menu="@menu/bottom_nav_menu" />
+    <!-- ════════════ THANH NAV LƠ LỬNG (Threads style) ════════════ -->
+    <LinearLayout
+        android:id="@+id/bottomNavBar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:background="@drawable/tc_bg_navbar_float"
+        android:elevation="16dp"
+        android:paddingHorizontal="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-</LinearLayout>
+        <!-- Cửa hàng -->
+        <FrameLayout
+            android:id="@+id/navShop"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/navShopIcon"
+                android:layout_width="52dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_search"
+                app:tint="@color/tc_nav_icon_inactive"
+                android:contentDescription="@string/nav_short_shop" />
+        </FrameLayout>
+
+        <!-- Phối đồ -->
+        <FrameLayout
+            android:id="@+id/navStyling"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/navStylingIcon"
+                android:layout_width="52dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/tc_nav_styling"
+                app:tint="@color/tc_nav_icon_inactive"
+                android:contentDescription="@string/nav_short_styling" />
+        </FrameLayout>
+
+        <!-- Trang chủ -->
+        <FrameLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/navHomeIcon"
+                android:layout_width="52dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/tc_nav_home"
+                app:tint="@color/tc_nav_icon_inactive"
+                android:contentDescription="@string/nav_short_home" />
+        </FrameLayout>
+
+        <!-- Khám phá -->
+        <FrameLayout
+            android:id="@+id/navExplore"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/navExploreIcon"
+                android:layout_width="52dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/tc_nav_explore"
+                app:tint="@color/tc_nav_icon_inactive"
+                android:contentDescription="@string/nav_short_explore" />
+        </FrameLayout>
+
+        <!-- Tôi (Profile) -->
+        <FrameLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/navProfileIcon"
+                android:layout_width="52dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/tc_nav_profile"
+                app:tint="@color/tc_nav_icon_inactive"
+                android:contentDescription="@string/nav_short_profile" />
+        </FrameLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

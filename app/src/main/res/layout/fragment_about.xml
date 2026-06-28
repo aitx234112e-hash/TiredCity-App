@@ -14,19 +14,32 @@
         <!-- Hero banner -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@color/brand_dark">
+            android:background="@drawable/tc_gradient_red_lacquer">
+
+            <FrameLayout
+                android:layout_width="92dp"
+                android:layout_height="92dp"
+                android:background="@drawable/tc_bg_circle_white">
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_tc_logo"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="@string/app_name" />
+            </FrameLayout>
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="🏛️" android:textSize="56sp" />
+                android:text="@string/brand_name_caps" android:textColor="@color/white"
+                android:textSize="26sp" android:textStyle="bold"
+                android:fontFamily="sans-serif-black" android:letterSpacing="0.1"
+                android:layout_marginTop="12dp" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="TIRED CITY" android:textColor="@color/brand_gold"
-                android:textSize="26sp" android:textStyle="bold" android:layout_marginTop="8dp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Việt Phục – Nét đẹp truyền thống"
-                android:textColor="@color/brand_cream" android:textSize="13sp" android:layout_marginTop="4dp" />
+                android:text="@string/about_hero_subtitle"
+                android:textColor="@color/tc_on_red_secondary" android:textSize="13sp" android:layout_marginTop="4dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -50,12 +63,13 @@
                     android:padding="16dp">
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Về chúng tôi"
-                        android:textColor="@color/brand_gold" android:textSize="15sp" android:textStyle="bold"
+                        android:text="@string/about_section_title"
+                        android:textColor="@color/tc_red" android:textSize="15sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
                         android:layout_marginBottom="8dp" />
 
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="Tired City là thương hiệu thời trang Việt Phục hiện đại, kết hợp giữa nét đẹp truyền thống và phong cách đương đại. Chúng tôi mang đến những bộ trang phục được chế tác tinh xảo từ các làng nghề truyền thống Việt Nam."
+                        android:text="@string/about_description"
                         android:textColor="@color/text_secondary" android:textSize="13sp"
                         android:lineSpacingExtra="4dp" />
                 </LinearLayout>
@@ -77,15 +91,16 @@
                     android:padding="16dp">
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Liên hệ" android:textColor="@color/brand_gold"
-                        android:textSize="15sp" android:textStyle="bold" android:layout_marginBottom="12dp" />
+                        android:text="@string/about_contact_title" android:textColor="@color/tc_red"
+                        android:textSize="15sp" android:textStyle="bold" android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="12dp" />
 
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="📧  contact@tiredcity.vn" android:textColor="@color/text_secondary" android:textSize="13sp" android:layout_marginBottom="6dp" />
+                        android:text="@string/about_email" android:textColor="@color/text_secondary" android:textSize="13sp" android:layout_marginBottom="6dp" />
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="📞  0900 000 000" android:textColor="@color/text_secondary" android:textSize="13sp" android:layout_marginBottom="6dp" />
+                        android:text="@string/about_phone" android:textColor="@color/text_secondary" android:textSize="13sp" android:layout_marginBottom="6dp" />
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="📍  TP. Hồ Chí Minh, Việt Nam" android:textColor="@color/text_secondary" android:textSize="13sp" />
+                        android:text="@string/about_location" android:textColor="@color/text_secondary" android:textSize="13sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

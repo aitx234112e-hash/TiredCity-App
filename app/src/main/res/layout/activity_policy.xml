@@ -1,70 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary">
+    android:background="@color/bg_primary"
+    android:fitsSystemWindows="true">
 
-    <!-- Header Đỏ (TIREDCITY) - Đồng bộ hoàn toàn với Contact -->
-    <androidx.appcompat.widget.Toolbar
+    <!-- ── Toolbar tối giản: chỉ nút Back đỏ son. Tiêu đề nằm ở hero bên dưới (tránh lặp). ── -->
+    <FrameLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/brand_red"
-        app:contentInsetStart="0dp">
+        android:background="@color/bg_primary"
+        android:paddingHorizontal="8dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="16dp">
-
-            <ImageView
-                android:id="@+id/ivLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_logo"
-                android:contentDescription="@null" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_menu_search" android:layout_marginEnd="16dp" app:tint="@android:color/white" android:contentDescription="@null"/>
-                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/sym_action_email" android:layout_marginEnd="16dp" app:tint="@android:color/white" android:contentDescription="@null"/>
-                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_menu_myplaces" app:tint="@android:color/white" android:contentDescription="@null"/>
-            </LinearLayout>
-        </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
-
-    <!-- Thanh Menu Trắng - Đồng bộ hoàn toàn với ảnh mẫu -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bg_surface"
-        android:elevation="2dp"
-        android:paddingTop="12dp"
-        android:paddingHorizontal="16dp"
-        android:gravity="center_vertical">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_home" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_about" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_shop" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_collections" android:textSize="10sp" android:textColor="@color/text_secondary" android:layout_marginEnd="16dp" android:paddingBottom="12dp" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nav_policies" android:textSize="10sp" android:textColor="@color/brand_red" android:textStyle="bold" android:letterSpacing="0.05" tools:ignore="SmallSp"/>
-            <View android:layout_width="match_parent" android:layout_height="2dp" android:background="@color/brand_red" android:layout_marginTop="10dp"/>
-        </LinearLayout>
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start|center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_back"
+            android:padding="8dp"
+            android:src="@drawable/ic_back"
+            app:tint="@color/brand_red" />
+    </FrameLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,25 +39,14 @@
             android:paddingHorizontal="20dp"
             android:paddingBottom="40dp">
 
-            <!-- 1. Chính sách mua hàng -->
+            <!-- ── Editorial header căn giữa (tiêu đề chính duy nhất) ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingVertical="24dp">
-
-                <ImageView
-                    android:id="@+id/btnBack"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="start"
-                    android:layout_marginBottom="8dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@null"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_back"
-                    app:tint="@color/brand_red" />
+                android:paddingTop="8dp"
+                android:paddingBottom="28dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,16 +78,17 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <!-- 1. Chính sách mua hàng -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPurchase"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
                 app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
-                app:strokeColor="#F5F5F5">
+                app:strokeColor="#F0EAE0">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -144,11 +100,11 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
-                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
-                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_menu_agenda" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_policy_icon_tile">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_policy_purchase" app:tint="@color/brand_red" android:contentDescription="@null" />
                         </FrameLayout>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_purchase_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
-                        <ImageView android:id="@+id/ivExpandPurchase" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_purchase_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandPurchase" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_chevron_down" app:tint="@color/brand_red" android:contentDescription="@null" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/contentPurchase"
@@ -156,7 +112,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone">
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F0EAE0" />
                         <TextView android:id="@+id/tvContentPurchase" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -167,12 +123,12 @@
                 android:id="@+id/cardPayment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
                 app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
-                app:strokeColor="#F5F5F5">
+                app:strokeColor="#F0EAE0">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -184,11 +140,11 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
-                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
-                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_menu_view" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_policy_icon_tile">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_policy_payment" app:tint="@color/brand_red" android:contentDescription="@null" />
                         </FrameLayout>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_payment_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
-                        <ImageView android:id="@+id/ivExpandPayment" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_payment_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandPayment" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_chevron_down" app:tint="@color/brand_red" android:contentDescription="@null" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/contentPayment"
@@ -196,7 +152,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone">
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F0EAE0" />
                         <TextView android:id="@+id/tvContentPayment" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -207,12 +163,12 @@
                 android:id="@+id/cardShipping"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
                 app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
-                app:strokeColor="#F5F5F5">
+                app:strokeColor="#F0EAE0">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -224,11 +180,11 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
-                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
-                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_dialog_map" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_policy_icon_tile">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_policy_shipping" app:tint="@color/brand_red" android:contentDescription="@null" />
                         </FrameLayout>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_shipping_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
-                        <ImageView android:id="@+id/ivExpandShipping" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_shipping_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandShipping" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_chevron_down" app:tint="@color/brand_red" android:contentDescription="@null" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/contentShipping"
@@ -236,7 +192,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone">
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F0EAE0" />
                         <TextView android:id="@+id/tvContentShipping" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -247,12 +203,12 @@
                 android:id="@+id/cardReturn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
                 app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
-                app:strokeColor="#F5F5F5">
+                app:strokeColor="#F0EAE0">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -264,11 +220,11 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
-                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
-                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_menu_revert" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_policy_icon_tile">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_policy_return" app:tint="@color/brand_red" android:contentDescription="@null" />
                         </FrameLayout>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_return_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
-                        <ImageView android:id="@+id/ivExpandReturn" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_return_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandReturn" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_chevron_down" app:tint="@color/brand_red" android:contentDescription="@null" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/contentReturn"
@@ -276,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone">
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F0EAE0" />
                         <TextView android:id="@+id/tvContentReturn" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -287,12 +243,12 @@
                 android:id="@+id/cardPrivacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
                 app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
-                app:strokeColor="#F5F5F5">
+                app:strokeColor="#F0EAE0">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -304,11 +260,11 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
-                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_rounded_surface" android:backgroundTint="#0DA80D15">
-                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@android:drawable/ic_lock_lock" app:tint="@color/brand_red" android:contentDescription="@null" />
+                        <FrameLayout android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_policy_icon_tile">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_policy_privacy" app:tint="@color/brand_red" android:contentDescription="@null" />
                         </FrameLayout>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_privacy_title" android:textColor="#212121" android:textSize="16sp" android:textStyle="bold" />
-                        <ImageView android:id="@+id/ivExpandPrivacy" android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/arrow_down_float" app:tint="#D3D3D3" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="@string/policy_privacy_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" />
+                        <ImageView android:id="@+id/ivExpandPrivacy" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_chevron_down" app:tint="@color/brand_red" android:contentDescription="@null" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/contentPrivacy"
@@ -316,7 +272,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone">
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F5F5F5" />
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" android:background="#F0EAE0" />
                         <TextView android:id="@+id/tvContentPrivacy" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingExtra="6dp" android:textColor="#444444" android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>

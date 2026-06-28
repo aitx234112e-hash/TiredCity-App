@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/brand_dark">
+    android:background="@color/tc_bg_main">
 
     <!-- ViewPager for onboarding pages -->
     <androidx.viewpager2.widget.ViewPager2
@@ -26,29 +26,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            app:dotsColor="@color/brand_gold"
+            app:dotsColor="@color/tc_sand_light"
             app:dotsSize="8dp"
             app:dotsSpacing="6dp"
-            app:selectedDotColor="@color/brand_gold" />
+            app:selectedDotColor="@color/tc_red" />
 
         <Button
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:background="@drawable/bg_button_gold"
-            android:text="Tiếp theo"
-            android:textColor="@color/brand_dark"
+            android:layout_height="56dp"
+            android:background="@drawable/tc_btn_red_pill"
+            android:text="@string/onboarding_next"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+            android:letterSpacing="0.08"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="12dp"
+            android:elevation="2dp" />
 
         <TextView
             android:id="@+id/tv_skip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bỏ qua"
-            android:textColor="@color/brand_cream"
+            android:text="@string/onboarding_skip"
+            android:textColor="@color/text_secondary"
             android:textSize="14sp"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 </LinearLayout>
