@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Đường kẻ vàng ánh kim — mờ dần hai đầu, sang trọng -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="0"
+        android:startColor="#00C9A45C"
+        android:centerColor="@color/tc_gold"
+        android:endColor="#00C9A45C" />
+    <size android:height="2dp" />
+</shape>

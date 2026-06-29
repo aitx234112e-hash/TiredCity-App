@@ -14,7 +14,7 @@
         android:background="@color/bg_surface"
         android:elevation="4dp"
         app:navigationIcon="@drawable/ic_back"
-        app:title="Thanh toán"
+        app:title="@string/btn_checkout"
         app:titleTextColor="@color/text_primary"
         app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
 
@@ -55,7 +55,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Địa chỉ giao hàng"
+                            android:text="@string/hint_address"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -64,9 +64,10 @@
                             android:id="@+id/tv_change_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Thay đổi"
-                            android:textColor="@color/brand_gold"
-                            android:textSize="13sp" />
+                            android:text="@string/pay_change"
+                            android:textColor="@color/tc_red"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <TextView
@@ -116,7 +117,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sản phẩm"
+                        android:text="@string/pay_products"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -148,7 +149,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Phương thức thanh toán"
+                        android:text="@string/pay_method"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -164,29 +165,29 @@
                             android:id="@+id/rb_cod"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:text="💵  Thanh toán khi nhận hàng (COD)"
+                            android:text="@string/pay_cod"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:checked="true"
-                            android:buttonTint="@color/brand_gold" />
+                            android:buttonTint="@color/tc_red" />
 
                         <RadioButton
                             android:id="@+id/rb_bank_transfer"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:text="🏦  Chuyển khoản ngân hàng"
+                            android:text="@string/pay_bank"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
-                            android:buttonTint="@color/brand_gold" />
+                            android:buttonTint="@color/tc_red" />
 
                         <RadioButton
                             android:id="@+id/rb_momo"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:text="📱  Ví MoMo"
+                            android:text="@string/pay_momo"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
-                            android:buttonTint="@color/brand_gold" />
+                            android:buttonTint="@color/tc_red" />
                     </RadioGroup>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -209,7 +210,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ghi chú đơn hàng"
+                        android:text="@string/pay_note_label"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -220,7 +221,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
                         android:background="@drawable/bg_input_field"
-                        android:hint="Ghi chú cho người bán (tùy chọn)..."
+                        android:hint="@string/pay_note_hint"
                         android:inputType="textMultiLine"
                         android:gravity="top"
                         android:padding="12dp"
@@ -248,7 +249,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tóm tắt đơn hàng"
+                        android:text="@string/pay_summary"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -257,7 +258,7 @@
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="horizontal" android:layout_marginBottom="6dp">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Tạm tính"
+                            android:layout_weight="1" android:text="@string/pay_subtotal"
                             android:textColor="@color/text_secondary" android:textSize="13sp" />
                         <TextView android:id="@+id/tv_subtotal" android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -267,7 +268,7 @@
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="horizontal" android:layout_marginBottom="6dp">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Phí vận chuyển"
+                            android:layout_weight="1" android:text="@string/pay_shipping"
                             android:textColor="@color/text_secondary" android:textSize="13sp" />
                         <TextView android:id="@+id/tv_shipping_fee" android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -280,13 +281,13 @@
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Tổng cộng"
+                            android:layout_weight="1" android:text="@string/pay_grand_total"
                             android:textColor="@color/text_primary" android:textSize="15sp"
                             android:textStyle="bold" />
                         <TextView android:id="@+id/tv_total" android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/brand_gold" android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textColor="@color/tc_red" android:textSize="16sp"
+                            android:textStyle="bold" android:fontFamily="sans-serif-medium" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -306,10 +307,13 @@
             android:id="@+id/btn_place_order"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:background="@drawable/bg_button_gold"
-            android:text="Đặt hàng"
-            android:textColor="@color/brand_dark"
+            android:background="@drawable/tc_btn_red_pill"
+            android:text="@string/pay_place_order"
+            android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:fontFamily="sans-serif-medium"
+            android:elevation="2dp" />
     </LinearLayout>
 </LinearLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cờ Anh (Union Jack) — hiện ở chế độ tiếng Việt (bấm để sang English) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="22dp"
+    android:height="15dp"
+    android:viewportWidth="30"
+    android:viewportHeight="20">
+
+    <!-- Nền xanh -->
+    <path
+        android:fillColor="#012169"
+        android:pathData="M0,0 H30 V20 H0 Z" />
+
+    <!-- Đường chéo trắng (saltire) -->
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:pathData="M0,0 L30,20" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:pathData="M30,0 L0,20" />
+
+    <!-- Đường chéo đỏ -->
+    <path android:strokeColor="#C8102E" android:strokeWidth="1.6" android:pathData="M0,0 L30,20" />
+    <path android:strokeColor="#C8102E" android:strokeWidth="1.6" android:pathData="M30,0 L0,20" />
+
+    <!-- Thập trắng (St George) -->
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="7" android:pathData="M15,0 L15,20" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="7" android:pathData="M0,10 L30,10" />
+
+    <!-- Thập đỏ -->
+    <path android:strokeColor="#C8102E" android:strokeWidth="4" android:pathData="M15,0 L15,20" />
+    <path android:strokeColor="#C8102E" android:strokeWidth="4" android:pathData="M0,10 L30,10" />
+</vector>

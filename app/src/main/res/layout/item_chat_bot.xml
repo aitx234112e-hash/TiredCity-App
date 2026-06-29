@@ -8,25 +8,17 @@
     android:paddingHorizontal="16dp"
     android:paddingVertical="4dp">
 
-    <TextView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:gravity="center"
-        android:text="✨"
-        android:textSize="18sp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/bg_circle_gold"
-        android:layout_marginTop="2dp" />
-
+    <!-- Avatar đã chuyển lên header để tránh lặp; bong bóng bot chỉ còn nội dung. -->
     <TextView
         android:id="@+id/tv_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="260dp"
+        android:maxWidth="300dp"
         android:background="@drawable/bg_rounded_surface"
         android:paddingHorizontal="14dp"
         android:paddingVertical="10dp"
         android:textColor="@color/text_primary"
         android:textSize="14sp"
-        tools:text="Với mệnh Hỏa, bạn nên chọn màu đỏ, hồng hoặc tím. Áo dài lụa tơ tằm màu đỏ đô sẽ rất hợp với bạn!" />
+        android:lineSpacingExtra="2dp"
+        tools:text="Với mệnh Hỏa, bạn nên chọn màu đỏ, hồng hoặc tím." />
 </LinearLayout>

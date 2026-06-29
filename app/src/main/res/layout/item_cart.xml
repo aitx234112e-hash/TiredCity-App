@@ -72,7 +72,7 @@
                         android:layout_height="32dp"
                         android:gravity="center"
                         android:text="−"
-                        android:textColor="@color/brand_gold"
+                        android:textColor="@color/tc_red"
                         android:textSize="18sp" />
 
                     <TextView
@@ -91,7 +91,7 @@
                         android:layout_height="32dp"
                         android:gravity="center"
                         android:text="+"
-                        android:textColor="@color/brand_gold"
+                        android:textColor="@color/tc_red"
                         android:textSize="18sp" />
                 </LinearLayout>
 
@@ -101,9 +101,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/brand_gold"
+                    android:textColor="@color/tc_red"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
             </LinearLayout>
         </LinearLayout>
 

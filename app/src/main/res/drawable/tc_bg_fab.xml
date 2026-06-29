@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FAB Home kiểu Xianyu: vòng tròn ĐẶC đỏ son trơn (không vành), bóng đổ tự nhiên từ elevation -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/tc_red" />
+</shape>

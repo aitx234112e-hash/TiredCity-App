@@ -78,7 +78,7 @@ public class AiStylingActivity extends BaseActivity {
     }
 
     private void setupMenhUI(String menh) {
-        binding.tvMenhTitle.setText("Mệnh " + menh);
+        binding.tvMenhTitle.setText(getString(R.string.menh_label, menh));
         binding.tvMenhEmoji.setText(MenhCalculator.getEmojiMenh(menh));
 
         // Zodiac subtitle

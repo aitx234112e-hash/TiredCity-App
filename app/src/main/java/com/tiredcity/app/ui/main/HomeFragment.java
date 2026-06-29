@@ -13,18 +13,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.BannerAdapter;
 import com.tiredcity.app.adapter.ProductAdapter;
+import com.tiredcity.app.adapter.PromoStripAdapter;
 import com.tiredcity.app.data.model.Product;
+import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.databinding.FragmentHomeBinding;
 import com.tiredcity.app.ui.styling.ChatBotActivity;
 import com.tiredcity.app.utils.LocaleHelper;
 import com.tiredcity.app.utils.MenhCalculator;
 import com.tiredcity.app.utils.PreferenceManager;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -35,6 +35,9 @@ public class HomeFragment extends Fragment {
     private Handler             autoScrollHandler;
     private Runnable            autoScrollRunnable;
     private BannerAdapter       bannerAdapter;
+    private Handler             promoScrollHandler;
+    private Runnable            promoScrollRunnable;
+    private PromoStripAdapter   promoAdapter;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -55,7 +58,7 @@ public class HomeFragment extends Fragment {
         setupGreeting();
         setupMenhBanner();
         setupBanner();
-        setupCategories();
+        setupPromoStrip();
         setupRecommendedProducts();
         setupHotProducts();
         setupLanguageButton();
@@ -66,18 +69,22 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         startAutoScroll();
+        startPromoScroll();
+        updateBadges();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         stopAutoScroll();
+        stopPromoScroll();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         stopAutoScroll();
+        stopPromoScroll();
         binding = null;
     }
 
@@ -94,7 +101,7 @@ public class HomeFragment extends Fragment {
 
         String name = "";
         if (prefs.getUser() != null) name = prefs.getUser().getDisplayName();
-        binding.tvUserName.setText(name.isEmpty() ? getString(R.string.app_name) : name);
+        binding.tvUserName.setText(name.isEmpty() ? getString(R.string.greeting_guest) : name);
     }
 
     // ── Menh banner ───────────────────────────────────────────────────────────
@@ -103,30 +110,94 @@ public class HomeFragment extends Fragment {
         String menh   = prefs.getMenh();
         String zodiac = prefs.getZodiac();
 
+        // Tự tính mệnh từ ngày sinh trong profile nếu chưa có
+        if (menh == null || menh.isEmpty()) {
+            UserProfile profile = prefs.getUser();
+            if (profile != null && profile.getBirthDate() != null
+                    && profile.getBirthDate().length() >= 10) {
+                try {
+                    int year  = Integer.parseInt(profile.getBirthDate().substring(0, 4));
+                    int month = Integer.parseInt(profile.getBirthDate().substring(5, 7));
+                    int day   = Integer.parseInt(profile.getBirthDate().substring(8, 10));
+
+                    menh   = MenhCalculator.tinhMenh(year);
+                    zodiac = MenhCalculator.tinhCungHoangDao(month, day);
+                    String animal = MenhCalculator.tinhConGiap(year);
+
+                    prefs.setMenh(menh);
+                    prefs.setZodiac(zodiac);
+
+                    UserProfile updated = prefs.getUser();
+                    if (updated != null) {
+                        updated.setMenh(menh);
+                        updated.setZodiac(zodiac);
+                        updated.setAnimal(animal);
+                        prefs.saveUser(updated);
+                    }
+                } catch (NumberFormatException ignored) { }
+            }
+        }
+
         if (menh == null || menh.isEmpty()) {
             binding.cvMenhBanner.setVisibility(View.GONE);
+            binding.cardMenhCta.setVisibility(View.VISIBLE);
+            binding.cardMenhCta.setOnClickListener(v ->
+                    Navigation.findNavController(requireView())
+                              .navigate(R.id.stylingFragment));
             return;
         }
+
+        binding.cardMenhCta.setVisibility(View.GONE);
         binding.cvMenhBanner.setVisibility(View.VISIBLE);
         binding.tvMenhEmoji.setText(MenhCalculator.getEmojiMenh(menh));
-        binding.tvMenhElement.setText(getString(R.string.menh_label, menh));
+        binding.tvMenhElement.setText(getString(R.string.menh_label,
+                MenhCalculator.localizeMenh(requireContext(), menh)));
 
         String zodiacText = (zodiac != null && !zodiac.isEmpty())
-                ? getString(R.string.zodiac_label, zodiac)
+                ? getString(R.string.zodiac_label,
+                        MenhCalculator.localizeZodiac(requireContext(), zodiac))
                 : getString(R.string.menh_tap_hint);
         binding.tvMenhZodiac.setText(zodiacText);
+
+        buildColorChips(menh);
+    }
+
+    private void buildColorChips(String menh) {
+        android.widget.LinearLayout container = binding.layoutMenhColors;
+        container.removeAllViews();
+
+        String[] colors = MenhCalculator.getMauHopMenh(menh);
+        for (String colorName : colors) {
+            android.widget.TextView chip = new android.widget.TextView(requireContext());
+            chip.setText(MenhCalculator.localizeColor(requireContext(), colorName));
+            chip.setTextColor(android.graphics.Color.WHITE);
+            chip.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 11);
+            chip.setTypeface(null, android.graphics.Typeface.BOLD);
+            chip.setBackgroundResource(R.drawable.tc_bg_color_chip);
+            chip.setGravity(android.view.Gravity.CENTER);
+
+            int hPad = (int) (12 * getResources().getDisplayMetrics().density);
+            int vPad = (int) (5 * getResources().getDisplayMetrics().density);
+            chip.setPadding(hPad, vPad, hPad, vPad);
+
+            android.widget.LinearLayout.LayoutParams lp =
+                    new android.widget.LinearLayout.LayoutParams(
+                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMarginEnd((int) (6 * getResources().getDisplayMetrics().density));
+            chip.setLayoutParams(lp);
+
+            container.addView(chip);
+        }
     }
 
     // ── Banner ViewPager2 ─────────────────────────────────────────────────────
 
     private void setupBanner() {
         List<BannerAdapter.BannerItem> items = new ArrayList<>();
-        items.add(new BannerAdapter.BannerItem("",
-                getString(R.string.banner_title_1), Color.parseColor("#2C1810")));
-        items.add(new BannerAdapter.BannerItem("",
-                getString(R.string.banner_title_2), Color.parseColor("#1A2C10")));
-        items.add(new BannerAdapter.BannerItem("",
-                getString(R.string.banner_title_3), Color.parseColor("#10182C")));
+        items.add(new BannerAdapter.BannerItem(R.drawable.banner_1, getString(R.string.banner_title_1)));
+        items.add(new BannerAdapter.BannerItem(R.drawable.banner_2, getString(R.string.banner_title_2)));
+        items.add(new BannerAdapter.BannerItem(R.drawable.banner_3, getString(R.string.banner_title_3)));
 
         bannerAdapter = new BannerAdapter(items);
         binding.vpBanner.setAdapter(bannerAdapter);
@@ -153,35 +224,49 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // ── Category chips ────────────────────────────────────────────────────────
+    // ── Promo strip (mini banner giữa Events và News) ─────────────────────────
 
-    private void setupCategories() {
-        String[] labels = {
-            getString(R.string.category_all),
-            getString(R.string.category_ao_dai),
-            getString(R.string.category_ao_tac),
-            getString(R.string.category_nhat_binh),
-            getString(R.string.category_accessories),
-            getString(R.string.category_set)
+    private void setupPromoStrip() {
+        List<PromoStripAdapter.PromoItem> items = new ArrayList<>();
+        items.add(new PromoStripAdapter.PromoItem(
+                R.drawable.banner_1,
+                getString(R.string.promo_strip_eyebrow),
+                getString(R.string.promo_strip_1_title),
+                getString(R.string.promo_strip_1_sub)));
+        items.add(new PromoStripAdapter.PromoItem(
+                R.drawable.banner_2,
+                getString(R.string.promo_strip_2_eyebrow),
+                getString(R.string.promo_strip_2_title),
+                getString(R.string.promo_strip_2_sub)));
+        items.add(new PromoStripAdapter.PromoItem(
+                R.drawable.banner_3,
+                getString(R.string.promo_strip_3_eyebrow),
+                getString(R.string.promo_strip_3_title),
+                getString(R.string.promo_strip_3_sub)));
+
+        promoAdapter = new PromoStripAdapter(items);
+        binding.vpPromoStrip.setAdapter(promoAdapter);
+        binding.dotsPromo.attachTo(binding.vpPromoStrip);
+
+        promoScrollHandler  = new Handler(Looper.getMainLooper());
+        promoScrollRunnable = () -> {
+            if (promoAdapter.getItemCount() == 0) return;
+            int next = (binding.vpPromoStrip.getCurrentItem() + 1) % promoAdapter.getItemCount();
+            binding.vpPromoStrip.setCurrentItem(next, true);
+            promoScrollHandler.postDelayed(promoScrollRunnable, 3000L);
         };
+    }
 
-        for (int i = 0; i < labels.length; i++) {
-            Chip chip = new Chip(requireContext());
-            chip.setText(labels[i]);
-            chip.setCheckable(true);
-            chip.setChecked(i == 0);
-            chip.setChipBackgroundColorResource(R.color.selector_chip_bg);
-            chip.setTextColor(requireContext().getColorStateList(R.color.selector_chip_text));
-            final String category = i == 0 ? null : labels[i];
-            chip.setOnCheckedChangeListener((v, checked) -> {
-                if (checked) filterByCategory(category);
-            });
-            binding.chipGroupCategories.addView(chip);
+    private void startPromoScroll() {
+        if (promoScrollHandler != null && promoScrollRunnable != null) {
+            promoScrollHandler.postDelayed(promoScrollRunnable, 3000L);
         }
     }
 
-    private void filterByCategory(String category) {
-        // Future: reload products with the given category filter
+    private void stopPromoScroll() {
+        if (promoScrollHandler != null && promoScrollRunnable != null) {
+            promoScrollHandler.removeCallbacks(promoScrollRunnable);
+        }
     }
 
     // ── Recommended products ──────────────────────────────────────────────────
@@ -244,6 +329,66 @@ public class HomeFragment extends Fragment {
 
         binding.cvAiStrip.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), ChatBotActivity.class)));
+
+        binding.btnCart.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(),
+                        com.tiredcity.app.ui.cart.CartActivity.class)));
+
+        binding.btnNotification.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(),
+                        com.tiredcity.app.ui.notification.NotificationActivity.class)));
+
+        // Danh mục → navigate sang ShopFragment
+        View.OnClickListener catClick = v ->
+                Navigation.findNavController(requireView()).navigate(R.id.shopFragment);
+        binding.tvCategoriesSeeAll.setOnClickListener(catClick);
+        binding.cardCatAoDai.setOnClickListener(catClick);
+        binding.cardCatAoTac.setOnClickListener(catClick);
+        binding.cardCatNhatBinh.setOnClickListener(catClick);
+        binding.cardCatAccessories.setOnClickListener(catClick);
+        binding.cardCatSet.setOnClickListener(catClick);
+
+        // Sự kiện → trang Sự kiện riêng (EventActivity)
+        View.OnClickListener eventsClick = v ->
+                startActivity(new Intent(requireContext(),
+                        com.tiredcity.app.ui.explore.EventActivity.class));
+        binding.cardEvents.setOnClickListener(eventsClick);
+        binding.tvEventsSeeAll.setOnClickListener(eventsClick);
+
+        // Tin tức → trang Tin tức riêng (ArticleActivity)
+        View.OnClickListener newsClick = v ->
+                startActivity(new Intent(requireContext(),
+                        com.tiredcity.app.ui.explore.ArticleActivity.class));
+        binding.cardNews.setOnClickListener(newsClick);
+        binding.tvNewsSeeAll.setOnClickListener(newsClick);
+    }
+
+    // ── Badges (giỏ hàng + thông báo) ─────────────────────────────────────────
+
+    /** Cập nhật số trên icon giỏ hàng & thông báo; gọi lại mỗi khi quay về màn hình. */
+    private void updateBadges() {
+        if (binding == null) return;
+
+        int cartCount = 0;
+        for (com.tiredcity.app.data.model.CartItem item :
+                new com.tiredcity.app.data.local.CartLocalStore(requireContext()).getCartItems()) {
+            cartCount += item.getQuantity();
+        }
+        bindBadge(binding.tvCartBadge, cartCount);
+
+        int notifCount = new com.tiredcity.app.data.local.NotificationStore(requireContext())
+                .getUnreadCount();
+        bindBadge(binding.tvNotifBadge, notifCount);
+    }
+
+    /** Hiện badge nếu count > 0, tối đa hiển thị "9+". */
+    private void bindBadge(android.widget.TextView badge, int count) {
+        if (count <= 0) {
+            badge.setVisibility(View.GONE);
+        } else {
+            badge.setVisibility(View.VISIBLE);
+            badge.setText(count > 9 ? "9+" : String.valueOf(count));
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

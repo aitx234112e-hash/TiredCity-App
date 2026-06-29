@@ -51,7 +51,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tổng thanh toán"
+                    android:text="@string/cart_total"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
@@ -59,20 +59,24 @@
                     android:id="@+id/tv_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/brand_gold"
+                    android:textColor="@color/tc_red"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/btn_checkout"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:background="@drawable/bg_button_gold"
+                android:background="@drawable/tc_btn_red_pill"
                 android:text="@string/btn_checkout"
-                android:textColor="@color/brand_dark"
+                android:textColor="@color/white"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:fontFamily="sans-serif-medium"
+                android:elevation="2dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

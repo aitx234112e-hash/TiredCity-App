@@ -20,6 +20,18 @@ public class UserProfile {
     @SerializedName("address")
     private String address;
 
+    @SerializedName("province")
+    private String province;
+
+    @SerializedName("district")
+    private String district;
+
+    @SerializedName("ward")
+    private String ward;
+
+    @SerializedName("street")
+    private String street;
+
     @SerializedName("avatar")
     private String avatar;
 
@@ -59,6 +71,35 @@ public class UserProfile {
 
     public String getAddress()                  { return address; }
     public void setAddress(String address)      { this.address = address; }
+
+    public String getProvince()                 { return province; }
+    public void setProvince(String province)    { this.province = province; }
+
+    public String getDistrict()                 { return district; }
+    public void setDistrict(String district)    { this.district = district; }
+
+    public String getWard()                     { return ward; }
+    public void setWard(String ward)            { this.ward = ward; }
+
+    public String getStreet()                   { return street; }
+    public void setStreet(String street)        { this.street = street; }
+
+    /** Gộp địa chỉ đầy đủ để hiển thị / giao hàng: "Số nhà đường, Phường, Quận, Tỉnh". */
+    public String getFullAddress() {
+        StringBuilder sb = new StringBuilder();
+        appendPart(sb, street);
+        appendPart(sb, ward);
+        appendPart(sb, district);
+        appendPart(sb, province);
+        return sb.length() > 0 ? sb.toString() : (address != null ? address : "");
+    }
+
+    private void appendPart(StringBuilder sb, String part) {
+        if (part != null && !part.trim().isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(part.trim());
+        }
+    }
 
     public String getAvatar()                   { return avatar; }
     public void setAvatar(String avatar)        { this.avatar = avatar; }

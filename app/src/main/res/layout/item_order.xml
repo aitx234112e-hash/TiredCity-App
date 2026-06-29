@@ -117,7 +117,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Tổng tiền"
+                android:text="@string/label_total"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
@@ -125,9 +125,10 @@
                 android:id="@+id/tv_order_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/brand_gold"
+                android:textColor="@color/tc_red"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 tools:text="1.700.000 ₫" />
         </LinearLayout>
     </LinearLayout>

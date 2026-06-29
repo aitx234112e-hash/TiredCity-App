@@ -1,41 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="0dp">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+    <!-- Ảnh bo góc, KHÔNG bóng đổ (không dùng CardView) -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_banner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
 
-        <ImageView
-            android:id="@+id/iv_banner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="@color/brand_dark" />
+    <!-- Lớp tối ở đáy cho dễ đọc chữ (đã bo góc khớp ảnh) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/tc_banner_scrim" />
 
-        <!-- Dark gradient overlay for text legibility -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#55000000" />
+    <!-- Nội dung editorial -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/banner_eyebrow"
+            android:textColor="@color/tc_gold_bright"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.2" />
 
         <TextView
             android:id="@+id/tv_banner_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:padding="14dp"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/white"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:shadowColor="#AA000000"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="2dp"
+            android:shadowColor="#80000000"
             android:shadowDx="0"
-            android:shadowDy="1"
-            android:shadowRadius="4" />
-    </FrameLayout>
-</com.google.android.material.card.MaterialCardView>
+            android:shadowDy="2"
+            android:shadowRadius="6"
+            tools:text="Bộ sưu tập Thu – Đông 2025" />
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/tc_gold_bright" />
+    </LinearLayout>
+</FrameLayout>

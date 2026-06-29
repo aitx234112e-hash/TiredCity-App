@@ -11,11 +11,11 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/brand_dark"
+        android:background="@color/tc_red"
         android:elevation="4dp"
         app:navigationIcon="@drawable/ic_back"
-        app:title="Hồ sơ của tôi"
-        app:titleTextColor="@color/brand_gold"
+        app:title="@string/profile_title"
+        app:titleTextColor="@color/white"
         app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
 
     <androidx.core.widget.NestedScrollView
@@ -27,71 +27,365 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Avatar header -->
+            <!-- Account header (avatar + greeting + chevron) -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@color/brand_dark"
-                android:paddingTop="16dp">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/iv_avatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/ic_person_placeholder"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="@color/brand_gold" />
-
-                <TextView
-                    android:id="@+id/tv_user_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="10dp" />
-
-                <TextView
-                    android:id="@+id/tv_user_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/brand_cream"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
-
-            <!-- Menh badge -->
-            <LinearLayout
+                android:id="@+id/layout_account_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
-                android:padding="12dp"
-                android:background="@color/bg_surface">
+                android:gravity="center_vertical"
+                android:background="@drawable/tc_gradient_red_lacquer"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="22dp"
+                android:paddingBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-                <TextView
-                    android:id="@+id/tv_menh_badge"
-                    android:layout_width="wrap_content"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_tc_logo"
+                    app:civ_circle_background_color="@color/white"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="6dp"
-                    android:background="@drawable/bg_button_gold"
-                    android:textColor="@color/brand_dark"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_hello"
+                        android:textColor="@color/tc_on_red_secondary"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tv_user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/tv_user_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/tc_on_red_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginTop="3dp" />
+
+                    <!-- Mệnh badge (bản sắc dự án — không phải hạng thành viên) -->
+                    <TextView
+                        android:id="@+id/tv_menh_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="5dp"
+                        android:background="@drawable/tc_bg_rounded_gold_pill"
+                        android:textColor="@color/tc_espresso"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_arrow_right"
+                    app:tint="@color/white"
+                    android:contentDescription="@null" />
             </LinearLayout>
 
-            <!-- Menu items -->
+            <!-- ── Quick actions (card trắng, icon trong vòng tròn đỏ) ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="@dimen/tc_radius_md"
+                app:cardElevation="@dimen/tc_elev_sm"
+                app:cardBackgroundColor="@color/bg_surface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <!-- Hàng 1: Phối đồ AI · Đơn hàng · Tìm cửa hàng -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+
+                        <!-- Phối đồ AI -->
+                        <LinearLayout
+                            android:id="@+id/card_styling"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="16dp"
+                            android:paddingHorizontal="6dp"
+                            android:background="?attr/selectableItemBackgroundBorderless">
+                            <FrameLayout
+                                android:layout_width="48dp"
+                                android:layout_height="48dp">
+                                <View
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:background="@drawable/tc_bg_circle_red"
+                                    android:alpha="0.1" />
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_auto_style"
+                                    app:tint="@color/tc_red"
+                                    android:contentDescription="@null" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_styling_ai"
+                                android:textColor="@color/text_primary"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:layout_marginTop="8dp" />
+                        </LinearLayout>
+
+                        <!-- Đơn hàng -->
+                        <LinearLayout
+                            android:id="@+id/card_orders"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="16dp"
+                            android:paddingHorizontal="6dp"
+                            android:background="?attr/selectableItemBackgroundBorderless">
+                            <FrameLayout
+                                android:layout_width="48dp"
+                                android:layout_height="48dp">
+                                <View
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:background="@drawable/tc_bg_circle_red"
+                                    android:alpha="0.1" />
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_orders"
+                                    app:tint="@color/tc_red"
+                                    android:contentDescription="@null" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_orders_short"
+                                android:textColor="@color/text_primary"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:layout_marginTop="8dp" />
+                        </LinearLayout>
+
+                        <!-- Tìm cửa hàng -->
+                        <LinearLayout
+                            android:id="@+id/card_find_store"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="16dp"
+                            android:paddingHorizontal="6dp"
+                            android:background="?attr/selectableItemBackgroundBorderless">
+                            <FrameLayout
+                                android:layout_width="48dp"
+                                android:layout_height="48dp">
+                                <View
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:background="@drawable/tc_bg_circle_red"
+                                    android:alpha="0.1" />
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_pin"
+                                    app:tint="@color/tc_red"
+                                    android:contentDescription="@null" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_find_store"
+                                android:textColor="@color/text_primary"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:layout_marginTop="8dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_subtle"
+                        android:layout_marginHorizontal="16dp" />
+
+                    <!-- Hàng 2: Ưu đãi · Sự kiện · Blogs -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+
+                        <!-- Ưu đãi -->
+                        <LinearLayout
+                            android:id="@+id/item_promotions"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="16dp"
+                            android:paddingHorizontal="6dp"
+                            android:background="?attr/selectableItemBackgroundBorderless">
+                            <FrameLayout
+                                android:layout_width="44dp"
+                                android:layout_height="44dp">
+                                <View
+                                    android:layout_width="44dp"
+                                    android:layout_height="44dp"
+                                    android:background="@drawable/tc_bg_circle_red"
+                                    android:alpha="0.1" />
+                                <ImageView
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_ticket"
+                                    app:tint="@color/tc_red"
+                                    android:contentDescription="@null" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_promotions"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:layout_marginTop="7dp" />
+                        </LinearLayout>
+
+                        <!-- Sự kiện -->
+                        <LinearLayout
+                            android:id="@+id/item_events"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="16dp"
+                            android:paddingHorizontal="6dp"
+                            android:background="?attr/selectableItemBackgroundBorderless">
+                            <FrameLayout
+                                android:layout_width="44dp"
+                                android:layout_height="44dp">
+                                <View
+                                    android:layout_width="44dp"
+                                    android:layout_height="44dp"
+                                    android:background="@drawable/tc_bg_circle_red"
+                                    android:alpha="0.1" />
+                                <ImageView
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_calendar"
+                                    app:tint="@color/tc_red"
+                                    android:contentDescription="@null" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_events"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:layout_marginTop="7dp" />
+                        </LinearLayout>
+
+                        <!-- Blogs -->
+                        <LinearLayout
+                            android:id="@+id/item_blogs"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingVertical="16dp"
+                            android:paddingHorizontal="6dp"
+                            android:background="?attr/selectableItemBackgroundBorderless">
+                            <FrameLayout
+                                android:layout_width="44dp"
+                                android:layout_height="44dp">
+                                <View
+                                    android:layout_width="44dp"
+                                    android:layout_height="44dp"
+                                    android:background="@drawable/tc_bg_circle_red"
+                                    android:alpha="0.1" />
+                                <ImageView
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_news"
+                                    app:tint="@color/tc_red"
+                                    android:contentDescription="@null" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_blogs"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:layout_marginTop="7dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Menu card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="@dimen/tc_radius_md"
+                app:cardElevation="@dimen/tc_elev_sm"
                 app:cardBackgroundColor="@color/bg_surface">
 
                 <LinearLayout
@@ -99,81 +393,235 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Đơn hàng của tôi -->
                     <LinearLayout
                         android:id="@+id/layout_order_history"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
+                        android:layout_height="58dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingHorizontal="16dp"
+                        android:paddingHorizontal="18dp"
                         android:background="?attr/selectableItemBackground">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="📦  " android:textSize="16sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_orders" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/label_my_orders"
-                            android:textColor="@color/text_primary" android:textSize="14sp" />
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
                         <ImageView android:layout_width="20dp" android:layout_height="20dp"
-                            android:src="@android:drawable/arrow_up_float" android:rotation="90" />
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:background="@color/bg_subtle" android:layout_marginHorizontal="16dp" />
+                        android:background="@color/bg_subtle" android:layout_marginHorizontal="18dp" />
 
+                    <!-- Tủ đồ của tôi -->
                     <LinearLayout
                         android:id="@+id/layout_wardrobe"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
+                        android:layout_height="58dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingHorizontal="16dp"
+                        android:paddingHorizontal="18dp"
                         android:background="?attr/selectableItemBackground">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="👘  " android:textSize="16sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_wardrobe" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/label_wardrobe"
-                            android:textColor="@color/text_primary" android:textSize="14sp" />
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
                         <ImageView android:layout_width="20dp" android:layout_height="20dp"
-                            android:src="@android:drawable/arrow_up_float" android:rotation="90" />
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:background="@color/bg_subtle" android:layout_marginHorizontal="16dp" />
+                        android:background="@color/bg_subtle" android:layout_marginHorizontal="18dp" />
 
+                    <!-- Chat với TiredCity -->
                     <LinearLayout
-                        android:id="@+id/layout_edit_profile"
+                        android:id="@+id/layout_chat"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
+                        android:layout_height="58dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingHorizontal="16dp"
+                        android:paddingHorizontal="18dp"
                         android:background="?attr/selectableItemBackground">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="✏️  " android:textSize="16sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_chat" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/btn_edit_profile"
-                            android:textColor="@color/text_primary" android:textSize="14sp" />
+                            android:text="@string/label_chat_tiredcity"
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
                         <ImageView android:layout_width="20dp" android:layout_height="20dp"
-                            android:src="@android:drawable/arrow_up_float" android:rotation="90" />
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/bg_subtle" android:layout_marginHorizontal="18dp" />
+
+                    <!-- Liên hệ với TiredCity -->
+                    <LinearLayout
+                        android:id="@+id/layout_contact"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="18dp"
+                        android:background="?attr/selectableItemBackground">
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_support" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_contact_tiredcity"
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
+                        <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/bg_subtle" android:layout_marginHorizontal="18dp" />
+
+                    <!-- Cài đặt thông báo (chưa code) -->
+                    <LinearLayout
+                        android:id="@+id/layout_notifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="18dp"
+                        android:background="?attr/selectableItemBackground">
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_bell" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_notification_settings"
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
+                        <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/bg_subtle" android:layout_marginHorizontal="18dp" />
+
+                    <!-- Chính sách bán hàng -->
+                    <LinearLayout
+                        android:id="@+id/layout_policy"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="18dp"
+                        android:background="?attr/selectableItemBackground">
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_about" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_sales_policy"
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
+                        <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/bg_subtle" android:layout_marginHorizontal="18dp" />
+
+                    <!-- Cài đặt chung (chưa code) -->
+                    <LinearLayout
+                        android:id="@+id/layout_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="18dp"
+                        android:background="?attr/selectableItemBackground">
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_settings" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_general_settings"
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
+                        <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/bg_subtle" android:layout_marginHorizontal="18dp" />
+
+                    <!-- Điều khoản & Điều kiện (chưa code) -->
+                    <LinearLayout
+                        android:id="@+id/layout_terms"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="18dp"
+                        android:background="?attr/selectableItemBackground">
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                            android:src="@drawable/ic_terms" app:tint="@color/tc_red"
+                            android:layout_marginEnd="16dp" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_terms_conditions"
+                            android:textColor="@color/text_primary" android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium" />
+                        <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right" app:tint="@color/tc_sand"
+                            android:contentDescription="@null" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Logout button -->
-            <Button
-                android:id="@+id/btn_logout"
+            <!-- Logout card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
-                android:background="@drawable/bg_rounded_gold"
-                android:text="@string/btn_logout"
-                android:textColor="@color/brand_red"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                app:cardCornerRadius="@dimen/tc_radius_md"
+                app:cardElevation="@dimen/tc_elev_sm"
+                app:cardBackgroundColor="@color/bg_surface">
+
+                <LinearLayout
+                    android:id="@+id/btn_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="18dp"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                        android:src="@drawable/ic_logout" app:tint="@color/tc_red"
+                        android:layout_marginEnd="16dp" android:contentDescription="@null" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/btn_logout"
+                        android:textColor="@color/tc_red" android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

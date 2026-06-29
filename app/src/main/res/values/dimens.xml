@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  TIREDCITY EDITORIAL SPACING & SIZING                              ║
+      ║  Ported from Saive design system. Use these instead of inline dp.  ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+
+    <!-- ─── Spacing scale ───────────────────────────────────────────── -->
+    <dimen name="tc_space_micro">4dp</dimen>
+    <dimen name="tc_space_xs">6dp</dimen>
+    <dimen name="tc_space_sm">8dp</dimen>
+    <dimen name="tc_space_md">12dp</dimen>
+    <dimen name="tc_space_lg">16dp</dimen>
+    <dimen name="tc_space_xl">20dp</dimen>
+    <dimen name="tc_space_2xl">24dp</dimen>
+    <dimen name="tc_space_3xl">32dp</dimen>
+    <dimen name="tc_space_4xl">40dp</dimen>
+    <dimen name="tc_space_5xl">48dp</dimen>
+    <dimen name="tc_space_6xl">60dp</dimen>
+    <dimen name="tc_space_7xl">80dp</dimen>
+    <dimen name="tc_space_8xl">100dp</dimen>
+    <dimen name="tc_space_9xl">120dp</dimen>
+
+    <!-- ─── Screen padding ──────────────────────────────────────────── -->
+    <dimen name="tc_screen_padding">20dp</dimen>
+    <dimen name="tc_header_margin">24dp</dimen>
+
+    <!-- ─── Section spacing (editorial breathing room) ──────────────── -->
+    <dimen name="tc_section_sm">32dp</dimen>
+    <dimen name="tc_section_md">48dp</dimen>
+    <dimen name="tc_section_lg">80dp</dimen>
+    <dimen name="tc_section_xl">100dp</dimen>
+
+    <!-- ─── Component sizes ─────────────────────────────────────────── -->
+    <dimen name="tc_button_height">48dp</dimen>
+    <dimen name="tc_button_height_sm">40dp</dimen>
+    <dimen name="tc_nav_bar_height">72dp</dimen>
+    <dimen name="tc_menu_item_height">54dp</dimen>
+    <dimen name="tc_avatar_lg">88dp</dimen>
+    <dimen name="tc_avatar_md">56dp</dimen>
+    <dimen name="tc_avatar_sm">40dp</dimen>
+    <dimen name="tc_banner_hero">560dp</dimen>
+    <dimen name="tc_banner_md">320dp</dimen>
+    <dimen name="tc_banner_sm">220dp</dimen>
+    <dimen name="tc_editorial_image">640dp</dimen>
+    <dimen name="tc_recent_card_w">120dp</dimen>
+    <dimen name="tc_recent_card_h">160dp</dimen>
+    <dimen name="tc_center_action">64dp</dimen>
+    <dimen name="tc_fab">56dp</dimen>
+
+    <!-- ─── Icons ───────────────────────────────────────────────────── -->
+    <dimen name="tc_icon_sm">16dp</dimen>
+    <dimen name="tc_icon_md">20dp</dimen>
+    <dimen name="tc_icon_nav">24dp</dimen>
+    <dimen name="tc_icon_lg">36dp</dimen>
+    <dimen name="tc_icon_xl">44dp</dimen>
+
+    <!-- ─── Text sizes ──────────────────────────────────────────────── -->
+    <dimen name="tc_text_micro">10sp</dimen>
+    <dimen name="tc_text_tiny">12sp</dimen>
+    <dimen name="tc_text_caption">13sp</dimen>
+    <dimen name="tc_text_body">15sp</dimen>
+    <dimen name="tc_text_lg">17sp</dimen>
+    <dimen name="tc_text_h4">18sp</dimen>
+    <dimen name="tc_text_h3">20sp</dimen>
+    <dimen name="tc_text_h2">24sp</dimen>
+    <dimen name="tc_text_h1">28sp</dimen>
+    <dimen name="tc_text_display">32sp</dimen>
+
+    <!-- ─── Logo ────────────────────────────────────────────────────── -->
+    <dimen name="tc_logo_sm">18sp</dimen>
+    <dimen name="tc_logo_lg">32sp</dimen>
+    <dimen name="tc_logo_huge">100sp</dimen>
+
+    <!-- ─── Corners ─────────────────────────────────────────────────── -->
+    <dimen name="tc_radius_sm">8dp</dimen>
+    <dimen name="tc_radius_md">12dp</dimen>
+    <dimen name="tc_radius_lg">20dp</dimen>
+    <dimen name="tc_radius_xl">24dp</dimen>
+    <dimen name="tc_radius_pill">28dp</dimen>
+    <dimen name="tc_radius_sheet">24dp</dimen>
+
+    <!-- ─── Elevation ───────────────────────────────────────────────── -->
+    <dimen name="tc_elev_tiny">2dp</dimen>
+    <dimen name="tc_elev_sm">4dp</dimen>
+    <dimen name="tc_elev_md">8dp</dimen>
+    <dimen name="tc_elev_lg">16dp</dimen>
+    <dimen name="tc_elev_xl">24dp</dimen>
+
+    <!-- ─── Strokes ─────────────────────────────────────────────────── -->
+    <dimen name="tc_stroke_w">1dp</dimen>
+    <dimen name="tc_stroke_w_thick">2dp</dimen>
+</resources>

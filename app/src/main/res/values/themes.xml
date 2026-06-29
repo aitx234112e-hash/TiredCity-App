@@ -1,30 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.TiredCity" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/brand_gold</item>
-        <item name="colorOnPrimary">@color/brand_dark</item>
-        <item name="colorPrimaryContainer">@color/brand_cream</item>
-        <item name="colorOnPrimaryContainer">@color/brand_dark</item>
-        <item name="colorSecondary">@color/brand_red</item>
-        <item name="colorOnSecondary">@color/bg_surface</item>
-        <item name="colorSurface">@color/bg_surface</item>
-        <item name="colorOnSurface">@color/text_primary</item>
-        <item name="android:colorBackground">@color/bg_primary</item>
-        <item name="android:statusBarColor">@color/brand_dark</item>
-        <item name="android:navigationBarColor">@color/bg_surface</item>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  THEME.TIREDCITY — Editorial Quiet Luxury                          ║
+      ║  Material3 Light. Status bar = espresso (dark), light icons.       ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+    <style name="Base.Theme.TiredCity" parent="Theme.Material3.Light.NoActionBar">
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@color/tc_red</item>
+        <item name="android:navigationBarColor">@color/tc_bg_main</item>
         <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Material3 color roles -->
+        <item name="colorPrimary">@color/tc_gold</item>
+        <item name="colorOnPrimary">@color/tc_text_on_gold</item>
+        <item name="colorPrimaryContainer">@color/tc_cream</item>
+        <item name="colorOnPrimaryContainer">@color/tc_espresso</item>
+        <item name="colorSecondary">@color/tc_espresso</item>
+        <item name="colorOnSecondary">@color/tc_on_dark</item>
+        <item name="colorSecondaryContainer">@color/tc_linen</item>
+        <item name="colorOnSecondaryContainer">@color/tc_espresso</item>
+        <item name="colorTertiary">@color/tc_sand</item>
+        <item name="colorSurface">@color/tc_bg_card</item>
+        <item name="colorOnSurface">@color/tc_text_primary</item>
+        <item name="colorSurfaceVariant">@color/tc_bg_subtle</item>
+        <item name="colorOnSurfaceVariant">@color/tc_text_secondary</item>
+        <item name="colorOutline">@color/tc_stroke</item>
+        <item name="android:colorBackground">@color/tc_bg_main</item>
+        <!-- Nền cửa sổ kem: tránh nháy ĐEN khi chuyển Activity (Splash → Login...) -->
+        <item name="android:windowBackground">@color/tc_bg_main</item>
+        <item name="colorError">@color/tc_error</item>
+        <item name="colorOnError">@color/colorOnError</item>
+
+        <!-- Default typography (sans-serif regular, hết mờ) -->
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.TC.Header</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.TC.Header</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.TC.SectionHeader</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.TC.SectionHeader</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.TC.SectionHeader</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.TC.Body</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.TC.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.TC.Label</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.TC.Nav</item>
+
+        <!-- Default shape appearance -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.TC.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.TC.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.TC.Large</item>
+
+        <!-- Default widget styles -->
+        <item name="materialButtonStyle">@style/Widget.TC.Button.Primary</item>
+        <item name="materialCardViewStyle">@style/Widget.TC.Card</item>
+        <item name="textInputStyle">@style/Widget.TC.TextInputLayout</item>
+        <item name="chipStyle">@style/Widget.TC.Chip</item>
+        <item name="toolbarStyle">@style/Widget.TC.Toolbar</item>
+
+        <!-- Bottom sheet -->
+        <item name="bottomSheetDialogTheme">@style/Theme.TC.BottomSheetDialog</item>
     </style>
 
-    <!-- Toolbar title text appearance -->
-    <style name="TextAppearance.TiredCity.Toolbar" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textSize">17sp</item>
+    <style name="Theme.TiredCity" parent="Base.Theme.TiredCity" />
+
+    <!-- Launcher (LoginActivity): nền ĐỎ để cold-start hiện đỏ liền mạch với splash overlay,
+         không còn nháy đen. Vẫn kế thừa đầy đủ style widget từ Base.Theme.TiredCity. -->
+    <style name="Theme.TiredCity.Launcher" parent="Base.Theme.TiredCity">
+        <item name="android:windowBackground">@color/tc_red</item>
     </style>
 
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  SPLASH — espresso background, gold icon                           ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
     <style name="Theme.TiredCity.Splash" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:colorBackground">@color/brand_dark</item>
-        <item name="android:statusBarColor">@color/brand_dark</item>
-        <item name="android:navigationBarColor">@color/brand_dark</item>
+        <item name="android:colorBackground">@color/tc_red</item>
+        <item name="android:statusBarColor">@color/tc_red</item>
+        <item name="android:navigationBarColor">@color/tc_red</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/tc_red</item>
     </style>
+
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  BOTTOM SHEET                                                      ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+    <style name="Theme.TC.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.TC.BottomSheet</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/tc_bg_main</item>
+    </style>
+
+    <style name="Widget.TC.BottomSheet" parent="Widget.Material3.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.TC.BottomSheet</item>
+        <item name="backgroundTint">@color/tc_bg_main</item>
+    </style>
+
+    <style name="Theme.TC.TransparentBottomSheet" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  LEGACY — keep TextAppearance.TiredCity.Toolbar pointer            ║
+      ║  (already defined in styles.xml, kept here for backward ref)       ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+
 </resources>

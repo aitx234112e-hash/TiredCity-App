@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nút đỏ sơn mài: gradient chiều sâu + ripple phản hồi khi chạm -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/tc_red_ripple">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="270"
+                android:startColor="@color/tc_red_lacquer_top"
+                android:centerColor="@color/tc_red_lacquer_mid"
+                android:endColor="@color/tc_red_lacquer_bot" />
+            <corners android:radius="@dimen/tc_radius_xl" />
+        </shape>
+    </item>
+</ripple>

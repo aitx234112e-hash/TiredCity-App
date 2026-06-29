@@ -33,10 +33,7 @@ public class PolicyActivity extends BaseActivity {
     }
 
     private void setupToolbar() {
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
+        // Custom toolbar (FrameLayout) — chỉ cần nút Back, không dùng ActionBar.
         binding.btnBack.setOnClickListener(v -> finish());
     }
 
@@ -45,8 +42,6 @@ public class PolicyActivity extends BaseActivity {
         setHtmlText(binding.tvContentPurchase, getString(R.string.policy_purchase_content));
         setHtmlText(binding.tvContentPayment, getString(R.string.policy_payment_content));
         setHtmlText(binding.tvContentShipping, getString(R.string.policy_shipping_content));
-        setHtmlText(binding.tvContentReturn, getString(R.string.policy_return_title)); // Wait, checking strings...
-        // Re-checking strings for return policy content
         setHtmlText(binding.tvContentReturn, getString(R.string.policy_return_content));
         setHtmlText(binding.tvContentPrivacy, getString(R.string.policy_privacy_content));
     }

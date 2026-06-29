@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền đỏ sơn mài có chiều sâu — dùng cho header, splash, hero -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="135"
+        android:startColor="@color/tc_red_lacquer_top"
+        android:centerColor="@color/tc_red_lacquer_mid"
+        android:endColor="@color/tc_red_lacquer_bot" />
+</shape>

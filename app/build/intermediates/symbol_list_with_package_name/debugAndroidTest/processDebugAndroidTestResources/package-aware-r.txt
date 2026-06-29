@@ -1,3 +1,0 @@
-com.tiredcity.app.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme

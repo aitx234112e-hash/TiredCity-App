@@ -14,7 +14,7 @@
         android:background="@color/bg_surface"
         android:elevation="4dp"
         app:navigationIcon="@drawable/ic_back"
-        app:title="Theo dõi đơn hàng"
+        app:title="@string/track_title"
         app:titleTextColor="@color/text_primary"
         app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
 
@@ -54,7 +54,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Mã đơn hàng"
+                            android:text="@string/track_order_id"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -62,7 +62,7 @@
                             android:id="@+id/tv_order_id"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/brand_gold"
+                            android:textColor="@color/tc_red"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -78,7 +78,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ngày đặt"
+                            android:text="@string/track_order_date"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -100,7 +100,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tổng tiền"
+                            android:text="@string/label_total"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -108,9 +108,10 @@
                             android:id="@+id/tv_order_total"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/brand_gold"
+                            android:textColor="@color/tc_red"
                             android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -133,7 +134,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trạng thái đơn hàng"
+                        android:text="@string/track_status"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -175,7 +176,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📍  Địa chỉ giao hàng"
+                        android:text="@string/track_address"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -208,7 +209,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sản phẩm đã đặt"
+                        android:text="@string/track_ordered_items"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"

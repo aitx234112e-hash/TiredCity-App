@@ -7,22 +7,43 @@
     <string name="greeting_morning">Chào buổi sáng ☀️</string>
     <string name="greeting_afternoon">Chào buổi chiều 🌤️</string>
     <string name="greeting_evening">Chào buổi tối 🌙</string>
+    <string name="greeting_guest">Quý khách</string>
 
     <!-- Bottom navigation (English All-Caps for Menu Bar) -->
     <string name="nav_home">HOME</string>
     <string name="nav_shop">PRODUCTS</string>
     <string name="nav_styling">STYLING</string>
     <string name="nav_explore">EXPLORE</string>
-    <string name="nav_about">ABOUT TIREDCITY</string>
+    <string name="nav_about">ABOUT US</string>
     <string name="nav_collections">COLLECTIONS</string>
     <string name="nav_policies">POLICIES</string>
     <string name="nav_contact">CONTACT</string>
+
+    <!-- Bottom nav (nhãn ngắn) -->
+    <string name="nav_short_home">Trang chủ</string>
+    <string name="nav_short_shop">Cửa hàng</string>
+    <string name="nav_short_styling">Phối đồ</string>
+    <string name="nav_short_explore">Khám phá</string>
+    <string name="nav_short_about">Giới thiệu</string>
+    <string name="nav_short_profile">Tôi</string>
+
+    <!-- Birth date / Mệnh -->
+    <string name="hint_birthdate">Ngày sinh</string>
+    <string name="hint_birthdate_pick">Chọn ngày sinh</string>
+    <string name="error_birthdate">Vui lòng chọn ngày sinh</string>
+    <string name="profile_avatar_desc">Trang cá nhân</string>
 
     <!-- Home sections -->
     <string name="section_recommended">Gợi ý cho bạn</string>
     <string name="section_hot">Sản phẩm nổi bật</string>
     <string name="section_categories">Danh mục</string>
     <string name="see_all">Xem tất cả</string>
+    <string name="banner_eyebrow">BỘ SƯU TẬP</string>
+    <string name="home_eyebrow_recommended">DÀNH RIÊNG CHO BẠN</string>
+    <string name="home_eyebrow_hot">XU HƯỚNG</string>
+    <string name="home_eyebrow_categories">PHÂN LOẠI</string>
+    <string name="footer_tagline">Việt phục cho thế hệ mới</string>
+    <string name="footer_cities">HÀ NỘI • SÀI GÒN</string>
 
     <!-- Category names -->
     <string name="category_all">Tất cả</string>
@@ -34,20 +55,94 @@
 
     <!-- AI strip -->
     <string name="ai_strip_title">✨ Tư vấn phong cách AI</string>
-    <string name="ai_strip_subtitle">Gợi ý trang phục hợp mệnh, hợp cung</string>
+    <string name="ai_strip_eyebrow">TRỢ LÝ THỜI TRANG AI</string>
+    <string name="ai_strip_title_new">Hôm nay mặc gì?</string>
+    <string name="ai_strip_cta">HỎI NGAY ✦</string>
 
     <!-- Menh banner -->
     <string name="menh_label">Mệnh %s</string>
     <string name="zodiac_label">Cung %s</string>
     <string name="menh_tap_hint">Nhấn để xem gợi ý trang phục</string>
 
+    <!-- Menh CTA (chưa tính) -->
+    <string name="menh_cta_eyebrow">NGŨ HÀNH · CUNG MỆNH</string>
+    <string name="menh_cta_title">Khám phá mệnh của bạn</string>
+    <string name="menh_cta_desc">Nhập ngày sinh để xem cung mệnh, màu sắc may mắn và gợi ý trang phục phù hợp.</string>
+    <string name="menh_cta_button">TÍNH CUNG MỆNH ✦</string>
+    <string name="menh_colors_label">MÀU SẮC HỢP MỆNH</string>
+
+    <!-- Ngũ hành (tên mệnh) -->
+    <string name="menh_name_kim">Kim</string>
+    <string name="menh_name_moc">Mộc</string>
+    <string name="menh_name_thuy">Thủy</string>
+    <string name="menh_name_hoa">Hỏa</string>
+    <string name="menh_name_tho">Thổ</string>
+
+    <!-- Cung hoàng đạo -->
+    <string name="zodiac_aries">Bạch Dương</string>
+    <string name="zodiac_taurus">Kim Ngưu</string>
+    <string name="zodiac_gemini">Song Tử</string>
+    <string name="zodiac_cancer">Cự Giải</string>
+    <string name="zodiac_leo">Sư Tử</string>
+    <string name="zodiac_virgo">Xử Nữ</string>
+    <string name="zodiac_libra">Thiên Bình</string>
+    <string name="zodiac_scorpio">Thiên Yết</string>
+    <string name="zodiac_sagittarius">Nhân Mã</string>
+    <string name="zodiac_capricorn">Ma Kết</string>
+    <string name="zodiac_aquarius">Bảo Bình</string>
+    <string name="zodiac_pisces">Song Ngư</string>
+
+    <!-- Màu sắc hợp mệnh -->
+    <string name="color_white">Trắng</string>
+    <string name="color_yellow">Vàng</string>
+    <string name="color_silver">Bạc</string>
+    <string name="color_gray">Xám</string>
+    <string name="color_green">Xanh lá</string>
+    <string name="color_blue">Xanh lam</string>
+    <string name="color_moss">Xanh rêu</string>
+    <string name="color_black">Đen</string>
+    <string name="color_navy">Xanh navy</string>
+    <string name="color_purple">Tím</string>
+    <string name="color_red">Đỏ</string>
+    <string name="color_pink">Hồng</string>
+    <string name="color_orange">Cam</string>
+    <string name="color_earth_yellow">Vàng đất</string>
+    <string name="color_brown">Nâu</string>
+    <string name="color_beige">Be</string>
+    <string name="color_light_orange">Cam nhạt</string>
+
+    <!-- Home sections: Events & News -->
+    <string name="home_section_events">Sự kiện</string>
+    <string name="home_events_eyebrow">SỰ KIỆN NỔI BẬT</string>
+    <string name="home_events_title">Triển lãm &amp; Workshop</string>
+    <string name="home_events_cta">XEM SỰ KIỆN ✦</string>
+    <string name="home_section_news">Tin tức</string>
+    <string name="home_news_eyebrow">TIN TỨC &amp; CẢM HỨNG</string>
+    <string name="home_news_title">Câu chuyện Việt phục</string>
+    <string name="home_news_cta">ĐỌC THÊM ✦</string>
+
     <!-- Banners (mock titles) -->
     <string name="banner_title_1">Bộ sưu tập Thu – Đông 2025</string>
     <string name="banner_title_2">Nhật Bình – Vẻ đẹp Hoàng triều</string>
-    <string name="banner_title_3">Áo Dài Cưới – Sang trọng &amp; Tinh tế</string>
+    <string name="banner_title_3">Áo Dài – Sang trọng &amp; Tinh tế</string>
+
+    <!-- Promo strip (mini banner giữa Events và News) -->
+    <string name="promo_strip_eyebrow">ƯU ĐÃI ĐẶC BIỆT</string>
+    <string name="promo_strip_1_title">Giảm 30% toàn bộ áo dài lụa</string>
+    <string name="promo_strip_1_sub">Áp dụng đến hết tháng này</string>
+    <string name="promo_strip_2_eyebrow">BST TẾT 2025</string>
+    <string name="promo_strip_2_title">Nhật Bình &amp; Áo Tấc Hoàng Triều</string>
+    <string name="promo_strip_2_sub">Đặt hàng sớm – nhận quà tặng kèm</string>
+    <string name="promo_strip_3_eyebrow">MIỄN PHÍ VẬN CHUYỂN</string>
+    <string name="promo_strip_3_title">Đơn hàng từ 500.000đ trở lên</string>
+    <string name="promo_strip_3_sub">Toàn quốc – giao nhanh 2 ngày</string>
+    <string name="promo_strip_cta">XEM NGAY ✦</string>
 
     <!-- Language toggle -->
     <string name="language_toggle">Đổi ngôn ngữ</string>
+    <!-- Nhãn nút: hiện ngôn ngữ SẼ CHUYỂN SANG (tự trỏ ngược qua values-en) -->
+    <string name="switch_to_other_lang">EN</string>
+    <string name="switch_to_other_lang_full">English</string>
 
     <!-- Buttons -->
     <string name="btn_add_to_cart">Thêm vào giỏ</string>
@@ -70,6 +165,46 @@
     <string name="hint_fullname">Họ và tên</string>
     <string name="hint_phone">Số điện thoại</string>
     <string name="hint_address">Địa chỉ giao hàng</string>
+    <string name="login_remember_me">Ghi nhớ mật khẩu</string>
+    <string name="login_forgot_password">Quên mật khẩu?</string>
+    <string name="forgot_pw_title">Quên mật khẩu</string>
+    <string name="forgot_pw_subtitle">Nhập email đã đăng ký, chúng tôi sẽ gửi liên kết đặt lại mật khẩu cho bạn.</string>
+    <string name="forgot_pw_send">GỬI LIÊN KẾT ĐẶT LẠI</string>
+    <string name="forgot_pw_back">Quay lại đăng nhập</string>
+    <string name="forgot_pw_success_title">Đã gửi liên kết!</string>
+    <string name="forgot_pw_success_desc">Vui lòng kiểm tra hộp thư %1$s và làm theo hướng dẫn để đặt lại mật khẩu.</string>
+    <string name="forgot_pw_error_email">Vui lòng nhập email hợp lệ</string>
+    <string name="login_subtitle">Đăng nhập để tiếp tục</string>
+    <string name="login_no_account">Chưa có tài khoản? </string>
+    <string name="login_or_with">HOẶC ĐĂNG NHẬP VỚI</string>
+    <string name="brand_tagline">VIỆT PHỤC TRUYỀN THỐNG</string>
+    <string name="brand_name_caps">TIREDCITY</string>
+
+    <!-- Register screen -->
+    <string name="register_title">Tạo tài khoản</string>
+    <string name="register_subtitle">Đăng ký để bắt đầu hành trình Việt phục</string>
+    <string name="register_have_account">Đã có tài khoản? </string>
+    <string name="hint_confirm_password">Xác nhận mật khẩu</string>
+    <string name="register_agree_terms">Tôi đồng ý với Điều khoản &amp; Điều kiện</string>
+    <string name="error_confirm_password">Mật khẩu nhập lại không khớp</string>
+    <string name="error_agree_terms">Vui lòng đồng ý với điều khoản</string>
+
+    <!-- Splash -->
+    <string name="splash_slogan">Giữ hồn Việt trong từng thiết kế</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_next">Tiếp theo</string>
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_title_1">Khám phá Việt Phục</string>
+    <string name="onboarding_desc_1">Áo dài, áo tấc, nhật bình… bộ sưu tập trang phục Việt Nam truyền thống được chế tác tinh xảo từ làng nghề lâu đời.</string>
+    <string name="onboarding_title_2">Phong cách theo mệnh</string>
+    <string name="onboarding_desc_2">AI gợi ý trang phục hợp mệnh Ngũ Hành và cung hoàng đạo của bạn, mang lại may mắn và vẻ đẹp riêng.</string>
+    <string name="onboarding_title_3">Trợ lý thời trang AI</string>
+    <string name="onboarding_desc_3">Chat trực tiếp với trợ lý AI để được tư vấn phong cách Việt phục cá nhân hoá mọi lúc, mọi nơi.</string>
+    <string name="onboarding_title_4">Đặt hàng dễ dàng</string>
+    <string name="onboarding_desc_4">Chọn trang phục yêu thích và đặt hàng chỉ với vài chạm, giao tận nơi toàn quốc.</string>
+    <string name="onboarding_title_5">Bắt đầu hành trình</string>
+    <string name="onboarding_desc_5">Tạo tài khoản và khám phá thế giới Việt phục cùng TiredCity ngay hôm nay.</string>
 
     <!-- Order statuses -->
     <string name="order_pending">Chờ xác nhận</string>
@@ -102,15 +237,203 @@
     <string name="label_menh_tags">Phù hợp mệnh</string>
     <string name="out_of_stock">Hết hàng</string>
 
+    <!-- Shop / Search / Category -->
+    <string name="nav_back">Quay lại</string>
+    <string name="search_hint">Tìm kiếm trang phục…</string>
+    <string name="search_recent">Tìm kiếm gần đây</string>
+    <string name="search_clear_all">Xóa tất cả</string>
+    <string name="search_popular">Tìm kiếm phổ biến</string>
+    <string name="search_empty_title">Không tìm thấy kết quả</string>
+    <string name="search_empty_desc">Thử tìm kiếm với từ khóa khác</string>
+    <string name="search_searching">Đang tìm…</string>
+    <string name="search_result_count">Tìm thấy %1$d kết quả</string>
+    <string name="search_not_found">Không tìm thấy \"%1$s\"</string>
+    <string name="sort_popular">Phổ biến</string>
+    <string name="sort_newest">Mới nhất</string>
+    <string name="sort_price_asc">Giá tăng dần</string>
+    <string name="sort_price_desc">Giá giảm dần</string>
+    <string name="category_default_title">Danh mục</string>
+
+    <!-- Profile / Wardrobe / Orders -->
+    <string name="profile_title">Hồ sơ của tôi</string>
+    <string name="edit_profile_title">Chỉnh sửa hồ sơ</string>
+    <string name="edit_change_avatar">Đổi ảnh</string>
+    <string name="edit_label_address">Địa chỉ giao hàng</string>
+    <string name="addr_province">Tỉnh/Thành phố</string>
+    <string name="addr_district">Quận/Huyện</string>
+    <string name="addr_ward">Phường/Xã</string>
+    <string name="addr_street">Số nhà, tên đường</string>
+    <string name="edit_save">Lưu thay đổi</string>
+    <string name="wardrobe_empty_title">Tủ đồ trống</string>
+    <string name="wardrobe_empty_desc">Lưu những trang phục yêu thích\nvào tủ đồ của bạn</string>
+    <string name="wardrobe_explore">Khám phá ngay</string>
+    <string name="order_history_title">Lịch sử đơn hàng</string>
+    <string name="order_tab_all">Tất cả</string>
+    <string name="order_tab_pending">Chờ xử lý</string>
+    <string name="order_tab_shipping">Đang giao</string>
+    <string name="order_tab_received">Đã nhận</string>
+    <string name="order_tab_cancelled">Đã hủy</string>
+    <string name="order_empty_title">Chưa có đơn hàng nào</string>
+    <string name="order_empty_desc">Hãy khám phá và đặt những trang phục\nViệt Phục đầu tiên của bạn</string>
+    <string name="order_shop_now">Mua sắm ngay</string>
+
+    <!-- Cart / Payment / Tracking -->
+    <string name="cart_title">Giỏ hàng</string>
+    <string name="order_code_prefix">Mã đơn: </string>
+    <string name="cart_total">Tổng thanh toán</string>
+    <string name="label_total">Tổng tiền</string>
+    <string name="pay_change">Thay đổi</string>
+    <string name="pay_products">Sản phẩm</string>
+    <string name="pay_method">Phương thức thanh toán</string>
+    <string name="pay_cod">💵  Thanh toán khi nhận hàng (COD)</string>
+    <string name="pay_bank">🏦  Chuyển khoản ngân hàng</string>
+    <string name="pay_momo">📱  Ví MoMo</string>
+    <string name="pay_note_label">Ghi chú đơn hàng</string>
+    <string name="pay_note_hint">Ghi chú cho người bán (tùy chọn)…</string>
+    <string name="pay_summary">Tóm tắt đơn hàng</string>
+    <string name="pay_subtotal">Tạm tính</string>
+    <string name="pay_shipping">Phí vận chuyển</string>
+    <string name="pay_grand_total">Tổng cộng</string>
+    <string name="pay_place_order">Đặt hàng</string>
+    <string name="track_title">Theo dõi đơn hàng</string>
+    <string name="track_order_id">Mã đơn hàng</string>
+    <string name="track_order_date">Ngày đặt</string>
+    <string name="track_status">Trạng thái đơn hàng</string>
+    <string name="track_address">📍  Địa chỉ giao hàng</string>
+    <string name="track_ordered_items">Sản phẩm đã đặt</string>
+    <string name="track_step_placed">Đã đặt hàng</string>
+    <string name="track_step_confirmed">Đã xác nhận</string>
+    <string name="track_step_shipping">Đang giao hàng</string>
+    <string name="track_step_delivered">Đã nhận hàng</string>
+
+    <!-- Styling: Category section -->
+    <string name="title_category">Danh mục</string>
+    <string name="action_view_all">Xem tất cả</string>
+    <string name="view_all">Xem tất cả</string>
+
+    <!-- Category card titles + descriptions -->
+    <string name="cat_ao_dai">ÁO DÀI</string>
+    <string name="desc_ao_dai">Áo dài, Áo dài cách tân,…</string>
+    <string name="cat_ao_tac">ÁO TẤC</string>
+    <string name="desc_ao_tac">Áo Tấc, Áo Bào truyền thống,…</string>
+    <string name="cat_nhat_binh">NHẬT BÌNH</string>
+    <string name="desc_nhat_binh">Nhật Bình, Bào hoàng hậu,…</string>
+    <string name="cat_phu_kien">PHỤ KIỆN</string>
+    <string name="desc_phu_kien">Trâm cài, Vòng đeo tay, Nhẫn,…</string>
+
+    <!-- Search discovery screen -->
+    <string name="search_placeholder">Tìm kiếm…</string>
+    <string name="most_searched_title">Được tìm kiếm nhiều nhất</string>
+    <string name="suggested_for_you">Gợi ý cho bạn</string>
+    <string name="label_promotion">ƯU ĐÃI</string>
+    <string name="label_event">SỰ KIỆN</string>
+
+    <!-- Most-searched tags -->
+    <string name="tag_ao_thun">Áo thun</string>
+    <string name="tag_ao_croptop">Áo croptop</string>
+    <string name="tag_chan_vay">Chân váy</string>
+
+    <!-- Search suggestions (sample data) -->
+    <string name="search_promo_birthday">Voucher Sinh nhật tháng 06.2026</string>
+    <string name="search_event_coach_title">COACH | CAPTURE THE MOMENT WITH COACH</string>
+    <string name="search_event_coach_time">Từ 19/06/2026 - Đến 30/06/2026</string>
+    <string name="search_brand_kangol">KANGOL</string>
+    <string name="search_product_skirt_pocket">Chân váy phom suông midi túi hộp</string>
+    <string name="search_product_skirt_slit">Chân váy phom suông midi xẻ tà</string>
+
+    <!-- Styling / Chatbot / Explore / About -->
+    <string name="styling_title">Phong cách của bạn</string>
+    <string name="styling_subtitle">Khám phá phong cách phù hợp với mệnh và cung hoàng đạo</string>
+    <string name="styling_ai_title">Gợi ý phong cách AI</string>
+    <string name="styling_ai_desc">Trang phục hợp mệnh, hợp cung</string>
+    <string name="styling_chat_title">Trợ lý thời trang AI</string>
+    <string name="styling_chat_desc">Chat với AI để được tư vấn trực tiếp</string>
+    <string name="styling_recent">Gợi ý gần đây</string>
+    <string name="chatbot_name">Trợ lý TiredCity</string>
+    <string name="chatbot_subtitle">Gợi ý trang phục theo mệnh</string>
+    <string name="explore_tab_articles">Giới thiệu</string>
+    <string name="explore_tab_events">Cửa hàng</string>
+    <string name="about_hero_subtitle">Việt Phục – Nét đẹp truyền thống</string>
+    <string name="about_section_title">Về chúng tôi</string>
+    <string name="about_description">Tired City là thương hiệu thời trang Việt Phục hiện đại, kết hợp giữa nét đẹp truyền thống và phong cách đương đại. Chúng tôi mang đến những bộ trang phục được chế tác tinh xảo từ các làng nghề truyền thống Việt Nam.</string>
+    <string name="about_contact_title">Liên hệ</string>
+    <string name="about_email">📧  contact@tiredcity.vn</string>
+    <string name="about_phone">📞  0900 000 000</string>
+    <string name="about_location">📍  TP. Hồ Chí Minh, Việt Nam</string>
+
+    <!-- AI Styling -->
+    <string name="aistyle_palette">🎨  Bảng màu hợp mệnh</string>
+    <string name="aistyle_suggestions">✨  Gợi ý trang phục</string>
+    <string name="aistyle_refresh">Làm mới</string>
+    <string name="aistyle_tips">💡  Lời khuyên phong cách</string>
+    <string name="aistyle_color_desc">Màu trắng, vàng, bạc và xám mang lại vận khí tốt cho người mệnh Kim.</string>
+    <string name="aistyle_tip_desc">Người mệnh Kim nên chọn những trang phục có gam màu sáng, đường cắt may tinh tế. Áo dài lụa trắng hoặc vàng đồng là lựa chọn hoàn hảo cho các dịp lễ trang trọng.</string>
+
     <!-- Profile -->
     <string name="label_my_orders">Đơn hàng của tôi</string>
     <string name="label_wardrobe">Tủ đồ của tôi</string>
     <string name="label_settings">Cài đặt</string>
+    <string name="profile_hello">Xin chào,</string>
+    <string name="label_chat_tiredcity">Chia sẻ với TiredCity</string>
+    <string name="label_contact_tiredcity">Liên hệ với TiredCity</string>
+    <string name="label_notification_settings">Cài đặt thông báo</string>
+    <string name="label_sales_policy">Chính sách bán hàng</string>
+    <string name="label_general_settings">Cài đặt chung</string>
+    <string name="label_terms_conditions">Điều khoản &amp; Điều kiện</string>
+    <!-- Quick actions -->
+    <string name="label_styling_ai">Phối đồ AI</string>
+    <string name="label_orders_short">Đơn hàng</string>
+    <string name="label_find_store">Tìm cửa hàng</string>
+    <string name="label_promotions">Ưu đãi</string>
+    <string name="label_events">Sự kiện</string>
+    <string name="label_blogs">Tin tức</string>
 
     <!-- Chatbot -->
-    <string name="chatbot_welcome">Xin chào! Tôi là trợ lý thời trang Việt Phục. Bạn muốn tìm trang phục hợp mệnh nào?</string>
+    <string name="bot_intro_message">Chào bạn! Mình là trợ lý ảo từ thế giới sáng tạo của TiredCity</string>
+    <string name="chatbot_welcome">Xin chào! Tôi là trợ lý thời trang của TiredCity. Bạn muốn tìm trang phục như thế nào?</string>
     <string name="hint_message">Nhập tin nhắn…</string>
     <string name="btn_send">Gửi</string>
+
+    <!-- News / Events screens -->
+    <string name="empty_news">Chưa có bài viết nào</string>
+    <string name="empty_events">Chưa có sự kiện nào</string>
+    <string name="cd_back">Quay lại</string>
+
+    <!-- Rewards / Promotions (Ưu đãi) -->
+    <string name="reward_title">ƯU ĐÃI</string>
+    <string name="reward_tab_all">TẤT CẢ</string>
+    <string name="reward_tab_birthday">SINH NHẬT</string>
+    <string name="reward_tab_last_chance">LAST CHANCE</string>
+    <string name="reward_tab_featured">NỔI BẬT</string>
+    <string name="reward_use_now">Sử dụng ngay</string>
+    <string name="reward_empty_title">Nhiều ưu đãi mới sắp ra mắt!</string>
+    <string name="reward_explore">KHÁM PHÁ</string>
+    <string name="reward_voucher_birthday_title">Birthday TO YOU</string>
+    <string name="reward_voucher_birthday_subtitle">Voucher Sinh nhật tháng 7</string>
+    <string name="cd_gift">Quà tặng</string>
+
+    <!-- Reward: Voucher Tri Ân (BST Áo Dài / Nhật Bình) -->
+    <string name="reward_voucher_tri_an_title">Voucher Tri Ân</string>
+    <string name="reward_voucher_tri_an_subtitle">BST Áo Dài / Nhật Bình</string>
+
+    <!-- Voucher detail screen -->
+    <string name="voucher_detail_validity">01/06/2026 - 30/06/2026</string>
+    <string name="voucher_detail_time">00:00 - 23:59</string>
+    <string name="voucher_detail_days_left">CÒN 4 NGÀY</string>
+    <string name="voucher_detail_desc">Voucher Tri Ân - BST Áo Dài / Nhật Bình\nGiảm giá cho trang phục truyền thống nguyên giá (*)\n\nHSD: từ 01/06/2026 đến hết 30/06/2026\n\nTiredCity gửi tặng quý khách ưu đãi đặc biệt khi mua các thiết kế trong Bộ Sưu Tập Áo Dài và Nhật Bình:\n- Giảm ngay trên trang phục truyền thống nguyên giá.\n- Áp dụng cho cả mua tại cửa hàng và trực tuyến.\n\n(*) Áp dụng tại toàn bộ hệ thống TiredCity với sản phẩm thuộc BST Áo Dài / Nhật Bình nguyên giá. Không áp dụng đồng thời với các chương trình khuyến mãi khác.</string>
+    <string name="voucher_gifted">ĐƯỢC TẶNG</string>
+    <string name="voucher_use_now">SỬ DỤNG NGAY</string>
+    <string name="cd_share">Chia sẻ</string>
+
+    <!-- Barcode redemption screen -->
+    <string name="barcode_in_store_title">Mua hàng tại cửa hàng: </string>
+    <string name="barcode_in_store_desc">Vui lòng đưa mã cho nhân viên khi thanh toán tại cửa hàng để sử dụng ưu đãi.</string>
+    <string name="barcode_label">Mã vạch ưu đãi</string>
+    <string name="barcode_online_title">Mua hàng trực tuyến: </string>
+    <string name="barcode_online_desc">Nhập mã khuyến mãi này khi thanh toán tại ứng dụng TiredCity hoặc website www.tiredcity.com</string>
+    <string name="barcode_code">39TRIAN0626O1VW1WCQXZ</string>
+    <string name="barcode_copy">Copy</string>
+    <string name="barcode_copied">Đã sao chép mã ưu đãi</string>
 
     <!-- Contact & Store Locator -->
     <string name="contact_customer_care">CUSTOMER CARE</string>
@@ -238,4 +561,57 @@
         • Request deletion of personal data according to current regulations.
     ]]></string>
     <string name="str_policy_term">POLICY &amp; TERMS</string>
+
+    <!-- ─── Shop Explore screen ──────────────────────────────────── -->
+    <!-- Horizontal section tabs -->
+    <string name="shop_tab_women">Nữ</string>
+    <string name="shop_tab_men">Nam</string>
+    <string name="shop_tab_children">Trẻ em</string>
+    <string name="shop_tab_beauty">Làm đẹp</string>
+    <string name="shop_tab_collections">Bộ sưu tập</string>
+
+    <!-- Promo ticker (sliding yellow bar) -->
+    <string name="ticker_msg_1">Ưu đãi lên đến 50% + Giảm thêm 15%</string>
+    <string name="ticker_msg_2">Miễn phí vận chuyển đơn từ 500.000đ</string>
+    <string name="ticker_msg_3">Thu Đông 2025 – Bộ sưu tập mới nhất</string>
+
+    <!-- Static banner below ticker -->
+    <string name="explore_static_banner_title">Bộ sưu tập Thu – Đông 2025</string>
+
+    <!-- Filter button description -->
+    <string name="explore_filter_desc">Bộ lọc</string>
+
+    <!-- Vertical category cards: title (all-caps display) + subtitle -->
+    <string name="explore_cat_ao_dai_title">ÁO DÀI</string>
+    <string name="explore_cat_ao_dai_sub">Áo dài, Áo dài cách tân,…</string>
+    <string name="explore_cat_ao_tac_title">ÁO TẤC</string>
+    <string name="explore_cat_ao_tac_sub">Áo Tấc, Áo Bào truyền thống,…</string>
+    <string name="explore_cat_nhat_binh_title">NHẬT BÌNH</string>
+    <string name="explore_cat_nhat_binh_sub">Nhật Bình, Bào hoàng hậu,…</string>
+    <string name="explore_cat_phu_kien_title">PHỤ KIỆN</string>
+    <string name="explore_cat_phu_kien_sub">Trâm cài, Vòng đeo tay, Nhẫn,…</string>
+    <string name="explore_cat_bo_tron_title">BỘ TRỌN</string>
+    <string name="explore_cat_bo_tron_sub">Bộ Áo Dài, Bộ Nhật Bình đầy đủ,…</string>
+    <string name="explore_cat_khan_dong_title">KHĂN ĐÓNG</string>
+    <string name="explore_cat_khan_dong_sub">Khăn đóng, Bao đầu truyền thống,…</string>
+    <string name="explore_cat_tre_em_title">TRANG PHỤC TRẺ EM</string>
+    <string name="explore_cat_tre_em_sub">Áo dài mini, Trang phục truyền thống,…</string>
+
+    <!-- Header buttons (content descriptions) -->
+    <string name="cd_cart">Giỏ hàng</string>
+    <string name="cd_notifications">Thông báo</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">Thông báo</string>
+    <string name="notification_empty_title">Chưa có thông báo</string>
+    <string name="notification_empty_desc">Các cập nhật về đơn hàng và ưu đãi\nsẽ xuất hiện ở đây.</string>
+    <string name="notif_order_title">Đơn hàng đang được giao</string>
+    <string name="notif_order_message">Đơn #DH2024001 của bạn đang trên đường giao tới.</string>
+    <string name="notif_promo_title">Ưu đãi mùa hè 🎉</string>
+    <string name="notif_promo_message">Giảm đến 30% cho bộ sưu tập Áo Dài mới. Đừng bỏ lỡ!</string>
+    <string name="notif_system_title">Chào mừng đến với Tired City</string>
+    <string name="notif_system_message">Khám phá thế giới Việt phục truyền thống cùng chúng tôi.</string>
+    <string name="notif_time_recent">2 giờ trước</string>
+    <string name="notif_time_today">Hôm nay</string>
+    <string name="notif_time_yesterday">Hôm qua</string>
 </resources>

@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:maxWidth="260dp"
-        android:background="@drawable/bg_button_gold"
+        android:background="@drawable/tc_bg_bubble_user"
         android:paddingHorizontal="14dp"
         android:paddingVertical="10dp"
-        android:textColor="@color/brand_dark"
+        android:textColor="@color/white"
         android:textSize="14sp"
         tools:text="Tôi muốn tìm áo dài phù hợp mệnh Hỏa" />
 </LinearLayout>

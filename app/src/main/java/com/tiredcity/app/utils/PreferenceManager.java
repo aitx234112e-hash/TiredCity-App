@@ -95,6 +95,49 @@ public class PreferenceManager {
     public void setOnboardingShown(boolean shown) { setOnboardingDone(shown); }
     public boolean isOnboardingShown()             { return isOnboardingDone(); }
 
+    // ── Remember Me ───────────────────────────────────────────────────────────
+
+    public void setRememberMe(boolean remember) {
+        prefs.edit().putBoolean(Constants.KEY_REMEMBER_ME, remember).apply();
+    }
+
+    public boolean isRememberMeEnabled() {
+        return prefs.getBoolean(Constants.KEY_REMEMBER_ME, false);
+    }
+
+    public void saveCredentials(String email, String password) {
+        prefs.edit()
+             .putString(Constants.KEY_SAVED_EMAIL, email)
+             .putString(Constants.KEY_SAVED_PASSWORD, password)
+             .apply();
+    }
+
+    public String getSavedEmail() {
+        return prefs.getString(Constants.KEY_SAVED_EMAIL, "");
+    }
+
+    public String getSavedPassword() {
+        return prefs.getString(Constants.KEY_SAVED_PASSWORD, "");
+    }
+
+    public void clearCredentials() {
+        prefs.edit()
+             .remove(Constants.KEY_SAVED_EMAIL)
+             .remove(Constants.KEY_SAVED_PASSWORD)
+             .remove(Constants.KEY_REMEMBER_ME)
+             .apply();
+    }
+
+    // ── Avatar (đường dẫn ảnh đại diện đã chọn) ───────────────────────────────
+
+    public void setAvatarPath(String path) {
+        prefs.edit().putString(Constants.KEY_AVATAR, path).apply();
+    }
+
+    public String getAvatarPath() {
+        return prefs.getString(Constants.KEY_AVATAR, null);
+    }
+
     // ── Clear ─────────────────────────────────────────────────────────────────
 
     public void clearAll() {

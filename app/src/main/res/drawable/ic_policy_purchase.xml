@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide "shopping-bag" — Chính sách mua hàng -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="@color/brand_red">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="@color/brand_red"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M6,2 L3,6 V20 a2,2 0 0 0 2,2 H19 a2,2 0 0 0 2,-2 V6 L18,2 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="@color/brand_red"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M3,6 H21" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="@color/brand_red"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M16,10 a4,4 0 0 1 -8,0" />
+</vector>
