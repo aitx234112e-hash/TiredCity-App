@@ -9,6 +9,12 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
+    <!-- ── Package visibility (API 30+): cần khai báo để getLaunchIntentForPackage()
+         thấy được app Quản trị (com.tiredcity.admin) khi đã cài ── -->
+    <queries>
+        <package android:name="com.tiredcity.admin" />
+    </queries>
+
     <application
         android:name=".TiredCityApp"
         android:allowBackup="true"
@@ -174,6 +180,32 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- ── Settings (Cài đặt thông báo & Cài đặt chung) ──────────────── -->
+        <activity
+            android:name=".ui.settings.NotificationSettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.settings.GeneralSettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.settings.SecuritySettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.settings.AppInfoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.settings.AccountDeletionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
     </application>
 </manifest>

@@ -138,6 +138,20 @@ public class PreferenceManager {
         return prefs.getString(Constants.KEY_AVATAR, null);
     }
 
+    // ── Settings toggles (generic boolean store) ─────────────────────────────
+    //
+    // Backs both the Notification-settings switches and the Security PIN toggle.
+    // Keys live in Constants (KEY_NOTIF_* / KEY_PIN_UNLOCK).
+
+    public void setToggle(String key, boolean value) {
+        prefs.edit().putBoolean(key, value).apply();
+    }
+
+    /** Notification toggles default to ON; PIN unlock should pass false as default. */
+    public boolean getToggle(String key, boolean defaultValue) {
+        return prefs.getBoolean(key, defaultValue);
+    }
+
     // ── Clear ─────────────────────────────────────────────────────────────────
 
     public void clearAll() {

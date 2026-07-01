@@ -66,6 +66,16 @@
         <item name="android:textColor">@color/tc_text_secondary</item>
     </style>
 
+    <!-- Tab nhóm trang Danh mục (NỮ / NAM / TRẺ EM…): đậm, giữ in hoa từ string. -->
+    <style name="TextAppearance.TC.CategoryTab" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+
     <style name="TextAppearance.TC.Nav" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">@dimen/tc_text_tiny</item>
@@ -293,6 +303,54 @@
         <item name="titleTextAppearance">@style/TextAppearance.TC.SectionHeader</item>
         <item name="titleTextColor">@color/tc_text_primary</item>
         <item name="android:background">@color/tc_bg_main</item>
+    </style>
+
+    <!-- ─── Settings: switch row + rating bar ───────────────────────── -->
+
+    <!-- SwitchCompat: track đỏ son khi BẬT, thumb trắng. -->
+    <style name="Widget.TC.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="trackTint">@color/tc_switch_track_tint</item>
+        <item name="thumbTint">@color/tc_switch_thumb_tint</item>
+    </style>
+
+    <!-- RatingBar 5 sao vàng kim (dialog đánh giá).
+         Dùng sao bitmap mặc định của AppCompat (tile được) rồi nhuộm vàng;
+         vector tự vẽ không tile qua 5 sao nên chỉ hiện 1 sao. -->
+    <style name="Widget.TC.RatingBar" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressTint">@color/tc_rating_gold</item>
+        <item name="android:secondaryProgressTint">@android:color/transparent</item>
+        <item name="android:progressBackgroundTint">@color/tc_sand</item>
+        <item name="android:numStars">5</item>
+        <item name="android:stepSize">1</item>
+        <item name="android:isIndicator">false</item>
+    </style>
+
+    <!-- Tiêu đề canh giữa cho toolbar các trang cài đặt. -->
+    <style name="TextAppearance.TC.ToolbarCentered" parent="TextAppearance.TC.SectionHeader">
+        <item name="android:textSize">@dimen/tc_text_lg</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+
+    <!-- Dải tiêu đề nhóm (xám, nền linen nhạt). -->
+    <style name="SettingsSectionHeader">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/bg_primary</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Vạch ngăn giữa các hàng cài đặt (thụt lề trái). -->
+    <style name="SettingsRowDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/bg_subtle</item>
+        <item name="android:layout_marginStart">20dp</item>
     </style>
 
 </resources>

@@ -2,50 +2,128 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F1E7">
+    android:background="@color/bg_primary">
 
-    <!-- Header -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- ── Search header (ô tìm kiếm + quét mã + giỏ hàng) ── -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/bg_surface"
+        android:elevation="2dp"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="12dp"
         android:paddingBottom="12dp">
 
-        <TextView
-            android:id="@+id/tv_header_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_category"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_view_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/action_view_all"
-            android:textColor="@color/tc_red"
-            android:textSize="14sp"
-            android:padding="4dp"
+        <!-- Ô tìm kiếm -->
+        <LinearLayout
+            android:id="@+id/ll_search"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/tc_bg_search"
+            android:paddingStart="14dp"
+            android:paddingEnd="8dp"
             android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:focusable="true">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_search"
+                app:tint="@color/tc_text_secondary"
+                android:contentDescription="@string/search_hint" />
 
-    <!-- Category list -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="@string/search_hint"
+                android:textColor="@color/tc_input_hint"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <ImageView
+                android:id="@+id/ib_scan"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_scan"
+                app:tint="@color/tc_text_secondary"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/cd_scan" />
+        </LinearLayout>
+
+        <!-- Giỏ hàng -->
+        <FrameLayout
+            android:id="@+id/btn_cart"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="6dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_cart"
+                app:tint="@color/tc_red"
+                android:contentDescription="@string/cd_cart" />
+
+            <TextView
+                android:id="@+id/tv_cart_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:minWidth="17dp"
+                android:minHeight="17dp"
+                android:paddingHorizontal="4dp"
+                android:gravity="center"
+                android:background="@drawable/tc_badge_count"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="3"
+                tools:visibility="visible" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- ── Tab nhóm đối tượng (NỮ / NAM / TRẺ EM / PHỤ KIỆN / LỄ HỘI) ── -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_groups"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_surface"
+        android:elevation="2dp"
+        app:tabMode="scrollable"
+        app:tabGravity="start"
+        app:tabPaddingStart="14dp"
+        app:tabPaddingEnd="14dp"
+        app:tabIndicatorColor="@color/tc_red"
+        app:tabIndicatorHeight="3dp"
+        app:tabIndicatorFullWidth="false"
+        app:tabSelectedTextColor="@color/tc_red"
+        app:tabTextColor="@color/tc_text_secondary"
+        app:tabRippleColor="@color/tc_red_pale"
+        app:tabTextAppearance="@style/TextAppearance.TC.CategoryTab" />
+
+    <!-- ── Danh sách danh mục ── -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_categories"
         android:layout_width="match_parent"
@@ -53,6 +131,7 @@
         android:layout_weight="1"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:paddingTop="12dp"
         android:clipToPadding="false" />
 
 </LinearLayout>

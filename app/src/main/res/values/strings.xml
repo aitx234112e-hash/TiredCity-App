@@ -177,7 +177,17 @@
     <string name="login_subtitle">Đăng nhập để tiếp tục</string>
     <string name="login_no_account">Chưa có tài khoản? </string>
     <string name="login_or_with">HOẶC ĐĂNG NHẬP VỚI</string>
+    <string name="role_customer">Khách hàng</string>
+    <string name="role_admin">Quản trị</string>
+    <string name="admin_app_not_installed">Chưa cài đặt app Quản trị (TiredCity Admin). Vui lòng build &amp; cài app-admin trước.</string>
+    <string name="google_signin_failed">Đăng nhập Google thất bại</string>
+    <string name="google_signin_not_configured">Google Sign-In chưa cấu hình Web Client ID — đang dùng chế độ demo.</string>
     <string name="brand_tagline">VIỆT PHỤC TRUYỀN THỐNG</string>
+
+    <!-- Web Client ID của OAuth (Google Cloud Console). THAY bằng client id thật để bật idToken.
+         Để nguyên giá trị mặc định này nghĩa là chưa cấu hình → app vẫn hiện hộp chọn tài khoản Google
+         nhưng KHÔNG lấy idToken (không gửi backend được). -->
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID.apps.googleusercontent.com</string>
     <string name="brand_name_caps">TIREDCITY</string>
 
     <!-- Register screen -->
@@ -311,6 +321,17 @@
     <string name="action_view_all">Xem tất cả</string>
     <string name="view_all">Xem tất cả</string>
 
+    <!-- Category page: audience tabs + chrome -->
+    <string name="cat_tab_women">NỮ</string>
+    <string name="cat_tab_men">NAM</string>
+    <string name="cat_tab_kids">TRẺ EM</string>
+    <string name="cat_tab_accessory">PHỤ KIỆN</string>
+    <string name="cat_tab_festival">LỄ HỘI</string>
+    <string name="filter_label">Bộ lọc</string>
+    <string name="cd_scan">Quét mã</string>
+    <string name="cd_view_mode">Chế độ xem</string>
+    <string name="filter_coming_soon">Bộ lọc sắp ra mắt</string>
+
     <!-- Category card titles + descriptions -->
     <string name="cat_ao_dai">ÁO DÀI</string>
     <string name="desc_ao_dai">Áo dài, Áo dài cách tân,…</string>
@@ -368,6 +389,7 @@
     <string name="aistyle_tips">💡  Lời khuyên phong cách</string>
     <string name="aistyle_color_desc">Màu trắng, vàng, bạc và xám mang lại vận khí tốt cho người mệnh Kim.</string>
     <string name="aistyle_tip_desc">Người mệnh Kim nên chọn những trang phục có gam màu sáng, đường cắt may tinh tế. Áo dài lụa trắng hoặc vàng đồng là lựa chọn hoàn hảo cho các dịp lễ trang trọng.</string>
+    <string name="aistyle_menh_tagline">Gợi ý phong cách theo ngũ hành bản mệnh</string>
 
     <!-- Profile -->
     <string name="label_my_orders">Đơn hàng của tôi</string>
@@ -614,4 +636,63 @@
     <string name="notif_time_recent">2 giờ trước</string>
     <string name="notif_time_today">Hôm nay</string>
     <string name="notif_time_yesterday">Hôm qua</string>
+
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  SETTINGS — Cài đặt thông báo & Cài đặt chung                      ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+
+    <!-- ── Notification settings (THÔNG BÁO) ── -->
+    <string name="settings_notif_title">THÔNG BÁO</string>
+    <string name="settings_notif_section_news">Tin tức &amp; Thông báo</string>
+    <string name="settings_notif_section_promo">Khuyến mãi</string>
+    <string name="settings_notif_push_title">Thông báo đẩy</string>
+    <string name="settings_notif_email_title">Email</string>
+    <string name="settings_notif_zns_title">ZNS</string>
+    <string name="settings_notif_sms_title">SMS</string>
+
+    <!-- ── General settings (CHUNG) ── -->
+    <string name="settings_general_title">CHUNG</string>
+    <string name="settings_general_security_title">Bảo mật</string>
+    <string name="settings_general_app_info_title">Thông tin ứng dụng</string>
+    <string name="settings_general_rate_title">Đánh giá ứng dụng</string>
+    <string name="settings_general_delete_title">Yêu cầu xóa tài khoản</string>
+
+    <!-- ── Security (BẢO MẬT) ── -->
+    <string name="settings_security_title">BẢO MẬT</string>
+    <string name="settings_security_pin_title">Mở khóa bằng mã PIN</string>
+    <string name="settings_security_note">Lưu ý: Bạn chỉ có thể mở khóa bằng Face ID và vân tay sau khi thiết lập mã PIN.</string>
+
+    <!-- ── App info (THÔNG TIN ỨNG DỤNG) ── -->
+    <string name="settings_app_info_title">THÔNG TIN ỨNG DỤNG</string>
+    <string name="settings_app_info_version">Phiên bản 4.4.0</string>
+    <string name="settings_app_info_notes">- Added search functionality powered by Typesense\n- Improved validation for user information</string>
+    <string name="settings_app_info_updated">Cập nhật lần cuối: 23/06/26</string>
+
+    <!-- ── Rate app dialog ── -->
+    <string name="settings_rate_title">Đánh giá ứng dụng</string>
+    <string name="settings_rate_subtitle">Hãy cho chúng tôi biết mức độ hài lòng của bạn\nkhi bạn trải nghiệm ứng dụng.</string>
+    <string name="settings_rate_send">GỬI</string>
+    <string name="settings_rate_thanks">Cảm ơn bạn đã đánh giá!</string>
+    <string name="cd_close">Đóng</string>
+
+    <!-- ── Account deletion (Yêu cầu xóa tài khoản) ── -->
+    <string name="settings_delete_title">YÊU CẦU XÓA TÀI KHOẢN</string>
+    <string name="settings_delete_header">Vì sao bạn muốn rời đi?</string>
+    <string name="settings_delete_subheader">Chia sẻ lý do giúp chúng tôi cải thiện trải nghiệm cho bạn.</string>
+    <string name="settings_delete_reason1_title">Tôi không còn sử dụng ứng dụng</string>
+    <string name="settings_delete_reason1_desc">Gần đây tôi hiếm khi mở ứng dụng.</string>
+    <string name="settings_delete_reason2_title">Tôi tìm thấy lựa chọn tốt hơn</string>
+    <string name="settings_delete_reason2_desc">Một ứng dụng khác đáp ứng nhu cầu của tôi tốt hơn.</string>
+    <string name="settings_delete_reason3_title">Lo ngại về quyền riêng tư</string>
+    <string name="settings_delete_reason3_desc">Tôi lo lắng về cách dữ liệu của mình được sử dụng.</string>
+    <string name="settings_delete_reason4_title">Nhận quá nhiều thông báo</string>
+    <string name="settings_delete_reason4_desc">Ứng dụng gửi cho tôi quá nhiều thông báo.</string>
+    <string name="settings_delete_reason5_title">Lý do khác</string>
+    <string name="settings_delete_reason5_desc">Lý do của tôi không có trong danh sách trên.</string>
+    <string name="settings_delete_warning">Tài khoản và toàn bộ dữ liệu của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục.</string>
+    <string name="settings_delete_confirm">Gửi yêu cầu xóa</string>
+    <string name="settings_delete_submitted">Đã gửi yêu cầu xóa tài khoản.</string>
+    <string name="cd_settings_row_chevron">Mở</string>
 </resources>

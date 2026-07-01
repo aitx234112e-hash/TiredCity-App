@@ -23,6 +23,19 @@ public final class Constants {
     public static final String KEY_SAVED_PASSWORD   = "key_saved_password";
     public static final String KEY_AVATAR           = "key_avatar";
 
+    // Settings — notification toggles (default ON). Group "news" & "promo".
+    public static final String KEY_NOTIF_NEWS_PUSH  = "key_notif_news_push";
+    public static final String KEY_NOTIF_NEWS_EMAIL = "key_notif_news_email";
+    public static final String KEY_NOTIF_NEWS_ZNS   = "key_notif_news_zns";
+    public static final String KEY_NOTIF_NEWS_SMS   = "key_notif_news_sms";
+    public static final String KEY_NOTIF_PROMO_PUSH  = "key_notif_promo_push";
+    public static final String KEY_NOTIF_PROMO_EMAIL = "key_notif_promo_email";
+    public static final String KEY_NOTIF_PROMO_ZNS   = "key_notif_promo_zns";
+    public static final String KEY_NOTIF_PROMO_SMS   = "key_notif_promo_sms";
+
+    // Settings — security
+    public static final String KEY_PIN_UNLOCK       = "key_pin_unlock";
+
     // Intent extras
     public static final String EXTRA_PRODUCT_ID = "extra_product_id";
     public static final String EXTRA_ORDER_ID   = "extra_order_id";

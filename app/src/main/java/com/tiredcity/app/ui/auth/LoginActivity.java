@@ -1,10 +1,31 @@
 package com.tiredcity.app.ui.auth;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.android.gms.common.api.ApiException;
+
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+
+import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.ApiResponse;
 import com.tiredcity.app.data.model.User;
 import com.tiredcity.app.data.model.UserProfile;
@@ -15,6 +36,12 @@ import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.main.MainActivity;
 import com.tiredcity.app.ui.onboarding.OnboardingActivity;
 import com.tiredcity.app.utils.LocaleHelper;
+import com.tiredcity.app.utils.MenhCalculator;
+
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,8 +55,18 @@ public class LoginActivity extends BaseActivity {
     private static final String DEMO_TOKEN    = "demo-token-local";
     private static final String DEMO_USER_ID  = "demo-user";
 
+    // Package của app Quản trị (app-admin/). Chọn "Quản trị" sẽ mở app này nếu đã cài.
+    private static final String ADMIN_PACKAGE = "com.tiredcity.admin";
+    // Khoá gửi kèm email/mật khẩu vừa nhập sang app Quản trị (phải khớp với LoginActivity bên app-admin)
+    // để app đó vào thẳng Dashboard, không hiện lại form đăng nhập riêng.
+    private static final String EXTRA_ADMIN_EMAIL    = "com.tiredcity.admin.extra.EMAIL";
+    private static final String EXTRA_ADMIN_PASSWORD = "com.tiredcity.admin.extra.PASSWORD";
+
     private ActivityLoginBinding binding;
     private AuthRepository authRepository;
+
+    private GoogleSignInClient googleSignInClient;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +90,8 @@ public class LoginActivity extends BaseActivity {
         // AuthRepository/Retrofit tạo lazy trong attemptOnlineLogin() (đăng nhập offline không dùng).
 
         restoreSavedCredentials();
+        setupRoleToggle();
+        setupGoogleSignIn();
 
         binding.btnLogin.setOnClickListener(v -> {
             String email    = binding.etEmail.getText().toString().trim();
@@ -67,6 +106,13 @@ public class LoginActivity extends BaseActivity {
                 return;
             }
 
+            // Toggle "Quản trị" chỉ đổi màu chọn (xem setupRoleToggle) — việc kiểm tra
+            // email/mật khẩu và mở app Quản trị dồn hết về đây, giống hệt luồng "Khách hàng".
+            if (binding.toggleRole.getCheckedButtonId() == binding.btnRoleAdmin.getId()) {
+                openAdminApp(email, password);
+                return;
+            }
+
             persistRememberMe(email, password);
             attemptLogin(email, password);
         });
@@ -75,17 +121,94 @@ public class LoginActivity extends BaseActivity {
         binding.tvForgotPassword.setOnClickListener(v ->
                 startActivity(new Intent(this, ForgotPasswordActivity.class)));
 
-        binding.btnLanguage.setOnClickListener(v -> {
-            LocaleHelper.toggleLanguage(this);
-            recreate();
-        });
+        binding.btnLanguage.setOnClickListener(v -> switchLanguageInstantly());
 
-        // Đăng nhập mạng xã hội (demo — backend thật cần SDK Google/Facebook/Apple).
-        binding.btnGoogle.setOnClickListener(v -> socialLogin("Google", "user@gmail.com"));
+        // Google: dùng Google Sign-In thật (hiện hộp chọn tài khoản Google của máy).
+        binding.btnGoogle.setOnClickListener(v -> launchGoogleSignIn());
+        // Facebook vẫn là demo offline (cần SDK riêng để làm thật).
         binding.btnFacebook.setOnClickListener(v -> socialLogin("Facebook", "user@facebook.com"));
-        binding.btnApple.setOnClickListener(v -> socialLogin("Apple", "user@icloud.com"));
 
         setupSplashOverlay();
+    }
+
+    /**
+     * Toggle chọn vai trò — CHỈ đổi màu chọn (Đỏ đậm/Be nhạt), không làm gì khác. Đây là
+     * MaterialButtonToggleGroup nên bấm là đổi màu ngay lập tức, không có logic nào can thiệp
+     * ở đây nữa để tránh việc UI "nhảy" do vừa đổi màu vừa tự đảo ngược trong cùng một lần bấm.
+     * Việc kiểm tra email/mật khẩu và mở app Quản trị được xử lý khi bấm nút ĐĂNG NHẬP.
+     */
+    private void setupRoleToggle() {
+        binding.toggleRole.check(binding.btnRoleCustomer.getId());
+    }
+
+    /**
+     * Mở app Quản trị (TiredCity Admin) qua package, kèm email/mật khẩu vừa nhập để app đó
+     * đăng nhập luôn (không hiện lại form). Chưa cài thì hiện hộp thoại hướng dẫn.
+     */
+    private void openAdminApp(String email, String password) {
+        Intent launch = getPackageManager().getLaunchIntentForPackage(ADMIN_PACKAGE);
+        if (launch != null) {
+            launch.putExtra(EXTRA_ADMIN_EMAIL, email);
+            launch.putExtra(EXTRA_ADMIN_PASSWORD, password);
+            startActivity(launch);
+            // Trả toggle về "Khách hàng" để khi quay lại màn login không kẹt ở trạng thái Admin.
+            binding.toggleRole.check(binding.btnRoleCustomer.getId());
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.role_admin)
+                    .setMessage(R.string.admin_app_not_installed)
+                    .setPositiveButton(android.R.string.ok, (d, w) -> d.dismiss())
+                    .setOnDismissListener(d -> binding.toggleRole.check(binding.btnRoleCustomer.getId()))
+                    .show();
+        }
+    }
+
+    // ─────────────────────────────── Google Sign-In ───────────────────────────────
+
+    private void setupGoogleSignIn() {
+        GoogleSignInOptions.Builder gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestProfile();
+        if (isWebClientIdConfigured()) {
+            // Có Web Client ID thật → lấy idToken để gửi backend xác thực (RBAC/JWT).
+            gso.requestIdToken(getString(R.string.default_web_client_id));
+        }
+        googleSignInClient = GoogleSignIn.getClient(this, gso.build());
+
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> handleGoogleResult(result.getData()));
+    }
+
+    private boolean isWebClientIdConfigured() {
+        String id = getString(R.string.default_web_client_id);
+        return id != null && !id.startsWith("YOUR_WEB_CLIENT_ID");
+    }
+
+    private void launchGoogleSignIn() {
+        // Không còn Toast "chế độ demo" gây hiểu nhầm — chỉ báo khi đăng nhập THẬT SỰ lỗi
+        // (xử lý trong handleGoogleResult). Sign-in cơ bản (email + tên) vẫn chạy bình thường.
+        // Đăng xuất phiên cũ để LUÔN hiện hộp chọn tài khoản (không tự đăng nhập lại tài khoản trước).
+        googleSignInClient.signOut().addOnCompleteListener(t ->
+                googleSignInLauncher.launch(googleSignInClient.getSignInIntent()));
+    }
+
+    private void handleGoogleResult(Intent data) {
+        try {
+            GoogleSignInAccount account =
+                    GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException.class);
+            // idToken có giá trị khi đã cấu hình Web Client ID — gửi sang backend khi sẵn sàng:
+            //   authRepository.googleLogin(account.getIdToken())...
+            String email = account.getEmail();
+            String name  = account.getDisplayName();
+            completeSocialLogin("Google", email != null ? email : "", name);
+        } catch (ApiException e) {
+            if (e.getStatusCode() != GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
+                Toast.makeText(this,
+                        getString(R.string.google_signin_failed) + " (" + e.getStatusCode() + ")",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
@@ -113,6 +236,55 @@ public class LoginActivity extends BaseActivity {
                     })
                     .start();
         }, 1800);
+    }
+
+    /**
+     * Đổi ngôn ngữ NGAY trên màn hình đăng nhập — không recreate() Activity nên
+     * không còn hiện lại lớp phủ splash đỏ. Cập nhật Resources của chính Activity
+     * này tại chỗ rồi gán lại text cho từng view; các màn/dialog mở sau đó từ
+     * Activity này (vd hộp thoại "chưa cài app Quản trị") cũng dùng đúng ngôn ngữ mới.
+     */
+    private void switchLanguageInstantly() {
+        String newLang = LocaleHelper.toggleLanguage(this);
+
+        Resources res = getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        Locale locale = new Locale(newLang);
+        Locale.setDefault(locale);
+        config.setLocale(locale);
+        //noinspection deprecation
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
+        applyLocalizedStrings(res);
+    }
+
+    /** Gán lại text/hint cho toàn bộ view hiển thị ngôn ngữ trên màn đăng nhập. */
+    private void applyLocalizedStrings(Resources res) {
+        binding.btnLanguage.setText(res.getString(R.string.switch_to_other_lang));
+        // Icon cờ đổi theo ngôn ngữ (res/drawable-en/ic_flag_switch.xml = cờ Việt Nam khi đang
+        // English, res/drawable/ic_flag_switch.xml = cờ Anh khi đang tiếng Việt). Không recreate()
+        // nên phải tự nạp lại drawable từ Resources vừa cập nhật locale, nếu không icon đứng yên.
+        Drawable flag = AppCompatResources.getDrawable(this, R.drawable.ic_flag_switch);
+        binding.btnLanguage.setCompoundDrawablesWithIntrinsicBounds(flag, null, null, null);
+        binding.tvBrandTagline.setText(res.getString(R.string.brand_tagline));
+        binding.tvLoginSubtitle.setText(res.getString(R.string.login_subtitle));
+
+        binding.btnRoleCustomer.setText(res.getString(R.string.role_customer));
+        binding.btnRoleAdmin.setText(res.getString(R.string.role_admin));
+
+        binding.tvLabelEmail.setText(res.getString(R.string.hint_email));
+        binding.etEmail.setHint(res.getString(R.string.hint_email));
+        binding.tvLabelPassword.setText(res.getString(R.string.hint_password));
+        binding.etPassword.setHint(res.getString(R.string.hint_password));
+
+        binding.cbRememberMe.setText(res.getString(R.string.login_remember_me));
+        binding.tvForgotPassword.setText(res.getString(R.string.login_forgot_password));
+
+        binding.btnLogin.setText(res.getString(R.string.btn_login));
+        binding.tvOrWith.setText(res.getString(R.string.login_or_with));
+
+        binding.tvNoAccount.setText(res.getString(R.string.login_no_account));
+        binding.tvRegister.setText(res.getString(R.string.btn_register));
     }
 
     private void restoreSavedCredentials() {
@@ -167,23 +339,102 @@ public class LoginActivity extends BaseActivity {
      * Khi có backend: thay bằng Google Sign-In / Facebook Login SDK / Apple, lấy token rồi gọi server.
      */
     private void socialLogin(String provider, String email) {
+        completeSocialLogin(provider, email, null);
+    }
+
+    /**
+     * Hoàn tất đăng nhập mạng xã hội. {@code displayName} là tên thật lấy từ tài khoản
+     * (vd Google account); nếu null sẽ suy ra từ email hoặc dùng "{provider} User".
+     */
+    private void completeSocialLogin(String provider, String email, String displayName) {
         preferenceManager.saveToken(DEMO_TOKEN);
-        preferenceManager.saveUserId(email);
+        preferenceManager.saveUserId(TextUtils.isEmpty(email) ? provider : email);
 
         UserProfile profile = preferenceManager.getUser();
-        boolean hasRealName = profile != null
-                && profile.getName() != null && !profile.getName().trim().isEmpty();
+        if (profile == null) profile = new UserProfile();
+        boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
         if (!hasRealName) {
-            if (profile == null) profile = new UserProfile();
             profile.setEmail(email);
-            profile.setName(provider + " User");
-            preferenceManager.saveUser(profile);
+            String name;
+            if (!TextUtils.isEmpty(displayName)) {
+                name = displayName;
+            } else if (email != null && email.contains("@")) {
+                name = prettifyName(email.substring(0, email.indexOf('@')));
+            } else {
+                name = provider + " User";
+            }
+            profile.setName(name);
         }
+        preferenceManager.saveUser(profile);
 
         ApiClient.reset();
         Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
+
+        // Đăng nhập mạng xã hội (Google/Facebook/Apple) KHÔNG trả về ngày sinh/SĐT/địa chỉ,
+        // và avatar vẫn giữ logo con gà TiredCity mặc định (không lấy ảnh từ tài khoản Google).
+        // → Nếu hồ sơ chưa có ngày sinh, mở lịch nhập ngày sinh để tính Ngũ Hành mệnh NGAY.
+        if (TextUtils.isEmpty(profile.getBirthDate())) {
+            promptBirthDateForMenh();
+        } else {
+            goToOnboarding();
+        }
+    }
+
+    /** Vào màn Onboarding rồi đóng toàn bộ stack đăng nhập. */
+    private void goToOnboarding() {
         startActivity(new Intent(LoginActivity.this, OnboardingActivity.class));
         finishAffinity();
+    }
+
+    /**
+     * Mở lịch chọn ngày sinh (giống màn Đăng ký) sau khi đăng nhập mạng xã hội.
+     * Chọn xong → tính Mệnh/Cung hoàng đạo/Con giáp tại máy, lưu hồ sơ, rồi vào Onboarding.
+     * Đóng/huỷ vẫn cho vào app (có thể bổ sung ngày sinh sau trong Hồ sơ).
+     */
+    private void promptBirthDateForMenh() {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        c.clear();
+        c.set(2000, 0, 1);
+
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointBackward.now())   // chặn chọn ngày tương lai
+                .build();
+
+        MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(R.string.hint_birthdate)
+                .setSelection(c.getTimeInMillis())
+                .setCalendarConstraints(constraints)
+                .build();
+
+        picker.addOnPositiveButtonClickListener(selection -> {
+            Calendar sel = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            sel.setTimeInMillis(selection);
+            int year  = sel.get(Calendar.YEAR);
+            int month = sel.get(Calendar.MONTH) + 1;
+            int day   = sel.get(Calendar.DAY_OF_MONTH);
+
+            String menh   = MenhCalculator.tinhMenh(year);
+            String zodiac = MenhCalculator.tinhCungHoangDao(month, day);
+            String animal = MenhCalculator.tinhConGiap(year);
+
+            UserProfile profile = preferenceManager.getUser();
+            if (profile == null) profile = new UserProfile();
+            profile.setBirthDate(String.format(Locale.US, "%04d-%02d-%02d", year, month, day));
+            profile.setMenh(menh);
+            profile.setZodiac(zodiac);
+            profile.setAnimal(animal);
+            preferenceManager.saveUser(profile);
+
+            preferenceManager.setMenh(menh);
+            preferenceManager.setZodiac(zodiac);
+
+            goToOnboarding();
+        });
+        // Người dùng đóng/huỷ không chọn ngày → vẫn vào app, không kẹt lại màn login.
+        picker.addOnNegativeButtonClickListener(v -> goToOnboarding());
+        picker.addOnCancelListener(d -> goToOnboarding());
+
+        picker.show(getSupportFragmentManager(), "social_birthdate_picker");
     }
 
     /** Biến phần email thành tên dễ nhìn: "nguyen_van.a" → "Nguyen Van A". */

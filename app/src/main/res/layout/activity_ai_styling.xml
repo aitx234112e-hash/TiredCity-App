@@ -20,37 +20,49 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="28dp">
 
-            <!-- Menh info banner -->
+            <!-- ───────────── HERO MỆNH ───────────── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/brand_dark">
+                app:cardCornerRadius="@dimen/tc_radius_lg"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/tc_red_lacquer_mid">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:background="@drawable/tc_bg_menh_result"
+                    android:padding="20dp"
                     android:gravity="center_vertical">
 
-                    <TextView
-                        android:id="@+id/tv_menh_emoji"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🪙"
-                        android:textSize="40sp"
-                        android:layout_marginEnd="16dp" />
+                    <FrameLayout
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginEnd="18dp"
+                        android:background="@drawable/tc_bg_circle_gold_ring">
+
+                        <TextView
+                            android:id="@+id/tv_menh_emoji"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="🪙"
+                            android:textSize="30sp" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -59,40 +71,54 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/menh_cta_eyebrow"
+                            android:textColor="@color/tc_gold_bright"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.12"
+                            android:alpha="0.9" />
+
+                        <TextView
                             android:id="@+id/tv_menh_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
                             android:text="Mệnh Kim"
                             android:textColor="@color/tc_gold_bright"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="4dp" />
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_menh_subtitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
                             android:text="Cung Bạch Dương • Tuất"
                             android:textColor="@color/brand_cream"
-                            android:textSize="12sp" />
+                            android:textSize="13sp"
+                            android:alpha="0.92" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Color palette -->
+            <!-- ───────────── BẢNG MÀU HỢP MỆNH ───────────── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="@dimen/tc_radius_lg"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/tc_stroke"
+                app:strokeWidth="1dp"
                 app:cardBackgroundColor="@color/bg_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -100,15 +126,21 @@
                         android:text="@string/aistyle_palette"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="12dp" />
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="48dp"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="14dp"
+                        android:background="@drawable/tc_divider_gold" />
 
                     <LinearLayout
                         android:id="@+id/layout_colors"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="12dp" />
+                        android:layout_marginBottom="14dp" />
 
                     <TextView
                         android:id="@+id/tv_color_desc"
@@ -121,27 +153,28 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- AI Suggestions -->
+            <!-- ───────────── GỢI Ý TRANG PHỤC ───────────── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="@dimen/tc_radius_lg"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/tc_stroke"
+                app:strokeWidth="1dp"
                 app:cardBackgroundColor="@color/bg_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:layout_width="0dp"
@@ -155,36 +188,51 @@
                         <Button
                             android:id="@+id/btn_refresh_suggestions"
                             android:layout_width="wrap_content"
-                            android:layout_height="34dp"
+                            android:layout_height="36dp"
+                            android:minWidth="0dp"
                             android:background="@drawable/tc_btn_ghost_red"
-                            android:paddingHorizontal="14dp"
+                            android:drawableStart="@drawable/ic_refresh"
+                            android:drawablePadding="6dp"
+                            android:paddingHorizontal="16dp"
                             android:text="@string/aistyle_refresh"
                             android:textColor="@color/tc_red"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            app:drawableTint="@color/tc_red" />
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="48dp"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="6dp"
+                        android:background="@drawable/tc_divider_gold" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_suggestions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false" />
+                        android:layout_marginTop="8dp"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Styling tips -->
+            <!-- ───────────── LỜI KHUYÊN PHONG CÁCH ───────────── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="@dimen/tc_radius_lg"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/tc_stroke"
+                app:strokeWidth="1dp"
                 app:cardBackgroundColor="@color/bg_surface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -192,8 +240,14 @@
                         android:text="@string/aistyle_tips"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="12dp" />
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="48dp"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="14dp"
+                        android:background="@drawable/tc_divider_gold" />
 
                     <TextView
                         android:id="@+id/tv_styling_tip"

@@ -46,6 +46,7 @@ public class OnboardingActivity extends BaseActivity {
         );
 
         OnboardingAdapter adapter = new OnboardingAdapter(pages);
+        binding.vpOnboarding.setOffscreenPageLimit(pages.size());
         binding.vpOnboarding.setAdapter(adapter);
         binding.dotsIndicator.attachTo(binding.vpOnboarding);
 
@@ -99,10 +100,11 @@ public class OnboardingActivity extends BaseActivity {
 
             int imgId = holder.itemView.getResources().getIdentifier(
                     page.imageName, "drawable", holder.itemView.getContext().getPackageName());
+            Glide.with(holder.ivBg).clear(holder.ivBg);
             if (imgId != 0) {
                 Glide.with(holder.ivBg).load(imgId).centerCrop().into(holder.ivBg);
             } else {
-                holder.ivBg.setImageDrawable(null); // chưa có ảnh → nền nâu mặc định
+                holder.ivBg.setImageDrawable(null);
             }
 
             holder.tvTitle.setText(page.title);

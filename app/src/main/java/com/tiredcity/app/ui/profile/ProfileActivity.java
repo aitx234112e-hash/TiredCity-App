@@ -12,8 +12,10 @@ import com.tiredcity.app.databinding.ActivityProfileBinding;
 import com.tiredcity.app.ui.auth.LoginActivity;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.explore.ArticleActivity;
-import com.tiredcity.app.ui.main.MainActivity;
+import com.tiredcity.app.ui.explore.EventActivity;
 import com.tiredcity.app.ui.reward.RewardActivity;
+import com.tiredcity.app.ui.settings.GeneralSettingsActivity;
+import com.tiredcity.app.ui.settings.NotificationSettingsActivity;
 import com.tiredcity.app.ui.styling.AiStylingActivity;
 import com.tiredcity.app.ui.styling.ChatBotActivity;
 import com.tiredcity.app.ui.support.ContactActivity;
@@ -50,12 +52,9 @@ public class ProfileActivity extends BaseActivity {
         binding.cardFindStore.setOnClickListener(v ->
                 startActivity(new Intent(this, ContactActivity.class)));
 
-        // Sự kiện → mở tab Khám phá (tab "Cửa hàng" sẽ tự launch ContactActivity từ đó)
-        binding.itemEvents.setOnClickListener(v -> {
-            Intent i = new Intent(this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(i);
-        });
+        // Sự kiện → trang Sự kiện (EventActivity, dùng item_event.xml)
+        binding.itemEvents.setOnClickListener(v ->
+                startActivity(new Intent(this, EventActivity.class)));
         // Ưu đãi → trang Ưu đãi (RewardActivity)
         binding.itemPromotions.setOnClickListener(v ->
                 startActivity(new Intent(this, RewardActivity.class)));
@@ -73,7 +72,11 @@ public class ProfileActivity extends BaseActivity {
         binding.layoutPolicy.setOnClickListener(v ->
                 startActivity(new Intent(this, PolicyActivity.class)));
 
-        // Các mục chưa code (Cài đặt thông báo, Cài đặt chung, Điều khoản) → để trống
+        // Cài đặt thông báo & Cài đặt chung → các module mới
+        binding.layoutNotifications.setOnClickListener(v ->
+                startActivity(new Intent(this, NotificationSettingsActivity.class)));
+        binding.layoutSettings.setOnClickListener(v ->
+                startActivity(new Intent(this, GeneralSettingsActivity.class)));
 
         binding.btnLogout.setOnClickListener(v -> logout());
 

@@ -20,6 +20,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private List<Product>           products;
     private final Set<String>       savedIds = new HashSet<>();
     private OnProductClickListener  listener;
+    private boolean                 fillWidth = false;
 
     public interface OnProductClickListener {
         void onProductClick(Product product);
@@ -32,6 +33,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     public void setOnProductClickListener(OnProductClickListener l) {
         this.listener = l;
+    }
+
+    /**
+     * Khi bật, thẻ sản phẩm sẽ giãn đầy ô lưới (MATCH_PARENT) thay vì giữ bề rộng
+     * cố định trong XML — dùng cho lưới đổi 1/2/3 cột (CategoryActivity).
+     */
+    public void setFillWidth(boolean fill) {
+        this.fillWidth = fill;
+        notifyDataSetChanged();
     }
 
     public void updateProducts(List<Product> newProducts) {
@@ -56,6 +66,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemProductBinding b = ItemProductBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false);
+        if (fillWidth) {
+            android.view.ViewGroup.LayoutParams lp = b.getRoot().getLayoutParams();
+            if (lp != null) {
+                lp.width = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+                b.getRoot().setLayoutParams(lp);
+            }
+        }
         return new ViewHolder(b);
     }
 

@@ -22,6 +22,7 @@ import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.ActivitySearchBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.reward.VoucherDetailActivity;
 import com.tiredcity.app.utils.Constants;
 import java.util.Arrays;
 import java.util.List;
@@ -115,7 +116,10 @@ public class SearchActivity extends BaseActivity {
     /** Builds the multi-view-type discovery list (promotion + event + product). */
     private void setupSuggestions() {
         List<SearchItem> suggestions = Arrays.asList(
-            new PromotionItem(R.string.search_promo_birthday),
+            new PromotionItem(R.string.search_promo_birthday,
+                              R.drawable.banner_1,
+                              R.string.reward_voucher_birthday_title,
+                              R.string.reward_voucher_birthday_subtitle),
             new EventItem(R.string.search_event_coach_title,
                           R.string.search_event_coach_time, 0),
             new ProductItem(R.string.search_brand_kangol,
@@ -126,14 +130,27 @@ public class SearchActivity extends BaseActivity {
 
         SearchAdapter adapter = new SearchAdapter(suggestions);
         adapter.setOnItemClickListener(item -> {
-            // Products open search results for their brand; other types are informational.
-            if (item instanceof ProductItem) {
+            if (item instanceof PromotionItem) {
+                // Ưu đãi → mở trang chi tiết voucher tương ứng.
+                openVoucherDetail((PromotionItem) item);
+            } else if (item instanceof ProductItem) {
+                // Sản phẩm → tìm kiếm theo thương hiệu.
                 performSearch(getString(((ProductItem) item).getBrandResId()));
             }
         });
         binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
         binding.rvSuggestions.setNestedScrollingEnabled(false);
         binding.rvSuggestions.setAdapter(adapter);
+    }
+
+    /** Mở trang chi tiết voucher của ưu đãi được bấm. */
+    private void openVoucherDetail(PromotionItem item) {
+        Intent intent = new Intent(this, VoucherDetailActivity.class);
+        intent.putExtra(VoucherDetailActivity.EXTRA_TITLE, getString(item.getVoucherTitleResId()));
+        intent.putExtra(VoucherDetailActivity.EXTRA_SUBTITLE, getString(item.getVoucherSubtitleResId()));
+        intent.putExtra(VoucherDetailActivity.EXTRA_BANNER, item.getBannerRes());
+        intent.putExtra(VoucherDetailActivity.EXTRA_CODE, getString(R.string.barcode_code));
+        startActivity(intent);
     }
 
     private void performSearch(String keyword) {

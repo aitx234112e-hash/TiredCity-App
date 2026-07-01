@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vòng tròn nền tối mờ, viền vàng kim — khung cho emoji mệnh ở hero -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#22F4C430" />
+    <stroke
+        android:width="1.5dp"
+        android:color="@color/tc_gold" />
+</shape>
