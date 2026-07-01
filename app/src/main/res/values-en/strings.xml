@@ -319,12 +319,34 @@
     <string name="explore_tab_articles">About</string>
     <string name="explore_tab_events">Store Location</string>
     <string name="about_hero_subtitle">Việt Phục – Traditional Beauty</string>
+    <string name="about_hero_image_desc">TiredCity store photo</string>
     <string name="about_section_title">About Us</string>
-    <string name="about_description">Tired City is a modern Vietnamese traditional-attire (Việt Phục) brand, blending timeless heritage with contemporary style. We craft finely-made garments from Vietnam\'s long-standing artisan villages.</string>
+    <string name="about_description"><b>Tired City</b> is a marketplace for lovers of Vietnamese culture, bringing contemporary <b>Việt Phục</b> designs rooted in <b>tradition and identity</b>. We help users discover and shop Vietnamese fashion in a fresh, inspiring way.</string>
+    <string name="about_vision_title">Vision</string>
+    <string name="about_vision_desc"><b>Tired City</b> aims to become Vietnam\'s <b>top digital platform</b>, bringing <b>Việt Phục</b> back into everyday life as part of youth lifestyle, not just for festivals but for modern living.</string>
+    <string name="about_mission_title">Mission</string>
+    <string name="about_mission_desc"><b>Tired City</b> connects users with artisans and designers through smart shopping, using <b>AI</b> to preserve and spread <b>Vietnamese culture</b> in a meaningful, sustainable way.</string>
+
+    <string name="about_core_values_title">Core Values</string>
+    <string name="about_value1_title">Vietnamese Identity</string>
+    <string name="about_value1_desc">Preserving and spreading Vietnam\'s traditional cultural values.</string>
+    <string name="about_value2_title">Creativity</string>
+    <string name="about_value2_desc">Reimagining Việt Phục with a contemporary design language.</string>
+    <string name="about_value3_title">Technology</string>
+    <string name="about_value3_desc">Applying AI to personalize the shopping experience.</string>
+    <string name="about_value4_title">Connection</string>
+    <string name="about_value4_desc">Bringing together the community of Việt Phục lovers, artisans, and designers.</string>
+
     <string name="about_contact_title">Contact</string>
-    <string name="about_email">📧  contact@tiredcity.vn</string>
-    <string name="about_phone">📞  0900 000 000</string>
-    <string name="about_location">📍  Ho Chi Minh City, Vietnam</string>
+    <string name="about_contact_brand">Tired City – Contemporary Việt Phục</string>
+    <string name="about_showroom_hn_title">Hanoi Showroom</string>
+    <string name="about_showroom_hn_address">12 Hang Gai, Hoan Kiem, Hanoi</string>
+    <string name="about_showroom_hcm_title">Ho Chi Minh City Showroom</string>
+    <string name="about_showroom_hcm_address">42 Nguyen Hue, District 1, Ho Chi Minh City</string>
+    <string name="about_email">contact@tiredcity.vn</string>
+    <string name="about_hotline">1900 6868</string>
+    <string name="about_website">www.tiredcity.vn</string>
+    <string name="about_hours">09:00 – 21:00 (Monday – Sunday)</string>
 
     <!-- AI Styling -->
     <string name="aistyle_palette">🎨  Colors for your element</string>

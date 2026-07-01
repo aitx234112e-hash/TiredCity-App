@@ -3,7 +3,11 @@
     "allow": [
       "Bash(MSYS_NO_PATHCONV=1 'C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell cat /sdcard/r.xml)",
       "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell *)",
-      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' exec-out *)"
+      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' exec-out *)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(python3 -c ' *)",
+      "Bash(find /d/TiredCity-App -iname \"*banner_about_us*\" 2>/dev/null; echo \"---search whole C/D for these files---\"; find /c/Users -iname \"*banner_about_us*\" 2>/dev/null | head -20; find /d -maxdepth 4 -iname \"*banner_about_us*\" 2>/dev/null | head -20)",
+      "PowerShell(try { [xml]\\(Get-Content 'app/src/main/res/layout/fragment_about.xml' -Raw\\) | Out-Null; Write-Output \"XML OK\" } catch { Write-Output \"FAIL: $\\($_.Exception.Message\\)\" })"
     ]
   }
 }
