@@ -1,0 +1,149 @@
+.login-wrapper{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-image: url('/assets/login_bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.login-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+/* Card */
+
+.login-card{
+    position: relative;
+    z-index: 1;
+    width:420px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding:40px;
+    border-radius:14px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+/* Title */
+
+.login-title{
+    color:#a94053;
+    font-weight:700;
+    margin-bottom:10px;
+    text-align:center;
+}
+
+.login-subtitle{
+    color:#40513b;
+    margin-bottom:25px;
+    text-align:center;
+}
+
+/* Inputs */
+
+.login-input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:30px;
+    border:1px solid #ddd;
+}
+
+/* Options */
+
+.login-options{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    margin-bottom:15px;
+    color:#40513b;
+}
+
+.forgot{
+    color:#a94053;
+    cursor:pointer;
+}
+
+/* Button */
+
+.login-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    background:#a94053;
+    color:white;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.login-btn:hover{
+    background:#8e3445;
+}
+
+/* signup */
+
+.signup{
+    margin-top:20px;
+    text-align:center;
+}
+
+.signup a{
+    color:#a94053;
+}
+
+/* divider */
+
+.divider{
+    margin:20px 0;
+    text-align:center;
+    position:relative;
+}
+
+.divider span{
+    background:white;
+    padding:0 10px;
+    color:#40513b;
+}
+
+.divider::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:1px;
+    background:#ddd;
+    top:50%;
+    left:0;
+    z-index:-1;
+}
+
+/* social */
+
+.social-login{
+    display:flex;
+    gap:10px;
+}
+
+.social-btn{
+    flex:1;
+    border:1px solid #ddd;
+    border-radius:25px;
+    padding:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    background:white;
+}
+
+.social-btn img{
+    width:18px;
+}

@@ -43,7 +43,11 @@
       "Bash(git add *)",
       "Bash(git commit -q -m ' *)",
       "Bash(find /d/TiredCity-App -iname \"*banner_about_us*\" 2>/dev/null; echo \"---search whole C/D for these files---\"; find /c/Users -iname \"*banner_about_us*\" 2>/dev/null | head -20; find /d -maxdepth 4 -iname \"*banner_about_us*\" 2>/dev/null | head -20)",
-      "PowerShell(try { [xml]\\(Get-Content 'app/src/main/res/layout/fragment_about.xml' -Raw\\) | Out-Null; Write-Output \"XML OK\" } catch { Write-Output \"FAIL: $\\($_.Exception.Message\\)\" })"
+      "PowerShell(try { [xml]\\(Get-Content 'app/src/main/res/layout/fragment_about.xml' -Raw\\) | Out-Null; Write-Output \"XML OK\" } catch { Write-Output \"FAIL: $\\($_.Exception.Message\\)\" })",
+      "Bash(git -C /d/CODE-main/CODE-main rev-parse --is-inside-work-tree)",
+      "Bash(git -C /d/CODE-main/CODE-main remote -v)",
+      "Bash(powershell.exe -NoProfile -Command \"Remove-Item -LiteralPath 'D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\web-admin' -Recurse -Force -ErrorAction SilentlyContinue\")",
+      "Bash(powershell.exe -NoProfile -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 800; Remove-Item -LiteralPath 'D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\web-admin' -Recurse -Force -ErrorAction SilentlyContinue\")"
     ]
   }
 }

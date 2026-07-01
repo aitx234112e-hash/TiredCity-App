@@ -1,0 +1,23 @@
+.sidebar{
+    width:250px;
+    min-height:100vh;
+    background:#ebe1d8;
+}
+
+.nav-link{
+    color:#40513b;
+    font-weight:500;
+}
+
+.nav-link:hover{
+    color:#a94053;
+}
+
+.sidebar-logo img{
+    max-width:140px;
+    cursor:pointer;
+}
+
+.dropdown-toggle{
+    cursor:pointer;
+}
