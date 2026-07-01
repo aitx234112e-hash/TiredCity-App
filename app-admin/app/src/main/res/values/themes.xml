@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.TiredCityAdmin" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/tc_brand</item>
+        <item name="colorPrimaryDark">@color/tc_brand_dark</item>
+        <item name="android:statusBarColor">@color/tc_brand_dark</item>
+    </style>
+</resources>

@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50 text-gray-800;
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-brand;
+  }
+  .field-label {
+    @apply mb-1 block text-sm font-medium text-gray-600;
+  }
+}
