@@ -375,12 +375,34 @@
     <string name="explore_tab_articles">Giới thiệu</string>
     <string name="explore_tab_events">Cửa hàng</string>
     <string name="about_hero_subtitle">Việt Phục – Nét đẹp truyền thống</string>
+    <string name="about_hero_image_desc">Ảnh cửa hàng TiredCity</string>
     <string name="about_section_title">Về chúng tôi</string>
-    <string name="about_description">Tired City là thương hiệu thời trang Việt Phục hiện đại, kết hợp giữa nét đẹp truyền thống và phong cách đương đại. Chúng tôi mang đến những bộ trang phục được chế tác tinh xảo từ các làng nghề truyền thống Việt Nam.</string>
+    <string name="about_description"><b>Tired City</b> là nền tảng thương mại điện tử dành cho người yêu văn hóa Việt, mang đến những thiết kế <b>Việt phục</b> đương đại, đậm <b>bản sắc truyền thống</b> dân tộc. Chúng tôi giúp người dùng khám phá thời trang Việt mới mẻ.</string>
+    <string name="about_vision_title">Tầm nhìn</string>
+    <string name="about_vision_desc"><b>Tired City</b> hướng tới trở thành <b>nền tảng số hàng đầu</b> tại Việt Nam, đưa <b>Việt phục</b> quay lại đời sống thường nhật, trở thành phong cách sống quen thuộc của giới trẻ Việt hôm nay và mai sau.</string>
+    <string name="about_mission_title">Sứ mệnh</string>
+    <string name="about_mission_desc"><b>Tired City</b> kết nối người dùng với nghệ nhân, nhà thiết kế qua trải nghiệm mua sắm thông minh, ứng dụng <b>AI</b> để bảo tồn và lan tỏa <b>văn hóa Việt</b> trong thời đại số, gần gũi và bền vững.</string>
+
+    <string name="about_core_values_title">Giá trị cốt lõi</string>
+    <string name="about_value1_title">Bản sắc Việt</string>
+    <string name="about_value1_desc">Gìn giữ và lan tỏa giá trị văn hóa truyền thống Việt Nam.</string>
+    <string name="about_value2_title">Sáng tạo</string>
+    <string name="about_value2_desc">Tái hiện Việt phục bằng ngôn ngữ thiết kế đương đại.</string>
+    <string name="about_value3_title">Công nghệ</string>
+    <string name="about_value3_desc">Ứng dụng AI và cá nhân hóa trải nghiệm mua sắm.</string>
+    <string name="about_value4_title">Kết nối</string>
+    <string name="about_value4_desc">Gắn kết cộng đồng yêu Việt phục, nghệ nhân và nhà thiết kế.</string>
+
     <string name="about_contact_title">Liên hệ</string>
-    <string name="about_email">📧  contact@tiredcity.vn</string>
-    <string name="about_phone">📞  0900 000 000</string>
-    <string name="about_location">📍  TP. Hồ Chí Minh, Việt Nam</string>
+    <string name="about_contact_brand">Tired City – Việt Phục Đương Đại</string>
+    <string name="about_showroom_hn_title">Showroom Hà Nội</string>
+    <string name="about_showroom_hn_address">12 Hàng Gai, Hoàn Kiếm, Hà Nội</string>
+    <string name="about_showroom_hcm_title">Showroom TP. Hồ Chí Minh</string>
+    <string name="about_showroom_hcm_address">42 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh</string>
+    <string name="about_email">contact@tiredcity.vn</string>
+    <string name="about_hotline">1900 6868</string>
+    <string name="about_website">www.tiredcity.vn</string>
+    <string name="about_hours">09:00 – 21:00 (Thứ 2 – Chủ nhật)</string>
 
     <!-- AI Styling -->
     <string name="aistyle_palette">🎨  Bảng màu hợp mệnh</string>

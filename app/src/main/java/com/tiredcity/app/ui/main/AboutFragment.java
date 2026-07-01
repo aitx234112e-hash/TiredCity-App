@@ -27,10 +27,24 @@ public class AboutFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // The layout is fully static — no dynamic binding needed.
-        // Contact actions could be wired here:
-        // binding.tvEmail.setOnClickListener(...) → open mail intent
-        // binding.tvPhone.setOnClickListener(...) → dial intent
+
+        binding.rowContactEmail.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SENDTO,
+                    Uri.fromParts("mailto", binding.tvEmail.getText().toString(), null));
+            startActivity(intent);
+        });
+
+        binding.rowContactHotline.setOnClickListener(v -> {
+            String phone = binding.tvHotline.getText().toString().replace(" ", "");
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+            startActivity(intent);
+        });
+
+        binding.rowContactWebsite.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://" + binding.tvWebsite.getText().toString()));
+            startActivity(intent);
+        });
     }
 
     @Override

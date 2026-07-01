@@ -41,7 +41,9 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/login)",
       "Bash(git fetch *)",
       "Bash(git add *)",
-      "Bash(git commit -q -m ' *)"
+      "Bash(git commit -q -m ' *)",
+      "Bash(find /d/TiredCity-App -iname \"*banner_about_us*\" 2>/dev/null; echo \"---search whole C/D for these files---\"; find /c/Users -iname \"*banner_about_us*\" 2>/dev/null | head -20; find /d -maxdepth 4 -iname \"*banner_about_us*\" 2>/dev/null | head -20)",
+      "PowerShell(try { [xml]\\(Get-Content 'app/src/main/res/layout/fragment_about.xml' -Raw\\) | Out-Null; Write-Output \"XML OK\" } catch { Write-Output \"FAIL: $\\($_.Exception.Message\\)\" })"
     ]
   }
 }
