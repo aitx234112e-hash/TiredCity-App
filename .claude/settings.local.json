@@ -79,7 +79,9 @@
       "Bash(xargs echo \"so file thay doi:\")",
       "Bash(git check-ignore *)",
       "Bash(git remote *)",
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(git commit -q -m '@ *)",
+      "Bash(git push *)"
     ]
   }
 }
