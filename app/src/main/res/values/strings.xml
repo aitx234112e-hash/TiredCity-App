@@ -324,12 +324,13 @@
     <string name="action_view_all">Xem tất cả</string>
     <string name="view_all">Xem tất cả</string>
 
-    <!-- Category page: audience tabs + chrome -->
-    <string name="cat_tab_women">NỮ</string>
-    <string name="cat_tab_men">NAM</string>
-    <string name="cat_tab_kids">TRẺ EM</string>
-    <string name="cat_tab_accessory">PHỤ KIỆN</string>
-    <string name="cat_tab_festival">LỄ HỘI</string>
+    <!-- Category page: garment-type tabs + chrome -->
+    <string name="cat_tab_ao_dai">ÁO DÀI</string>
+    <string name="cat_tab_nhat_binh">NHẬT BÌNH</string>
+    <string name="cat_tab_ao_tac">ÁO TẤC</string>
+    <string name="cat_tab_giao_linh">GIAO LĨNH</string>
+    <string name="cat_tab_yem_dao">YẾM ĐÀO</string>
+    <string name="cat_tab_phu_kien">PHỤ KIỆN</string>
     <string name="filter_label">Bộ lọc</string>
     <string name="cd_scan">Quét mã</string>
     <string name="cd_view_mode">Chế độ xem</string>
@@ -398,10 +399,10 @@
 
     <string name="about_contact_title">Liên hệ</string>
     <string name="about_contact_brand">Tired City – Việt Phục Đương Đại</string>
-    <string name="about_showroom_hn_title">Showroom Hà Nội</string>
-    <string name="about_showroom_hn_address">12 Hàng Gai, Hoàn Kiếm, Hà Nội</string>
-    <string name="about_showroom_hcm_title">Showroom TP. Hồ Chí Minh</string>
-    <string name="about_showroom_hcm_address">42 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh</string>
+    <string name="about_showroom_hn_title">TiredCity 37 Hàng Hành</string>
+    <string name="about_showroom_hn_address">37 P. Hàng Hành, Hoàn Kiếm, Hà Nội</string>
+    <string name="about_showroom_hcm_title">TiredCity 97 Hàng Gai</string>
+    <string name="about_showroom_hcm_address">97 P. Hàng Gai, Hoàn Kiếm, Hà Nội</string>
     <string name="about_email">contact@tiredcity.vn</string>
     <string name="about_hotline">1900 6868</string>
     <string name="about_website">www.tiredcity.vn</string>
@@ -491,12 +492,12 @@
     <string name="hint_message_long">Nội dung tin nhắn *</string>
     <string name="btn_send_message">GỬI TIN NHẮN ✦</string>
 
-    <string name="title_store_locator">STORE LOCATOR</string>
+    <string name="title_store_locator">HỆ THỐNG CỬA HÀNG</string>
     <string name="label_address">Address: </string>
     <string name="label_opening_hours">Opening hours: </string>
     <string name="label_email">Email: </string>
     <string name="label_mobile">Mobile: </string>
-    <string name="link_view_map">View map</string>
+    <string name="link_view_map">Xem bản đồ</string>
     <string name="map_tap_hint">Tap to view all locations on Google Maps</string>
 
     <string name="store_1_name">1. TiredCity 37 Hàng Hành</string>

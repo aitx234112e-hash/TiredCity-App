@@ -347,10 +347,10 @@
 
     <string name="about_contact_title">Contact</string>
     <string name="about_contact_brand">Tired City – Contemporary Việt Phục</string>
-    <string name="about_showroom_hn_title">Hanoi Showroom</string>
-    <string name="about_showroom_hn_address">12 Hang Gai, Hoan Kiem, Hanoi</string>
-    <string name="about_showroom_hcm_title">Ho Chi Minh City Showroom</string>
-    <string name="about_showroom_hcm_address">42 Nguyen Hue, District 1, Ho Chi Minh City</string>
+    <string name="about_showroom_hn_title">TiredCity 37 Hàng Hành</string>
+    <string name="about_showroom_hn_address">37 Hàng Hành St, Hoàn Kiếm, Hanoi</string>
+    <string name="about_showroom_hcm_title">TiredCity 97 Hàng Gai</string>
+    <string name="about_showroom_hcm_address">97 Hàng Gai St, Hoàn Kiếm, Hanoi</string>
     <string name="about_email">contact@tiredcity.vn</string>
     <string name="about_hotline">1900 6868</string>
     <string name="about_website">www.tiredcity.vn</string>

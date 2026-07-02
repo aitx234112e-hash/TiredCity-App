@@ -66,7 +66,7 @@
         <item name="android:textColor">@color/tc_text_secondary</item>
     </style>
 
-    <!-- Tab nhóm trang Danh mục (NỮ / NAM / TRẺ EM…): đậm, giữ in hoa từ string. -->
+    <!-- Tab nhóm trang Danh mục (ÁO DÀI / NHẬT BÌNH / ÁO TẤC…): đậm, giữ in hoa từ string. -->
     <style name="TextAppearance.TC.CategoryTab" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>

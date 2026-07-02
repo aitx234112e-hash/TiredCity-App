@@ -1,5 +1,6 @@
 package com.tiredcity.app.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,12 +21,16 @@ import com.tiredcity.app.databinding.FragmentStylingBinding;
 import com.tiredcity.app.ui.cart.CartActivity;
 import com.tiredcity.app.ui.shop.CategoryActivity;
 import com.tiredcity.app.ui.shop.SearchActivity;
+import com.tiredcity.app.utils.ColorTaxonomy;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Trang Danh mục: khách hàng duyệt các nhóm trang phục Việt Phục theo đối tượng
- * (Nữ / Nam / Trẻ em / Phụ kiện / Lễ hội). Chạm một danh mục → mở lưới sản phẩm.
+ * Trang Danh mục: khách hàng duyệt các nhóm trang phục Việt Phục
+ * (Áo Dài / Nhật Bình / Áo Tấc / Giao Lĩnh / Yếm Đào / Phụ Kiện). Chạm một danh mục → mở lưới sản phẩm.
+ * 5 danh mục trang phục được chia theo MÀU — mỗi danh mục chỉ liệt kê những màu thực sự có mặt
+ * trong danh mục đó (theo bảng dữ liệu sản phẩm), không phải toàn bộ bảng màu chung.
+ * Phụ Kiện được chia theo loại phụ kiện (khăn, quạt, ô, mũ).
  */
 public class StylingFragment extends Fragment {
 
@@ -34,11 +39,12 @@ public class StylingFragment extends Fragment {
 
     // Nhãn các tab (giữ in hoa từ string resource).
     private static final int[] TAB_LABELS = {
-            R.string.cat_tab_women,
-            R.string.cat_tab_men,
-            R.string.cat_tab_kids,
-            R.string.cat_tab_accessory,
-            R.string.cat_tab_festival
+            R.string.cat_tab_ao_dai,
+            R.string.cat_tab_nhat_binh,
+            R.string.cat_tab_ao_tac,
+            R.string.cat_tab_giao_linh,
+            R.string.cat_tab_yem_dao,
+            R.string.cat_tab_phu_kien
     };
 
     @Nullable
@@ -104,13 +110,17 @@ public class StylingFragment extends Fragment {
         adapter.setOnCategoryClickListener(item -> {
             Intent intent = new Intent(requireContext(), CategoryActivity.class);
             intent.putExtra(CategoryActivity.EXTRA_CATEGORY_NAME, item.getNameText());
+            intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, item.getParentCategory());
+            if (item.getFilterValue() != null) {
+                intent.putExtra(CategoryActivity.EXTRA_TAG_FILTER, item.getFilterValue());
+            }
             startActivity(intent);
         });
         binding.rvCategories.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvCategories.setAdapter(adapter);
     }
 
-    // ── Tab nhóm đối tượng ─────────────────────────────────────────────────────
+    // ── Tab nhóm trang phục ────────────────────────────────────────────────────
 
     private void setupTabs() {
         TabLayout tabs = binding.tabGroups;
@@ -129,61 +139,121 @@ public class StylingFragment extends Fragment {
         adapter.setItems(buildCategories(0));
     }
 
-    /** Danh mục Việt Phục cho từng nhóm đối tượng. */
+    /** Danh mục con hiển thị cho từng tab. */
     private List<CategoryItem> buildCategories(int tab) {
-        @ColorInt int red    = requireContext().getColor(R.color.tc_red);
-        @ColorInt int dark   = requireContext().getColor(R.color.tc_espresso);
-        @ColorInt int gold   = requireContext().getColor(R.color.tc_gold);
-        @ColorInt int subtle = requireContext().getColor(R.color.tc_bg_subtle);
-        int[] palette = { red, dark, gold, subtle };
-
-        String[][] data;
         switch (tab) {
-            case 1: // NAM
-                data = new String[][]{
-                        {"ÁO NGŨ THÂN", "Ngũ thân tay chẽn, tay thụng,…"},
-                        {"ÁO TẤC",       "Áo Tấc nam, Áo Bào,…"},
-                        {"KHĂN ĐÓNG",    "Khăn đóng, Khăn xếp,…"},
-                        {"PHỤ KIỆN",     "Hia, Guốc mộc, Quạt,…"}
-                };
-                break;
-            case 2: // TRẺ EM
-                data = new String[][]{
-                        {"ÁO DÀI BÉ",    "Áo dài bé gái, bé trai,…"},
-                        {"SET LỄ PHỤC",  "Bộ lễ phục trẻ em,…"},
-                        {"NHẬT BÌNH BÉ", "Nhật Bình thu nhỏ,…"},
-                        {"PHỤ KIỆN",     "Mấn bé, Nón, Hài,…"}
-                };
-                break;
-            case 3: // PHỤ KIỆN
-                data = new String[][]{
-                        {"TRÂM & THOA",  "Trâm cài tóc, Thoa,…"},
-                        {"MẤN & KHĂN",   "Mấn đội đầu, Khăn vành,…"},
-                        {"TÚI & VÍ",     "Túi thêu, Ví cầm tay,…"},
-                        {"TRANG SỨC",    "Vòng, Nhẫn, Kiềng,…"}
-                };
-                break;
-            case 4: // LỄ HỘI
-                data = new String[][]{
-                        {"ÁO DÀI CƯỚI",      "Áo dài cưới đôi,…"},
-                        {"NHẬT BÌNH ĐẠI LỄ", "Đại lễ, Hoàng hậu,…"},
-                        {"ÁO BÀO",           "Áo bào, Long bào,…"},
-                        {"CỔ PHỤC",          "Việt phục trình diễn,…"}
-                };
-                break;
-            default: // NỮ
-                data = new String[][]{
-                        {"ÁO DÀI",    "Áo dài truyền thống, cách tân,…"},
-                        {"NHẬT BÌNH", "Nhật Bình, Bào hoàng hậu,…"},
-                        {"ÁO TẤC",    "Áo Tấc nữ, Giao lĩnh,…"},
-                        {"PHỤ KIỆN",  "Mấn, Trâm cài, Khăn vành,…"}
-                };
-                break;
+            case 1: return buildNhatBinhCategories();
+            case 2: return buildAoTacCategories();
+            case 3: return buildGiaoLinhCategories();
+            case 4: return buildYemDaoCategories();
+            case 5: return buildPhuKienCategories();
+            default: return buildAoDaiCategories();
         }
+    }
+
+    // ── ÁO DÀI: Trắng, Xanh, Vàng, Hồng (đúng các màu có trong bảng sản phẩm) ──
+
+    private List<CategoryItem> buildAoDaiCategories() {
+        return buildColorCategories("ÁO DÀI", new String[][]{
+                {ColorTaxonomy.TRANG, "Khói Trắng Kết Duyên, Phấn Hoa Cổ Điển,…"},
+                {ColorTaxonomy.XANH,  "Lam Lụa Cố Trạch,…"},
+                {ColorTaxonomy.VANG,  "Kim Vũ Phong Hoa,…"},
+                {ColorTaxonomy.HONG,  "Hồng Trần Mộc Dược, Nguyệt Cầm Phấn Hồng,…"},
+        });
+    }
+
+    // ── NHẬT BÌNH: Trắng, Xanh lá, Xanh, Đỏ, Vàng ──────────────────────────────
+
+    private List<CategoryItem> buildNhatBinhCategories() {
+        return buildColorCategories("NHẬT BÌNH", new String[][]{
+                {ColorTaxonomy.TRANG,   "Xích Bào Đối Ấn,…"},
+                {ColorTaxonomy.XANH_LA, "Thạch Lam Hoàng Cung, Lục Triều Tiểu Yến,…"},
+                {ColorTaxonomy.XANH,    "Hoàng Triều Kim Tuyến, Nhật Bình Lam Vũ,…"},
+                {ColorTaxonomy.DO,      "Vọng Nguyệt Lam Cung,…"},
+                {ColorTaxonomy.VANG,    "Tử Vân Yên Thảo, Trầm Hồng Cổ Các,…"},
+        });
+    }
+
+    // ── ÁO TẤC: Xanh, Trắng, Cam, Xanh lá ──────────────────────────────────────
+
+    private List<CategoryItem> buildAoTacCategories() {
+        return buildColorCategories("ÁO TẤC", new String[][]{
+                {ColorTaxonomy.XANH,    "Lục Ngọc Vấn Khăn, Lục Y Phù Quạt,…"},
+                {ColorTaxonomy.TRANG,   "Ngọc Vũ Yên Sa, Tơ Ngà Vấn Nguyệt,…"},
+                {ColorTaxonomy.CAM,     "Mộc Vân Thổ Xà,…"},
+                {ColorTaxonomy.XANH_LA, "Thanh Long Cổ Trấn,…"},
+        });
+    }
+
+    // ── GIAO LĨNH: Xanh lá, Vàng, Đỏ ────────────────────────────────────────────
+
+    private List<CategoryItem> buildGiaoLinhCategories() {
+        return buildColorCategories("GIAO LĨNH", new String[][]{
+                {ColorTaxonomy.XANH_LA, "Bạch Sa Liên Vũ, Lam Ngọc Cổ Trấn, Lục Trúc Vân Khúc,…"},
+                {ColorTaxonomy.VANG,    "Kim Sắc Hoàng Triều,…"},
+                {ColorTaxonomy.DO,      "Cam Giao Lĩnh Bào, Hắc Kim Mẫu Đơn,…"},
+        });
+    }
+
+    // ── YẾM ĐÀO: Đỏ, Xanh lá, Vàng, Hồng ────────────────────────────────────────
+
+    private List<CategoryItem> buildYemDaoCategories() {
+        return buildColorCategories("YẾM ĐÀO", new String[][]{
+                {ColorTaxonomy.DO,      "Sương Mai Bạch Vũ,…"},
+                {ColorTaxonomy.XANH_LA, "Trúc Lục Khuê Phòng, Thanh Lam Trì Liên,…"},
+                {ColorTaxonomy.VANG,    "Yên Hoa Bạch Liên, Bích Lam Cẩm Tú,…"},
+                {ColorTaxonomy.HONG,    "Dạ Kim Mẫu Đơn,…"},
+        });
+    }
+
+    /** Danh mục con dạng "màu" dùng chung cho các tab trang phục — mỗi tab tự khai chỉ những màu mình có. */
+    private List<CategoryItem> buildColorCategories(String parentCategory, String[][] colorsWithDesc) {
+        Context ctx = requireContext();
+        List<CategoryItem> list = new ArrayList<>();
+        for (int i = 0; i < colorsWithDesc.length; i++) {
+            String bucket = colorsWithDesc[i][0];
+            list.add(new CategoryItem(i + 1, bucket, colorsWithDesc[i][1], 0, swatchFor(ctx, bucket),
+                    parentCategory, bucket));
+        }
+        return list;
+    }
+
+    @ColorInt
+    private int swatchFor(Context ctx, String bucket) {
+        if (ColorTaxonomy.DO.equals(bucket))      return ctx.getColor(R.color.tc_swatch_do);
+        if (ColorTaxonomy.XANH.equals(bucket))    return ctx.getColor(R.color.tc_swatch_xanh);
+        if (ColorTaxonomy.VANG.equals(bucket))    return ctx.getColor(R.color.tc_swatch_vang);
+        if (ColorTaxonomy.TRANG.equals(bucket))   return ctx.getColor(R.color.tc_swatch_trang);
+        if (ColorTaxonomy.DEN.equals(bucket))     return ctx.getColor(R.color.tc_swatch_den);
+        if (ColorTaxonomy.HONG.equals(bucket))    return ctx.getColor(R.color.tc_swatch_hong);
+        if (ColorTaxonomy.TIM.equals(bucket))     return ctx.getColor(R.color.tc_swatch_tim);
+        if (ColorTaxonomy.XANH_LA.equals(bucket)) return ctx.getColor(R.color.tc_swatch_xanh_la);
+        if (ColorTaxonomy.CAM.equals(bucket))     return ctx.getColor(R.color.tc_swatch_cam);
+        return ctx.getColor(R.color.tc_bg_subtle);
+    }
+
+    // ── PHỤ KIỆN: chia theo loại phụ kiện, không phải theo màu ─────────────────
+
+    private List<CategoryItem> buildPhuKienCategories() {
+        // {tên hiển thị, mô tả, giá trị lọc khớp với cột MÀU trong dữ liệu phụ kiện}
+        String[][] data = {
+                {"KHĂN ĐỘI ĐẦU", "Khăn vấn, khăn đội đầu truyền thống,…", "Khăn đội đầu"},
+                {"QUẠT",         "Quạt xếp, quạt lụa cầm tay,…",          "Quạt"},
+                {"Ô CHE",        "Ô lọng, dù che truyền thống,…",         "Ô che"},
+                {"MŨ ĐỘI ĐẦU",   "Mũ, mão đội đầu cách tân,…",            "Mũ đội đầu"},
+        };
+        Context ctx = requireContext();
+        int[] palette = {
+                ctx.getColor(R.color.tc_red),
+                ctx.getColor(R.color.tc_espresso),
+                ctx.getColor(R.color.tc_gold),
+                ctx.getColor(R.color.tc_bg_subtle)
+        };
 
         List<CategoryItem> list = new ArrayList<>();
         for (int i = 0; i < data.length; i++) {
-            list.add(new CategoryItem(i + 1, data[i][0], data[i][1], 0, palette[i % palette.length]));
+            list.add(new CategoryItem(i + 1, data[i][0], data[i][1], 0, palette[i % palette.length],
+                    "PHỤ KIỆN", data[i][2]));
         }
         return list;
     }

@@ -81,7 +81,15 @@
       "Bash(git remote *)",
       "Bash(gh repo *)",
       "Bash(git commit -q -m '@ *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(grep -rli \"sheet\\\\|spreadsheet\" backend/src)",
+      "Bash(grep -rln \"sheets.googleapis\\\\|google-spreadsheet\\\\|GOOGLE_SHEET\" backend package.json)",
+      "WebFetch(domain:docs.google.com)",
+      "WebFetch(domain:doc-0o-3s-sheets.googleusercontent.com)",
+      "Bash(python3 -c \"import json; json.load\\(open\\('.claude/settings.local.json'\\)\\); print\\('JSON hop le'\\)\")",
+      "Bash(echo \"grep exit: $?\")",
+      "Bash(echo \"exit=$?\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('JSON OK'\\)\")"
     ]
   }
 }
