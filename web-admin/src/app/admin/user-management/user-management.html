@@ -1,0 +1,243 @@
+<div class="user-admin">
+
+  <!-- ── Page Header ── -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon">
+        <svg width="26" height="26" fill="none" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" stroke="#fff" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <h1 class="page-title">Xác thực / Tài khoản</h1>
+        <p class="page-subtitle">Quản lý tài khoản người dùng trong hệ thống</p>
+      </div>
+    </div>
+    <button class="btn-add-user" (click)="openAddUser()">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      Thêm người dùng
+    </button>
+  </div>
+
+  <!-- ── Alert ── -->
+  <div *ngIf="successMsg" class="alert alert-success">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/></svg>
+    {{ successMsg }}
+  </div>
+  <div *ngIf="errorMsg" class="alert alert-error">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    {{ errorMsg }}
+  </div>
+
+  <!-- ── Stats ── -->
+  <div class="stats-row">
+    <div class="stat-card stat-total">
+      <div class="stat-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ users.length }}</span>
+        <span class="stat-label">Tổng tài khoản</span>
+      </div>
+    </div>
+    <div class="stat-card stat-admin">
+      <div class="stat-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M12 15l-2 5 2-1 2 1-2-5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 7l-8-4-8 4 8 4 8-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ countByRole('admin') }}</span>
+        <span class="stat-label">Admin</span>
+      </div>
+    </div>
+    <div class="stat-card stat-user">
+      <div class="stat-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ countByRole('user') }}</span>
+        <span class="stat-label">Người dùng</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar-card">
+    <div class="toolbar-search">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Tìm theo tên, SĐT..." [(ngModel)]="searchText" (input)="searchUser()" />
+    </div>
+    <div class="toolbar-count">{{ paginatedUsers.length }} / {{ filteredUsers.length }} tài khoản</div>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="table-card">
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th class="th-num">STT</th>
+          <th class="th-name">Người dùng</th>
+          <th class="th-gender">Giới tính</th>
+          <th class="th-phone">Điện thoại</th>
+          <th class="th-address">Địa chỉ</th>
+          <th class="th-role">Vai trò</th>
+          <th class="th-actions">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loading -->
+        <tr *ngIf="loading">
+          <td colspan="7" class="td-center">
+            <div class="loading-spinner"><div class="spinner"></div> Đang tải...</div>
+          </td>
+        </tr>
+        <!-- Empty -->
+        <tr *ngIf="!loading && paginatedUsers.length === 0">
+          <td colspan="7" class="td-center">
+            <div class="empty-state">
+              <svg width="48" height="48" fill="none" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#d4a0a8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" stroke="#d4a0a8" stroke-width="1.5"/></svg>
+              <p>Không có tài khoản nào</p>
+            </div>
+          </td>
+        </tr>
+        <!-- Data rows -->
+        <tr *ngFor="let user of paginatedUsers; let i = index" class="table-row">
+          <td class="td-num">{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+
+          <!-- Normal view -->
+          <td *ngIf="editingUserId !== user._id">
+            <div class="user-cell">
+              <div class="user-avatar">{{ user.profileName?.charAt(0)?.toUpperCase() }}</div>
+              <div class="user-info">
+                <span class="user-name">{{ user.profileName }}</span>
+              </div>
+            </div>
+          </td>
+          <td *ngIf="editingUserId !== user._id">{{ user.gender || '-' }}</td>
+          <td *ngIf="editingUserId !== user._id">{{ user.phone || '-' }}</td>
+          <td *ngIf="editingUserId !== user._id">
+            <span class="address-text">{{ user._formattedAddress || formatAddress(user.address) || '-' }}</span>
+          </td>
+          <td *ngIf="editingUserId !== user._id" class="td-role">
+            <span class="role-pill" [class.role-admin]="user.role === 'admin'" [class.role-user]="user.role !== 'admin'">
+              {{ user.role || 'user' }}
+            </span>
+          </td>
+          <td *ngIf="editingUserId !== user._id">
+            <div class="action-btns">
+              <button class="act-btn act-edit" title="Sửa" (click)="editUser(user)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="act-btn act-delete" title="Xóa" (click)="deleteUser(user._id)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </td>
+
+          <!-- Editing view -->
+          <td *ngIf="editingUserId === user._id">
+            <input class="edit-input" [(ngModel)]="editedUser.profileName" placeholder="Tên" />
+          </td>
+          <td *ngIf="editingUserId === user._id">
+            <input class="edit-input" [(ngModel)]="editedUser.gender" placeholder="Giới tính" />
+          </td>
+          <td *ngIf="editingUserId === user._id">
+            <input class="edit-input" [(ngModel)]="editedUser.phone" placeholder="SĐT" />
+          </td>
+          <td *ngIf="editingUserId === user._id">
+            <input class="edit-input" [(ngModel)]="editedUser.address" placeholder="Địa chỉ" />
+          </td>
+          <td *ngIf="editingUserId === user._id">
+            <select class="edit-input" [(ngModel)]="editedUser.role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </td>
+          <td *ngIf="editingUserId === user._id">
+            <div class="action-btns">
+              <button class="act-btn act-save" title="Lưu" (click)="saveEditing(user._id)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="act-btn act-cancel" title="Hủy" (click)="cancelEditing()">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination-bar" *ngIf="filteredUsers.length > pageSize">
+      <span class="pagination-info">Trang {{ currentPage }} / {{ totalPages }}</span>
+      <div class="pagination-controls">
+        <button class="page-btn" (click)="previousPage()" [disabled]="currentPage <= 1">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="page-current">{{ currentPage }} / {{ totalPages }}</span>
+        <button class="page-btn" (click)="nextPage()" [disabled]="currentPage >= totalPages">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Add User Modal ── -->
+  <div class="modal-overlay" *ngIf="showAddUserForm" (click)="cancelAddUser()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#8b2f3f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="7" r="4" stroke="#8b2f3f" stroke-width="2"/><path d="M20 8v6M23 11h-6" stroke="#8b2f3f" stroke-width="2" stroke-linecap="round"/></svg>
+          <h2>Thêm người dùng mới</h2>
+        </div>
+        <button class="btn-close-modal" (click)="cancelAddUser()">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Tên người dùng <span class="required">*</span></label>
+            <input class="form-input" type="text" [(ngModel)]="newUser.profileName" placeholder="Nhập tên..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email <span class="required">*</span></label>
+            <input class="form-input" type="email" [(ngModel)]="newUser.email" placeholder="email@example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mật khẩu <span class="required">*</span></label>
+            <input class="form-input" type="password" [(ngModel)]="newUser.password" placeholder="••••••••" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Giới tính</label>
+            <select class="form-input" [(ngModel)]="newUser.gender">
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Điện thoại</label>
+            <input class="form-input" type="text" [(ngModel)]="newUser.phone" placeholder="0912 345 678" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vai trò</label>
+            <select class="form-input" [(ngModel)]="newUser.role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Địa chỉ</label>
+            <input class="form-input" type="text" [(ngModel)]="newUser.address" placeholder="Địa chỉ..." />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-form btn-submit" (click)="addUser()">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Thêm
+        </button>
+        <button class="btn-form btn-cancel" (click)="cancelAddUser()">Hủy</button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -17,7 +17,7 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
         void onCategoryClick(CategoryItem item);
     }
 
-    private final List<CategoryItem> items;
+    private List<CategoryItem> items;
     private OnCategoryClickListener listener;
 
     public StylingAdapter(List<CategoryItem> items) {
@@ -26,6 +26,12 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
 
     public void setOnCategoryClickListener(OnCategoryClickListener l) {
         this.listener = l;
+    }
+
+    /** Replace the displayed categories (used when switching tabs). */
+    public void setItems(List<CategoryItem> newItems) {
+        this.items = newItems;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -40,8 +46,16 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CategoryItem item = items.get(position);
 
-        holder.tvName.setText(item.getNameResId());
-        holder.tvDescription.setText(item.getDescriptionResId());
+        if (item.getNameText() != null) {
+            holder.tvName.setText(item.getNameText());
+        } else {
+            holder.tvName.setText(item.getNameResId());
+        }
+        if (item.getDescriptionText() != null) {
+            holder.tvDescription.setText(item.getDescriptionText());
+        } else {
+            holder.tvDescription.setText(item.getDescriptionResId());
+        }
 
         if (item.getImageRes() != 0) {
             holder.ivThumb.setImageResource(item.getImageRes());

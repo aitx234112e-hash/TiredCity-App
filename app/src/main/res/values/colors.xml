@@ -136,6 +136,11 @@
     <color name="tc_auth_card_title">#A80D15</color>
     <color name="tc_auth_card_subtitle">#5A4A38</color>
 
+    <!-- ─── Login role toggle (Customer/Admin segmented control) ─────── -->
+    <color name="tc_toggle_active_bg">#A30D11</color>   <!-- Đỏ đậm khi được chọn -->
+    <color name="tc_toggle_inactive_bg">#F3E7DD</color> <!-- Be nhạt khi không chọn -->
+    <color name="tc_toggle_inactive_text">#A30D11</color>
+
     <!-- ─── Input (đậm để không mờ) ─────────────────────────────────── -->
     <color name="tc_input_text">#1A1208</color>
     <color name="tc_input_hint">#8E7B62</color>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_surface"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingBottom="28dp">
+
+    <!-- ── Nút đóng (X) ── -->
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/cd_close"
+        android:padding="4dp"
+        android:src="@drawable/ic_close"
+        app:tint="@color/text_primary" />
+
+    <!-- ── Tiêu đề ── -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:text="@string/settings_rate_title"
+        android:textColor="@color/text_primary"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <!-- ── Phụ đề ── -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:text="@string/settings_rate_subtitle"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
+
+    <!-- ── 5 sao vàng kim ── -->
+    <RatingBar
+        android:id="@+id/rating_bar"
+        style="@style/Widget.TC.RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp" />
+
+    <!-- ── Nút GỬI (disabled đến khi chọn sao) ── -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_send"
+        style="@style/Widget.TC.Button.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/tc_btn_primary_bg_tint"
+        android:enabled="false"
+        android:text="@string/settings_rate_send" />
+</LinearLayout>

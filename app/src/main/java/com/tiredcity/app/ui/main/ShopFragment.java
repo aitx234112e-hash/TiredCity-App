@@ -17,6 +17,7 @@ import com.tiredcity.app.data.model.search.ProductItem;
 import com.tiredcity.app.data.model.search.PromotionItem;
 import com.tiredcity.app.data.model.search.SearchItem;
 import com.tiredcity.app.databinding.FragmentShopBinding;
+import com.tiredcity.app.ui.reward.VoucherDetailActivity;
 import com.tiredcity.app.ui.shop.SearchActivity;
 import java.util.Arrays;
 import java.util.List;
@@ -80,7 +81,10 @@ public class ShopFragment extends Fragment {
     // ─── "Gợi ý cho bạn" — mixed-type discovery list ───────────────────
     private void setupSuggestions() {
         List<SearchItem> suggestions = Arrays.asList(
-            new PromotionItem(R.string.search_promo_birthday),
+            new PromotionItem(R.string.search_promo_birthday,
+                              R.drawable.banner_1,
+                              R.string.reward_voucher_birthday_title,
+                              R.string.reward_voucher_birthday_subtitle),
             new EventItem(R.string.search_event_coach_title,
                           R.string.search_event_coach_time, 0),
             new ProductItem(R.string.search_brand_kangol,
@@ -91,7 +95,9 @@ public class ShopFragment extends Fragment {
 
         SearchAdapter adapter = new SearchAdapter(suggestions);
         adapter.setOnItemClickListener(item -> {
-            if (item instanceof ProductItem) {
+            if (item instanceof PromotionItem) {
+                openVoucherDetail((PromotionItem) item);
+            } else if (item instanceof ProductItem) {
                 openSearch(getString(((ProductItem) item).getBrandResId()));
             } else {
                 openSearch(null);
@@ -100,6 +106,16 @@ public class ShopFragment extends Fragment {
         binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvSuggestions.setNestedScrollingEnabled(false);
         binding.rvSuggestions.setAdapter(adapter);
+    }
+
+    /** Mở trang chi tiết voucher của ưu đãi được bấm. */
+    private void openVoucherDetail(PromotionItem item) {
+        Intent intent = new Intent(requireContext(), VoucherDetailActivity.class);
+        intent.putExtra(VoucherDetailActivity.EXTRA_TITLE, getString(item.getVoucherTitleResId()));
+        intent.putExtra(VoucherDetailActivity.EXTRA_SUBTITLE, getString(item.getVoucherSubtitleResId()));
+        intent.putExtra(VoucherDetailActivity.EXTRA_BANNER, item.getBannerRes());
+        intent.putExtra(VoucherDetailActivity.EXTRA_CODE, getString(R.string.barcode_code));
+        startActivity(intent);
     }
 
     /** Opens SearchActivity, optionally pre-filling a query. */

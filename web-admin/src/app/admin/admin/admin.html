@@ -1,0 +1,124 @@
+<div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="/assets/Logo.png" alt="SẮC">
+            </div>
+            <button class="sidebar-toggle" (click)="toggleSidebar()">
+                <span class="toggle-icon">{{ sidebarCollapsed ? '☰' : '✕' }}</span>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <a class="nav-item" routerLink="/admin/mainpage" routerLinkActive="active">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Trang chủ</span>
+                </a>
+                <a class="nav-item" href="/" target="_blank">
+                    <span class="nav-icon">🌐</span>
+                    <span class="nav-label">Xem trang web</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Xác thực</div>
+                <a class="nav-item" routerLink="/admin/users" routerLinkActive="active">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Tài khoản</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Chức năng</div>
+                <a class="nav-item" routerLink="/admin/products" routerLinkActive="active">
+                    <span class="nav-icon">🛍️</span>
+                    <span class="nav-label">Sản phẩm</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/orders" routerLinkActive="active">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Đơn hàng</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/blogs" routerLinkActive="active">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Blogs</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/feedbacks" routerLinkActive="active">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label">Feedback</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-badge">
+                <span class="admin-avatar">A</span>
+                <span class="nav-label">{{ profileName }}</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" (click)="toggleSidebar()">☰</button>
+                <h1 class="page-title">{{ pageTitle || 'Trang quản trị SẮC' }}</h1>
+            </div>
+
+            <div class="topbar-center">
+                <div class="search-box">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="Tìm kiếm..." [(ngModel)]="searchQuery" (keydown.enter)="onSearch()" />
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="notification-wrapper" (click)="toggleNotifications()">
+                    <button class="topbar-icon-btn notification-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                        <span class="notification-badge" *ngIf="unreadCount > 0">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+                    </button>
+                    <div class="notification-dropdown" *ngIf="showNotifications">
+                        <div class="notif-header">
+                            <span class="notif-title">Thông báo</span>
+                            <button class="notif-mark-read" (click)="markAllRead($event)">Đánh dấu đã đọc</button>
+                        </div>
+                        <ul class="notif-list">
+                            <li class="notif-item" *ngFor="let n of notifications" [class.unread]="!n.read">
+                                <div class="notif-dot" [class.hidden]="n.read"></div>
+                                <div class="notif-body">
+                                    <span class="notif-text">{{ n.message }}</span>
+                                    <span class="notif-time">{{ n.time }}</span>
+                                </div>
+                            </li>
+                            <li class="notif-empty" *ngIf="notifications.length === 0">Không có thông báo mới</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="topbar-divider"></div>
+                <div class="admin-profile">
+                    <span class="admin-avatar-sm">{{ (profileName || 'A').charAt(0) }}</span>
+                    <span class="admin-name">{{ profileName || 'Admin' }}</span>
+                </div>
+                <button class="logout-btn" (click)="confirmLogout()">Đăng xuất</button>
+            </div>
+        </header>
+
+        <!-- Page content -->
+        <div class="content">
+            <router-outlet></router-outlet>
+        </div>
+
+    </div>
+
+</div>

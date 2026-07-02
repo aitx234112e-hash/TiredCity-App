@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền toggle vai trò: nút đang chọn tô đỏ đậm, nút còn lại nền hồng nhạt đồng bộ (không còn màu vàng khaki mặc định). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/tc_toggle_active_bg" android:state_checked="true" />
+    <item android:color="@color/tc_toggle_inactive_bg" />
+</selector>

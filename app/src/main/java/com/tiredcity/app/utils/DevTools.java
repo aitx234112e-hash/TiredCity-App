@@ -1,7 +1,6 @@
 package com.tiredcity.app.utils;
 
 import android.content.Context;
-import android.widget.Toast;
 import com.tiredcity.app.BuildConfig;
 
 /**
@@ -32,9 +31,6 @@ public final class DevTools {
     public static void maybeResetOnLaunch(Context context) {
         if (!BuildConfig.DEBUG || !RESET_ON_LAUNCH) return;
         clearAllLocalData(context);
-        try {
-            Toast.makeText(context, "DEV: đã xoá dữ liệu — người dùng mới", Toast.LENGTH_SHORT).show();
-        } catch (Exception ignored) { /* Toast quá sớm có thể lỗi trên vài thiết bị */ }
     }
 
     /** Xoá toàn bộ dữ liệu cục bộ (đồng bộ để hoàn tất trước khi mở màn hình đầu tiên). */

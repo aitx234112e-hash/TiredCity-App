@@ -1,0 +1,248 @@
+// TiredCity Admin — Prisma schema
+// Truc chinh: Product -> ProductVariant -> OrderItem <- Order
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================= ENUMS =========================
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+  AUDITOR
+}
+
+enum Menh {
+  KIM
+  MOC
+  THUY
+  HOA
+  THO
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  SOLD_OUT
+  ARCHIVED
+}
+
+enum Size {
+  S
+  M
+  L
+  XL
+  XXL
+  FREE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PACKING
+  SHIPPING
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum VoucherType {
+  PERCENT
+  FIXED
+}
+
+// ========================= AUTH / RBAC (A1, A5) =========================
+model User {
+  id        String   @id @default(uuid())
+  googleId  String?  @unique @map("google_id")
+  email     String   @unique
+  fullName  String?  @map("full_name")
+  avatarUrl String?  @map("avatar_url")
+  role      Role     @default(CUSTOMER)
+  menh      Menh?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orders     Order[]
+  menhCards  MenhCard[]
+  auditLogs  AuditLog[]
+
+  @@map("users")
+}
+
+// ========================= PRODUCT (A4) =========================
+model Collection {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  bannerUrl   String?   @map("banner_url")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  products    Product[]
+
+  @@map("collections")
+}
+
+model Category {
+  id       String     @id @default(uuid())
+  name     String
+  slug     String     @unique
+  parentId String?    @map("parent_id")
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id            String        @id @default(uuid())
+  name          String
+  slug          String        @unique
+  description   String?
+  culturalStory String?       @map("cultural_story") // dac thu TiredCity
+  basePrice     Decimal       @map("base_price") @db.Decimal(12, 2)
+  salePrice     Decimal?      @map("sale_price") @db.Decimal(12, 2)
+  material      String?
+  menh          Menh?         // goi y theo ngu hanh
+  status        ProductStatus @default(DRAFT)
+  collectionId  String?       @map("collection_id")
+  categoryId    String?       @map("category_id")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  collection Collection?      @relation(fields: [collectionId], references: [id])
+  category   Category?        @relation(fields: [categoryId], references: [id])
+  variants   ProductVariant[]
+  images     ProductImage[]
+
+  @@index([status])
+  @@index([collectionId])
+  @@map("products")
+}
+
+model ProductVariant {
+  id        String  @id @default(uuid())
+  productId String  @map("product_id")
+  color     String
+  size      Size
+  sku       String  @unique
+  price     Decimal @db.Decimal(12, 2)
+  stockQty  Int     @default(0) @map("stock_qty")
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  @@unique([productId, color, size])
+  @@map("product_variants")
+}
+
+model ProductImage {
+  id        String  @id @default(uuid())
+  productId String  @map("product_id")
+  url       String
+  publicId  String? @map("public_id") // cloudinary public_id de xoa
+  isPrimary Boolean @default(false) @map("is_primary")
+  sortOrder Int     @default(0) @map("sort_order")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// ========================= ORDER (A3) =========================
+model Order {
+  id          String      @id @default(uuid())
+  orderCode   String      @unique @map("order_code")
+  userId      String      @map("user_id")
+  status      OrderStatus @default(PENDING)
+  subtotal    Decimal     @db.Decimal(12, 2)
+  discount    Decimal     @default(0) @db.Decimal(12, 2)
+  shippingFee Decimal     @default(0) @map("shipping_fee") @db.Decimal(12, 2)
+  total       Decimal     @db.Decimal(12, 2)
+  voucherId   String?     @map("voucher_id")
+  note        String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  user    User        @relation(fields: [userId], references: [id])
+  voucher Voucher?    @relation(fields: [voucherId], references: [id])
+  items   OrderItem[]
+
+  @@index([status])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String  @id @default(uuid())
+  orderId     String  @map("order_id")
+  variantId   String  @map("variant_id")
+  productName String  @map("product_name") // snapshot phong khi SP doi ten/xoa
+  variantInfo String  @map("variant_info") // vd "Do - size M"
+  unitPrice   Decimal @map("unit_price") @db.Decimal(12, 2)
+  quantity    Int
+  lineTotal   Decimal @map("line_total") @db.Decimal(12, 2)
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@map("order_items")
+}
+
+// ========================= VOUCHER (A6) =========================
+model Voucher {
+  id          String      @id @default(uuid())
+  code        String      @unique
+  type        VoucherType
+  value       Decimal     @db.Decimal(12, 2)
+  minOrder    Decimal     @default(0) @map("min_order") @db.Decimal(12, 2)
+  maxDiscount Decimal?    @map("max_discount") @db.Decimal(12, 2)
+  usageLimit  Int?        @map("usage_limit")
+  usedCount   Int         @default(0) @map("used_count")
+  startsAt    DateTime?   @map("starts_at")
+  endsAt      DateTime?   @map("ends_at")
+  isActive    Boolean     @default(true) @map("is_active")
+  orders      Order[]
+
+  @@map("vouchers")
+}
+
+// ========================= MENH CARD (dac thu TiredCity) =========================
+model MenhCard {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  menh         Menh
+  cardImageUrl String?  @map("card_image_url")
+  message      String?
+  status       String   @default("PENDING") // PENDING | SENT
+  sentAt       DateTime? @map("sent_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("menh_cards")
+}
+
+// ========================= AUDIT LOG (A9) =========================
+model AuditLog {
+  id       String   @id @default(uuid())
+  actorId  String?  @map("actor_id")
+  action   String
+  entity   String
+  entityId String?  @map("entity_id")
+  payload  Json?
+  ip       String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  actor User? @relation(fields: [actorId], references: [id])
+
+  @@map("audit_logs")
+}

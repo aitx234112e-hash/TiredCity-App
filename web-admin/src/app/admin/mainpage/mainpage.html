@@ -1,0 +1,222 @@
+
+
+<div class="dashboard">
+
+  <!-- Welcome Header -->
+  <section class="welcome-header">
+    <div class="welcome-text">
+      <h2 class="welcome-title">Xin chào, {{ profileName }} 👋</h2>
+      <p class="welcome-date">{{ today }}</p>
+    </div>
+    <div class="welcome-actions">
+      <button class="btn-primary-action" (click)="goTo('/admin/products')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Thêm sản phẩm
+      </button>
+    </div>
+  </section>
+
+  <!-- Stats Cards -->
+  <section class="stats-grid">
+    <div class="stat-card card-users" (click)="goTo('/admin/users')">
+      <div class="stat-icon-wrap icon-users">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Người dùng</span>
+        <span class="stat-number">{{ totalUsers }}</span>
+      </div>
+      <div class="stat-arrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="stat-card card-orders" (click)="goTo('/admin/orders')">
+      <div class="stat-icon-wrap icon-orders">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Đơn hàng</span>
+        <span class="stat-number">{{ totalOrders }}</span>
+      </div>
+      <div class="stat-arrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="stat-card card-products" (click)="goTo('/admin/products')">
+      <div class="stat-icon-wrap icon-products">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Sản phẩm</span>
+        <span class="stat-number">{{ totalProducts }}</span>
+      </div>
+      <div class="stat-arrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="stat-card card-revenue" (click)="goTo('/admin/orders')">
+      <div class="stat-icon-wrap icon-revenue">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Doanh thu</span>
+        <span class="stat-number stat-revenue-num">{{ formatCurrency(revenue) }}</span>
+      </div>
+      <div class="stat-arrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Actions Row -->
+  <section class="quick-actions-row">
+    <button class="qa-card" (click)="goTo('/admin/products')">
+      <div class="qa-icon-wrap qa-icon-pink">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+      <span class="qa-text">Thêm sản phẩm</span>
+    </button>
+    <button class="qa-card" (click)="goTo('/admin/orders')">
+      <div class="qa-icon-wrap qa-icon-amber">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+      </div>
+      <span class="qa-text">Quản lý đơn hàng</span>
+    </button>
+    <button class="qa-card" (click)="goTo('/admin/users')">
+      <div class="qa-icon-wrap qa-icon-purple">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span class="qa-text">Quản lý tài khoản</span>
+    </button>
+    <button class="qa-card" (click)="goTo('/admin/blogs')">
+      <div class="qa-icon-wrap qa-icon-green">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </div>
+      <span class="qa-text">Viết blog mới</span>
+    </button>
+    <button class="qa-card" (click)="goTo('/admin/feedbacks')">
+      <div class="qa-icon-wrap qa-icon-blue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <span class="qa-text">Xem feedback</span>
+    </button>
+  </section>
+
+  <!-- Main Content Grid -->
+  <section class="content-grid">
+
+    <!-- Recent Orders Table -->
+    <div class="panel panel-orders">
+      <div class="panel-head">
+        <div class="panel-title-group">
+          <h3>Đơn hàng gần đây</h3>
+          <span class="panel-subtitle">{{ recentOrders.length || 0 }} đơn hàng mới nhất</span>
+        </div>
+        <button class="view-all-btn" (click)="goTo('/admin/orders')">
+          Xem tất cả
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+      <div class="table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Mã đơn</th>
+              <th>Khách hàng</th>
+              <th>Tổng tiền</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let o of recentOrders" class="order-row">
+              <td>
+                <span class="order-id">#{{ (o._id || o.id || o.orderId) | slice:-6 }}</span>
+              </td>
+              <td>
+                <div class="customer-cell">
+                  <span class="customer-avatar">{{ (o.userName || o.customer || 'K').charAt(0) }}</span>
+                  <span class="customer-name">{{ o.userName || o.customer || (o.user && o.user.profileName) || '—' }}</span>
+                </div>
+              </td>
+              <td class="order-total">{{ formatCurrency(o.totalPrice || o.total || 0) }}</td>
+              <td><span class="status-badge" [ngClass]="statusClass(o.status)">{{ o.status }}</span></td>
+            </tr>
+            <tr *ngIf="!recentOrders || recentOrders.length === 0">
+              <td colspan="4" class="empty-row">
+                <div class="empty-state">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                  </svg>
+                  <span>Chưa có đơn hàng nào</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Activity Feed -->
+    <div class="panel panel-activities">
+      <div class="panel-head">
+        <div class="panel-title-group">
+          <h3>Hoạt động gần đây</h3>
+          <span class="panel-subtitle">Cập nhật theo thời gian thực</span>
+        </div>
+      </div>
+      <ul class="activity-list">
+        <li *ngFor="let a of activities; let i = index" class="activity-item">
+          <div class="activity-timeline">
+            <div class="activity-dot"></div>
+            <div class="activity-line" *ngIf="i < activities.length - 1"></div>
+          </div>
+          <div class="activity-body">
+            <span class="activity-desc">{{ a.description }}</span>
+            <span class="activity-time">{{ a.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </li>
+        <li *ngIf="!activities || activities.length === 0" class="activity-empty">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>Chưa có hoạt động nào</span>
+        </li>
+      </ul>
+    </div>
+
+  </section>
+
+</div>

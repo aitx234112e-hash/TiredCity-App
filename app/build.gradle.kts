@@ -52,6 +52,9 @@ dependencies {
     // Material Design 3
     implementation("com.google.android.material:material:1.12.0")
 
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment:2.7.7")
     implementation("androidx.navigation:navigation-ui:2.7.7")

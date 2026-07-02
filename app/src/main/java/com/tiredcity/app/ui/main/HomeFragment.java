@@ -20,6 +20,7 @@ import com.tiredcity.app.adapter.PromoStripAdapter;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.databinding.FragmentHomeBinding;
+import com.tiredcity.app.ui.styling.AiStylingActivity;
 import com.tiredcity.app.ui.styling.ChatBotActivity;
 import com.tiredcity.app.utils.LocaleHelper;
 import com.tiredcity.app.utils.MenhCalculator;
@@ -142,8 +143,7 @@ public class HomeFragment extends Fragment {
             binding.cvMenhBanner.setVisibility(View.GONE);
             binding.cardMenhCta.setVisibility(View.VISIBLE);
             binding.cardMenhCta.setOnClickListener(v ->
-                    Navigation.findNavController(requireView())
-                              .navigate(R.id.stylingFragment));
+                    startActivity(new Intent(requireContext(), AiStylingActivity.class)));
             return;
         }
 
@@ -324,8 +324,7 @@ public class HomeFragment extends Fragment {
 
     private void setupClickListeners() {
         binding.cvMenhBanner.setOnClickListener(v ->
-                Navigation.findNavController(requireView())
-                          .navigate(R.id.stylingFragment));
+                startActivity(new Intent(requireContext(), AiStylingActivity.class)));
 
         binding.cvAiStrip.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), ChatBotActivity.class)));

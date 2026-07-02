@@ -85,13 +85,20 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     // ─── Loại 1: Ưu đãi ───────────────────────────────────────────────
     static class PromotionViewHolder extends RecyclerView.ViewHolder {
+        final ShapeableImageView ivImage;
         final TextView tvContent;
         PromotionViewHolder(@NonNull View v) {
             super(v);
+            ivImage   = v.findViewById(R.id.iv_promo_image);
             tvContent = v.findViewById(R.id.tv_promo_content);
         }
         void bind(PromotionItem item) {
             tvContent.setText(item.getContentResId());
+            if (item.getBannerRes() != 0) {
+                ivImage.setImageResource(item.getBannerRes());
+            } else {
+                ivImage.setImageDrawable(null);
+            }
         }
     }
 

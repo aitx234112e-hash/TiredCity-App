@@ -1,0 +1,99 @@
+<button class="btn btn-primary d-md-none" (click)="toggleSidebar()">Menu</button>
+
+<div [ngClass]="{ show: isSidebarOpen }" class="sidebar d-flex flex-column p-3">
+
+    <div class="sidebar-logo mb-4">
+        <img src="/assets/Logo.png" alt="Logo" class="img-fluid" routerLink="/admin/mainpage">
+    </div>
+
+    <ul class="nav flex-column">
+
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/mainpage">
+                <i class="fa fa-home me-2"></i> Trang chủ
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/" target="_blank">
+                <i class="fa fa-eye me-2"></i> Xem trang web
+            </a>
+        </li>
+
+        <!-- XÁC THỰC -->
+
+        <li class="nav-item">
+            <a class="nav-link dropdown-toggle"
+                data-bs-toggle="collapse"
+                data-bs-target="#authMenu">
+
+                Xác thực
+            </a>
+
+            <ul class="collapse list-unstyled" id="authMenu">
+                <li>
+                    <a class="nav-link ms-3" routerLink="/admin/user-adm">
+                        Tài khoản
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        <!-- CHỨC NĂNG -->
+
+        <li class="nav-item">
+
+            <a class="nav-link dropdown-toggle"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainMenu">
+
+                Chức năng
+            </a>
+
+            <ul class="collapse list-unstyled" id="mainMenu">
+
+                <li>
+                    <a class="nav-link ms-3" routerLink="/admin/product-adm">
+                        Sản phẩm
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link ms-3" routerLink="/admin">
+                        Danh mục
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link ms-3" routerLink="/admin">
+                        Liên hệ
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link ms-3" routerLink="/admin/order-adm">
+                        Đơn hàng
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link ms-3" routerLink="/admin">
+                        Blogs
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link ms-3" routerLink="/admin">
+                        Giảm giá
+                    </a>
+                </li>
+
+            </ul>
+
+        </li>
+
+    </ul>
+
+</div>
+

@@ -178,6 +178,11 @@
     <string name="login_subtitle">Log in to continue</string>
     <string name="login_no_account">Don\'t have an account? </string>
     <string name="login_or_with">OR LOGIN WITH</string>
+    <string name="role_customer">Customer</string>
+    <string name="role_admin">Admin</string>
+    <string name="admin_app_not_installed">The Admin app (TiredCity Admin) is not installed. Please build &amp; install app-admin first.</string>
+    <string name="google_signin_failed">Google sign-in failed</string>
+    <string name="google_signin_not_configured">Google Sign-In has no Web Client ID configured — using demo mode.</string>
     <string name="brand_name_caps">TIREDCITY</string>
 
     <!-- Register screen -->
@@ -355,6 +360,7 @@
     <string name="aistyle_tips">💡  Styling tips</string>
     <string name="aistyle_color_desc">White, yellow, silver and gray bring good fortune to those of the Metal element.</string>
     <string name="aistyle_tip_desc">Those of the Metal element should choose light-toned garments with refined tailoring. A white or bronze silk áo dài is perfect for formal occasions.</string>
+    <string name="aistyle_menh_tagline">Style suggestions based on your Five-Element destiny</string>
 
     <!-- Profile -->
     <string name="label_my_orders">My Orders</string>
