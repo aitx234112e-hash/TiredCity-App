@@ -70,7 +70,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="@dimen/tc_elev_sm"
-                app:cardBackgroundColor="@color/bg_surface"
+                app:cardBackgroundColor="@color/black"
                 app:rippleColor="@color/tc_red_pale">
 
                 <!-- Horizontal: image (portrait, left) + details (right) -->
@@ -108,7 +108,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/store_1_name"
-                                android:textColor="@color/text_primary"
+                                android:textColor="@color/tc_on_dark"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:fontFamily="sans-serif-medium"
@@ -121,8 +121,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
-                            android:background="@drawable/tc_bg_rounded_cream_sm"
-                            android:paddingHorizontal="9dp"
                             android:paddingVertical="4dp"
                             android:layout_marginTop="6dp"
                             android:layout_marginBottom="10dp">
@@ -143,7 +141,7 @@
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp"
-                            android:background="@color/bg_subtle"
+                            android:background="@color/tc_on_dark_divider"
                             android:layout_marginBottom="10dp" />
 
                         <!-- Address -->
@@ -153,12 +151,12 @@
                             android:layout_marginBottom="7dp">
                             <ImageView android:layout_width="13dp" android:layout_height="13dp"
                                 android:layout_marginTop="2dp"
-                                android:src="@drawable/ic_pin" app:tint="@color/tc_sand"
+                                android:src="@drawable/ic_pin" app:tint="@color/tc_red"
                                 android:contentDescription="@null" />
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="37 P. Hàng Hành, Hoàn Kiếm, Hà Nội"
-                                android:textColor="@color/text_secondary" android:textSize="12sp"
+                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp"
                                 android:lineSpacingExtra="2dp" />
                         </LinearLayout>
 
@@ -168,12 +166,12 @@
                             android:orientation="horizontal" android:gravity="center_vertical"
                             android:layout_marginBottom="7dp">
                             <ImageView android:layout_width="13dp" android:layout_height="13dp"
-                                android:src="@drawable/ic_calendar" app:tint="@color/tc_sand"
+                                android:src="@drawable/ic_calendar" app:tint="@color/tc_red"
                                 android:contentDescription="@null" />
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="9:00 – 22:30 (T2 – CN)"
-                                android:textColor="@color/text_secondary" android:textSize="12sp" />
+                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
                         </LinearLayout>
 
                         <!-- Phone -->
@@ -181,12 +179,12 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal" android:gravity="center_vertical">
                             <ImageView android:layout_width="13dp" android:layout_height="13dp"
-                                android:src="@drawable/ic_phone" app:tint="@color/tc_sand"
+                                android:src="@drawable/ic_phone" app:tint="@color/tc_red"
                                 android:contentDescription="@null" />
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="024 6296 0306"
-                                android:textColor="@color/text_secondary" android:textSize="12sp" />
+                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -201,7 +199,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="@dimen/tc_elev_sm"
-                app:cardBackgroundColor="@color/bg_surface"
+                app:cardBackgroundColor="@color/black"
                 app:rippleColor="@color/tc_red_pale">
 
                 <LinearLayout
@@ -236,7 +234,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/store_2_name"
-                                android:textColor="@color/text_primary"
+                                android:textColor="@color/tc_on_dark"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:fontFamily="sans-serif-medium"
@@ -248,8 +246,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
-                            android:background="@drawable/tc_bg_rounded_cream_sm"
-                            android:paddingHorizontal="9dp"
                             android:paddingVertical="4dp"
                             android:layout_marginTop="6dp"
                             android:layout_marginBottom="10dp">
@@ -270,7 +266,7 @@
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp"
-                            android:background="@color/bg_subtle"
+                            android:background="@color/tc_on_dark_divider"
                             android:layout_marginBottom="10dp" />
 
                         <LinearLayout android:layout_width="match_parent"
@@ -279,12 +275,12 @@
                             android:layout_marginBottom="7dp">
                             <ImageView android:layout_width="13dp" android:layout_height="13dp"
                                 android:layout_marginTop="2dp"
-                                android:src="@drawable/ic_pin" app:tint="@color/tc_sand"
+                                android:src="@drawable/ic_pin" app:tint="@color/tc_red"
                                 android:contentDescription="@null" />
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="97 P. Hàng Gai, Hoàn Kiếm, Hà Nội"
-                                android:textColor="@color/text_secondary" android:textSize="12sp"
+                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp"
                                 android:lineSpacingExtra="2dp" />
                         </LinearLayout>
 
@@ -293,24 +289,24 @@
                             android:orientation="horizontal" android:gravity="center_vertical"
                             android:layout_marginBottom="7dp">
                             <ImageView android:layout_width="13dp" android:layout_height="13dp"
-                                android:src="@drawable/ic_calendar" app:tint="@color/tc_sand"
+                                android:src="@drawable/ic_calendar" app:tint="@color/tc_red"
                                 android:contentDescription="@null" />
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="9:00 – 22:30 (T2 – CN)"
-                                android:textColor="@color/text_secondary" android:textSize="12sp" />
+                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
                         </LinearLayout>
 
                         <LinearLayout android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal" android:gravity="center_vertical">
                             <ImageView android:layout_width="13dp" android:layout_height="13dp"
-                                android:src="@drawable/ic_phone" app:tint="@color/tc_sand"
+                                android:src="@drawable/ic_phone" app:tint="@color/tc_red"
                                 android:contentDescription="@null" />
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="024 6296 0306"
-                                android:textColor="@color/text_secondary" android:textSize="12sp" />
+                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -366,7 +362,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/contact_title"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/tc_red"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-medium" />
@@ -391,7 +387,7 @@
                         app:boxStrokeWidthFocused="2dp"
                         app:hintTextColor="@color/tc_red"
                         app:startIconDrawable="@drawable/ic_person"
-                        app:startIconTint="@color/tc_sand">
+                        app:startIconTint="@color/tc_red">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etName"
                             android:layout_width="match_parent"
@@ -411,7 +407,7 @@
                         app:boxStrokeWidthFocused="2dp"
                         app:hintTextColor="@color/tc_red"
                         app:startIconDrawable="@drawable/ic_phone"
-                        app:startIconTint="@color/tc_sand">
+                        app:startIconTint="@color/tc_red">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etPhone"
                             android:layout_width="match_parent"
@@ -432,7 +428,7 @@
                         app:boxStrokeWidthFocused="2dp"
                         app:hintTextColor="@color/tc_red"
                         app:startIconDrawable="@drawable/ic_email"
-                        app:startIconTint="@color/tc_sand">
+                        app:startIconTint="@color/tc_red">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etEmail"
                             android:layout_width="match_parent"
@@ -442,27 +438,50 @@
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Message — icon: bong bóng chat -->
+                    <!-- Message — icon + label share one row above the box (multi-line box means a
+                         start icon centered against the whole field would float far from the text) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="6dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:src="@drawable/ic_chat"
+                            app:tint="@color/tc_red"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/hint_message_long"
+                            android:textColor="@color/tc_red"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:hint="@string/hint_message_long"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:boxStrokeColor="@color/tc_stroke"
                         app:boxStrokeWidthFocused="2dp"
-                        app:hintTextColor="@color/tc_red"
-                        app:startIconDrawable="@drawable/ic_chat"
-                        app:startIconTint="@color/tc_sand">
+                        app:hintEnabled="false">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etMessage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minLines="4"
+                            android:minLines="3"
                             android:gravity="top|start"
                             android:inputType="textMultiLine"
                             android:textColor="@color/text_primary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Send button -->

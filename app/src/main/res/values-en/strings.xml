@@ -321,11 +321,11 @@
     <string name="about_hero_subtitle">Việt Phục – Traditional Beauty</string>
     <string name="about_hero_image_desc">TiredCity store photo</string>
     <string name="about_section_title">About Us</string>
-    <string name="about_description"><b>Tired City</b> is a marketplace for lovers of Vietnamese culture, bringing contemporary <b>Việt Phục</b> designs rooted in <b>tradition and identity</b>. We help users discover and shop Vietnamese fashion in a fresh, inspiring way.</string>
+    <string name="about_description"><font color="#A80D15"><b>Tired City</b></font> is a marketplace for lovers of Vietnamese culture, bringing contemporary <font color="#A80D15"><b>Việt Phục</b></font> designs rooted in <font color="#A80D15"><b>tradition and identity</b></font>. We help users discover and shop Vietnamese fashion in a fresh, inspiring way.</string>
     <string name="about_vision_title">Vision</string>
-    <string name="about_vision_desc"><b>Tired City</b> aims to become Vietnam\'s <b>top digital platform</b>, bringing <b>Việt Phục</b> back into everyday life as part of youth lifestyle, not just for festivals but for modern living.</string>
+    <string name="about_vision_desc"><font color="#A80D15"><b>Tired City</b></font> aims to become Vietnam\'s <font color="#A80D15"><b>top digital platform</b></font>, bringing <font color="#A80D15"><b>Việt Phục</b></font> back into everyday life as part of youth lifestyle, not just for festivals but for modern living.</string>
     <string name="about_mission_title">Mission</string>
-    <string name="about_mission_desc"><b>Tired City</b> connects users with artisans and designers through smart shopping, using <b>AI</b> to preserve and spread <b>Vietnamese culture</b> in a meaningful, sustainable way.</string>
+    <string name="about_mission_desc"><font color="#A80D15"><b>Tired City</b></font> connects users with artisans and designers through smart shopping, using <font color="#A80D15"><b>AI</b></font> to preserve and spread <font color="#A80D15"><b>Vietnamese culture</b></font> in a meaningful, sustainable way.</string>
 
     <string name="about_core_values_title">Core Values</string>
     <string name="about_value1_title">Vietnamese Identity</string>

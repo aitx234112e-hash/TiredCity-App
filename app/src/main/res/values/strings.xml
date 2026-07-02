@@ -356,11 +356,11 @@
     <string name="about_hero_subtitle">Việt Phục – Nét đẹp truyền thống</string>
     <string name="about_hero_image_desc">Ảnh cửa hàng TiredCity</string>
     <string name="about_section_title">Về chúng tôi</string>
-    <string name="about_description"><b>Tired City</b> là nền tảng thương mại điện tử dành cho người yêu văn hóa Việt, mang đến những thiết kế <b>Việt phục</b> đương đại, đậm <b>bản sắc truyền thống</b> dân tộc. Chúng tôi giúp người dùng khám phá thời trang Việt mới mẻ.</string>
+    <string name="about_description"><font color="#A80D15"><b>Tired City</b></font> là nền tảng thương mại điện tử dành cho người yêu văn hóa Việt, mang đến những thiết kế <font color="#A80D15"><b>Việt phục</b></font> đương đại, đậm <font color="#A80D15"><b>bản sắc truyền thống</b></font> dân tộc. Chúng tôi giúp người dùng khám phá thời trang Việt mới mẻ.</string>
     <string name="about_vision_title">Tầm nhìn</string>
-    <string name="about_vision_desc"><b>Tired City</b> hướng tới trở thành <b>nền tảng số hàng đầu</b> tại Việt Nam, đưa <b>Việt phục</b> quay lại đời sống thường nhật, trở thành phong cách sống quen thuộc của giới trẻ Việt hôm nay và mai sau.</string>
+    <string name="about_vision_desc"><font color="#A80D15"><b>Tired City</b></font> hướng tới trở thành <font color="#A80D15"><b>nền tảng số hàng đầu</b></font> tại Việt Nam, đưa <font color="#A80D15"><b>Việt phục</b></font> quay lại đời sống thường nhật, trở thành phong cách sống quen thuộc của giới trẻ Việt hôm nay và mai sau.</string>
     <string name="about_mission_title">Sứ mệnh</string>
-    <string name="about_mission_desc"><b>Tired City</b> kết nối người dùng với nghệ nhân, nhà thiết kế qua trải nghiệm mua sắm thông minh, ứng dụng <b>AI</b> để bảo tồn và lan tỏa <b>văn hóa Việt</b> trong thời đại số, gần gũi và bền vững.</string>
+    <string name="about_mission_desc"><font color="#A80D15"><b>Tired City</b></font> kết nối người dùng với nghệ nhân, nhà thiết kế qua trải nghiệm mua sắm thông minh, ứng dụng <font color="#A80D15"><b>AI</b></font> để bảo tồn và lan tỏa <font color="#A80D15"><b>văn hóa Việt</b></font> trong thời đại số, gần gũi và bền vững.</string>
 
     <string name="about_core_values_title">Giá trị cốt lõi</string>
     <string name="about_value1_title">Bản sắc Việt</string>
@@ -458,13 +458,13 @@
     <string name="barcode_copied">Đã sao chép mã ưu đãi</string>
 
     <!-- Contact & Store Locator -->
-    <string name="contact_customer_care">CUSTOMER CARE</string>
-    <string name="contact_title">CONTACT TIREDCITY</string>
-    <string name="contact_subtitle">Leave a message, the TiredCity team will respond as soon as possible to support you.</string>
-    <string name="hint_name">Full Name *</string>
-    <string name="hint_phone_contact">Phone Number *</string>
-    <string name="hint_message_long">Your message *</string>
-    <string name="btn_send_message">SEND MESSAGE ✦</string>
+    <string name="contact_customer_care">CHĂM SÓC KHÁCH HÀNG</string>
+    <string name="contact_title">LIÊN HỆ TIREDCITY</string>
+    <string name="contact_subtitle">Để lại lời nhắn, đội ngũ TiredCity sẽ phản hồi sớm nhất để hỗ trợ bạn.</string>
+    <string name="hint_name">Họ và tên *</string>
+    <string name="hint_phone_contact">Số điện thoại *</string>
+    <string name="hint_message_long">Nội dung tin nhắn *</string>
+    <string name="btn_send_message">GỬI TIN NHẮN ✦</string>
 
     <string name="title_store_locator">STORE LOCATOR</string>
     <string name="label_address">Address: </string>
