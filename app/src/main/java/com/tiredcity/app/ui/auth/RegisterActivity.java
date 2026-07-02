@@ -23,6 +23,8 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -128,32 +130,43 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void attemptRegister(String email, String password, String fullName, String phone) {
-        // ⚠️ Backend tiredcity.vn KHÔNG có API auth → đăng ký offline cho bản demo giao diện.
-        // Tính Mệnh / Cung hoàng đạo / Con giáp NGAY tại máy từ ngày sinh, lưu cục bộ.
+        binding.btnRegister.setEnabled(false);
 
-        String menh   = MenhCalculator.tinhMenh(birthYear);
-        String sign   = MenhCalculator.tinhCungHoangDao(birthMonth, birthDay);
-        String animal = MenhCalculator.tinhConGiap(birthYear);
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    binding.btnRegister.setEnabled(true);
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        String uid = user != null ? user.getUid() : email;
 
-        preferenceManager.setMenh(menh);
-        preferenceManager.setZodiac(sign);
+                        String menh   = MenhCalculator.tinhMenh(birthYear);
+                        String sign   = MenhCalculator.tinhCungHoangDao(birthMonth, birthDay);
+                        String animal = MenhCalculator.tinhConGiap(birthYear);
 
-        UserProfile profile = new UserProfile();
-        profile.setName(fullName);
-        profile.setEmail(email);
-        profile.setPhone(phone);
-        profile.setBirthDate(String.format(Locale.US, "%04d-%02d-%02d", birthYear, birthMonth, birthDay));
-        profile.setMenh(menh);
-        profile.setZodiac(sign);
-        profile.setAnimal(animal);
-        preferenceManager.saveUser(profile);
+                        preferenceManager.setMenh(menh);
+                        preferenceManager.setZodiac(sign);
 
-        preferenceManager.saveToken("demo-token-local");
-        preferenceManager.saveUserId(email);
-        ApiClient.reset();
-        Toast.makeText(this, "Chào mừng " + fullName + "!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-        finishAffinity();
+                        UserProfile profile = new UserProfile();
+                        profile.setName(fullName);
+                        profile.setEmail(email);
+                        profile.setPhone(phone);
+                        profile.setBirthDate(String.format(Locale.US, "%04d-%02d-%02d", birthYear, birthMonth, birthDay));
+                        profile.setMenh(menh);
+                        profile.setZodiac(sign);
+                        profile.setAnimal(animal);
+                        preferenceManager.saveUser(profile);
+
+                        preferenceManager.saveToken("firebase-token-local");
+                        preferenceManager.saveUserId(uid);
+                        ApiClient.reset();
+                        Toast.makeText(this, "Chào mừng " + fullName + "!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                        finishAffinity();
+                    } else {
+                        Toast.makeText(this, "Đăng ký thất bại: " + task.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /** Đăng ký qua API thật. Hiện chưa dùng vì backend chưa có endpoint auth. */

@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
+        <!-- Web Client ID đã có sẵn từ Google Services nên bạn không cần thêm lại -->
+        <!-- Nếu code báo lỗi thiếu R.string.default_web_client_id thì mới thêm dòng dưới: -->
+        <!-- <string name="default_web_client_id">683649996737-70ls6idlls5laql9uiguo2hq80u11mgt.apps.googleusercontent.com</string> -->
+
+        <!-- Cấu hình Facebook (BẮT BUỘC THÊM VÀO ĐÂY) -->
+    <string name="facebook_app_id">2548105325614045</string>
+    <string name="fb_login_protocol_scheme">fb2548105325614045</string>
+    <string name="facebook_client_token">d71672a3a2adebc3fed9df8b87321813</string>
+    <string name="facebook_provider_authority" translatable="false">com.facebook.app.FacebookContentProvider2548105325614045</string>
     <!-- App -->
     <string name="app_name">Tired City</string>
 
