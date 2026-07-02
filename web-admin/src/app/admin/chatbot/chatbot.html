@@ -1,0 +1,48 @@
+<div class="cb-page">
+
+  <header class="page-header">
+    <div>
+      <h2 class="page-h2">Trợ lý Admin</h2>
+      <p class="page-sub">Hỏi nhanh về đơn hàng, doanh thu &amp; thống kê cửa hàng</p>
+    </div>
+    <span class="cb-status" [class.ready]="ready">
+      <span class="cb-dot"></span>{{ ready ? 'Sẵn sàng' : 'Đang tải dữ liệu...' }}
+    </span>
+  </header>
+
+  <div class="cb-window">
+
+    <div class="cb-messages">
+      <div class="cb-msg" *ngFor="let m of messages" [ngClass]="m.from">
+        <div class="cb-avatar" *ngIf="m.from === 'bot'">🐔</div>
+        <div class="cb-bubble">
+          <span class="cb-text">{{ m.text }}</span>
+          <span class="cb-time">{{ m.time | date:'HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="cb-suggestions" *ngIf="messages.length <= 2">
+      <button class="cb-chip" *ngFor="let s of suggestions" (click)="ask(s)">{{ s }}</button>
+    </div>
+
+    <!-- Input -->
+    <form class="cb-input-bar" (ngSubmit)="ask(input)">
+      <input
+        type="text"
+        [(ngModel)]="input"
+        name="cbInput"
+        placeholder="Nhập câu hỏi... (VD: doanh thu hôm nay?)"
+        autocomplete="off"
+      />
+      <button type="submit" class="cb-send" [disabled]="!input.trim()" aria-label="Gửi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </form>
+
+  </div>
+
+</div>

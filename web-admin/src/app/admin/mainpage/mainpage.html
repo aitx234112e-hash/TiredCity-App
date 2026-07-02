@@ -6,7 +6,12 @@
   <section class="welcome-header">
     <div class="welcome-text">
       <h2 class="welcome-title">Xin chào, {{ profileName }} 👋</h2>
-      <p class="welcome-date">{{ today }}</p>
+      <p class="welcome-date">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        {{ today }}
+      </p>
     </div>
     <div class="welcome-actions">
       <button class="btn-primary-action" (click)="goTo('/admin/products')">
@@ -71,7 +76,7 @@
       </div>
     </div>
 
-    <div class="stat-card card-revenue" (click)="goTo('/admin/orders')">
+    <div class="stat-card card-revenue" (click)="goTo('/admin/revenue')">
       <div class="stat-icon-wrap icon-revenue">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -91,40 +96,56 @@
 
   <!-- Quick Actions Row -->
   <section class="quick-actions-row">
-    <button class="qa-card" (click)="goTo('/admin/products')">
-      <div class="qa-icon-wrap qa-icon-pink">
+    <button class="qa-card qa-red" (click)="goTo('/admin/products')">
+      <div class="qa-icon-wrap">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
       </div>
       <span class="qa-text">Thêm sản phẩm</span>
     </button>
-    <button class="qa-card" (click)="goTo('/admin/orders')">
-      <div class="qa-icon-wrap qa-icon-amber">
+    <button class="qa-card qa-amber" (click)="goTo('/admin/orders')">
+      <div class="qa-icon-wrap">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
       </div>
       <span class="qa-text">Quản lý đơn hàng</span>
     </button>
-    <button class="qa-card" (click)="goTo('/admin/users')">
-      <div class="qa-icon-wrap qa-icon-purple">
+    <button class="qa-card qa-violet" (click)="goTo('/admin/users')">
+      <div class="qa-icon-wrap">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
         </svg>
       </div>
       <span class="qa-text">Quản lý tài khoản</span>
     </button>
-    <button class="qa-card" (click)="goTo('/admin/blogs')">
-      <div class="qa-icon-wrap qa-icon-green">
+    <button class="qa-card qa-pink" (click)="goTo('/admin/vouchers')">
+      <div class="qa-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="15" x2="15.01" y2="15"/>
+        </svg>
+      </div>
+      <span class="qa-text">Quản lý voucher</span>
+    </button>
+    <button class="qa-card qa-teal" (click)="goTo('/admin/shipping')">
+      <div class="qa-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+      </div>
+      <span class="qa-text">Quản lý vận chuyển</span>
+    </button>
+    <button class="qa-card qa-green" (click)="goTo('/admin/blogs')">
+      <div class="qa-icon-wrap">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
         </svg>
       </div>
       <span class="qa-text">Viết blog mới</span>
     </button>
-    <button class="qa-card" (click)="goTo('/admin/feedbacks')">
-      <div class="qa-icon-wrap qa-icon-blue">
+    <button class="qa-card qa-blue" (click)="goTo('/admin/feedbacks')">
+      <div class="qa-icon-wrap">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>

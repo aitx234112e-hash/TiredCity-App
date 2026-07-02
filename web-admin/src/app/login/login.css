@@ -3,7 +3,7 @@
     display:flex;
     justify-content:center;
     align-items:center;
-    background-image: url('/assets/login_bg.png');
+    background-image: url('/assets/banner_about_us.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -14,7 +14,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.45);
 }
 
 /* Card */
@@ -23,38 +23,57 @@
     position: relative;
     z-index: 1;
     width:420px;
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding:40px;
-    border-radius:14px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding:45px;
+    border-radius:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    border: 1px solid rgba(168, 13, 21, 0.1);
 }
 
 /* Title */
 
 .login-title{
-    color:#a94053;
+    color:#A80D15;
     font-weight:700;
     margin-bottom:10px;
     text-align:center;
+    font-size:28px;
+    letter-spacing:2px;
 }
 
 .login-subtitle{
-    color:#40513b;
+    color:#545B69;
     margin-bottom:25px;
     text-align:center;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.login-subtitle b{
+    color:#A80D15;
+    font-weight:700;
 }
 
 /* Inputs */
 
 .login-input{
     width:100%;
-    padding:12px;
+    padding:12px 16px;
     margin-bottom:15px;
     border-radius:30px;
-    border:1px solid #ddd;
+    border:1px solid #E0E3E8;
+    background:rgba(255,255,255,0.7);
+    font-family:'Montserrat', sans-serif;
+    transition:0.3s;
+}
+
+.login-input:focus{
+    outline:none;
+    border-color:#A80D15;
+    background:white;
+    box-shadow:0 0 0 3px rgba(168, 13, 21, 0.1);
 }
 
 /* Options */
@@ -68,8 +87,14 @@
 }
 
 .forgot{
-    color:#a94053;
+    color:#A80D15;
     cursor:pointer;
+    text-decoration:none;
+    transition:opacity 0.3s;
+}
+
+.forgot:hover{
+    opacity:0.8;
 }
 
 /* Button */
@@ -79,14 +104,18 @@
     padding:12px;
     border:none;
     border-radius:30px;
-    background:#a94053;
+    background:#A80D15;
     color:white;
     font-weight:600;
     transition:0.3s;
+    font-size:15px;
+    letter-spacing:0.5px;
 }
 
 .login-btn:hover{
-    background:#8e3445;
+    background:#7A0810;
+    transform:translateY(-2px);
+    box-shadow:0 6px 20px rgba(168, 13, 21, 0.3);
 }
 
 /* signup */
@@ -97,7 +126,9 @@
 }
 
 .signup a{
-    color:#a94053;
+    color:#A80D15;
+    text-decoration:none;
+    font-weight:600;
 }
 
 /* divider */

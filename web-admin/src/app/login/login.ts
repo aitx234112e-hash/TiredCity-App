@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { UserApiService } from '../user-api.service';
+import { AuditService } from '../admin/audit.service';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class Login implements OnInit {
     private fb: FormBuilder,
     private userApi: UserApiService,
     private router: Router,
+    private audit: AuditService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
 
@@ -43,7 +45,14 @@ export class Login implements OnInit {
       (res: any) => {
         // setUser đã được gọi trong tap của userApi.login()
         // Chỉ cho phép admin/superadmin đăng nhập vào trang quản trị
+        if (res.disabled) {
+          this.userApi.logout();
+          this.loginError = 'Tài khoản đã bị vô hiệu hoá';
+          alert(this.loginError);
+          return;
+        }
         if (res.role === 'admin' || res.role === 'superadmin') {
+          this.audit.log('login', res.email || res._id, `Đăng nhập admin (${res.role})`);
           alert("Đăng nhập thành công");
           this.router.navigate(['/admin']);
         } else {

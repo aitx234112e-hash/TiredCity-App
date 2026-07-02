@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "683649996737",
+    "project_id": "tiredcity-daf1e",
+    "storage_bucket": "tiredcity-daf1e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683649996737:android:73368172de04155a4dc140",
+        "android_client_info": {
+          "package_name": "com.tiredcity.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFKXern20RnlEdF_qbgp8n18q7KD2c4gc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

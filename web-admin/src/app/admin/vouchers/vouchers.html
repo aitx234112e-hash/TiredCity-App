@@ -1,0 +1,124 @@
+<div class="vc-page">
+
+  <header class="page-header">
+    <div>
+      <h2 class="page-h2">Voucher</h2>
+      <p class="page-sub">Quản lý mã giảm giá &amp; khuyến mãi của TiredCity</p>
+    </div>
+    <button class="btn-primary" (click)="openForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Thêm voucher
+    </button>
+  </header>
+
+  <!-- Loading -->
+  <div class="state" *ngIf="loading">Đang tải voucher...</div>
+
+  <!-- Empty -->
+  <div class="empty" *ngIf="!loading && vouchers.length === 0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><line x1="9" y1="9" x2="9" y2="9"/><line x1="15" y1="15" x2="15" y2="15"/>
+    </svg>
+    <span class="empty-title">Chưa có voucher nào</span>
+    <span class="empty-sub">Tạo mã giảm giá đầu tiên cho khách hàng</span>
+    <button class="btn-primary" (click)="openForm()">Thêm voucher</button>
+  </div>
+
+  <!-- Grid -->
+  <section class="vc-grid" *ngIf="!loading && vouchers.length > 0">
+    <article class="vc-card" *ngFor="let v of vouchers" [class.expired]="isExpired(v)">
+      <div class="vc-left">
+        <span class="vc-discount">{{ discountLabel(v) }}</span>
+        <span class="vc-type">{{ v.type === 'percent' ? 'Giảm %' : 'Giảm tiền' }}</span>
+      </div>
+      <div class="vc-body">
+        <img class="vc-image" *ngIf="v.image" [src]="v.image" [alt]="v.code" />
+        <div class="vc-top">
+          <span class="vc-code">{{ v.code }}</span>
+          <button class="vc-del" (click)="remove(v)" aria-label="Xoá">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="vc-meta">
+          <span class="vc-meta-item" *ngIf="v.minOrder > 0">Đơn tối thiểu: {{ formatCurrency(v.minOrder) }}</span>
+          <span class="vc-meta-item">HSD: {{ formatDate(v.expiry) }}</span>
+        </div>
+        <p class="vc-desc" *ngIf="v.description">{{ v.description }}</p>
+        <span class="vc-status" [class.expired]="isExpired(v)">{{ isExpired(v) ? 'Hết hạn' : 'Đang áp dụng' }}</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Form modal -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="closeForm()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3>Thêm voucher</h3>
+        <button class="modal-close" (click)="closeForm()" aria-label="Đóng">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field">
+          <span>Mã voucher *</span>
+          <input type="text" [(ngModel)]="form.code" placeholder="VD: TIREDCITY10" />
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>Loại giảm</span>
+            <select [(ngModel)]="form.type">
+              <option value="percent">Giảm theo %</option>
+              <option value="fixed">Giảm tiền (VND)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Giá trị *</span>
+            <input type="number" [(ngModel)]="form.value" [placeholder]="form.type === 'percent' ? 'VD: 10' : 'VD: 50000'" />
+          </label>
+        </div>
+        <div class="field-row">
+          <label class="field">
+            <span>Đơn tối thiểu (VND)</span>
+            <input type="number" [(ngModel)]="form.minOrder" placeholder="VD: 200000" />
+          </label>
+          <label class="field">
+            <span>Hạn sử dụng</span>
+            <input type="date" [(ngModel)]="form.expiry" />
+          </label>
+        </div>
+        <label class="field">
+          <span>Mô tả</span>
+          <textarea rows="2" [(ngModel)]="form.description" placeholder="Điều kiện áp dụng..."></textarea>
+        </label>
+        <div class="field">
+          <span>Ảnh voucher</span>
+          <div class="image-upload">
+            <label class="upload-area" *ngIf="!form.image">
+              <input type="file" (change)="onImageChange($event)" hidden accept="image/*" />
+              <svg width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+              <span>Nhấn để chọn ảnh</span>
+            </label>
+            <div class="image-preview" *ngIf="form.image">
+              <img [src]="form.image" alt="Ảnh voucher" />
+              <div class="image-preview-actions">
+                <label class="change-img-btn">
+                  <input type="file" (change)="onImageChange($event)" hidden accept="image/*" />
+                  Đổi ảnh
+                </label>
+                <button type="button" class="remove-img-btn" (click)="removeImage()">Xoá ảnh</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="err" *ngIf="errorMsg">{{ errorMsg }}</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost" (click)="closeForm()">Huỷ</button>
+        <button class="btn-primary" (click)="save()" [disabled]="saving">{{ saving ? 'Đang lưu...' : 'Lưu voucher' }}</button>
+      </div>
+    </div>
+  </div>
+
+</div>

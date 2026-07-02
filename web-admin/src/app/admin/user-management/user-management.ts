@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserApiService } from '../../user-api.service';
 import { AddressService } from '../../address.service';
+import { AuditService } from '../audit.service';
 
 @Component({
   selector: 'app-user-management',
@@ -42,7 +43,31 @@ export class UserManagement implements OnInit {
   };
 
 
-  constructor(private userService: UserApiService, private addressService: AddressService) {}
+  constructor(
+    private userService: UserApiService,
+    private addressService: AddressService,
+    private audit: AuditService
+  ) {}
+
+  // Vô hiệu hoá / kích hoạt lại tài khoản
+  toggleDisable(user: any) {
+    const next = !user.disabled;
+    const label = next ? 'vô hiệu hoá' : 'kích hoạt lại';
+    if (!confirm(`Bạn có chắc muốn ${label} tài khoản "${user.profileName || user.email}"?`)) return;
+
+    this.userService.updateUser(user._id, { ...user, disabled: next }).subscribe({
+      next: () => {
+        user.disabled = next;
+        this.audit.log(next ? 'user.disable' : 'user.enable', user.profileName || user.email || user._id, '');
+        this.successMsg = next ? 'Đã vô hiệu hoá tài khoản.' : 'Đã kích hoạt lại tài khoản.';
+        this.clearMsg();
+      },
+      error: () => {
+        this.errorMsg = 'Thao tác thất bại. Vui lòng thử lại.';
+        this.clearMsg();
+      },
+    });
+  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -208,12 +233,14 @@ export class UserManagement implements OnInit {
   deleteUser(userId: string) {
     if (!confirm("Bạn có chắc muốn xóa user này?")) return;
 
+    const target = this.users.find(u => u._id === userId);
     this.userService.deleteUser(userId).subscribe({
       next: () => {
         this.users = this.users.filter(u => u._id !== userId);
         this.filteredUsers = [...this.users];
         this.totalPages = Math.ceil(this.filteredUsers.length / this.pageSize);
         this.updatePagination();
+        this.audit.log('user.delete', target?.profileName || target?.email || userId, '');
         this.successMsg = 'Đã xóa người dùng.';
         this.clearMsg();
       },

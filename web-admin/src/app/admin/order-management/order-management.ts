@@ -4,7 +4,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderApiService } from '../../order-api.service';
 import { AddressService } from '../../address.service';
+import { AuditService } from '../audit.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-management',
@@ -39,9 +42,15 @@ export class OrderManagement implements OnInit {
     { value: 'cancelled', label: 'Đã hủy' }
   ];
 
+  // --- Bulk update (A3) ---
+  selectedIds = new Set<string>();
+  bulkStatus = '';
+  bulkProcessing = false;
+
   constructor(
     private orderService: OrderApiService,
     private addressService: AddressService,
+    private audit: AuditService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -180,6 +189,7 @@ export class OrderManagement implements OnInit {
     this.orderService.cancelOrder(order._id).subscribe({
       next: () => {
         order.status = 'cancelled';
+        this.audit.log('order.cancel', order.orderID || order._id, '');
         this.successMsg = 'Đã huỷ đơn hàng.';
         this.clearMsg();
       },
@@ -187,6 +197,71 @@ export class OrderManagement implements OnInit {
         this.errorMsg = 'Huỷ đơn thất bại.';
         this.clearMsg();
       }
+    });
+  }
+
+  // ================= BULK UPDATE (A3) =================
+  isSelected(order: any): boolean {
+    return this.selectedIds.has(order._id);
+  }
+
+  toggleSelect(order: any): void {
+    if (this.selectedIds.has(order._id)) this.selectedIds.delete(order._id);
+    else this.selectedIds.add(order._id);
+  }
+
+  get allOnPageSelected(): boolean {
+    const page = this.paginatedOrders;
+    return page.length > 0 && page.every((o) => this.selectedIds.has(o._id));
+  }
+
+  toggleSelectAll(): void {
+    const page = this.paginatedOrders;
+    if (this.allOnPageSelected) {
+      page.forEach((o) => this.selectedIds.delete(o._id));
+    } else {
+      page.forEach((o) => this.selectedIds.add(o._id));
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.clear();
+    this.bulkStatus = '';
+  }
+
+  applyBulkStatus(): void {
+    if (!this.bulkStatus || this.selectedIds.size === 0) return;
+    const ids = Array.from(this.selectedIds);
+    if (!confirm(`Cập nhật ${ids.length} đơn sang "${this.getStatusLabel(this.bulkStatus)}"?`)) return;
+
+    this.bulkProcessing = true;
+    const calls = ids.map((id) =>
+      this.orderService.updateOrderStatus(id, this.bulkStatus).pipe(catchError(() => of(null)))
+    );
+
+    forkJoin(calls).subscribe({
+      next: (results) => {
+        let ok = 0;
+        results.forEach((updated: any, i) => {
+          const order = this.orders.find((o) => o._id === ids[i]);
+          if (order) {
+            order.status = updated?.status || this.bulkStatus;
+            if (updated?.isPaid != null) order.isPaid = updated.isPaid;
+            ok++;
+          }
+        });
+        this.audit.log('order.status', `${ok} đơn`, `Bulk → ${this.getStatusLabel(this.bulkStatus)}`);
+        this.bulkProcessing = false;
+        this.successMsg = `Đã cập nhật ${ok}/${ids.length} đơn hàng.`;
+        this.clearSelection();
+        this.filterOrders();
+        this.clearMsg();
+      },
+      error: () => {
+        this.bulkProcessing = false;
+        this.errorMsg = 'Cập nhật hàng loạt thất bại.';
+        this.clearMsg();
+      },
     });
   }
 
@@ -283,6 +358,7 @@ export class OrderManagement implements OnInit {
           const idx = this.orders.findIndex((o: any) => o._id === this.selectedOrder._id);
           if (idx >= 0) this.orders[idx].status = updated.status;
         }
+        this.audit.log('order.status', this.selectedOrder.orderID || this.selectedOrder._id, '→ Đang chuẩn bị');
         this.successMsg = 'Đã xác nhận đơn hàng!';
         this.clearMsg();
       },
@@ -309,6 +385,7 @@ export class OrderManagement implements OnInit {
             this.orders[idx].shipping = updated.shipping;
           }
         }
+        this.audit.log('order.status', this.selectedOrder.orderID || this.selectedOrder._id, `Gửi hàng — ${this.trackingCodeInput.trim()}`);
         this.successMsg = 'Đã gửi hàng thành công!';
         this.clearMsg();
       },
@@ -334,6 +411,7 @@ export class OrderManagement implements OnInit {
             this.orders[idx].isPaid = updated.isPaid;
           }
         }
+        this.audit.log('order.status', this.selectedOrder.orderID || this.selectedOrder._id, '→ Đã giao');
         this.successMsg = 'Đã xác nhận giao hàng!';
         this.clearMsg();
       },

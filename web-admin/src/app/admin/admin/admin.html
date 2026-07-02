@@ -4,7 +4,13 @@
     <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
         <div class="sidebar-header">
             <div class="logo">
-                <img src="/assets/Logo.png" alt="SẮC">
+                <span class="logo-badge">
+                    <img src="/assets/tc_logo.png" alt="TiredCity">
+                </span>
+                <span class="logo-text">
+                    <span class="logo-brand">TiredCity</span>
+                    <span class="logo-sub">Admin</span>
+                </span>
             </div>
             <button class="sidebar-toggle" (click)="toggleSidebar()">
                 <span class="toggle-icon">{{ sidebarCollapsed ? '☰' : '✕' }}</span>
@@ -16,10 +22,6 @@
                 <a class="nav-item" routerLink="/admin/mainpage" routerLinkActive="active">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-label">Trang chủ</span>
-                </a>
-                <a class="nav-item" href="/" target="_blank">
-                    <span class="nav-icon">🌐</span>
-                    <span class="nav-label">Xem trang web</span>
                 </a>
             </div>
 
@@ -41,6 +43,22 @@
                     <span class="nav-icon">📦</span>
                     <span class="nav-label">Đơn hàng</span>
                 </a>
+                <a class="nav-item" routerLink="/admin/vouchers" routerLinkActive="active">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-label">Voucher</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/shipping" routerLinkActive="active">
+                    <span class="nav-icon">🚚</span>
+                    <span class="nav-label">Vận chuyển</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/revenue" routerLinkActive="active">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-label">Doanh thu</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/events" routerLinkActive="active">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">Sự kiện</span>
+                </a>
                 <a class="nav-item" routerLink="/admin/blogs" routerLinkActive="active">
                     <span class="nav-icon">📝</span>
                     <span class="nav-label">Blogs</span>
@@ -48,6 +66,22 @@
                 <a class="nav-item" routerLink="/admin/feedbacks" routerLinkActive="active">
                     <span class="nav-icon">💬</span>
                     <span class="nav-label">Feedback</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Hệ thống</div>
+                <a class="nav-item" routerLink="/admin/chatbot" routerLinkActive="active">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-label">Trợ lý Admin</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/reports" routerLinkActive="active">
+                    <span class="nav-icon">📤</span>
+                    <span class="nav-label">Báo cáo &amp; Xuất</span>
+                </a>
+                <a class="nav-item" routerLink="/admin/audit-logs" routerLinkActive="active">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-label">Nhật ký</span>
                 </a>
             </div>
         </nav>
@@ -67,7 +101,7 @@
         <header class="topbar">
             <div class="topbar-left">
                 <button class="mobile-toggle" (click)="toggleSidebar()">☰</button>
-                <h1 class="page-title">{{ pageTitle || 'Trang quản trị SẮC' }}</h1>
+                <h1 class="page-title">{{ pageTitle || 'Trang quản trị TiredCity' }}</h1>
             </div>
 
             <div class="topbar-center">
@@ -80,6 +114,14 @@
             </div>
 
             <div class="topbar-right">
+                <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="darkMode ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'" [title]="darkMode ? 'Chế độ sáng' : 'Chế độ tối'">
+                    <svg *ngIf="!darkMode" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                    <svg *ngIf="darkMode" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
                 <div class="notification-wrapper" (click)="toggleNotifications()">
                     <button class="topbar-icon-btn notification-btn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -1,0 +1,92 @@
+<div class="rev-page">
+
+  <header class="page-header">
+    <div>
+      <h2 class="page-h2">Doanh thu</h2>
+      <p class="page-sub">Tổng quan doanh thu &amp; đơn hàng</p>
+    </div>
+  </header>
+
+  <!-- KPI cards -->
+  <section class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon icon-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <span class="kpi-label">Tổng doanh thu</span>
+      <span class="kpi-value">{{ formatCurrency(totalRevenue) }}</span>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <span class="kpi-label">Đã thanh toán</span>
+      <span class="kpi-value">{{ formatCurrency(paidRevenue) }}</span>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-amber">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </div>
+      <span class="kpi-label">Số đơn hàng</span>
+      <span class="kpi-value">{{ orderCount }}</span>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </div>
+      <span class="kpi-label">Giá trị TB/đơn</span>
+      <span class="kpi-value">{{ formatCurrency(avgOrderValue) }}</span>
+    </div>
+  </section>
+
+  <section class="rev-grid">
+    <!-- Bar chart -->
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Doanh thu 6 tháng gần đây</h3>
+      </div>
+      <div class="chart">
+        <div class="bar-col" *ngFor="let m of months">
+          <div class="bar-wrap">
+            <span class="bar-value" *ngIf="m.value > 0">{{ formatCompact(m.value) }}</span>
+            <div class="bar" [style.height.%]="m.pct" [class.bar-empty]="m.value === 0"></div>
+          </div>
+          <span class="bar-label">{{ m.label }}</span>
+        </div>
+        <div class="chart-empty" *ngIf="!loading && orderCount === 0">
+          <span>Chưa có dữ liệu doanh thu</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top orders -->
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Đơn giá trị cao nhất</h3>
+      </div>
+      <ul class="top-list">
+        <li class="top-item" *ngFor="let o of topOrders; let i = index">
+          <span class="rank">{{ i + 1 }}</span>
+          <div class="top-body">
+            <span class="top-name">{{ o.userName || o.customer || 'Khách hàng' }}</span>
+            <span class="top-id">#{{ (o._id || o.id || '') | slice:-6 }}</span>
+          </div>
+          <span class="top-amount">{{ formatCurrency(o.totalPrice || o.total || o.amount || 0) }}</span>
+        </li>
+        <li class="top-empty" *ngIf="!loading && topOrders.length === 0">Chưa có đơn hàng nào</li>
+      </ul>
+    </div>
+  </section>
+
+</div>

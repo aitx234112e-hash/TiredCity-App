@@ -1,3 +1,135 @@
+/* =========================================================
+   TiredCity Admin — Design Tokens
+   Brand red = #A80D15 (ĐỎ SON TIREDCITY, khớp với app Android)
+   Hỗ trợ Light + Dark mode qua [data-theme="dark"] trên <html>.
+   Custom properties xuyên qua encapsulation của Angular nên
+   dùng được ở mọi component qua var(--...).
+   ========================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* Brand red (đỏ đô) */
+  --tc-red: #A80D15;
+  --tc-red-deep: #7A0810;
+  --tc-red-light: #C9282F;
+  --tc-red-pale: #F5DDDF;
+  --tc-red-tint: #FBEDEE;         /* nền mục active / hover nhạt */
+  --tc-red-contrast: #FFFFFF;     /* chữ trên nền đỏ */
+  --tc-red-soft: rgba(168, 13, 21, 0.10);
+  --grad-red: linear-gradient(135deg, #C21620 0%, #A80D15 55%, #820810 100%);
+
+  /* Gold accent */
+  --tc-gold: #C9A45C;
+
+  /* Surfaces & text */
+  --bg-page: #F5F6F8;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F7F8FA;
+  --bg-hover: #F3F4F6;
+  --text-primary: #1F2430;
+  --text-secondary: #545B69;
+  --text-muted: #9AA1AD;
+  --border: #ECEEF1;
+  --border-strong: #E0E3E8;
+
+  /* Semantic (không phải đỏ) */
+  --c-amber: #C5930A;
+  --c-amber-bg: #FFF8E5;
+  --c-green: #2E7D32;
+  --c-green-bg: #E8F5E9;
+  --c-blue: #1565C0;
+  --c-blue-bg: #E3F2FD;
+  --c-violet: #7C3AED;
+  --c-violet-bg: #F1EAFE;
+  --c-teal: #0F9D8F;
+  --c-teal-bg: #E0F5F2;
+  --c-pink: #D63384;
+  --c-pink-bg: #FCE7F1;
+
+  /* Gradients màu (icon bubbles, accents) */
+  --grad-blue: linear-gradient(135deg, #4A90E2, #1565C0);
+  --grad-amber: linear-gradient(135deg, #F2B705, #C5930A);
+  --grad-violet: linear-gradient(135deg, #9B6BF2, #7C3AED);
+  --grad-green: linear-gradient(135deg, #4CAF50, #2E7D32);
+  --grad-teal: linear-gradient(135deg, #2BB8A8, #0F9D8F);
+  --grad-pink: linear-gradient(135deg, #EC6BA8, #D63384);
+  --grad-gold: linear-gradient(135deg, #E2C285, #C9A45C);
+
+  /* Gradient pastel nhẹ (nền thẻ, nút màu) */
+  --pastel-red: linear-gradient(135deg, #FFE9E9, #F6CBCB);
+  --pastel-blue: linear-gradient(135deg, #E7F3FE, #C3DFFA);
+  --pastel-amber: linear-gradient(135deg, #FFF6DE, #FFE3AC);
+  --pastel-violet: linear-gradient(135deg, #F3EDFE, #DECDFA);
+  --pastel-green: linear-gradient(135deg, #E9F7EA, #CCEACE);
+  --pastel-teal: linear-gradient(135deg, #E2F6F3, #BCE8E1);
+  --pastel-pink: linear-gradient(135deg, #FDEAF3, #F8CCE1);
+
+  --shadow-sm: 0 2px 12px rgba(20, 22, 26, 0.05);
+  --shadow-md: 0 12px 32px rgba(20, 22, 26, 0.08);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --tc-red: #E24B4A;              /* sáng hơn để đọc rõ trên nền tối */
+  --tc-red-deep: #A80D15;
+  --tc-red-light: #F0999B;
+  --tc-red-pale: #3A1618;
+  --tc-red-tint: #2A1416;
+  --tc-red-contrast: #FFFFFF;
+  --tc-red-soft: rgba(226, 75, 74, 0.16);
+  --grad-red: linear-gradient(135deg, #E24B4A 0%, #C21620 55%, #A80D15 100%);
+
+  --tc-gold: #D9B876;
+
+  --bg-page: #121318;
+  --bg-surface: #1B1E25;
+  --bg-subtle: #23262F;
+  --bg-hover: #262A34;
+  --text-primary: #E8EAED;
+  --text-secondary: #AEB4BF;
+  --text-muted: #7C828E;
+  --border: #2C2F39;
+  --border-strong: #3A3E4A;
+
+  --c-amber: #E6B450;
+  --c-amber-bg: #332B12;
+  --c-green: #7FC98A;
+  --c-green-bg: #17301A;
+  --c-blue: #6FB0F0;
+  --c-blue-bg: #12283F;
+  --c-violet: #A78BFA;
+  --c-violet-bg: #241A3D;
+  --c-teal: #4FD1C5;
+  --c-teal-bg: #10322E;
+  --c-pink: #F472B6;
+  --c-pink-bg: #3A1A2B;
+
+  --grad-blue: linear-gradient(135deg, #5B9BE6, #2A6FC4);
+  --grad-amber: linear-gradient(135deg, #E6B450, #C5930A);
+  --grad-violet: linear-gradient(135deg, #A78BFA, #7C5CD6);
+  --grad-green: linear-gradient(135deg, #66BB6A, #3B8C40);
+  --grad-teal: linear-gradient(135deg, #4FD1C5, #17A294);
+  --grad-pink: linear-gradient(135deg, #F472B6, #D63384);
+  --grad-gold: linear-gradient(135deg, #D9B876, #B08D45);
+
+  /* Gradient pastel — bản tối, giữ hue nhưng trầm xuống */
+  --pastel-red: linear-gradient(135deg, #3A1A1C, #2B1214);
+  --pastel-blue: linear-gradient(135deg, #17304B, #102338);
+  --pastel-amber: linear-gradient(135deg, #3B3117, #2B240F);
+  --pastel-violet: linear-gradient(135deg, #2C2148, #201736);
+  --pastel-green: linear-gradient(135deg, #1C3B20, #132B16);
+  --pastel-teal: linear-gradient(135deg, #133B36, #0D2B27);
+  --pastel-pink: linear-gradient(135deg, #43202F, #311623);
+
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: background 0.25s ease, color 0.25s ease;
 }

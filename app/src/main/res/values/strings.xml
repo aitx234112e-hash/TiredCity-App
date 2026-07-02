@@ -303,6 +303,9 @@
     <string name="pay_summary">Tóm tắt đơn hàng</string>
     <string name="pay_subtotal">Tạm tính</string>
     <string name="pay_shipping">Phí vận chuyển</string>
+    <string name="pay_shipping_method">Đơn vị vận chuyển</string>
+    <string name="pay_shipping_loading">Đang tải phương thức vận chuyển…</string>
+    <string name="pay_shipping_free">Miễn phí</string>
     <string name="pay_grand_total">Tổng cộng</string>
     <string name="pay_place_order">Đặt hàng</string>
     <string name="track_title">Theo dõi đơn hàng</string>

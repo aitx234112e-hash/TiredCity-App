@@ -1,0 +1,70 @@
+<div class="al-page">
+
+  <header class="page-header">
+    <div>
+      <h2 class="page-h2">Nhật ký hoạt động</h2>
+      <p class="page-sub">Theo dõi các thao tác của admin &amp; nhân viên</p>
+    </div>
+    <button class="btn-ghost" (click)="load()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      Làm mới
+    </button>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="al-toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="Tìm theo người / đối tượng / mô tả..." [(ngModel)]="search" (input)="applyFilter()" />
+    </div>
+    <select [(ngModel)]="actionFilter" (change)="applyFilter()">
+      <option value="">Tất cả hành động</option>
+      <option *ngFor="let a of actions" [value]="a">{{ actionLabel(a) }}</option>
+    </select>
+    <span class="al-count">{{ filtered.length }} bản ghi</span>
+  </div>
+
+  <!-- Loading -->
+  <div class="state" *ngIf="loading">Đang tải nhật ký...</div>
+
+  <!-- Empty -->
+  <div class="empty" *ngIf="!loading && filtered.length === 0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+    </svg>
+    <span class="empty-title">Chưa có nhật ký nào</span>
+    <span class="empty-sub">Các thao tác admin sẽ được ghi lại tại đây</span>
+  </div>
+
+  <!-- Table -->
+  <div class="al-table-wrap" *ngIf="!loading && filtered.length > 0">
+    <table class="al-table">
+      <thead>
+        <tr>
+          <th>Thời gian</th>
+          <th>Người thực hiện</th>
+          <th>Hành động</th>
+          <th>Đối tượng</th>
+          <th>Chi tiết</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let l of filtered">
+          <td class="al-time">{{ formatTime(l.timestamp) }}</td>
+          <td>
+            <div class="al-actor">
+              <span class="al-avatar">{{ (l.actor || '?').charAt(0) | uppercase }}</span>
+              <span>{{ l.actor }}</span>
+            </div>
+          </td>
+          <td><span class="al-badge" [ngClass]="actionClass(l.action)">{{ actionLabel(l.action) }}</span></td>
+          <td class="al-target">{{ l.target || '—' }}</td>
+          <td class="al-detail">{{ l.detail || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,0 +1,106 @@
+<div class="sh-page">
+
+  <header class="page-header">
+    <div>
+      <h2 class="page-h2">Vận chuyển</h2>
+      <p class="page-sub">Quản lý đơn vị &amp; phương thức giao hàng của TiredCity</p>
+    </div>
+    <button class="btn-primary" (click)="openForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Thêm phương thức
+    </button>
+  </header>
+
+  <!-- Loading -->
+  <div class="state" *ngIf="loading">Đang tải phương thức vận chuyển...</div>
+
+  <!-- Empty -->
+  <div class="empty" *ngIf="!loading && methods.length === 0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+    </svg>
+    <span class="empty-title">Chưa có phương thức vận chuyển nào</span>
+    <span class="empty-sub">Thêm đơn vị giao hàng đầu tiên cho cửa hàng</span>
+    <button class="btn-primary" (click)="openForm()">Thêm phương thức</button>
+  </div>
+
+  <!-- Grid -->
+  <section class="sh-grid" *ngIf="!loading && methods.length > 0">
+    <article class="sh-card" *ngFor="let m of methods">
+      <div class="sh-top">
+        <div class="sh-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <div class="sh-actions">
+          <button class="sh-edit" (click)="openEdit(m)" aria-label="Sửa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="sh-del" (click)="remove(m)" aria-label="Xoá">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <h3 class="sh-name">{{ m.name }}</h3>
+      <span class="sh-fee">{{ feeLabel(m) }}</span>
+      <div class="sh-meta">
+        <span class="sh-meta-item" *ngIf="m.estimatedTime">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          {{ m.estimatedTime }}
+        </span>
+        <span class="sh-meta-item" *ngIf="m.area">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          {{ m.area }}
+        </span>
+      </div>
+      <p class="sh-desc" *ngIf="m.description">{{ m.description }}</p>
+    </article>
+  </section>
+
+  <!-- Form modal -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="closeForm()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3>{{ editingId ? 'Sửa phương thức vận chuyển' : 'Thêm phương thức vận chuyển' }}</h3>
+        <button class="modal-close" (click)="closeForm()" aria-label="Đóng">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field">
+          <span>Tên đơn vị / phương thức *</span>
+          <input type="text" [(ngModel)]="form.name" placeholder="VD: Giao hàng nhanh (GHN)" />
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>Phí vận chuyển (VND)</span>
+            <input type="number" [(ngModel)]="form.fee" placeholder="VD: 30000 (0 = miễn phí)" />
+          </label>
+          <label class="field">
+            <span>Thời gian dự kiến</span>
+            <input type="text" [(ngModel)]="form.estimatedTime" placeholder="VD: 2-3 ngày" />
+          </label>
+        </div>
+        <label class="field">
+          <span>Khu vực áp dụng</span>
+          <input type="text" [(ngModel)]="form.area" placeholder="VD: Toàn quốc / Nội thành Hà Nội" />
+        </label>
+        <label class="field">
+          <span>Mô tả</span>
+          <textarea rows="2" [(ngModel)]="form.description" placeholder="Ghi chú thêm..."></textarea>
+        </label>
+        <p class="err" *ngIf="errorMsg">{{ errorMsg }}</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost" (click)="closeForm()">Huỷ</button>
+        <button class="btn-primary" (click)="save()" [disabled]="saving">{{ saving ? 'Đang lưu...' : (editingId ? 'Cập nhật' : 'Lưu phương thức') }}</button>
+      </div>
+    </div>
+  </div>
+
+</div>

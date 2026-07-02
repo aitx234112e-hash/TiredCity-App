@@ -1,0 +1,38 @@
+<div class="rp-page">
+
+  <header class="page-header">
+    <div>
+      <h2 class="page-h2">Báo cáo &amp; Xuất dữ liệu</h2>
+      <p class="page-sub">Xuất dữ liệu ra file CSV (mở được bằng Excel / Google Sheets)</p>
+    </div>
+  </header>
+
+  <section class="rp-grid">
+    <article class="rp-card" *ngFor="let d of datasets">
+      <div class="rp-icon" [ngClass]="'icon-' + d.key">
+        <svg *ngIf="d.key === 'orders'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <svg *ngIf="d.key === 'products'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        <svg *ngIf="d.key === 'users'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3 class="rp-title">{{ d.title }}</h3>
+      <p class="rp-desc">{{ d.desc }}</p>
+      <div class="rp-count">
+        <span class="rp-num" *ngIf="!d.loading">{{ d.count }}</span>
+        <span class="rp-num rp-loading" *ngIf="d.loading">…</span>
+        <span class="rp-num-label">bản ghi</span>
+      </div>
+      <button class="btn-primary" (click)="export(d.key)" [disabled]="d.loading || !d.count">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        {{ exporting === d.key ? 'Đang xuất...' : 'Xuất CSV' }}
+      </button>
+    </article>
+  </section>
+
+  <p class="rp-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    File CSV có mã hoá UTF-8 (kèm BOM) nên hiển thị đúng tiếng Việt khi mở bằng Excel.
+  </p>
+
+</div>

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { UserApiService } from '../../user-api.service';
 
 @Component({
@@ -17,10 +18,11 @@ import { UserApiService } from '../../user-api.service';
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
-export class Admin {
+export class Admin implements OnInit {
   pageTitle: string = 'Trang chủ';
   profileName: string = 'Admin';
   sidebarCollapsed: boolean = false;
+  darkMode: boolean = false;
 
   searchQuery: string = '';
   showNotifications: boolean = false;
@@ -32,7 +34,61 @@ export class Admin {
     { message: 'Feedback mới từ khách hàng', time: '3 giờ trước', read: false },
   ];
 
-  constructor(private router: Router, private userApi: UserApiService) {}
+  // Tiêu đề header theo từng route
+  private titleMap: Record<string, string> = {
+    mainpage: 'Trang chủ',
+    users: 'Tài khoản',
+    products: 'Sản phẩm',
+    orders: 'Đơn hàng',
+    vouchers: 'Voucher',
+    shipping: 'Vận chuyển',
+    revenue: 'Doanh thu',
+    events: 'Sự kiện',
+    blogs: 'Blogs',
+    feedbacks: 'Feedback',
+    chatbot: 'Trợ lý Admin',
+    reports: 'Báo cáo & Xuất dữ liệu',
+    'audit-logs': 'Nhật ký hoạt động',
+  };
+
+  constructor(
+    private router: Router,
+    private userApi: UserApiService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  private updateTitle(url: string): void {
+    const seg = (url.split('?')[0].split('/').filter(Boolean).pop() || 'mainpage');
+    this.pageTitle = this.titleMap[seg] || 'Trang quản trị TiredCity';
+    this.cdr.markForCheck();
+  }
+
+  ngOnInit(): void {
+    // Cập nhật tiêu đề theo route hiện tại + mỗi lần điều hướng
+    this.updateTitle(this.router.url);
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe((e) => this.updateTitle(e.urlAfterRedirects));
+
+    if (typeof window === 'undefined') return;
+    const saved = localStorage.getItem('admin-theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    this.darkMode = saved ? saved === 'dark' : prefersDark;
+    this.applyTheme();
+  }
+
+  toggleTheme() {
+    this.darkMode = !this.darkMode;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('admin-theme', this.darkMode ? 'dark' : 'light');
+    }
+    this.applyTheme();
+  }
+
+  private applyTheme() {
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('data-theme', this.darkMode ? 'dark' : 'light');
+  }
 
   toggleSidebar() {
     this.sidebarCollapsed = !this.sidebarCollapsed;

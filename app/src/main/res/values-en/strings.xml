@@ -298,6 +298,9 @@
     <string name="pay_summary">Order summary</string>
     <string name="pay_subtotal">Subtotal</string>
     <string name="pay_shipping">Shipping fee</string>
+    <string name="pay_shipping_method">Shipping method</string>
+    <string name="pay_shipping_loading">Loading shipping methods…</string>
+    <string name="pay_shipping_free">Free</string>
     <string name="pay_grand_total">Grand total</string>
     <string name="pay_place_order">Place order</string>
     <string name="track_title">Track order</string>
