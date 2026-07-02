@@ -89,7 +89,8 @@
       "Bash(python3 -c \"import json; json.load\\(open\\('.claude/settings.local.json'\\)\\); print\\('JSON hop le'\\)\")",
       "Bash(echo \"grep exit: $?\")",
       "Bash(echo \"exit=$?\")",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('JSON OK'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('JSON OK'\\)\")",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
