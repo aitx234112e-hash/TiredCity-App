@@ -282,6 +282,13 @@ public class HomeFragment extends Fragment {
             }
             @Override
             public void onSaveToggle(Product product, boolean saved) { /* handle wishlist */ }
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                new com.tiredcity.app.data.local.CartLocalStore(requireContext())
+                        .addItem(new com.tiredcity.app.data.model.CartItem(product, 1));
+                android.widget.Toast.makeText(requireContext(), R.string.success_add_cart, android.widget.Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.rvRecommended.setLayoutManager(
@@ -301,6 +308,13 @@ public class HomeFragment extends Fragment {
             }
             @Override
             public void onSaveToggle(Product product, boolean saved) { /* handle wishlist */ }
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                new com.tiredcity.app.data.local.CartLocalStore(requireContext())
+                        .addItem(new com.tiredcity.app.data.model.CartItem(product, 1));
+                android.widget.Toast.makeText(requireContext(), R.string.success_add_cart, android.widget.Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.rvHotProducts.setLayoutManager(

@@ -3,9 +3,12 @@ package com.tiredcity.app.ui.profile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
+import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
+import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.databinding.ActivityWardrobeBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
@@ -29,7 +32,7 @@ public class WardrobeActivity extends BaseActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(getString(com.tiredcity.app.R.string.label_wardrobe));
+            getSupportActionBar().setTitle(getString(R.string.label_wardrobe));
         }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
@@ -47,13 +50,19 @@ public class WardrobeActivity extends BaseActivity {
                 // Remove from wardrobe when un-saved
                 if (!saved) removeFromWardrobe(product);
             }
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                new CartLocalStore(WardrobeActivity.this).addItem(new CartItem(product, 1));
+                Toast.makeText(WardrobeActivity.this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.rvSavedItems.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvSavedItems.setAdapter(productAdapter);
 
         binding.swipeRefresh.setColorSchemeColors(
-            getResources().getColor(com.tiredcity.app.R.color.tc_red, getTheme()));
+            getResources().getColor(R.color.tc_red, getTheme()));
         binding.swipeRefresh.setOnRefreshListener(this::loadWardrobeItems);
 
         loadWardrobeItems();

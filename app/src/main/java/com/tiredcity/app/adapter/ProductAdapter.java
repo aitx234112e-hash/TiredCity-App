@@ -26,6 +26,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public interface OnProductClickListener {
         void onProductClick(Product product);
         void onSaveToggle(Product product, boolean saved);
+        void onAddToCartClick(Product product);
     }
 
     public ProductAdapter(List<Product> products) {
@@ -129,8 +130,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             // Product image via Glide
             String imageUrl = product.getFirstImage();
             if (!imageUrl.isEmpty()) {
+                Object loadTarget = imageUrl;
+                // Nếu là tên resource (không phải URL), chuyển thành resource ID để Glide nạp offline
+                if (!imageUrl.startsWith("http") && !imageUrl.startsWith("content")) {
+                    int resId = b.ivProductImage.getContext().getResources().getIdentifier(
+                            imageUrl, "drawable", b.ivProductImage.getContext().getPackageName());
+                    if (resId != 0) loadTarget = resId;
+                }
+
                 Glide.with(b.ivProductImage.getContext())
-                        .load(imageUrl)
+                        .load(loadTarget)
                         .centerCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .placeholder(R.color.bg_subtle)
@@ -156,6 +165,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                         ? android.R.drawable.btn_star_big_on
                         : android.R.drawable.btn_star_big_off);
                 if (listener != null) listener.onSaveToggle(product, nowSaved);
+            });
+
+            // Quick add to cart
+            b.btnQuickAdd.setOnClickListener(v -> {
+                if (listener != null) listener.onAddToCartClick(product);
             });
 
             b.getRoot().setOnClickListener(v -> {

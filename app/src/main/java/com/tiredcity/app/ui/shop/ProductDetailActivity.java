@@ -71,7 +71,6 @@ public class ProductDetailActivity extends BaseActivity {
         };
         selectedSize = sizeLabels[0];
 
-        // Back button (layout uses ImageButton, not Toolbar)
         binding.btnBack.setOnClickListener(v -> finish());
 
         String productId = getIntent().getStringExtra(EXTRA_PRODUCT_ID);
@@ -100,8 +99,6 @@ public class ProductDetailActivity extends BaseActivity {
                     currentProduct = response.body().getData();
                     bindProduct(currentProduct);
                 } else {
-                    // Backend không nhận diện được id (ví dụ id của dữ liệu mẫu khi offline) —
-                    // thử tra trong catalogue mẫu trước khi bỏ cuộc, tránh đóng màn hình đột ngột.
                     fallbackToMockOrFinish(productId);
                 }
             }
@@ -143,8 +140,6 @@ public class ProductDetailActivity extends BaseActivity {
         loadRelatedProducts(product);
     }
 
-    // ── Availability ─────────────────────────────────────────────────────────
-
     private void bindAvailability(Product product) {
         int stock = product.getStock();
         boolean outOfStock = stock <= 0;
@@ -175,8 +170,6 @@ public class ProductDetailActivity extends BaseActivity {
         binding.btnBuyNow.setAlpha(outOfStock ? 0.5f : 1f);
     }
 
-    // ── Specifications (Chi tiết) ────────────────────────────────────────────
-
     private void bindSpecifications(Product product) {
         binding.llSpecifications.removeAllViews();
         Map<String, String> specs = product.getSpecifications();
@@ -184,7 +177,6 @@ public class ProductDetailActivity extends BaseActivity {
         String materialLabel = getString(R.string.label_material);
         String originLabel = getString(R.string.label_origin);
         for (Map.Entry<String, String> entry : specs.entrySet()) {
-            // Chất liệu/Xuất xứ đã hiển thị ở 2 dòng cố định phía trên — bỏ qua để tránh lặp.
             if (entry.getKey().equalsIgnoreCase(materialLabel) || entry.getKey().equalsIgnoreCase(originLabel)) {
                 continue;
             }
@@ -218,8 +210,6 @@ public class ProductDetailActivity extends BaseActivity {
         return row;
     }
 
-    // ── Care instructions (Bảo quản) ─────────────────────────────────────────
-
     private void bindCareInstructions(Product product) {
         binding.contentCare.removeAllViews();
         List<String> care = product.getCareInstructions();
@@ -236,8 +226,6 @@ public class ProductDetailActivity extends BaseActivity {
             binding.contentCare.addView(tv);
         }
     }
-
-    // ── Hero images ──────────────────────────────────────────────────────────
 
     private void bindImages(Product product) {
         String imageUrl = product.getFirstImage();
@@ -262,13 +250,14 @@ public class ProductDetailActivity extends BaseActivity {
             public void onBindViewHolder(@androidx.annotation.NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder holder, int position) {
                 android.widget.ImageView iv = (android.widget.ImageView) holder.itemView;
                 if (hasImage) {
+                    String currentUrl = (product.getImages() != null && position < product.getImages().size())
+                            ? product.getImages().get(position) : imageUrl;
                     Glide.with(iv.getContext())
-                        .load(imageUrl)
+                        .load(currentUrl)
                         .centerCrop()
                         .placeholder(R.color.tc_red_deep)
                         .into(iv);
                 } else {
-                    // Sản phẩm mẫu/offline chưa có ảnh thật — hiển thị hình minh hoạ thay vì khung trống.
                     iv.setBackgroundColor(getColor(R.color.tc_red_deep));
                     iv.setImageResource(R.drawable.ic_wardrobe);
                     iv.setColorFilter(getColor(R.color.tc_on_red));
@@ -283,8 +272,6 @@ public class ProductDetailActivity extends BaseActivity {
             }
         });
     }
-
-    // ── Colour swatches ──────────────────────────────────────────────────────
 
     private void bindColors(Product product) {
         binding.llColors.removeAllViews();
@@ -372,8 +359,6 @@ public class ProductDetailActivity extends BaseActivity {
         return R.color.tc_bg_subtle;
     }
 
-    // ── Size selector ────────────────────────────────────────────────────────
-
     private void setupSizeSelector() {
         TextView[] sizeViews = {binding.tvSizeS, binding.tvSizeM, binding.tvSizeL, binding.tvSizeXl};
         for (int i = 0; i < sizeViews.length; i++) {
@@ -391,8 +376,6 @@ public class ProductDetailActivity extends BaseActivity {
             v.setTextColor(getColor(selected ? R.color.white : R.color.text_primary));
         }
     }
-
-    // ── Quantity stepper ─────────────────────────────────────────────────────
 
     private void bindQuantityStepper(Product product) {
         quantity = 1;
@@ -415,8 +398,6 @@ public class ProductDetailActivity extends BaseActivity {
         });
     }
 
-    // ── Description / Details / Size guide accordions ───────────────────────
-
     private void setupAccordions() {
         binding.headerDescription.setOnClickListener(v ->
             toggleAccordion(binding.dividerDescription, binding.contentDescription, binding.ivExpandDescription));
@@ -430,7 +411,6 @@ public class ProductDetailActivity extends BaseActivity {
             toggleAccordion(binding.dividerCare, binding.contentCare, binding.ivExpandCare));
     }
 
-    /** Gạch chân chỉ hiện khi accordion đang đóng — mất đi ngay khi người dùng sổ nội dung ra. */
     private void toggleAccordion(View divider, View content, View chevron) {
         boolean expanded = content.getVisibility() == View.VISIBLE;
         TransitionManager.beginDelayedTransition(binding.llCardContent, new AutoTransition());
@@ -438,8 +418,6 @@ public class ProductDetailActivity extends BaseActivity {
         divider.setVisibility(expanded ? View.VISIBLE : View.GONE);
         chevron.animate().rotation(expanded ? 0 : 180).setDuration(250).start();
     }
-
-    // ── Reviews summary ──────────────────────────────────────────────────────
 
     private void loadReviews(String productId) {
         productRepository.getProductReviews(productId).enqueue(new Callback<ApiListResponse<Review>>() {
@@ -501,8 +479,6 @@ public class ProductDetailActivity extends BaseActivity {
         row.barSpacer.setLayoutParams(spacerParams);
     }
 
-    // ── You may also like ────────────────────────────────────────────────────
-
     private void loadRelatedProducts(Product product) {
         binding.rvRelated.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         ProductAdapter relatedAdapter = new ProductAdapter(new ArrayList<>());
@@ -515,7 +491,13 @@ public class ProductDetailActivity extends BaseActivity {
             }
 
             @Override
-            public void onSaveToggle(Product related, boolean saved) { /* handle wishlist */ }
+            public void onSaveToggle(Product related, boolean saved) { }
+
+            @Override
+            public void onAddToCartClick(Product related) {
+                cartLocalStore.addItem(new CartItem(related, 1));
+                Toast.makeText(ProductDetailActivity.this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+            }
         });
         binding.rvRelated.setAdapter(relatedAdapter);
 
@@ -546,8 +528,6 @@ public class ProductDetailActivity extends BaseActivity {
         return filtered;
     }
 
-    // ── Info rows: shipping / returns / payment ─────────────────────────────
-
     private void setupInfoRows() {
         bindInfoCard(binding.rowShipping, binding.ivShippingIcon, binding.tvShippingText,
                 R.drawable.ic_policy_shipping, getString(R.string.label_free_shipping));
@@ -562,8 +542,6 @@ public class ProductDetailActivity extends BaseActivity {
         text.setText(label);
         card.setOnClickListener(v -> startActivity(new Intent(this, PolicyActivity.class)));
     }
-
-    // ── Cart ──────────────────────────────────────────────────────────────────
 
     private void addToCart() {
         if (currentProduct == null) return;

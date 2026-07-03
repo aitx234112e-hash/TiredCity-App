@@ -52,5 +52,15 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".ui.order.AdminOrderActivity"
+            android:exported="false"
+            android:label="Order Management" />
+
+        <activity
+            android:name=".ui.seed.SeedDataActivity"
+            android:exported="false"
+            android:label="Seed Data" />
+
     </application>
 </manifest>

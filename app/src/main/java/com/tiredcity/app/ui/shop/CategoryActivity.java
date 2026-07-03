@@ -86,6 +86,12 @@ public class CategoryActivity extends BaseActivity {
 
             @Override
             public void onSaveToggle(Product product, boolean saved) {}
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                new CartLocalStore(CategoryActivity.this).addItem(new CartItem(product, 1));
+                Toast.makeText(CategoryActivity.this, R.string.success_add_cart, Toast.LENGTH_SHORT).show();
+            }
         });
 
         gridManager = new GridLayoutManager(this, spanCount);

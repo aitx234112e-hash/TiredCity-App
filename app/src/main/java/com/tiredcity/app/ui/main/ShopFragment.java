@@ -5,32 +5,34 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
-import com.tiredcity.app.adapter.SearchAdapter;
-import com.tiredcity.app.data.model.search.EventItem;
-import com.tiredcity.app.data.model.search.ProductItem;
-import com.tiredcity.app.data.model.search.PromotionItem;
-import com.tiredcity.app.data.model.search.SearchItem;
+import com.tiredcity.app.adapter.ProductAdapter;
+import com.tiredcity.app.data.model.Product;
+import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.FragmentShopBinding;
-import com.tiredcity.app.ui.reward.VoucherDetailActivity;
+import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.shop.SearchActivity;
-import java.util.Arrays;
+import com.tiredcity.app.utils.PreferenceManager;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Shop tab — search discovery page: a tappable search bar, the most-searched
- * tags, and a mixed "Gợi ý cho bạn" list (promotion / event / product).
+ * Shop tab — nạp dữ liệu Realtime từ Firebase Firestore.
  */
 public class ShopFragment extends Fragment {
 
     private FragmentShopBinding binding;
+    private ProductRepository productRepository;
+    private ProductAdapter productAdapter;
 
-    // Localized tags shown under "Được tìm kiếm nhiều nhất".
+    // Các thẻ tìm kiếm phổ biến.
     private static final int[] POPULAR_TAGS = {
         R.string.tag_ao_thun,
         R.string.tag_ao_croptop,
@@ -49,9 +51,12 @@ public class ShopFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        PreferenceManager preferenceManager = new PreferenceManager(requireContext());
+        productRepository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
+        
         setupSearchBar();
         setupPopularTags();
-        setupSuggestions();
+        setupProductGrid();
     }
 
     @Override
@@ -60,14 +65,12 @@ public class ShopFragment extends Fragment {
         binding = null;
     }
 
-    // ─── Search bar — opens the full search screen for typing ──────────
     private void setupSearchBar() {
         View.OnClickListener openSearch = v -> openSearch(null);
         binding.etSearch.setOnClickListener(openSearch);
         binding.btnFilter.setOnClickListener(openSearch);
     }
 
-    // ─── "Được tìm kiếm nhiều nhất" tag chips ──────────────────────────
     private void setupPopularTags() {
         for (int tagRes : POPULAR_TAGS) {
             String label = getString(tagRes);
@@ -78,52 +81,85 @@ public class ShopFragment extends Fragment {
         }
     }
 
-    // ─── "Gợi ý cho bạn" — mixed-type discovery list ───────────────────
-    private void setupSuggestions() {
-        List<SearchItem> suggestions = Arrays.asList(
-            new PromotionItem(R.string.search_promo_birthday,
-                              R.drawable.banner_1,
-                              R.string.reward_voucher_birthday_title,
-                              R.string.reward_voucher_birthday_subtitle),
-            new EventItem(R.string.search_event_coach_title,
-                          R.string.search_event_coach_time, 0),
-            new ProductItem(R.string.search_brand_kangol,
-                            R.string.search_product_skirt_pocket, 1_200_000, 0),
-            new ProductItem(R.string.search_brand_kangol,
-                            R.string.search_product_skirt_slit, 1_000_000, 0)
-        );
+    private void setupProductGrid() {
+        productAdapter = new ProductAdapter(new ArrayList<>());
+        productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+            @Override
+            public void onProductClick(Product product) {
+                Intent intent = new Intent(requireContext(), com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
+                startSmoothActivity(intent);
+            }
+            @Override
+            public void onSaveToggle(Product product, boolean saved) {}
 
-        SearchAdapter adapter = new SearchAdapter(suggestions);
-        adapter.setOnItemClickListener(item -> {
-            if (item instanceof PromotionItem) {
-                openVoucherDetail((PromotionItem) item);
-            } else if (item instanceof ProductItem) {
-                openSearch(getString(((ProductItem) item).getBrandResId()));
-            } else {
-                openSearch(null);
+            @Override
+            public void onAddToCartClick(Product product) {
+                com.tiredcity.app.data.local.CartLocalStore cartStore = new com.tiredcity.app.data.local.CartLocalStore(requireContext());
+                cartStore.addItem(new com.tiredcity.app.data.model.CartItem(product, 1));
+                Toast.makeText(requireContext(), getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(requireContext(), com.tiredcity.app.ui.cart.CartActivity.class);
+                startSmoothActivity(intent);
             }
         });
-        binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.rvSuggestions.setNestedScrollingEnabled(false);
-        binding.rvSuggestions.setAdapter(adapter);
+
+        binding.rvSuggestions.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        binding.rvSuggestions.setHasFixedSize(true);
+        binding.rvSuggestions.setAdapter(productAdapter);
+
+        // Nạp dữ liệu Realtime từ Firestore
+        productRepository.getProductsFromFirestore(new ProductRepository.OnProductsLoadedListener() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                if (products != null && !products.isEmpty()) {
+                    productAdapter.updateData(products);
+                } else {
+                    productAdapter.updateData(buildMockProducts());
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                productAdapter.updateData(buildMockProducts());
+            }
+        });
     }
 
-    /** Mở trang chi tiết voucher của ưu đãi được bấm. */
-    private void openVoucherDetail(PromotionItem item) {
-        Intent intent = new Intent(requireContext(), VoucherDetailActivity.class);
-        intent.putExtra(VoucherDetailActivity.EXTRA_TITLE, getString(item.getVoucherTitleResId()));
-        intent.putExtra(VoucherDetailActivity.EXTRA_SUBTITLE, getString(item.getVoucherSubtitleResId()));
-        intent.putExtra(VoucherDetailActivity.EXTRA_BANNER, item.getBannerRes());
-        intent.putExtra(VoucherDetailActivity.EXTRA_CODE, getString(R.string.barcode_code));
-        startActivity(intent);
+    private List<Product> buildMockProducts() {
+        String[][] data = {
+            {"1", "Khói Trắng Kết Duyên", "Trắng", "2890000", "0", "4.8", "onboarding_1"},
+            {"2", "Lam Lụa Cố Trạch", "Xanh lam", "1590000", "0", "4.9", "onboarding_2"},
+            {"3", "Kim Vũ Phong Hoa", "Vàng", "1750000", "0", "4.5", "onboarding_3"},
+            {"4", "Hồng Trần Mộc Dược", "Hồng", "1290000", "0", "4.3", "onboarding_4"}
+        };
+        List<Product> list = new ArrayList<>();
+        for (String[] row : data) {
+            Product p = new Product();
+            p.setId(row[0]);
+            p.setName(row[1]);
+            p.setMaterial(row[2]);
+            p.setPrice(Double.parseDouble(row[3]));
+            p.setDiscount(Integer.parseInt(row[4]));
+            p.setRating(Double.parseDouble(row[5]));
+            p.setImage(row[6]);
+            list.add(p);
+        }
+        return list;
     }
 
-    /** Opens SearchActivity, optionally pre-filling a query. */
     private void openSearch(@Nullable String query) {
         Intent intent = new Intent(requireContext(), SearchActivity.class);
         if (query != null) {
             intent.putExtra(SearchActivity.EXTRA_QUERY, query);
         }
-        startActivity(intent);
+        startSmoothActivity(intent);
+    }
+
+    private void startSmoothActivity(Intent intent) {
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).startSmoothActivity(intent);
+        } else {
+            startActivity(intent);
+        }
     }
 }

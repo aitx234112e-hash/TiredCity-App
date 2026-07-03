@@ -7,13 +7,13 @@ import java.util.Map;
 
 public class Product {
 
-    @SerializedName("id")
+    @SerializedName("_id")
     private String id;
 
-    @SerializedName("name")
+    @SerializedName("product_name")
     private String name;
 
-    @SerializedName("category")
+    @SerializedName("product_dept")
     private String category;
 
     @SerializedName("material")
@@ -25,19 +25,16 @@ public class Product {
     @SerializedName("description")
     private String description;
 
-    /** Cảm hứng lịch sử / câu chuyện thiết kế — hiển thị ở mục "Câu chuyện" trang chi tiết. */
     @SerializedName("story")
     private String story;
 
-    /** Hướng dẫn bảo quản, mỗi phần tử là một gạch đầu dòng. */
     @SerializedName("care_instructions")
     private List<String> careInstructions;
 
-    /** Thông số kỹ thuật dạng nhãn → giá trị (Kiểu dáng, Dịp sử dụng,…), giữ thứ tự hiển thị. */
     @SerializedName("specifications")
     private Map<String, String> specifications = new LinkedHashMap<>();
 
-    @SerializedName("price")
+    @SerializedName("unit_price")
     private double price;
 
     @SerializedName("rating")
@@ -54,6 +51,9 @@ public class Product {
 
     @SerializedName("images")
     private List<String> images;
+
+    // Field for single image URL if needed by some fragments
+    private String image;
 
     @SerializedName("colors")
     private List<String> colors;
@@ -83,6 +83,15 @@ public class Product {
     public String getDescription()          { return description; }
     public void setDescription(String d)    { this.description = d; }
 
+    public String getStory()                { return story; }
+    public void setStory(String story)      { this.story = story; }
+
+    public List<String> getCareInstructions() { return careInstructions; }
+    public void setCareInstructions(List<String> care) { this.careInstructions = care; }
+
+    public Map<String, String> getSpecifications() { return specifications; }
+    public void setSpecifications(Map<String, String> spec) { this.specifications = spec; }
+
     public double getPrice()                { return price; }
     public void setPrice(double price)      { this.price = price; }
 
@@ -101,24 +110,19 @@ public class Product {
     public List<String> getImages()         { return images; }
     public void setImages(List<String> imgs){ this.images = imgs; }
 
+    public String getImage()                { return image; }
+    public void setImage(String image)      { this.image = image; }
+
     public List<String> getColors()         { return colors; }
     public void setColors(List<String> c)   { this.colors = c; }
 
     public List<String> getMenh()           { return menh; }
     public void setMenh(List<String> menh)  { this.menh = menh; }
 
-    public String getStory()                        { return story; }
-    public void setStory(String story)              { this.story = story; }
-
-    public List<String> getCareInstructions()               { return careInstructions; }
-    public void setCareInstructions(List<String> care)      { this.careInstructions = care; }
-
-    public Map<String, String> getSpecifications()          { return specifications; }
-    public void setSpecifications(Map<String, String> spec) { this.specifications = spec; }
-
     /** Convenience: first image URL or empty string. */
     public String getFirstImage() {
-        return (images != null && !images.isEmpty()) ? images.get(0) : "";
+        if (images != null && !images.isEmpty()) return images.get(0);
+        return image != null ? image : "";
     }
 
     /** Effective price after discount. */

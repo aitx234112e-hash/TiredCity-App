@@ -1,6 +1,7 @@
 package com.tiredcity.app.ui.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.tiredcity.app.utils.LocaleHelper;
@@ -20,5 +21,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(this);
+    }
+
+    /** Chuyển Activity với hiệu ứng mượt mà. */
+    public void startSmoothActivity(Intent intent) {
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    /** Đóng Activity với hiệu ứng mượt mà. */
+    public void finishSmoothly() {
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

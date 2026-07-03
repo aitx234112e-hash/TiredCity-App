@@ -4,15 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.SearchAdapter;
+import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.model.ApiListResponse;
+import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.search.EventItem;
 import com.tiredcity.app.data.model.search.ProductItem;
@@ -32,7 +34,6 @@ import retrofit2.Response;
 
 public class SearchActivity extends BaseActivity {
 
-    /** Optional pre-filled query, e.g. from a tapped tag on the Shop tab. */
     public static final String EXTRA_QUERY = "extra_query";
 
     private ActivitySearchBinding binding;
@@ -47,7 +48,6 @@ public class SearchActivity extends BaseActivity {
 
         productRepository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
 
-        // Setup results RecyclerView
         productAdapter = new ProductAdapter(null);
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -59,14 +59,18 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void onSaveToggle(Product product, boolean saved) {}
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                new CartLocalStore(SearchActivity.this).addItem(new CartItem(product, 1));
+                Toast.makeText(SearchActivity.this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+            }
         });
         binding.rvResults.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvResults.setAdapter(productAdapter);
 
-        // Back button
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Clear button
         binding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
@@ -94,15 +98,12 @@ public class SearchActivity extends BaseActivity {
         binding.swipeRefresh.setOnRefreshListener(() ->
             performSearch(binding.etSearch.getText().toString().trim()));
 
-        // Phần 2 — "Được tìm kiếm nhiều nhất" tags
         addPopularChip(getString(R.string.tag_ao_thun));
         addPopularChip(getString(R.string.tag_ao_croptop));
         addPopularChip(getString(R.string.tag_chan_vay));
 
-        // Phần 3 & 4 — "Gợi ý cho bạn" mixed-type suggestion list
         setupSuggestions();
 
-        // Pre-filled query (e.g. tapped tag/product on the Shop tab) → search now
         String initialQuery = getIntent().getStringExtra(EXTRA_QUERY);
         if (initialQuery != null && !initialQuery.trim().isEmpty()) {
             binding.etSearch.setText(initialQuery);
@@ -113,7 +114,6 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
-    /** Builds the multi-view-type discovery list (promotion + event + product). */
     private void setupSuggestions() {
         List<SearchItem> suggestions = Arrays.asList(
             new PromotionItem(R.string.search_promo_birthday,
@@ -131,10 +131,8 @@ public class SearchActivity extends BaseActivity {
         SearchAdapter adapter = new SearchAdapter(suggestions);
         adapter.setOnItemClickListener(item -> {
             if (item instanceof PromotionItem) {
-                // Ưu đãi → mở trang chi tiết voucher tương ứng.
                 openVoucherDetail((PromotionItem) item);
             } else if (item instanceof ProductItem) {
-                // Sản phẩm → tìm kiếm theo thương hiệu.
                 performSearch(getString(((ProductItem) item).getBrandResId()));
             }
         });
@@ -143,7 +141,6 @@ public class SearchActivity extends BaseActivity {
         binding.rvSuggestions.setAdapter(adapter);
     }
 
-    /** Mở trang chi tiết voucher của ưu đãi được bấm. */
     private void openVoucherDetail(PromotionItem item) {
         Intent intent = new Intent(this, VoucherDetailActivity.class);
         intent.putExtra(VoucherDetailActivity.EXTRA_TITLE, getString(item.getVoucherTitleResId()));
@@ -158,7 +155,7 @@ public class SearchActivity extends BaseActivity {
 
         showResultsState();
         binding.swipeRefresh.setRefreshing(true);
-        binding.tvResultCount.setText(getString(com.tiredcity.app.R.string.search_searching));
+        binding.tvResultCount.setText(getString(R.string.search_searching));
 
         productRepository.getProducts(1, 40, null, keyword)
             .enqueue(new Callback<ApiListResponse<Product>>() {
@@ -171,7 +168,7 @@ public class SearchActivity extends BaseActivity {
                             showEmptyState(keyword);
                         } else {
                             binding.tvResultCount.setText(getString(
-                                    com.tiredcity.app.R.string.search_result_count, results.size()));
+                                    R.string.search_result_count, results.size()));
                             productAdapter.updateData(results);
                         }
                     } else {
@@ -203,8 +200,7 @@ public class SearchActivity extends BaseActivity {
         binding.layoutRecent.setVisibility(View.GONE);
         binding.layoutResults.setVisibility(View.GONE);
         binding.layoutEmpty.setVisibility(View.VISIBLE);
-        binding.tvEmptyMessage.setText(getString(
-                com.tiredcity.app.R.string.search_not_found, keyword));
+        binding.tvEmptyMessage.setText(getString(R.string.search_not_found, keyword));
     }
 
     private void addPopularChip(String label) {
