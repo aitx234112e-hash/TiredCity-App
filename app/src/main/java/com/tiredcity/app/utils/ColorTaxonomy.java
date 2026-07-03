@@ -1,5 +1,8 @@
 package com.tiredcity.app.utils;
 
+import android.content.Context;
+import androidx.annotation.StringRes;
+import com.tiredcity.app.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -84,5 +87,30 @@ public final class ColorTaxonomy {
             if (!buckets.isEmpty()) return buckets.get(0);
         }
         return null;
+    }
+
+    /**
+     * String resource cho nhãn hiển thị của một nhóm màu — tách riêng khỏi hằng số khoá
+     * (DO/XANH/VANG/…) vốn phải giữ nguyên tiếng Việt để khớp với dữ liệu sản phẩm.
+     * Trả về 0 nếu {@code bucket} không thuộc bảng màu chuẩn.
+     */
+    @StringRes
+    public static int displayNameRes(String bucket) {
+        if (DO.equals(bucket))      return R.string.color_bucket_do;
+        if (XANH.equals(bucket))    return R.string.color_bucket_xanh;
+        if (VANG.equals(bucket))    return R.string.color_bucket_vang;
+        if (TRANG.equals(bucket))   return R.string.color_bucket_trang;
+        if (DEN.equals(bucket))     return R.string.color_bucket_den;
+        if (HONG.equals(bucket))    return R.string.color_bucket_hong;
+        if (TIM.equals(bucket))     return R.string.color_bucket_tim;
+        if (XANH_LA.equals(bucket)) return R.string.color_bucket_xanh_la;
+        if (CAM.equals(bucket))     return R.string.color_bucket_cam;
+        return 0;
+    }
+
+    /** Nhãn màu đã dịch theo ngôn ngữ hiện tại; trả về nguyên văn {@code bucket} nếu không nhận diện được. */
+    public static String displayName(Context context, String bucket) {
+        int res = displayNameRes(bucket);
+        return res != 0 ? context.getString(res) : bucket;
     }
 }

@@ -70,6 +70,7 @@
     <color name="tc_red_lacquer_mid">#A80D15</color>   <!-- thân -->
     <color name="tc_red_lacquer_bot">#820810</color>   <!-- đáy thẫm -->
     <color name="tc_red_ripple">#33FFFFFF</color>      <!-- highlight khi chạm -->
+    <color name="tc_ripple_red_subtle">#22A80D15</color> <!-- ripple đỏ nhạt trên nền sáng (chip, nút viền) -->
 
     <!-- ─── Vàng kim (accent dân tộc) ───────────────────────────────── -->
     <color name="tc_gold">#C9A45C</color>              <!-- vàng kim ấm hơn, sang hơn -->

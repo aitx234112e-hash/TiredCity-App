@@ -34,6 +34,9 @@ import java.util.List;
  */
 public class StylingFragment extends Fragment {
 
+    /** Key Bundle: id danh mục (vd "ÁO DÀI") để mở sẵn đúng tab khi vào từ nơi khác (Trang chủ,…). */
+    public static final String ARG_CATEGORY_ID = "category_id";
+
     private FragmentStylingBinding binding;
     private StylingAdapter adapter;
 
@@ -45,6 +48,11 @@ public class StylingFragment extends Fragment {
             R.string.cat_tab_giao_linh,
             R.string.cat_tab_yem_dao,
             R.string.cat_tab_phu_kien
+    };
+
+    // Id danh mục ứng với từng tab theo đúng thứ tự TAB_LABELS — khớp với CategoryActivity.EXTRA_CATEGORY_ID.
+    private static final String[] TAB_CATEGORY_IDS = {
+            "ÁO DÀI", "NHẬT BÌNH", "ÁO TẤC", "GIAO LĨNH", "YẾM ĐÀO", "PHỤ KIỆN"
     };
 
     @Nullable
@@ -99,7 +107,7 @@ public class StylingFragment extends Fragment {
             binding.tvCartBadge.setVisibility(View.GONE);
         } else {
             binding.tvCartBadge.setVisibility(View.VISIBLE);
-            binding.tvCartBadge.setText(count > 9 ? "9+" : String.valueOf(count));
+            binding.tvCartBadge.setText(count > 9 ? getString(R.string.cart_badge_overflow) : String.valueOf(count));
         }
     }
 
@@ -109,7 +117,8 @@ public class StylingFragment extends Fragment {
         adapter = new StylingAdapter(new ArrayList<>());
         adapter.setOnCategoryClickListener(item -> {
             Intent intent = new Intent(requireContext(), CategoryActivity.class);
-            intent.putExtra(CategoryActivity.EXTRA_CATEGORY_NAME, item.getNameText());
+            String displayName = item.getNameText() != null ? item.getNameText() : getString(item.getNameResId());
+            intent.putExtra(CategoryActivity.EXTRA_CATEGORY_NAME, displayName);
             intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, item.getParentCategory());
             if (item.getFilterValue() != null) {
                 intent.putExtra(CategoryActivity.EXTRA_TAG_FILTER, item.getFilterValue());
@@ -135,8 +144,22 @@ public class StylingFragment extends Fragment {
             @Override public void onTabUnselected(TabLayout.Tab tab) { }
             @Override public void onTabReselected(TabLayout.Tab tab) { }
         });
-        // Hiển thị danh mục cho tab đầu tiên.
-        adapter.setItems(buildCategories(0));
+
+        // Chọn sẵn tab tương ứng với ARG_CATEGORY_ID (vd. mở từ thẻ danh mục ở Trang chủ), mặc định tab đầu.
+        int startTab = resolveStartTab();
+        TabLayout.Tab tab = tabs.getTabAt(startTab);
+        if (tab != null) tab.select();
+        adapter.setItems(buildCategories(startTab));
+    }
+
+    private int resolveStartTab() {
+        Bundle args = getArguments();
+        String categoryId = args != null ? args.getString(ARG_CATEGORY_ID) : null;
+        if (categoryId == null) return 0;
+        for (int i = 0; i < TAB_CATEGORY_IDS.length; i++) {
+            if (TAB_CATEGORY_IDS[i].equals(categoryId)) return i;
+        }
+        return 0;
     }
 
     /** Danh mục con hiển thị cho từng tab. */
@@ -154,66 +177,71 @@ public class StylingFragment extends Fragment {
     // ── ÁO DÀI: Trắng, Xanh, Vàng, Hồng (đúng các màu có trong bảng sản phẩm) ──
 
     private List<CategoryItem> buildAoDaiCategories() {
-        return buildColorCategories("ÁO DÀI", new String[][]{
-                {ColorTaxonomy.TRANG, "Khói Trắng Kết Duyên, Phấn Hoa Cổ Điển,…"},
-                {ColorTaxonomy.XANH,  "Lam Lụa Cố Trạch,…"},
-                {ColorTaxonomy.VANG,  "Kim Vũ Phong Hoa,…"},
-                {ColorTaxonomy.HONG,  "Hồng Trần Mộc Dược, Nguyệt Cầm Phấn Hồng,…"},
+        return buildColorCategories("ÁO DÀI", new Object[][]{
+                {ColorTaxonomy.TRANG, R.string.desc_ao_dai_trang},
+                {ColorTaxonomy.XANH,  R.string.desc_ao_dai_xanh},
+                {ColorTaxonomy.VANG,  R.string.desc_ao_dai_vang},
+                {ColorTaxonomy.HONG,  R.string.desc_ao_dai_hong},
         });
     }
 
     // ── NHẬT BÌNH: Trắng, Xanh lá, Xanh, Đỏ, Vàng ──────────────────────────────
 
     private List<CategoryItem> buildNhatBinhCategories() {
-        return buildColorCategories("NHẬT BÌNH", new String[][]{
-                {ColorTaxonomy.TRANG,   "Xích Bào Đối Ấn,…"},
-                {ColorTaxonomy.XANH_LA, "Thạch Lam Hoàng Cung, Lục Triều Tiểu Yến,…"},
-                {ColorTaxonomy.XANH,    "Hoàng Triều Kim Tuyến, Nhật Bình Lam Vũ,…"},
-                {ColorTaxonomy.DO,      "Vọng Nguyệt Lam Cung,…"},
-                {ColorTaxonomy.VANG,    "Tử Vân Yên Thảo, Trầm Hồng Cổ Các,…"},
+        return buildColorCategories("NHẬT BÌNH", new Object[][]{
+                {ColorTaxonomy.TRANG,   R.string.desc_nhat_binh_trang},
+                {ColorTaxonomy.XANH_LA, R.string.desc_nhat_binh_xanh_la},
+                {ColorTaxonomy.XANH,    R.string.desc_nhat_binh_xanh},
+                {ColorTaxonomy.DO,      R.string.desc_nhat_binh_do},
+                {ColorTaxonomy.VANG,    R.string.desc_nhat_binh_vang},
         });
     }
 
     // ── ÁO TẤC: Xanh, Trắng, Cam, Xanh lá ──────────────────────────────────────
 
     private List<CategoryItem> buildAoTacCategories() {
-        return buildColorCategories("ÁO TẤC", new String[][]{
-                {ColorTaxonomy.XANH,    "Lục Ngọc Vấn Khăn, Lục Y Phù Quạt,…"},
-                {ColorTaxonomy.TRANG,   "Ngọc Vũ Yên Sa, Tơ Ngà Vấn Nguyệt,…"},
-                {ColorTaxonomy.CAM,     "Mộc Vân Thổ Xà,…"},
-                {ColorTaxonomy.XANH_LA, "Thanh Long Cổ Trấn,…"},
+        return buildColorCategories("ÁO TẤC", new Object[][]{
+                {ColorTaxonomy.XANH,    R.string.desc_ao_tac_xanh},
+                {ColorTaxonomy.TRANG,   R.string.desc_ao_tac_trang},
+                {ColorTaxonomy.CAM,     R.string.desc_ao_tac_cam},
+                {ColorTaxonomy.XANH_LA, R.string.desc_ao_tac_xanh_la},
         });
     }
 
     // ── GIAO LĨNH: Xanh lá, Vàng, Đỏ ────────────────────────────────────────────
 
     private List<CategoryItem> buildGiaoLinhCategories() {
-        return buildColorCategories("GIAO LĨNH", new String[][]{
-                {ColorTaxonomy.XANH_LA, "Bạch Sa Liên Vũ, Lam Ngọc Cổ Trấn, Lục Trúc Vân Khúc,…"},
-                {ColorTaxonomy.VANG,    "Kim Sắc Hoàng Triều,…"},
-                {ColorTaxonomy.DO,      "Cam Giao Lĩnh Bào, Hắc Kim Mẫu Đơn,…"},
+        return buildColorCategories("GIAO LĨNH", new Object[][]{
+                {ColorTaxonomy.XANH_LA, R.string.desc_giao_linh_xanh_la},
+                {ColorTaxonomy.VANG,    R.string.desc_giao_linh_vang},
+                {ColorTaxonomy.DO,      R.string.desc_giao_linh_do},
         });
     }
 
     // ── YẾM ĐÀO: Đỏ, Xanh lá, Vàng, Hồng ────────────────────────────────────────
 
     private List<CategoryItem> buildYemDaoCategories() {
-        return buildColorCategories("YẾM ĐÀO", new String[][]{
-                {ColorTaxonomy.DO,      "Sương Mai Bạch Vũ,…"},
-                {ColorTaxonomy.XANH_LA, "Trúc Lục Khuê Phòng, Thanh Lam Trì Liên,…"},
-                {ColorTaxonomy.VANG,    "Yên Hoa Bạch Liên, Bích Lam Cẩm Tú,…"},
-                {ColorTaxonomy.HONG,    "Dạ Kim Mẫu Đơn,…"},
+        return buildColorCategories("YẾM ĐÀO", new Object[][]{
+                {ColorTaxonomy.DO,      R.string.desc_yem_dao_do},
+                {ColorTaxonomy.XANH_LA, R.string.desc_yem_dao_xanh_la},
+                {ColorTaxonomy.VANG,    R.string.desc_yem_dao_vang},
+                {ColorTaxonomy.HONG,    R.string.desc_yem_dao_hong},
         });
     }
 
-    /** Danh mục con dạng "màu" dùng chung cho các tab trang phục — mỗi tab tự khai chỉ những màu mình có. */
-    private List<CategoryItem> buildColorCategories(String parentCategory, String[][] colorsWithDesc) {
+    /**
+     * Danh mục con dạng "màu" dùng chung cho các tab trang phục — mỗi tab tự khai chỉ những màu mình có.
+     * {@code colorsWithDescRes[i]} = {bucket (String, khoá lọc dữ liệu), mô tả (@StringRes Integer)}.
+     * Tên hiển thị lấy qua {@link ColorTaxonomy#displayNameRes}, tách riêng khỏi khoá lọc để dịch được.
+     */
+    private List<CategoryItem> buildColorCategories(String parentCategory, Object[][] colorsWithDescRes) {
         Context ctx = requireContext();
         List<CategoryItem> list = new ArrayList<>();
-        for (int i = 0; i < colorsWithDesc.length; i++) {
-            String bucket = colorsWithDesc[i][0];
-            list.add(new CategoryItem(i + 1, bucket, colorsWithDesc[i][1], 0, swatchFor(ctx, bucket),
-                    parentCategory, bucket));
+        for (int i = 0; i < colorsWithDescRes.length; i++) {
+            String bucket = (String) colorsWithDescRes[i][0];
+            int descRes = (int) colorsWithDescRes[i][1];
+            list.add(new CategoryItem(i + 1, ColorTaxonomy.displayNameRes(bucket), descRes, 0,
+                    swatchFor(ctx, bucket), parentCategory, bucket));
         }
         return list;
     }
@@ -235,12 +263,12 @@ public class StylingFragment extends Fragment {
     // ── PHỤ KIỆN: chia theo loại phụ kiện, không phải theo màu ─────────────────
 
     private List<CategoryItem> buildPhuKienCategories() {
-        // {tên hiển thị, mô tả, giá trị lọc khớp với cột MÀU trong dữ liệu phụ kiện}
-        String[][] data = {
-                {"KHĂN ĐỘI ĐẦU", "Khăn vấn, khăn đội đầu truyền thống,…", "Khăn đội đầu"},
-                {"QUẠT",         "Quạt xếp, quạt lụa cầm tay,…",          "Quạt"},
-                {"Ô CHE",        "Ô lọng, dù che truyền thống,…",         "Ô che"},
-                {"MŨ ĐỘI ĐẦU",   "Mũ, mão đội đầu cách tân,…",            "Mũ đội đầu"},
+        // {tên hiển thị (@StringRes), mô tả (@StringRes), giá trị lọc khớp với cột MÀU trong dữ liệu phụ kiện}
+        Object[][] data = {
+                {R.string.phukien_khan_title,     R.string.phukien_khan_desc,     "Khăn đội đầu"},
+                {R.string.phukien_quat_title,     R.string.phukien_quat_desc,     "Quạt"},
+                {R.string.phukien_oche_title,     R.string.phukien_oche_desc,     "Ô che"},
+                {R.string.phukien_mudoidau_title, R.string.phukien_mudoidau_desc, "Mũ đội đầu"},
         };
         Context ctx = requireContext();
         int[] palette = {
@@ -252,8 +280,8 @@ public class StylingFragment extends Fragment {
 
         List<CategoryItem> list = new ArrayList<>();
         for (int i = 0; i < data.length; i++) {
-            list.add(new CategoryItem(i + 1, data[i][0], data[i][1], 0, palette[i % palette.length],
-                    "PHỤ KIỆN", data[i][2]));
+            list.add(new CategoryItem(i + 1, (int) data[i][0], (int) data[i][1], 0, palette[i % palette.length],
+                    "PHỤ KIỆN", (String) data[i][2]));
         }
         return list;
     }

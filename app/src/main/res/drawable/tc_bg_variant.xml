@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="@color/tc_bg_card" />
-    <stroke android:width="@dimen/tc_stroke_w" android:color="@color/tc_stroke" />
-    <corners android:radius="@dimen/tc_radius_sm" />
-</shape>
+<!-- Chip variant (size/kích cỡ) chưa chọn: viền be nhạt + ripple đỏ khi chạm, đồng bộ tông ripple với About -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/tc_ripple_red_subtle">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/tc_bg_card" />
+            <stroke android:width="@dimen/tc_stroke_w" android:color="@color/tc_stroke" />
+            <corners android:radius="@dimen/tc_radius_sm" />
+        </shape>
+    </item>
+</ripple>

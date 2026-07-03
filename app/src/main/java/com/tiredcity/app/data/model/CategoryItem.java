@@ -37,6 +37,13 @@ public class CategoryItem {
         this(id, 0, 0, nameText, descriptionText, imageRes, placeholderColor, parentCategory, filterValue);
     }
 
+    /** Resource-based constructor + API filter wiring (i18n color/subcategory tiles that open CategoryActivity filtered). */
+    public CategoryItem(int id, @StringRes int nameResId, @StringRes int descriptionResId,
+                         @DrawableRes int imageRes, @ColorInt int placeholderColor,
+                         @Nullable String parentCategory, @Nullable String filterValue) {
+        this(id, nameResId, descriptionResId, null, null, imageRes, placeholderColor, parentCategory, filterValue);
+    }
+
     private CategoryItem(int id, @StringRes int nameResId, @StringRes int descriptionResId,
                           String nameText, String descriptionText,
                           @DrawableRes int imageRes, @ColorInt int placeholderColor,

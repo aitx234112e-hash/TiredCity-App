@@ -106,7 +106,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
             // Tag màu (Áo Dài) hoặc loại phụ kiện (Phụ Kiện) — cùng lấy từ product.getColors().
             String colorTag = ColorTaxonomy.primaryTag(product.getColors());
-            if (colorTag == null && product.getColors() != null && !product.getColors().isEmpty()) {
+            if (colorTag != null) {
+                colorTag = ColorTaxonomy.displayName(itemView.getContext(), colorTag);
+            } else if (product.getColors() != null && !product.getColors().isEmpty()) {
                 colorTag = product.getColors().get(0);
             }
             if (colorTag != null) {
