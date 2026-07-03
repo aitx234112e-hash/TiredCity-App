@@ -1,8 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="tc_brand">#C0392B</color>
-    <color name="tc_brand_dark">#922B21</color>
-    <color name="tc_soft">#F9EBEA</color>
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  TIREDCITY ADMIN — VIETNAMESE HERITAGE PALETTE                     ║
+      ║  Đồng bộ với app khách hàng: Đỏ son + Vàng kim + Kem + Espresso.   ║
+      ║  Giữ nguyên TÊN màu để không gãy Java/layout, chỉ đổi giá trị.     ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <!-- ─── Brand: Đỏ son TiredCity ─────────────────────────────────── -->
+    <color name="tc_brand">#A80D15</color>
+    <color name="tc_brand_dark">#7A0810</color>
+    <color name="tc_soft">#F5DDDF</color>
+
+    <!-- ─── Đỏ sơn mài — gradient stops (header/hero) ───────────────── -->
+    <color name="tc_red_lacquer_top">#C21620</color>
+    <color name="tc_red_lacquer_mid">#A80D15</color>
+    <color name="tc_red_lacquer_bot">#820810</color>
+
+    <!-- ─── Vàng kim (accent dân tộc) ───────────────────────────────── -->
+    <color name="tc_gold">#C9A45C</color>
+    <color name="tc_gold_deep">#9A7838</color>
+    <color name="tc_gold_bright">#F4C430</color>
+
+    <!-- ─── Nền / bề mặt ────────────────────────────────────────────── -->
+    <color name="tc_bg">#F5EDE3</color>
+    <color name="tc_card">#FFFFFF</color>
+    <color name="tc_stroke">#E8DCC6</color>
+
+    <!-- ─── Chữ ─────────────────────────────────────────────────────── -->
+    <color name="tc_text_primary">#1A1208</color>
+    <color name="tc_text_secondary">#5A4A38</color>
+    <color name="tc_divider">#E8DCC6</color>
+    <color name="tc_on_red_secondary">#FFD6D8</color>
+
+    <!-- ─── Màu các thẻ chức năng (đồng điệu tông ấm heritage) ──────── -->
+    <color name="m_products">#9A7838</color>
+    <color name="m_orders">#A80D15</color>
+    <color name="m_users">#6B4E2E</color>
+    <color name="m_vouchers">#C0561E</color>
+    <color name="m_events">#4A6B3A</color>
+    <color name="m_shipping">#3B5A7A</color>
+    <color name="m_feedback">#D4A04B</color>
+    <color name="m_blogs">#5E6B3A</color>
+    <color name="m_audit">#8E7B62</color>
+    <color name="m_revenue">#C9282F</color>
+    <color name="m_reports">#2E4A63</color>
+    <color name="m_chatbot">#C9A45C</color>
+
+    <!-- ─── Màu trạng thái (badge) ──────────────────────────────────── -->
+    <color name="st_pending">#D4A04B</color>
+    <color name="st_success">#4A6B3A</color>
+    <color name="st_danger">#A80D15</color>
+    <color name="st_info">#3B5A7A</color>
+    <color name="st_neutral">#8E7B62</color>
 </resources>

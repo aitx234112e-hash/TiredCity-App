@@ -47,7 +47,14 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
-    // Networking
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Firebase (dung chung project Firestore/Auth voi web-admin va app khach hang)
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth")
+
+    // Networking (con giu lai cho cac endpoint bo sung sau nay)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")

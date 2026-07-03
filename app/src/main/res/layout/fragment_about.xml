@@ -11,7 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:descendantFocusability="blocksDescendants"
         android:paddingBottom="@dimen/tc_space_3xl">
+
+        <!-- descendantFocusability=blocksDescendants: chặn NestedScrollView tự cuộn xuống
+             ô Liên hệ (focusable) khi mở trang, khiến trang bị "nhảy" ra giữa thay vì bắt
+             đầu từ đầu. Các hàng Liên hệ vẫn bấm được bằng chạm. -->
 
         <!-- ═══ Hero — đỏ, full-bleed: rooster mark + wordmark + video Behance ═══ -->
         <LinearLayout

@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.ActivityOnboardingBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
@@ -102,7 +104,15 @@ public class OnboardingActivity extends BaseActivity {
                     page.imageName, "drawable", holder.itemView.getContext().getPackageName());
             Glide.with(holder.ivBg).clear(holder.ivBg);
             if (imgId != 0) {
-                Glide.with(holder.ivBg).load(imgId).centerCrop().into(holder.ivBg);
+                // Bỏ qua cache của Glide cho ảnh trong drawable để tránh việc
+                // các resource id khác nhau bị trả về cùng một ảnh (ảnh bị lặp).
+                Glide.with(holder.ivBg)
+                        .load(imgId)
+                        .signature(new ObjectKey(page.imageName))
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .centerCrop()
+                        .into(holder.ivBg);
             } else {
                 holder.ivBg.setImageDrawable(null);
             }

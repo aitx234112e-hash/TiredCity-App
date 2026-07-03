@@ -441,6 +441,16 @@
     <string name="hint_message">Nhập tin nhắn…</string>
     <string name="btn_send">Gửi</string>
 
+    <!-- Gợi ý câu hỏi nhanh cho chatbot -->
+    <string-array name="chatbot_suggestions">
+        <item>Cửa hàng ở đâu?</item>
+        <item>Món nào đang giảm giá?</item>
+        <item>Trang phục nào hợp mệnh tôi?</item>
+        <item>Cách phối đồ Việt Phục?</item>
+        <item>Phí giao hàng thế nào?</item>
+        <item>Tư vấn chọn size</item>
+    </string-array>
+
     <!-- News / Events screens -->
     <string name="empty_news">Chưa có bài viết nào</string>
     <string name="empty_events">Chưa có sự kiện nào</string>

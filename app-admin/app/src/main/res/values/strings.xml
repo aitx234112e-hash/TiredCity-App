@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TiredCity Admin</string>
+    <string name="login_card_title">Đăng nhập</string>
     <string name="login_subtitle">Đăng nhập để quản lý hệ thống</string>
     <string name="login_with_google">Đăng nhập với Google</string>
     <string name="dashboard_title">Tổng quan</string>
@@ -8,6 +9,145 @@
     <string name="hint_password">Mật khẩu</string>
     <string name="btn_login">ĐĂNG NHẬP</string>
     <string name="login_divider">HOẶC</string>
+    <string name="login_loading">Đang đăng nhập…</string>
     <string name="error_required_email">Nhập email</string>
     <string name="error_required_password">Nhập mật khẩu</string>
+    <string name="error_wrong_credentials">Sai email hoặc mật khẩu</string>
+    <string name="error_account_disabled">Tài khoản đã bị vô hiệu hoá</string>
+    <string name="error_no_admin_access">Tài khoản không có quyền truy cập trang quản trị</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_subtitle">Chào mừng quay lại</string>
+    <string name="dashboard_pending_fmt">%d đơn chờ xử lý</string>
+    <string name="stat_revenue">Doanh thu</string>
+    <string name="stat_orders">Tổng đơn hàng</string>
+    <string name="stat_customers">Khách hàng</string>
+    <string name="section_functions">Chức năng quản lý</string>
+    <string name="btn_logout">Đăng xuất</string>
+
+    <!-- Modules (mirror nav.html + admin-routing-module.ts) -->
+    <string name="m_products">Sản phẩm</string>
+    <string name="m_products_desc">Kho hàng, giá, tồn kho</string>
+    <string name="m_orders">Đơn hàng</string>
+    <string name="m_orders_desc">Duyệt, cập nhật trạng thái</string>
+    <string name="m_users">Tài khoản</string>
+    <string name="m_users_desc">Khách hàng, nhân viên</string>
+    <string name="m_vouchers">Giảm giá</string>
+    <string name="m_vouchers_desc">Mã voucher, khuyến mãi</string>
+    <string name="m_events">Sự kiện</string>
+    <string name="m_events_desc">Sự kiện cửa hàng</string>
+    <string name="m_shipping">Vận chuyển</string>
+    <string name="m_shipping_desc">Phương thức giao hàng</string>
+    <string name="m_feedback">Liên hệ</string>
+    <string name="m_feedback_desc">Phản hồi từ khách hàng</string>
+    <string name="m_blogs">Blogs</string>
+    <string name="m_blogs_desc">Bài viết, tin tức</string>
+    <string name="m_audit">Audit logs</string>
+    <string name="m_audit_desc">Nhật ký thao tác admin</string>
+    <string name="m_revenue">Doanh thu</string>
+    <string name="m_revenue_desc">Báo cáo tổng hợp</string>
+    <string name="m_reports">Báo cáo</string>
+    <string name="m_reports_desc">Xuất dữ liệu thống kê</string>
+    <string name="m_chatbot">Trợ lý AI</string>
+    <string name="m_chatbot_desc">Hỏi nhanh về cửa hàng</string>
+
+    <!-- Module list -->
+    <string name="hint_search">Tìm kiếm…</string>
+    <string name="empty_list">Chưa có dữ liệu</string>
+    <string name="load_error">Không tải được dữ liệu: %s</string>
+
+    <!-- Order detail -->
+    <string name="order_detail_title">Chi tiết đơn hàng</string>
+    <string name="order_customer">Khách hàng</string>
+    <string name="order_address">Địa chỉ giao hàng</string>
+    <string name="order_total">Tổng tiền</string>
+    <string name="order_status">Trạng thái</string>
+    <string name="order_created">Ngày đặt</string>
+    <string name="order_tracking">Mã vận đơn</string>
+    <string name="btn_update_status">Cập nhật trạng thái</string>
+    <string name="status_updated">Đã cập nhật trạng thái</string>
+    <string name="update_error">Cập nhật thất bại: %s</string>
+
+    <string name="status_pending">Chờ xác nhận</string>
+    <string name="status_processing">Đang chuẩn bị hàng</string>
+    <string name="status_shipped">Đang giao hàng</string>
+    <string name="status_delivered">Đã giao hàng</string>
+    <string name="status_cancelled">Đã hủy</string>
+
+    <string name="btn_confirm_order">Xác nhận đơn</string>
+    <string name="btn_ship_order">Gửi hàng</string>
+    <string name="btn_mark_delivered">Xác nhận đã giao</string>
+    <string name="btn_cancel_order">Huỷ đơn</string>
+    <string name="hint_tracking_code">Mã vận đơn (SPX...)</string>
+    <string name="order_items">Sản phẩm</string>
+    <string name="confirm_cancel_order">Huỷ đơn hàng này?</string>
+
+    <!-- Feedback -->
+    <string name="feedback_replied">Đã phản hồi</string>
+    <string name="feedback_pending">Chờ xử lý</string>
+    <string name="btn_mark_replied">Đánh dấu đã phản hồi</string>
+
+    <!-- Revenue -->
+    <string name="revenue_title">Doanh thu</string>
+    <string name="revenue_total">Tổng doanh thu</string>
+    <string name="revenue_paid">Đã thanh toán</string>
+    <string name="revenue_avg">Giá trị đơn TB</string>
+    <string name="revenue_orders">Số đơn hàng</string>
+    <string name="revenue_recent">Đơn hàng gần đây</string>
+
+    <!-- Reports -->
+    <string name="reports_title">Báo cáo</string>
+    <string name="report_orders_title">Đơn hàng</string>
+    <string name="report_orders_desc">Tổng số đơn đã ghi nhận</string>
+    <string name="report_products_title">Sản phẩm</string>
+    <string name="report_products_desc">Tổng số sản phẩm đang bán</string>
+    <string name="report_users_title">Tài khoản</string>
+    <string name="report_users_desc">Tổng số người dùng đã đăng ký</string>
+    <string name="report_revenue_title">Doanh thu</string>
+    <string name="report_revenue_desc">Tổng doanh thu đã ghi nhận</string>
+
+    <string name="generic_detail">Chi tiết</string>
+    <string name="btn_close">Đóng</string>
+
+    <string name="list_count_fmt">%1$d bản ghi</string>
+    <string name="order_code">Mã đơn</string>
+    <string name="order_paid">Thanh toán</string>
+    <string name="paid_yes">Đã thanh toán</string>
+    <string name="paid_no">Chưa thanh toán</string>
+    <string name="feedback_marked">Đã đánh dấu phản hồi</string>
+    <string name="revenue_chart_title">Doanh thu 6 tháng gần nhất</string>
+    <string name="month_fmt">Th%1$d</string>
+    <string name="btn_export_csv">Xuất CSV</string>
+    <string name="export_done_fmt">Đã xuất %1$d dòng</string>
+    <string name="export_error">Xuất tệp thất bại</string>
+
+    <!-- CRUD form -->
+    <string name="form_create_fmt">Thêm %1$s</string>
+    <string name="form_edit_fmt">Sửa %1$s</string>
+    <string name="btn_save">Lưu</string>
+    <string name="saving">Đang lưu…</string>
+    <string name="saved_ok">Đã lưu thành công</string>
+    <string name="field_required">Bắt buộc</string>
+    <string name="form_fill_required">Vui lòng điền đầy đủ các trường bắt buộc</string>
+    <string name="hint_pick_date">Chọn ngày…</string>
+    <string name="record_not_found">Không tìm thấy bản ghi</string>
+
+    <!-- Chatbot / Tro ly AI -->
+    <string name="chatbot_title">Trợ lý Admin</string>
+    <string name="chatbot_subtitle">Hỏi nhanh về đơn hàng, doanh thu &amp; thống kê</string>
+    <string name="chatbot_ready">Sẵn sàng</string>
+    <string name="chatbot_loading">Đang tải dữ liệu…</string>
+    <string name="chatbot_hint">Nhập câu hỏi… (VD: doanh thu hôm nay?)</string>
+    <string name="chatbot_send">Gửi</string>
+    <string name="chatbot_greeting">Xin chào 👋 Mình là trợ lý admin TiredCity. Bạn có thể hỏi về doanh thu, đơn hàng, người dùng, sản phẩm — hoặc tra cứu một đơn theo mã.</string>
+    <string name="chatbot_data_error">⚠️ Mình chưa tải được dữ liệu từ Firestore, một số câu trả lời có thể không chính xác.</string>
+
+    <!-- CRUD actions -->
+    <string name="btn_add">Thêm mới</string>
+    <string name="btn_edit">Sửa</string>
+    <string name="btn_delete">Xoá</string>
+    <string name="confirm_delete">Bạn có chắc muốn xoá mục này?</string>
+    <string name="confirm_delete_fmt">Xoá "%1$s"?</string>
+    <string name="deleted_ok">Đã xoá</string>
+    <string name="delete_error">Xoá thất bại: %s</string>
 </resources>
