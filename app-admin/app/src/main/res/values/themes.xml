@@ -3,6 +3,14 @@
     <style name="Theme.TiredCityAdmin" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/tc_brand</item>
         <item name="colorPrimaryDark">@color/tc_brand_dark</item>
+        <item name="colorSecondary">@color/tc_gold</item>
+        <item name="colorOnSecondary">@color/tc_text_primary</item>
         <item name="android:statusBarColor">@color/tc_brand_dark</item>
+        <item name="android:windowBackground">@color/tc_bg</item>
+    </style>
+
+    <style name="ToolbarTitle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

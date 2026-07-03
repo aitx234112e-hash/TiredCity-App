@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+}
+
+// Doc Claude API key tu local.properties (khong commit key vao git) hoac bien moi truong.
+val claudeApiKey: String = run {
+    val props = Properties()
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { props.load(it) }
+    props.getProperty("CLAUDE_API_KEY") ?: System.getenv("CLAUDE_API_KEY") ?: ""
 }
 
 android {
@@ -15,6 +25,8 @@ android {
         versionCode           = 1
         versionName           = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "CLAUDE_API_KEY", "\"$claudeApiKey\"")
     }
 
     buildTypes {

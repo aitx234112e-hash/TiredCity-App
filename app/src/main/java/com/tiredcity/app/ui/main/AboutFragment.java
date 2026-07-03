@@ -2,7 +2,6 @@ package com.tiredcity.app.ui.main;
 
 import android.content.Intent;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -242,8 +241,6 @@ public class AboutFragment extends Fragment {
         private final View container;
         private final VideoView videoView;
         private final Uri uri;
-        private MediaPlayer player;
-        private boolean prepared = false;
         private boolean visible = false;
         private boolean pausedForLifecycle = false;
 
@@ -255,13 +252,19 @@ public class AboutFragment extends Fragment {
 
         void setup() {
             videoView.setVideoURI(uri);
+            // Khi Activity bị dừng (mở màn khác đè lên), VideoView huỷ Surface và tự
+            // release MediaPlayer bên trong. Vì vậy KHÔNG giữ tham chiếu MediaPlayer để
+            // gọi start()/pause() trực tiếp — làm vậy sẽ ném IllegalStateException và
+            // crash khi quay lại. Dùng videoView.start()/pause() (đã tự kiểm tra trạng
+            // thái). onPrepared có thể chạy lại mỗi lần Surface được tạo lại nên phải
+            // áp lại loop/mute và đồng bộ trạng thái phát mong muốn ở đây.
             videoView.setOnPreparedListener(mp -> {
-                player = mp;
                 mp.setLooping(true);
                 mp.setVolume(0f, 0f);
-                prepared = true;
                 if (visible && !pausedForLifecycle) {
-                    mp.start();
+                    videoView.start();
+                } else {
+                    videoView.pause();
                 }
             });
         }
@@ -269,32 +272,28 @@ public class AboutFragment extends Fragment {
         void update(boolean nowVisible) {
             if (nowVisible == visible) return;
             visible = nowVisible;
-            if (!prepared || pausedForLifecycle) return;
+            if (pausedForLifecycle) return;
             if (visible) {
-                player.start();
+                videoView.start();
             } else {
-                player.pause();
+                videoView.pause();
             }
         }
 
         void pauseForLifecycle() {
             pausedForLifecycle = true;
-            if (prepared) {
-                player.pause();
-            }
+            videoView.pause();
         }
 
         void resumeForLifecycle() {
             pausedForLifecycle = false;
-            if (prepared && visible) {
-                player.start();
+            if (visible) {
+                videoView.start();
             }
         }
 
         void release() {
             videoView.stopPlayback();
-            player = null;
-            prepared = false;
         }
     }
 }

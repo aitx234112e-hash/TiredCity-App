@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gạch chân đỏ ngắn dưới tiêu đề section — cùng ngôn ngữ với vạch chỉ báo tab đang chọn -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_red" />
+    <corners android:radius="2dp" />
+</shape>

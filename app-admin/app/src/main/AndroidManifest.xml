@@ -3,6 +3,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Android 11+: cần khai báo để thấy & mở được app khách hàng (trang đăng nhập chung). -->
+    <queries>
+        <package android:name="com.tiredcity.app" />
+    </queries>
+
     <application
         android:name=".TiredCityAdminApp"
         android:allowBackup="true"
@@ -24,6 +29,28 @@
         <activity
             android:name=".ui.dashboard.DashboardActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.list.ModuleListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.form.EntityFormActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.revenue.RevenueActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.reports.ReportsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.chatbot.ChatbotActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 </manifest>

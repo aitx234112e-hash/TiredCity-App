@@ -1,7 +1,9 @@
 package com.tiredcity.app.data.model;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Product {
 
@@ -22,6 +24,18 @@ public class Product {
 
     @SerializedName("description")
     private String description;
+
+    /** Cảm hứng lịch sử / câu chuyện thiết kế — hiển thị ở mục "Câu chuyện" trang chi tiết. */
+    @SerializedName("story")
+    private String story;
+
+    /** Hướng dẫn bảo quản, mỗi phần tử là một gạch đầu dòng. */
+    @SerializedName("care_instructions")
+    private List<String> careInstructions;
+
+    /** Thông số kỹ thuật dạng nhãn → giá trị (Kiểu dáng, Dịp sử dụng,…), giữ thứ tự hiển thị. */
+    @SerializedName("specifications")
+    private Map<String, String> specifications = new LinkedHashMap<>();
 
     @SerializedName("price")
     private double price;
@@ -92,6 +106,15 @@ public class Product {
 
     public List<String> getMenh()           { return menh; }
     public void setMenh(List<String> menh)  { this.menh = menh; }
+
+    public String getStory()                        { return story; }
+    public void setStory(String story)              { this.story = story; }
+
+    public List<String> getCareInstructions()               { return careInstructions; }
+    public void setCareInstructions(List<String> care)      { this.careInstructions = care; }
+
+    public Map<String, String> getSpecifications()          { return specifications; }
+    public void setSpecifications(Map<String, String> spec) { this.specifications = spec; }
 
     /** Convenience: first image URL or empty string. */
     public String getFirstImage() {

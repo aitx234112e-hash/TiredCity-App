@@ -17,6 +17,7 @@ import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.BannerAdapter;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.PromoStripAdapter;
+import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.databinding.FragmentHomeBinding;
@@ -272,7 +273,7 @@ public class HomeFragment extends Fragment {
     // ── Recommended products ──────────────────────────────────────────────────
 
     private void setupRecommendedProducts() {
-        List<Product> products = buildMockProducts(true);
+        List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), true);
         ProductAdapter adapter = new ProductAdapter(products);
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -291,7 +292,7 @@ public class HomeFragment extends Fragment {
     // ── Hot products ──────────────────────────────────────────────────────────
 
     private void setupHotProducts() {
-        List<Product> products = buildMockProducts(false);
+        List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), false);
         ProductAdapter adapter = new ProductAdapter(products);
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -337,15 +338,17 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(requireContext(),
                         com.tiredcity.app.ui.notification.NotificationActivity.class)));
 
-        // Danh mục → navigate sang ShopFragment
+        // "Xem tất cả" và "Bộ Trọn" (không có tab riêng ở trang Danh mục) → ShopFragment
         View.OnClickListener catClick = v ->
                 Navigation.findNavController(requireView()).navigate(R.id.shopFragment);
         binding.tvCategoriesSeeAll.setOnClickListener(catClick);
-        binding.cardCatAoDai.setOnClickListener(catClick);
-        binding.cardCatAoTac.setOnClickListener(catClick);
-        binding.cardCatNhatBinh.setOnClickListener(catClick);
-        binding.cardCatAccessories.setOnClickListener(catClick);
         binding.cardCatSet.setOnClickListener(catClick);
+
+        // 4 thẻ còn lại → mở đúng tab tương ứng ở trang Danh mục (tab biểu tượng móc áo)
+        binding.cardCatAoDai.setOnClickListener(v -> openStylingCategory("ÁO DÀI"));
+        binding.cardCatAoTac.setOnClickListener(v -> openStylingCategory("ÁO TẤC"));
+        binding.cardCatNhatBinh.setOnClickListener(v -> openStylingCategory("NHẬT BÌNH"));
+        binding.cardCatAccessories.setOnClickListener(v -> openStylingCategory("PHỤ KIỆN"));
 
         // Sự kiện → trang Sự kiện riêng (EventActivity)
         View.OnClickListener eventsClick = v ->
@@ -360,6 +363,13 @@ public class HomeFragment extends Fragment {
                         com.tiredcity.app.ui.explore.ArticleActivity.class));
         binding.cardNews.setOnClickListener(newsClick);
         binding.tvNewsSeeAll.setOnClickListener(newsClick);
+    }
+
+    /** Mở trang Danh mục (tab móc áo) và chọn sẵn đúng nhóm trang phục đã bấm ở Trang chủ. */
+    private void openStylingCategory(String categoryId) {
+        Bundle args = new Bundle();
+        args.putString(StylingFragment.ARG_CATEGORY_ID, categoryId);
+        Navigation.findNavController(requireView()).navigate(R.id.stylingFragment, args);
     }
 
     // ── Badges (giỏ hàng + thông báo) ─────────────────────────────────────────
@@ -399,28 +409,4 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
-    /** Builds mock Product data for offline / dev preview. */
-    private List<Product> buildMockProducts(boolean recommended) {
-        String[][] data = {
-            {"1", "Áo Dài Cổ Truyền",     "Lụa tơ tằm",  "850000", "10", "4.8"},
-            {"2", "Nhật Bình Hoàng Hậu",  "Gấm thêu",    "1200000","15", "4.9"},
-            {"3", "Áo Tấc Nam Quan",       "Đũi tơ",      "650000", "0",  "4.5"},
-            {"4", "Khăn Đóng Truyền Thống","Lụa mềm",     "250000", "5",  "4.3"},
-            {"5", "Bộ Áo Dài Cưới",        "Lụa cao cấp", "2500000","20", "5.0"},
-        };
-
-        List<Product> list = new ArrayList<>();
-        for (String[] row : data) {
-            Product p = new Product();
-            p.setId(row[0]);
-            p.setName(row[1]);
-            p.setMaterial(row[2]);
-            p.setPrice(Double.parseDouble(row[3]));
-            p.setDiscount(Integer.parseInt(row[4]));
-            p.setRating(Double.parseDouble(row[5]));
-            p.setNew(recommended);
-            list.add(p);
-        }
-        return list;
-    }
 }

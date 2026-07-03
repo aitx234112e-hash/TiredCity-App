@@ -247,6 +247,115 @@
     <string name="success_order">Đặt hàng thành công!</string>
     <string name="success_profile_update">Cập nhật hồ sơ thành công.</string>
 
+    <!-- ─── Mock catalog: chất liệu ─────────────────────────────────────── -->
+    <string name="material_lua_to_tam">Lụa tơ tằm</string>
+    <string name="material_theu_tay">Thêu tay truyền thống</string>
+    <string name="material_gam_theu">Gấm thêu</string>
+    <string name="material_dui_to">Đũi tơ</string>
+    <string name="material_lua_mem">Lụa mềm</string>
+    <string name="material_lua_cao_cap">Lụa cao cấp</string>
+    <string name="material_gam_det_hoa">Gấm dệt hoa</string>
+    <string name="material_dui_to_tam">Đũi tơ tằm</string>
+    <string name="material_lua_ha_dong">Lụa Hà Đông</string>
+    <string name="material_gam_theu_chi">Gấm thêu chỉ</string>
+    <string name="material_to_song">Tơ sống</string>
+    <string name="material_gam_cao_cap">Gấm cao cấp</string>
+
+    <!-- ─── Mock catalog: nhãn thông số + giá trị mặc định ─────────────── -->
+    <string name="label_style">Kiểu dáng</string>
+    <string name="label_occasion">Dịp sử dụng</string>
+    <string name="spec_color_various">Đa dạng</string>
+    <string name="spec_style_accessory">Phụ kiện Việt phục</string>
+    <string name="spec_style_traditional">Việt phục truyền thống</string>
+    <string name="spec_occasion_default">Lễ hội, Cưới hỏi, Chụp ảnh</string>
+    <string name="mock_style_ao_dai_truyen_thong">Áo Dài truyền thống</string>
+
+    <!-- ─── Mock catalog: hướng dẫn bảo quản dùng chung ────────────────── -->
+    <string name="care_hand_wash_cold_strict">Chỉ giặt tay bằng nước lạnh</string>
+    <string name="care_hand_wash_cold_gentle">Giặt tay nhẹ nhàng với nước lạnh</string>
+    <string name="care_no_bleach">Không dùng chất tẩy</string>
+    <string name="care_iron_low">Ủi ở nhiệt độ thấp</string>
+    <string name="care_iron_low_cloth">Ủi ở nhiệt độ thấp, lót vải khi ủi</string>
+    <string name="care_store_dry">Bảo quản nơi khô ráo, tránh ánh nắng trực tiếp</string>
+
+    <!-- ─── Mock catalog: mô tả/câu chuyện mặc định + riêng theo sản phẩm ─ -->
+    <string name="desc_template_default">%1$s được may từ %2$s, tôn lên vẻ đẹp thanh lịch và tinh thần Việt phục truyền thống trong từng đường kim mũi chỉ.</string>
+    <string name="story_template_default">Thiết kế lấy cảm hứng từ trang phục cung đình và dân gian Việt Nam qua các triều đại, được phục dựng và cách tân để phù hợp với đời sống hiện đại mà vẫn giữ trọn hồn cốt truyền thống.</string>
+    <string name="desc_ad1">Chiếc áo dài trắng thanh khiết này lấy cảm hứng từ vẻ đẹp cô dâu truyền thống Việt Nam. Chất lụa mềm mại cùng đường thêu tay tinh xảo tượng trưng cho sự tinh khôi, hòa hợp và tình yêu bền lâu.</string>
+    <string name="story_ad1">Thiết kế được phục dựng từ trang phục lễ nghi triều Nguyễn, kết hợp cùng kỹ thuật cắt may hiện đại để tôn dáng người mặc mà vẫn giữ trọn nét trang nghiêm, cổ kính.</string>
+    <string name="desc_ad7">Áo dài trắng phối họa tiết hoa cổ điển, gợi nhớ tà áo nữ sinh một thời — nhẹ nhàng, thanh lịch và dễ phối cho nhiều dịp khác nhau.</string>
+
+    <!-- ─── Mock catalog: tên sản phẩm — Áo Dài ────────────────────────── -->
+    <string name="mock_ad1_name">Khói Trắng Kết Duyên</string>
+    <string name="mock_ad2_name">Lam Lụa Cố Trạch</string>
+    <string name="mock_ad3_name">Kim Vũ Phong Hoa</string>
+    <string name="mock_ad4_name">Hồng Trần Mộc Dược</string>
+    <string name="mock_ad5_name">Lục Thuỷ Hoàng Lan</string>
+    <string name="mock_ad6_name">Nguyệt Cầm Phấn Hồng</string>
+    <string name="mock_ad7_name">Phấn Hoa Cổ Điển</string>
+
+    <!-- ─── Mock catalog: tên sản phẩm — Nhật Bình ──────────────────────── -->
+    <string name="mock_nb1_name">Xích Bào Đối Ấn</string>
+    <string name="mock_nb2_name">Thạch Lam Hoàng Cung</string>
+    <string name="mock_nb3_name">Lục Triều Tiểu Yến</string>
+    <string name="mock_nb4_name">Hoàng Triều Kim Tuyến</string>
+    <string name="mock_nb5_name">Vọng Nguyệt Lam Cung</string>
+    <string name="mock_nb6_name">Nhật Bình Lam Vũ</string>
+    <string name="mock_nb7_name">Lục Yên Lam Bửu</string>
+    <string name="mock_nb8_name">Tử Vân Yên Thảo</string>
+    <string name="mock_nb9_name">Trầm Hồng Cổ Các</string>
+    <string name="mock_nb10_name">Kim Trần Mộc Dược</string>
+
+    <!-- ─── Mock catalog: tên sản phẩm — Áo Tấc ─────────────────────────── -->
+    <string name="mock_at1_name">Lục Ngọc Vấn Khăn</string>
+    <string name="mock_at2_name">Ngọc Vũ Yên Sa</string>
+    <string name="mock_at3_name">Mộc Vân Thổ Xà</string>
+    <string name="mock_at4_name">Thanh Long Cổ Trấn</string>
+    <string name="mock_at5_name">Lục Y Phù Quạt</string>
+    <string name="mock_at6_name">Tơ Ngà Vấn Nguyệt</string>
+
+    <!-- ─── Mock catalog: tên sản phẩm — Giao Lĩnh ──────────────────────── -->
+    <string name="mock_gl1_name">Bạch Sa Liên Vũ</string>
+    <string name="mock_gl2_name">Lam Ngọc Cổ Trấn</string>
+    <string name="mock_gl3_name">Lục Trúc Vân Khúc</string>
+    <string name="mock_gl4_name">Kim Sắc Hoàng Triều</string>
+    <string name="mock_gl5_name">Cam Giao Lĩnh Bào</string>
+    <string name="mock_gl6_name">Hắc Kim Mẫu Đơn</string>
+
+    <!-- ─── Mock catalog: tên sản phẩm — Yếm Đào ─────────────────────────── -->
+    <string name="mock_yd1_name">Sương Mai Bạch Vũ</string>
+    <string name="mock_yd2_name">Trúc Lục Khuê Phòng</string>
+    <string name="mock_yd3_name">Yên Hoa Bạch Liên</string>
+    <string name="mock_yd4_name">Thanh Lam Trì Liên</string>
+    <string name="mock_yd5_name">Bích Lam Cẩm Tú</string>
+    <string name="mock_yd6_name">Dạ Kim Mẫu Đơn</string>
+
+    <!-- ─── Mock catalog: tên sản phẩm — Phụ Kiện ────────────────────────── -->
+    <string name="mock_pk1_name">Vấn Nguyệt Bạch Vân Cẩm</string>
+    <string name="mock_pk2_name">Nón Dâu Cổ Phong</string>
+    <string name="mock_pk3_name">Quạt Xếp Khổng Tước Khai Bình</string>
+    <string name="mock_pk4_name">Lọng Tán Trường An</string>
+    <string name="mock_pk5_name">Khăn Vấn Thổ Mộc</string>
+    <string name="mock_pk6_name">Vân Kiên Đám Mây</string>
+    <string name="mock_pk7_name">Quan Phượng Vũ Triều Thiên</string>
+    <string name="mock_pk8_name">Ngự Lạp Kim Sa</string>
+    <string name="mock_pk9_name">Lọng Ngự Tán Kim Vân</string>
+
+    <!-- ─── Mock catalog: Trang chủ — gợi ý / thịnh hành ────────────────── -->
+    <string name="mock_home1_name">Áo Dài Cổ Truyền</string>
+    <string name="mock_home2_name">Nhật Bình Hoàng Hậu</string>
+    <string name="mock_home3_name">Áo Tấc Nam Quan</string>
+    <string name="mock_home4_name">Khăn Đóng Truyền Thống</string>
+    <string name="mock_home5_name">Bộ Áo Dài Cưới</string>
+
+    <!-- ─── Mock catalog: Việt phục chung (fallback) ────────────────────── -->
+    <string name="mock_generic1_name">Áo Ngũ Thân Tay Chẽn</string>
+    <string name="mock_generic2_name">Áo Tấc Nam Truyền Thống</string>
+    <string name="mock_generic3_name">Áo Dài Nam Cách Tân</string>
+    <string name="mock_generic4_name">Khăn Đóng Gấm Thêu</string>
+    <string name="mock_generic5_name">Áo Ngũ Thân Tay Thụng</string>
+    <string name="mock_generic6_name">Áo Bào Nhật Bình Nam</string>
+
     <!-- Product detail -->
     <string name="label_material">Chất liệu</string>
     <string name="label_origin">Xuất xứ</string>
@@ -256,6 +365,75 @@
     <string name="label_reviews">Đánh giá khách hàng</string>
     <string name="label_menh_tags">Phù hợp mệnh</string>
     <string name="out_of_stock">Hết hàng</string>
+    <string name="label_colour">Màu sắc</string>
+    <string name="label_size">Kích cỡ</string>
+    <string name="label_quantity">Số lượng</string>
+    <string name="label_details">Chi tiết</string>
+    <string name="label_size_guide">Hướng dẫn chọn size</string>
+    <string name="size_guide_content">S: 42–48kg · M: 48–54kg · L: 54–60kg · XL: 60–68kg\nSố đo tham khảo, có thể chênh lệch 1–2cm tùy dáng người.</string>
+    <string name="label_you_may_also_like">Có thể bạn cũng thích</string>
+    <string name="btn_view_all_reviews">Xem tất cả đánh giá</string>
+    <string name="label_free_shipping">Miễn phí vận chuyển</string>
+    <string name="label_easy_returns">Đổi trả 14 ngày</string>
+    <string name="label_secure_payment">Thanh toán an toàn</string>
+    <string name="label_service_commitments">Cam kết dịch vụ</string>
+    <string name="label_story">Câu chuyện</string>
+    <string name="label_care">Hướng dẫn bảo quản</string>
+    <string name="status_in_stock">Còn hàng</string>
+    <string name="status_low_stock">Sắp hết hàng</string>
+    <string name="status_out_of_stock">Hết hàng</string>
+    <string name="reviews_count_format">Đánh giá khách hàng (%1$d)</string>
+    <string name="reviews_count_short">(%1$d đánh giá)</string>
+    <string name="size_label_s">S</string>
+    <string name="size_label_m">M</string>
+    <string name="size_label_l">L</string>
+    <string name="size_label_xl">XL</string>
+    <string name="error_product_load_failed">Không tải được sản phẩm</string>
+    <string name="default_origin">Việt Nam</string>
+    <string name="cart_badge_overflow">9+</string>
+
+    <!-- Nhãn màu hiển thị cho các nhóm màu (ColorTaxonomy) — tách riêng khỏi hằng số khoá dùng để lọc dữ liệu -->
+    <string name="color_bucket_do">Đỏ</string>
+    <string name="color_bucket_xanh">Xanh</string>
+    <string name="color_bucket_vang">Vàng</string>
+    <string name="color_bucket_trang">Trắng</string>
+    <string name="color_bucket_den">Đen</string>
+    <string name="color_bucket_hong">Hồng</string>
+    <string name="color_bucket_tim">Tím</string>
+    <string name="color_bucket_xanh_la">Xanh lá</string>
+    <string name="color_bucket_cam">Cam</string>
+
+    <!-- Styling: mô tả xem trước theo danh mục màu — tên sản phẩm thật, giữ nguyên không dịch -->
+    <string name="desc_ao_dai_trang">Khói Trắng Kết Duyên, Phấn Hoa Cổ Điển,…</string>
+    <string name="desc_ao_dai_xanh">Lam Lụa Cố Trạch,…</string>
+    <string name="desc_ao_dai_vang">Kim Vũ Phong Hoa,…</string>
+    <string name="desc_ao_dai_hong">Hồng Trần Mộc Dược, Nguyệt Cầm Phấn Hồng,…</string>
+    <string name="desc_nhat_binh_trang">Xích Bào Đối Ấn,…</string>
+    <string name="desc_nhat_binh_xanh_la">Thạch Lam Hoàng Cung, Lục Triều Tiểu Yến,…</string>
+    <string name="desc_nhat_binh_xanh">Hoàng Triều Kim Tuyến, Nhật Bình Lam Vũ,…</string>
+    <string name="desc_nhat_binh_do">Vọng Nguyệt Lam Cung,…</string>
+    <string name="desc_nhat_binh_vang">Tử Vân Yên Thảo, Trầm Hồng Cổ Các,…</string>
+    <string name="desc_ao_tac_xanh">Lục Ngọc Vấn Khăn, Lục Y Phù Quạt,…</string>
+    <string name="desc_ao_tac_trang">Ngọc Vũ Yên Sa, Tơ Ngà Vấn Nguyệt,…</string>
+    <string name="desc_ao_tac_cam">Mộc Vân Thổ Xà,…</string>
+    <string name="desc_ao_tac_xanh_la">Thanh Long Cổ Trấn,…</string>
+    <string name="desc_giao_linh_xanh_la">Bạch Sa Liên Vũ, Lam Ngọc Cổ Trấn, Lục Trúc Vân Khúc,…</string>
+    <string name="desc_giao_linh_vang">Kim Sắc Hoàng Triều,…</string>
+    <string name="desc_giao_linh_do">Cam Giao Lĩnh Bào, Hắc Kim Mẫu Đơn,…</string>
+    <string name="desc_yem_dao_do">Sương Mai Bạch Vũ,…</string>
+    <string name="desc_yem_dao_xanh_la">Trúc Lục Khuê Phòng, Thanh Lam Trì Liên,…</string>
+    <string name="desc_yem_dao_vang">Yên Hoa Bạch Liên, Bích Lam Cẩm Tú,…</string>
+    <string name="desc_yem_dao_hong">Dạ Kim Mẫu Đơn,…</string>
+
+    <!-- Styling: Phụ Kiện — tên + mô tả từng loại -->
+    <string name="phukien_khan_title">Khăn đội đầu</string>
+    <string name="phukien_khan_desc">Khăn vấn, khăn đội đầu truyền thống,…</string>
+    <string name="phukien_quat_title">Quạt</string>
+    <string name="phukien_quat_desc">Quạt xếp, quạt lụa cầm tay,…</string>
+    <string name="phukien_oche_title">Ô che</string>
+    <string name="phukien_oche_desc">Ô lọng, dù che truyền thống,…</string>
+    <string name="phukien_mudoidau_title">Mũ đội đầu</string>
+    <string name="phukien_mudoidau_desc">Mũ, mão đội đầu cách tân,…</string>
 
     <!-- Shop / Search / Category -->
     <string name="nav_back">Quay lại</string>
@@ -334,12 +512,13 @@
     <string name="action_view_all">Xem tất cả</string>
     <string name="view_all">Xem tất cả</string>
 
-    <!-- Category page: audience tabs + chrome -->
-    <string name="cat_tab_women">NỮ</string>
-    <string name="cat_tab_men">NAM</string>
-    <string name="cat_tab_kids">TRẺ EM</string>
-    <string name="cat_tab_accessory">PHỤ KIỆN</string>
-    <string name="cat_tab_festival">LỄ HỘI</string>
+    <!-- Category page: garment-type tabs + chrome -->
+    <string name="cat_tab_ao_dai">ÁO DÀI</string>
+    <string name="cat_tab_nhat_binh">NHẬT BÌNH</string>
+    <string name="cat_tab_ao_tac">ÁO TẤC</string>
+    <string name="cat_tab_giao_linh">GIAO LĨNH</string>
+    <string name="cat_tab_yem_dao">YẾM ĐÀO</string>
+    <string name="cat_tab_phu_kien">PHỤ KIỆN</string>
     <string name="filter_label">Bộ lọc</string>
     <string name="cd_scan">Quét mã</string>
     <string name="cd_view_mode">Chế độ xem</string>
@@ -408,10 +587,10 @@
 
     <string name="about_contact_title">Liên hệ</string>
     <string name="about_contact_brand">Tired City – Việt Phục Đương Đại</string>
-    <string name="about_showroom_hn_title">Showroom Hà Nội</string>
-    <string name="about_showroom_hn_address">12 Hàng Gai, Hoàn Kiếm, Hà Nội</string>
-    <string name="about_showroom_hcm_title">Showroom TP. Hồ Chí Minh</string>
-    <string name="about_showroom_hcm_address">42 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh</string>
+    <string name="about_showroom_hn_title">TiredCity 37 Hàng Hành</string>
+    <string name="about_showroom_hn_address">37 P. Hàng Hành, Hoàn Kiếm, Hà Nội</string>
+    <string name="about_showroom_hcm_title">TiredCity 97 Hàng Gai</string>
+    <string name="about_showroom_hcm_address">97 P. Hàng Gai, Hoàn Kiếm, Hà Nội</string>
     <string name="about_email">contact@tiredcity.vn</string>
     <string name="about_hotline">1900 6868</string>
     <string name="about_website">www.tiredcity.vn</string>
@@ -450,6 +629,16 @@
     <string name="chatbot_welcome">Xin chào! Tôi là trợ lý thời trang của TiredCity. Bạn muốn tìm trang phục như thế nào?</string>
     <string name="hint_message">Nhập tin nhắn…</string>
     <string name="btn_send">Gửi</string>
+
+    <!-- Gợi ý câu hỏi nhanh cho chatbot -->
+    <string-array name="chatbot_suggestions">
+        <item>Cửa hàng ở đâu?</item>
+        <item>Món nào đang giảm giá?</item>
+        <item>Trang phục nào hợp mệnh tôi?</item>
+        <item>Cách phối đồ Việt Phục?</item>
+        <item>Phí giao hàng thế nào?</item>
+        <item>Tư vấn chọn size</item>
+    </string-array>
 
     <!-- News / Events screens -->
     <string name="empty_news">Chưa có bài viết nào</string>
@@ -501,12 +690,12 @@
     <string name="hint_message_long">Nội dung tin nhắn *</string>
     <string name="btn_send_message">GỬI TIN NHẮN ✦</string>
 
-    <string name="title_store_locator">STORE LOCATOR</string>
+    <string name="title_store_locator">HỆ THỐNG CỬA HÀNG</string>
     <string name="label_address">Address: </string>
     <string name="label_opening_hours">Opening hours: </string>
     <string name="label_email">Email: </string>
     <string name="label_mobile">Mobile: </string>
-    <string name="link_view_map">View map</string>
+    <string name="link_view_map">Xem bản đồ</string>
     <string name="map_tap_hint">Tap to view all locations on Google Maps</string>
 
     <string name="store_1_name">1. TiredCity 37 Hàng Hành</string>

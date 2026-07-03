@@ -1,7 +1,6 @@
 {
   "folders": [
-    { "name": "🛠️ Backend (NestJS)", "path": "backend" },
-    { "name": "🖥️ Web Quản lý (Next.js)", "path": "web-admin" },
+    { "name": "🖥️ Web Quản lý (Angular)", "path": "web-admin" },
     { "name": "📱 App Admin (Android)", "path": "app-admin" },
     { "name": "📱 App Customer (Android)", "path": "app" },
     { "name": "📄 Docs", "path": "docs" }
@@ -22,7 +21,6 @@
   },
   "extensions": {
     "recommendations": [
-      "Prisma.prisma",
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
       "bradlc.vscode-tailwindcss"

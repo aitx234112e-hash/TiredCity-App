@@ -10,6 +10,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.databinding.ItemProductBinding;
+import com.tiredcity.app.utils.ColorTaxonomy;
 import com.tiredcity.app.utils.PriceUtils;
 import java.util.HashSet;
 import java.util.List;
@@ -102,6 +103,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             b.tvProductMaterial.setText(product.getMaterial() != null ? product.getMaterial() : "");
             b.tvProductPrice.setText(PriceUtils.formatVnd(product.getEffectivePrice()));
             b.rbRating.setRating((float) product.getRating());
+
+            // Tag màu (Áo Dài) hoặc loại phụ kiện (Phụ Kiện) — cùng lấy từ product.getColors().
+            String colorTag = ColorTaxonomy.primaryTag(product.getColors());
+            if (colorTag != null) {
+                colorTag = ColorTaxonomy.displayName(itemView.getContext(), colorTag);
+            } else if (product.getColors() != null && !product.getColors().isEmpty()) {
+                colorTag = product.getColors().get(0);
+            }
+            if (colorTag != null) {
+                b.tvColorTag.setVisibility(View.VISIBLE);
+                b.tvColorTag.setText(colorTag);
+            } else {
+                b.tvColorTag.setVisibility(View.GONE);
+            }
 
             // Discount badge
             if (product.getDiscount() > 0) {

@@ -95,6 +95,21 @@
                 android:letterSpacing="0.02"
                 tools:text="Lụa tơ tằm" />
 
+            <TextView
+                android:id="@+id/tv_color_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/tc_bg_color_tag"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/chip_text_default"
+                android:textSize="10sp"
+                android:fontFamily="sans-serif-medium"
+                android:visibility="gone"
+                tools:text="Đỏ"
+                tools:visibility="visible" />
+
             <RatingBar
                 android:id="@+id/rb_rating"
                 style="@style/Widget.AppCompat.RatingBar.Small"

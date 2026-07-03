@@ -7,7 +7,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -108,6 +112,17 @@ public class LoginActivity extends BaseActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Android 15+ (edge-to-edge): adjustResize KHÔNG tự chừa chỗ cho bàn phím nữa.
+        // Đệm ĐÁY cho root (cha) bằng chiều cao bàn phím (IME) → ScrollView (match_parent) co lại
+        // phía trên bàn phím, nhờ đó tự cuộn ô mật khẩu / nút đăng nhập vào tầm nhìn, không bị che.
+        // Dùng root chứ không phải ScrollView: đệm đáy một view match_parent sẽ nằm ngoài màn hình,
+        // chỉ đệm cha mới thực sự thu nhỏ vùng hiển thị.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            int ime = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), ime);
+            return insets;
+        });
+
         // AuthRepository/Retrofit tạo lazy trong attemptOnlineLogin() (đăng nhập offline không dùng).
 
         restoreSavedCredentials();
@@ -132,8 +147,8 @@ public class LoginActivity extends BaseActivity {
                 return;
             }
 
-            // Toggle "Quản trị" chỉ đổi màu chọn (xem setupRoleToggle) — việc kiểm tra
-            // email/mật khẩu và mở app Quản trị dồn hết về đây, giống hệt luồng "Khách hàng".
+            // Toggle "Quản trị": mở thẳng app Quản trị (vào Dashboard) — cùng 1 màn login
+            // này, chỉ khác hướng đi. Toggle "Khách hàng": đi luồng khách hàng như thường.
             if (binding.toggleRole.getCheckedButtonId() == binding.btnRoleAdmin.getId()) {
                 openAdminApp(email, password);
                 return;
@@ -141,6 +156,15 @@ public class LoginActivity extends BaseActivity {
 
             persistRememberMe(email, password);
             attemptLogin(email, password);
+        });
+
+        // Nhấn "Done" trên bàn phím ở ô mật khẩu = bấm nút Đăng nhập (khỏi cần tìm nút bị bàn phím che).
+        binding.etPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                binding.btnLogin.performClick();
+                return true;
+            }
+            return false;
         });
 
         binding.tvRegister.setOnClickListener(v -> navigateToRegister());
@@ -158,25 +182,23 @@ public class LoginActivity extends BaseActivity {
         setupSplashOverlay();
     }
 
-    /**
-     * Toggle chọn vai trò — CHỈ đổi màu chọn (Đỏ đậm/Be nhạt), không làm gì khác. Đây là
-     * MaterialButtonToggleGroup nên bấm là đổi màu ngay lập tức, không có logic nào can thiệp
-     * ở đây nữa để tránh việc UI "nhảy" do vừa đổi màu vừa tự đảo ngược trong cùng một lần bấm.
-     * Việc kiểm tra email/mật khẩu và mở app Quản trị được xử lý khi bấm nút ĐĂNG NHẬP.
-     */
+    /** Toggle chọn vai trò — mặc định "Khách hàng". Chỉ đổi màu chọn, không làm gì thêm. */
     private void setupRoleToggle() {
         binding.toggleRole.check(binding.btnRoleCustomer.getId());
     }
 
     /**
      * Mở app Quản trị (TiredCity Admin) qua package, kèm email/mật khẩu vừa nhập để app đó
-     * đăng nhập luôn (không hiện lại form). Chưa cài thì hiện hộp thoại hướng dẫn.
+     * vào THẲNG Dashboard (không hiện lại form đăng nhập). Chưa cài thì hiện hộp thoại hướng dẫn.
      */
     private void openAdminApp(String email, String password) {
         Intent launch = getPackageManager().getLaunchIntentForPackage(ADMIN_PACKAGE);
         if (launch != null) {
             launch.putExtra(EXTRA_ADMIN_EMAIL, email);
             launch.putExtra(EXTRA_ADMIN_PASSWORD, password);
+            // CLEAR_TOP: nếu app Quản trị đang mở sẵn thì dựng lại với extras mới
+            // (mang task cũ lên không thôi sẽ làm rơi mất email/mật khẩu).
+            launch.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(launch);
             // Trả toggle về "Khách hàng" để khi quay lại màn login không kẹt ở trạng thái Admin.
             binding.toggleRole.check(binding.btnRoleCustomer.getId());

@@ -5,9 +5,11 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/login_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_primary"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
     <LinearLayout
@@ -144,6 +146,9 @@
             android:background="@drawable/bg_input_field"
             android:hint="@string/hint_email"
             android:inputType="textEmailAddress"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
+            android:nextFocusDown="@id/et_password"
             android:paddingHorizontal="16dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_hint"
@@ -171,6 +176,8 @@
             android:background="@drawable/bg_input_field"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:paddingHorizontal="16dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_hint"

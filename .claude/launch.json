@@ -4,9 +4,8 @@
     {
       "name": "web-admin",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "web-admin", "run", "ng", "--", "serve", "--port", "4301"],
-      "port": 4301,
-      "autoPort": true
+      "runtimeArgs": ["run", "start", "--prefix", "web-admin"],
+      "port": 4300
     }
   ]
 }
