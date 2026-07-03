@@ -53,6 +53,10 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".ui.shipping.ShippingConfigActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.order.AdminOrderActivity"
             android:exported="false"
             android:label="Order Management" />

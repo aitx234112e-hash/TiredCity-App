@@ -17,6 +17,7 @@ import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.ReviewAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
+import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.ApiResponse;
@@ -71,11 +72,13 @@ public class ProductDetailActivity extends BaseActivity {
         };
         selectedSize = sizeLabels[0];
 
+        // Back button (layout uses ImageButton, not Toolbar)
         binding.btnBack.setOnClickListener(v -> finish());
 
         String productId = getIntent().getStringExtra(EXTRA_PRODUCT_ID);
         productRepository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
         cartLocalStore     = new CartLocalStore(this);
+        favoritesStore     = new FavoritesLocalStore(this);
 
         binding.btnAddToCart.setOnClickListener(v -> addToCart());
         binding.btnBuyNow.setOnClickListener(v -> {
@@ -99,6 +102,8 @@ public class ProductDetailActivity extends BaseActivity {
                     currentProduct = response.body().getData();
                     bindProduct(currentProduct);
                 } else {
+                    // Backend không nhận diện được id (ví dụ id của dữ liệu mẫu khi offline) —
+                    // thử tra trong catalogue mẫu trước khi bỏ cuộc, tránh đóng màn hình đột ngột.
                     fallbackToMockOrFinish(productId);
                 }
             }
@@ -136,9 +141,22 @@ public class ProductDetailActivity extends BaseActivity {
         bindSpecifications(product);
         bindCareInstructions(product);
         bindQuantityStepper(product);
+        bindFavoriteButton(product);
         loadReviews(product.getId());
         loadRelatedProducts(product);
     }
+
+    // ── Favorite (yêu thích) ─────────────────────────────────────────────────
+
+    private void bindFavoriteButton(Product product) {
+        binding.ibSave.setSaved(favoritesStore.isFavorite(product.getId()), false);
+        binding.ibSave.setOnClickListener(v -> {
+            boolean nowSaved = favoritesStore.toggleFavorite(product);
+            binding.ibSave.setSaved(nowSaved, true);
+        });
+    }
+
+    // ── Availability ─────────────────────────────────────────────────────────
 
     private void bindAvailability(Product product) {
         int stock = product.getStock();
@@ -170,6 +188,8 @@ public class ProductDetailActivity extends BaseActivity {
         binding.btnBuyNow.setAlpha(outOfStock ? 0.5f : 1f);
     }
 
+    // ── Specifications (Chi tiết) ────────────────────────────────────────────
+
     private void bindSpecifications(Product product) {
         binding.llSpecifications.removeAllViews();
         Map<String, String> specs = product.getSpecifications();
@@ -177,6 +197,7 @@ public class ProductDetailActivity extends BaseActivity {
         String materialLabel = getString(R.string.label_material);
         String originLabel = getString(R.string.label_origin);
         for (Map.Entry<String, String> entry : specs.entrySet()) {
+            // Chất liệu/Xuất xứ đã hiển thị ở 2 dòng cố định phía trên — bỏ qua để tránh lặp.
             if (entry.getKey().equalsIgnoreCase(materialLabel) || entry.getKey().equalsIgnoreCase(originLabel)) {
                 continue;
             }
@@ -210,6 +231,8 @@ public class ProductDetailActivity extends BaseActivity {
         return row;
     }
 
+    // ── Care instructions (Bảo quản) ─────────────────────────────────────────
+
     private void bindCareInstructions(Product product) {
         binding.contentCare.removeAllViews();
         List<String> care = product.getCareInstructions();
@@ -226,6 +249,8 @@ public class ProductDetailActivity extends BaseActivity {
             binding.contentCare.addView(tv);
         }
     }
+
+    // ── Hero images ──────────────────────────────────────────────────────────
 
     private void bindImages(Product product) {
         String imageUrl = product.getFirstImage();
@@ -258,6 +283,7 @@ public class ProductDetailActivity extends BaseActivity {
                         .placeholder(R.color.tc_red_deep)
                         .into(iv);
                 } else {
+                    // Sản phẩm mẫu/offline chưa có ảnh thật — hiển thị hình minh hoạ thay vì khung trống.
                     iv.setBackgroundColor(getColor(R.color.tc_red_deep));
                     iv.setImageResource(R.drawable.ic_wardrobe);
                     iv.setColorFilter(getColor(R.color.tc_on_red));
@@ -272,6 +298,8 @@ public class ProductDetailActivity extends BaseActivity {
             }
         });
     }
+
+    // ── Colour swatches ──────────────────────────────────────────────────────
 
     private void bindColors(Product product) {
         binding.llColors.removeAllViews();
@@ -359,6 +387,8 @@ public class ProductDetailActivity extends BaseActivity {
         return R.color.tc_bg_subtle;
     }
 
+    // ── Size selector ────────────────────────────────────────────────────────
+
     private void setupSizeSelector() {
         TextView[] sizeViews = {binding.tvSizeS, binding.tvSizeM, binding.tvSizeL, binding.tvSizeXl};
         for (int i = 0; i < sizeViews.length; i++) {
@@ -376,6 +406,8 @@ public class ProductDetailActivity extends BaseActivity {
             v.setTextColor(getColor(selected ? R.color.white : R.color.text_primary));
         }
     }
+
+    // ── Quantity stepper ─────────────────────────────────────────────────────
 
     private void bindQuantityStepper(Product product) {
         quantity = 1;
@@ -398,6 +430,8 @@ public class ProductDetailActivity extends BaseActivity {
         });
     }
 
+    // ── Description / Details / Size guide accordions ───────────────────────
+
     private void setupAccordions() {
         binding.headerDescription.setOnClickListener(v ->
             toggleAccordion(binding.dividerDescription, binding.contentDescription, binding.ivExpandDescription));
@@ -411,6 +445,7 @@ public class ProductDetailActivity extends BaseActivity {
             toggleAccordion(binding.dividerCare, binding.contentCare, binding.ivExpandCare));
     }
 
+    /** Gạch chân chỉ hiện khi accordion đang đóng — mất đi ngay khi người dùng sổ nội dung ra. */
     private void toggleAccordion(View divider, View content, View chevron) {
         boolean expanded = content.getVisibility() == View.VISIBLE;
         TransitionManager.beginDelayedTransition(binding.llCardContent, new AutoTransition());
@@ -418,6 +453,8 @@ public class ProductDetailActivity extends BaseActivity {
         divider.setVisibility(expanded ? View.VISIBLE : View.GONE);
         chevron.animate().rotation(expanded ? 0 : 180).setDuration(250).start();
     }
+
+    // ── Reviews summary ──────────────────────────────────────────────────────
 
     private void loadReviews(String productId) {
         productRepository.getProductReviews(productId).enqueue(new Callback<ApiListResponse<Review>>() {
@@ -478,6 +515,8 @@ public class ProductDetailActivity extends BaseActivity {
         spacerParams.weight = 100 - percent;
         row.barSpacer.setLayoutParams(spacerParams);
     }
+
+    // ── You may also like ────────────────────────────────────────────────────
 
     private void loadRelatedProducts(Product product) {
         binding.rvRelated.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));

@@ -59,6 +59,10 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
+    // Anh san pham — dung Glide giong app khach hang (mirror the grid san pham web-admin)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
     // Google Sign-In (admin login)
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 

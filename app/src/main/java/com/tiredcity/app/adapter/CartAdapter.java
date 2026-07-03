@@ -3,6 +3,7 @@ package com.tiredcity.app.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private List<CartItem> cartItems;
     private OnRemoveListener removeListener;
     private OnCartItemActionListener actionListener;
+    private Runnable onCartChangeListener;
 
     /** Constructor used by CartActivity (lambda remove). */
     public CartAdapter(List<CartItem> cartItems, OnRemoveListener removeListener) {
@@ -42,6 +44,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     public void setOnCartItemActionListener(OnCartItemActionListener listener) {
         this.actionListener = listener;
+    }
+
+    /** Gọi lại mỗi khi giỏ hàng đổi (chọn/bỏ chọn, đổi số lượng) để màn hình cập nhật tổng tiền. */
+    public void setOnCartChangeListener(Runnable listener) {
+        this.onCartChangeListener = listener;
     }
 
     public void updateItems(List<CartItem> newItems) {
@@ -60,7 +67,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CartItem item = cartItems.get(position);
-        holder.bind(item, removeListener, actionListener);
+        holder.bind(item, removeListener, actionListener, onCartChangeListener);
     }
 
     @Override
@@ -74,6 +81,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         final TextView   tvName, tvVariant, tvQuantity, tvSubtotal;
         final TextView   btnDecrease, btnIncrease;
         final ImageButton btnRemove;
+        final CheckBox   cbSelect;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,12 +93,21 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             btnDecrease = itemView.findViewById(R.id.btn_decrease);
             btnIncrease = itemView.findViewById(R.id.btn_increase);
             btnRemove   = itemView.findViewById(R.id.btn_remove);
+            cbSelect    = itemView.findViewById(R.id.cb_select);
         }
 
-        void bind(CartItem item, OnRemoveListener removeListener, OnCartItemActionListener actionListener) {
+        void bind(CartItem item, OnRemoveListener removeListener, OnCartItemActionListener actionListener,
+                  Runnable onCartChangeListener) {
             if (item.getProduct() == null) return;
 
             tvName.setText(item.getProduct().getName());
+
+            cbSelect.setOnCheckedChangeListener(null);
+            cbSelect.setChecked(item.isSelected());
+            cbSelect.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                item.setSelected(isChecked);
+                if (onCartChangeListener != null) onCartChangeListener.run();
+            });
 
             String variant = "";
             if (item.getSelectedSize() != null) variant += item.getSelectedSize();
@@ -119,6 +136,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                     tvQuantity.setText(String.valueOf(item.getQuantity()));
                     tvSubtotal.setText(PriceUtils.format(item.getSubtotal()));
                     if (actionListener != null) actionListener.onQuantityChanged(item, item.getQuantity());
+                    if (onCartChangeListener != null) onCartChangeListener.run();
                 }
             });
 
@@ -127,6 +145,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 tvQuantity.setText(String.valueOf(item.getQuantity()));
                 tvSubtotal.setText(PriceUtils.format(item.getSubtotal()));
                 if (actionListener != null) actionListener.onQuantityChanged(item, item.getQuantity());
+                if (onCartChangeListener != null) onCartChangeListener.run();
             });
 
             btnRemove.setOnClickListener(v -> {

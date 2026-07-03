@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +22,7 @@ import com.tiredcity.admin.ui.chatbot.ChatbotActivity;
 import com.tiredcity.admin.ui.list.ModuleListActivity;
 import com.tiredcity.admin.ui.reports.ReportsActivity;
 import com.tiredcity.admin.ui.revenue.RevenueActivity;
+import com.tiredcity.admin.ui.shipping.ShippingConfigActivity;
 import com.tiredcity.admin.utils.DocUtils;
 
 /** Trang chu admin: cac chi so tong quan + luoi chuc nang (mirror nav web-admin). */
@@ -32,17 +37,47 @@ public class DashboardActivity extends AppCompatActivity {
         binding = ActivityDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        setupLightStatusBar();
+        applyStatusBarInset();
+
         String email = FirebaseAuth.getInstance().getCurrentUser() != null
                 ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : null;
-        binding.tvHello.setText(email != null ? email : getString(R.string.dashboard_subtitle));
+        String name = (email != null && email.contains("@"))
+                ? email.substring(0, email.indexOf('@')) : getString(R.string.role_admin);
+        binding.tvHello.setText(getString(R.string.dashboard_greeting_fmt, name, currentDateVi()));
 
         binding.btnLogout.setOnClickListener(v -> logout());
 
-        binding.rvModules.setLayoutManager(new GridLayoutManager(this, 2));
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        ModuleTileAdapter adapter = new ModuleTileAdapter(this::openModule);
+        layoutManager.setSpanSizeLookup(adapter.spanSizeLookup(2));
+        binding.rvModules.setLayoutManager(layoutManager);
         binding.rvModules.setNestedScrollingEnabled(false);
-        binding.rvModules.setAdapter(new ModuleTileAdapter(this::openModule));
+        binding.rvModules.setAdapter(adapter);
 
         binding.swipeRefresh.setOnRefreshListener(this::loadOverview);
+    }
+
+    /** Header do -> icon status bar mau sang (trang) de nhin ro. */
+    private void setupLightStatusBar() {
+        WindowInsetsControllerCompat c = WindowCompat.getInsetsController(getWindow(), binding.getRoot());
+        c.setAppearanceLightStatusBars(false);
+        // API < 35 chua ap dung edge-to-edge -> to mau status bar cung tone do dinh header.
+        getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.tc_red_lacquer_top));
+    }
+
+    /** targetSdk 35 ve behind status bar -> pad header bang chieu cao status bar. */
+    private void applyStatusBarInset() {
+        final int hPad = dp(20), topBase = dp(10), botPad = dp(20);
+        ViewCompat.setOnApplyWindowInsetsListener(binding.headerBar, (v, insets) -> {
+            int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            v.setPadding(hPad, top + topBase, hPad, botPad);
+            return insets;
+        });
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
     }
 
     @Override
@@ -59,6 +94,8 @@ public class DashboardActivity extends AppCompatActivity {
             i = new Intent(this, ReportsActivity.class);
         } else if (m == AdminModule.CHATBOT) {
             i = new Intent(this, ChatbotActivity.class);
+        } else if (m == AdminModule.SHIPPING) {
+            i = new Intent(this, ShippingConfigActivity.class);
         } else {
             i = new Intent(this, ModuleListActivity.class);
             i.putExtra(ModuleListActivity.EXTRA_MODULE, m.name());
@@ -85,6 +122,15 @@ public class DashboardActivity extends AppCompatActivity {
 
         db.collection("users").get()
                 .addOnSuccessListener(snap -> binding.tvCustomers.setText(String.valueOf(snap.size())));
+    }
+
+    /** VD: "Thứ Sáu, 03/07/2026". */
+    private String currentDateVi() {
+        String[] days = {"Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"};
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        String dayName = days[cal.get(java.util.Calendar.DAY_OF_WEEK) - 1];
+        return getString(R.string.dashboard_date_fmt, dayName,
+                new java.text.SimpleDateFormat("dd/MM/yyyy", new java.util.Locale("vi", "VN")).format(cal.getTime()));
     }
 
     private void logout() {

@@ -40,6 +40,8 @@ public class HomeFragment extends Fragment {
     private Handler             promoScrollHandler;
     private Runnable            promoScrollRunnable;
     private PromoStripAdapter   promoAdapter;
+    private ProductAdapter      recommendedAdapter;
+    private ProductAdapter      hotProductsAdapter;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -73,6 +75,9 @@ public class HomeFragment extends Fragment {
         startAutoScroll();
         startPromoScroll();
         updateBadges();
+        // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
+        if (recommendedAdapter != null) recommendedAdapter.notifyDataSetChanged();
+        if (hotProductsAdapter != null) hotProductsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -88,6 +93,8 @@ public class HomeFragment extends Fragment {
         stopAutoScroll();
         stopPromoScroll();
         binding = null;
+        recommendedAdapter = null;
+        hotProductsAdapter = null;
     }
 
     // ── Greeting ──────────────────────────────────────────────────────────────
@@ -274,8 +281,8 @@ public class HomeFragment extends Fragment {
 
     private void setupRecommendedProducts() {
         List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), true);
-        ProductAdapter adapter = new ProductAdapter(products);
-        adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+        recommendedAdapter = new ProductAdapter(products);
+        recommendedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Product product) {
                 openProductDetail(product.getId());
@@ -293,15 +300,15 @@ public class HomeFragment extends Fragment {
 
         binding.rvRecommended.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.rvRecommended.setAdapter(adapter);
+        binding.rvRecommended.setAdapter(recommendedAdapter);
     }
 
     // ── Hot products ──────────────────────────────────────────────────────────
 
     private void setupHotProducts() {
         List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), false);
-        ProductAdapter adapter = new ProductAdapter(products);
-        adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+        hotProductsAdapter = new ProductAdapter(products);
+        hotProductsAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Product product) {
                 openProductDetail(product.getId());
@@ -319,7 +326,7 @@ public class HomeFragment extends Fragment {
 
         binding.rvHotProducts.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.rvHotProducts.setAdapter(adapter);
+        binding.rvHotProducts.setAdapter(hotProductsAdapter);
     }
 
     // ── Language button ───────────────────────────────────────────────────────

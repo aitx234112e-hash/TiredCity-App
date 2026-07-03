@@ -14,11 +14,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiredcity.admin.R;
+import com.tiredcity.admin.adapter.ProductCardAdapter;
 import com.tiredcity.admin.adapter.RowAdapter;
 import com.tiredcity.admin.data.AdminModule;
 import com.tiredcity.admin.data.ModuleForm;
@@ -52,6 +54,8 @@ public class ModuleListActivity extends AppCompatActivity {
 
     private AdminModule module;
     private RowAdapter adapter;
+    /** Grid card cho module PRODUCTS (mirror web-admin); null voi cac module con lai. */
+    private ProductCardAdapter productAdapter;
 
     private final List<DocumentSnapshot> allDocs = new ArrayList<>();
     /** Danh sach doc dang hien thi, song song 1-1 voi rows cua adapter. */
@@ -83,10 +87,21 @@ public class ModuleListActivity extends AppCompatActivity {
 
         binding.btnBack.setOnClickListener(v -> finish());
 
-        adapter = new RowAdapter(this::openDetail);
-        binding.rvRows.setLayoutManager(new LinearLayoutManager(this));
-        binding.rvRows.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        binding.rvRows.setAdapter(adapter);
+        if (module == AdminModule.PRODUCTS) {
+            // Grid the san pham — mirror giao dien card ben web-admin
+            productAdapter = new ProductCardAdapter(this::openDetail);
+            binding.rvRows.setLayoutManager(new GridLayoutManager(this, 2));
+            binding.rvRows.setAdapter(productAdapter);
+            binding.rvRows.setBackground(null);
+            binding.rvRows.setElevation(0f);
+            int pad = (int) (4 * getResources().getDisplayMetrics().density);
+            binding.rvRows.setPadding(pad, pad, pad, pad);
+        } else {
+            adapter = new RowAdapter(this::openDetail);
+            binding.rvRows.setLayoutManager(new LinearLayoutManager(this));
+            binding.rvRows.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+            binding.rvRows.setAdapter(adapter);
+        }
 
         binding.swipeRefresh.setOnRefreshListener(this::loadData);
 
@@ -141,7 +156,11 @@ public class ModuleListActivity extends AppCompatActivity {
                 rows.add(r);
             }
         }
-        adapter.submit(rows);
+        if (productAdapter != null) {
+            productAdapter.submit(new ArrayList<>(shownDocs));
+        } else {
+            adapter.submit(rows);
+        }
         binding.tvEmpty.setVisibility(rows.isEmpty() ? View.VISIBLE : View.GONE);
         binding.tvCount.setText(getString(R.string.list_count_fmt, rows.size()));
     }

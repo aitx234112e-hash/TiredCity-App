@@ -50,17 +50,15 @@
                 tools:visibility="visible" />
 
             <!-- Nút lưu yêu thích -->
-            <ImageButton
+            <com.tiredcity.app.ui.widget.FavoriteButton
                 android:id="@+id/ib_save"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="top|start"
                 android:layout_margin="6dp"
                 android:background="@drawable/tc_bg_circle_white"
                 android:contentDescription="@string/btn_save"
-                android:padding="6dp"
-                android:src="@android:drawable/btn_star_big_off"
-                app:tint="@color/tc_red" />
+                android:padding="7dp" />
         </FrameLayout>
 
         <!-- Thông tin -->

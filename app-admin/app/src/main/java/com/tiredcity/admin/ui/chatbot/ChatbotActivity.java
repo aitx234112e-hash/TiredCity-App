@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -60,12 +64,15 @@ public class ChatbotActivity extends AppCompatActivity {
         binding = ActivityChatbotBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.m_chatbot));
+        setupStatusBar();
+        applyHeaderInset();
         binding.btnBack.setOnClickListener(v -> finish());
 
         adapter = new ChatAdapter();
         LinearLayoutManager lm = new LinearLayoutManager(this);
-        lm.setStackFromEnd(true);
+        // Anchor tin nhan tu tren xuong: loi chao + goi y hien ngay o dau man hinh
+        // thay vi bi don xuong day, tranh khoang trong lon khi moi mo.
+        lm.setStackFromEnd(false);
         binding.rvMessages.setLayoutManager(lm);
         binding.rvMessages.setAdapter(adapter);
 
@@ -82,6 +89,24 @@ public class ChatbotActivity extends AppCompatActivity {
 
         addBot(getString(R.string.chatbot_greeting));
         loadData();
+    }
+
+    /** Header gradient vang -> icon status bar mau trang cho de doc. */
+    private void setupStatusBar() {
+        WindowInsetsControllerCompat c = WindowCompat.getInsetsController(getWindow(), binding.getRoot());
+        c.setAppearanceLightStatusBars(false);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.m_chatbot));
+    }
+
+    /** targetSdk 35 ve behind status bar -> pad header bang chieu cao status bar. */
+    private void applyHeaderInset() {
+        float d = getResources().getDisplayMetrics().density;
+        final int hPad = (int) (12 * d), topBase = (int) (10 * d), botPad = (int) (16 * d);
+        ViewCompat.setOnApplyWindowInsetsListener(binding.headerBar, (v, insets) -> {
+            int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            v.setPadding(hPad, top + topBase, hPad, botPad);
+            return insets;
+        });
     }
 
     private void buildSuggestions() {

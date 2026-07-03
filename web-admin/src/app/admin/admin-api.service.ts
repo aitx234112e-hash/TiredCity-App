@@ -1,6 +1,6 @@
 import { Injectable, inject, Injector, runInInjectionContext } from '@angular/core';
 import { Observable, from, map } from 'rxjs';
-import { Firestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from '@angular/fire/firestore';
+import { Firestore, collection, getDocs, getDoc, addDoc, deleteDoc, updateDoc, doc, setDoc } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class AdminApiService {
@@ -131,5 +131,28 @@ export class AdminApiService {
 
   deleteShippingMethod(id: string): Observable<void> {
     return this.inCtx(() => deleteDoc(doc(this.firestore, 'shipping', id)));
+  }
+
+  /** Cấu hình SPX Express — collection 'shipping_configs', 3 doc id cố định: economy / standard / express */
+  getShippingConfigs(): Observable<any[]> {
+    return this.inCtx(() => getDocs(collection(this.firestore, 'shipping_configs'))).pipe(
+      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
+    );
+  }
+
+  /** Ghi đè 1 gói cước theo id cố định (merge để không xoá trường khác). */
+  saveShippingConfig(id: string, data: any): Observable<void> {
+    return this.inCtx(() => setDoc(doc(this.firestore, 'shipping_configs', id), data, { merge: true }));
+  }
+
+  /** Thiết lập chung vận chuyển — doc cố định 'shipping_settings/general' (kho lấy hàng, freeship, ghi chú shipper). */
+  getShippingSettings(): Observable<any | null> {
+    return this.inCtx(() => getDoc(doc(this.firestore, 'shipping_settings', 'general'))).pipe(
+      map((snap) => (snap.exists() ? { ...(snap.data() as any) } : null))
+    );
+  }
+
+  saveShippingSettings(data: any): Observable<void> {
+    return this.inCtx(() => setDoc(doc(this.firestore, 'shipping_settings', 'general'), data, { merge: true }));
   }
 }

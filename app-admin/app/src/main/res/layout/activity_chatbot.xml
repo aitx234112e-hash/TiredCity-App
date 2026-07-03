@@ -6,31 +6,50 @@
     android:orientation="vertical"
     android:background="@color/tc_bg">
 
-    <!-- Header -->
+    <!-- ─── Header (gold heritage gradient, floats over messages) ─── -->
     <LinearLayout
         android:id="@+id/headerBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/m_chatbot"
+        android:background="@drawable/bg_chatbot_header"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="12dp">
+        android:elevation="6dp"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="38dp"
+        android:paddingBottom="16dp">
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back"
             app:tint="@color/white"
             android:contentDescription="@string/btn_close" />
 
+        <!-- Avatar tro ly -->
+        <FrameLayout
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="2dp"
+            android:background="@drawable/bg_bot_avatar">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_chatbot"
+                app:tint="@color/white"
+                android:contentDescription="@string/chatbot_title" />
+
+        </FrameLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="12dp"
             android:orientation="vertical">
 
             <TextView
@@ -39,38 +58,61 @@
                 android:layout_height="wrap_content"
                 android:text="@string/chatbot_title"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="19sp"
+                android:textStyle="bold"
+                android:shadowColor="#40000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3" />
 
-            <TextView
-                android:id="@+id/tvStatus"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:text="@string/chatbot_loading"
-                android:textColor="#CCFFFFFF"
-                android:textSize="12sp" />
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <View
+                    android:id="@+id/statusDot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/bg_online_dot" />
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/chatbot_loading"
+                    android:textColor="#F2FFFFFF"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- ─── Khung hoi thoai ─── -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingVertical="8dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="8dp"
         android:clipToPadding="false"
         android:overScrollMode="never" />
 
+    <!-- ─── Goi y cau hoi nhanh ─── -->
     <HorizontalScrollView
         android:id="@+id/suggestionScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"
-        android:paddingHorizontal="8dp"
-        android:paddingBottom="6dp">
+        android:clipToPadding="false"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="8dp">
 
         <LinearLayout
             android:id="@+id/suggestionRow"
@@ -80,27 +122,30 @@
 
     </HorizontalScrollView>
 
+    <!-- ─── Thanh nhap lieu ─── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/tc_card"
-        android:elevation="6dp"
+        android:background="@drawable/bg_input_bar"
+        android:elevation="10dp"
         android:paddingHorizontal="12dp"
-        android:paddingVertical="10dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="12dp">
 
         <EditText
             android:id="@+id/etInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bg_input"
+            android:background="@drawable/bg_input_pill"
             android:hint="@string/chatbot_hint"
             android:inputType="text|textCapSentences"
             android:imeOptions="actionSend"
             android:maxLines="4"
-            android:paddingHorizontal="14dp"
+            android:minHeight="46dp"
+            android:paddingHorizontal="18dp"
             android:paddingVertical="10dp"
             android:textColor="@color/tc_text_primary"
             android:textColorHint="@color/tc_text_secondary"
@@ -109,12 +154,14 @@
 
         <ImageButton
             android:id="@+id/btnSend"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="10dp"
             android:background="@drawable/bg_send_circle"
             android:src="@drawable/ic_send"
             android:scaleType="centerInside"
+            android:elevation="2dp"
+            app:tint="@color/white"
             android:contentDescription="@string/chatbot_send" />
 
     </LinearLayout>

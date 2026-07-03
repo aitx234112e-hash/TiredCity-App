@@ -69,8 +69,10 @@ public class SearchActivity extends BaseActivity {
         binding.rvResults.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvResults.setAdapter(productAdapter);
 
+        // Back button
         binding.btnBack.setOnClickListener(v -> finish());
 
+        // Clear button
         binding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
@@ -98,12 +100,15 @@ public class SearchActivity extends BaseActivity {
         binding.swipeRefresh.setOnRefreshListener(() ->
             performSearch(binding.etSearch.getText().toString().trim()));
 
+        // Phần 2 — "Được tìm kiếm nhiều nhất" tags
         addPopularChip(getString(R.string.tag_ao_thun));
         addPopularChip(getString(R.string.tag_ao_croptop));
         addPopularChip(getString(R.string.tag_chan_vay));
 
+        // Phần 3 & 4 — "Gợi ý cho bạn" mixed-type suggestion list
         setupSuggestions();
 
+        // Pre-filled query (e.g. tapped tag/product on the Shop tab) → search now
         String initialQuery = getIntent().getStringExtra(EXTRA_QUERY);
         if (initialQuery != null && !initialQuery.trim().isEmpty()) {
             binding.etSearch.setText(initialQuery);
@@ -114,6 +119,14 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
+        productAdapter.notifyDataSetChanged();
+    }
+
+    /** Builds the multi-view-type discovery list (promotion + event + product). */
     private void setupSuggestions() {
         List<SearchItem> suggestions = Arrays.asList(
             new PromotionItem(R.string.search_promo_birthday,

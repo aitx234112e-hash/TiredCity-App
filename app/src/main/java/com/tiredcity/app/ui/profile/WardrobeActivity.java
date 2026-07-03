@@ -9,6 +9,7 @@ import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.model.CartItem;
+import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.databinding.ActivityWardrobeBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
@@ -21,6 +22,7 @@ public class WardrobeActivity extends BaseActivity {
 
     private ActivityWardrobeBinding binding;
     private ProductAdapter productAdapter;
+    private FavoritesLocalStore favoritesStore;
     private final List<Product> wardrobeItems = new ArrayList<>();
 
     @Override
@@ -36,6 +38,7 @@ public class WardrobeActivity extends BaseActivity {
         }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
+        favoritesStore = new FavoritesLocalStore(this);
         productAdapter = new ProductAdapter(wardrobeItems);
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -68,11 +71,17 @@ public class WardrobeActivity extends BaseActivity {
         loadWardrobeItems();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, danh sách...)
+        loadWardrobeItems();
+    }
+
     private void loadWardrobeItems() {
         binding.swipeRefresh.setRefreshing(false);
-        // Wardrobe items are stored locally via ProductAdapter's saved IDs.
-        // In a real implementation, fetch saved IDs from server.
         wardrobeItems.clear();
+        wardrobeItems.addAll(favoritesStore.getFavorites());
         productAdapter.notifyDataSetChanged();
 
         if (wardrobeItems.isEmpty()) {
