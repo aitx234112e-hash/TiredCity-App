@@ -72,7 +72,9 @@
       "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\" \"C:\\\\Users\\\\Acer\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\\\\arn2x92ynaizyzdaamcbpbhtj\\\\gradle-9.4.1\\\\bin\\\\gradle.bat\" :app:assembleDebug)",
       "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' install *)",
       "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell *)",
-      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' exec-out *)"
+      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' exec-out *)",
+      "Bash(git pull *)",
+      "Bash(git commit *)"
     ]
   }
 }
