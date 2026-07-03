@@ -70,6 +70,7 @@
     <color name="tc_red_lacquer_mid">#A80D15</color>   <!-- thân -->
     <color name="tc_red_lacquer_bot">#820810</color>   <!-- đáy thẫm -->
     <color name="tc_red_ripple">#33FFFFFF</color>      <!-- highlight khi chạm -->
+    <color name="tc_ripple_red_subtle">#22A80D15</color> <!-- ripple đỏ nhạt trên nền sáng (chip, nút viền) -->
 
     <!-- ─── Vàng kim (accent dân tộc) ───────────────────────────────── -->
     <color name="tc_gold">#C9A45C</color>              <!-- vàng kim ấm hơn, sang hơn -->
@@ -172,4 +173,15 @@
     <color name="tc_warning">#D4A04B</color>
     <color name="tc_error">#A80D15</color>
     <color name="tc_info">#3B5A7A</color>
+
+    <!-- ─── Product color swatches (danh mục Áo Dài theo màu) ─────────── -->
+    <color name="tc_swatch_do">#A80D15</color>
+    <color name="tc_swatch_xanh">#2F5F8A</color>
+    <color name="tc_swatch_vang">#F4C430</color>
+    <color name="tc_swatch_trang">#F5F0E6</color>
+    <color name="tc_swatch_den">#1A1208</color>
+    <color name="tc_swatch_hong">#D98A9E</color>
+    <color name="tc_swatch_tim">#6B4A7A</color>
+    <color name="tc_swatch_xanh_la">#4A7A4E</color>
+    <color name="tc_swatch_cam">#C9752E</color>
 </resources>

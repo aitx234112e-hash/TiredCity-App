@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
+import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
@@ -18,7 +19,9 @@ import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.ActivityCategoryBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.CartActivity;
+import com.tiredcity.app.utils.ColorTaxonomy;
 import com.tiredcity.app.utils.Constants;
+import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,12 +31,15 @@ public class CategoryActivity extends BaseActivity {
 
     public static final String EXTRA_CATEGORY_ID   = "category_id";
     public static final String EXTRA_CATEGORY_NAME = "category_name";
+    /** Nhóm màu (5 danh mục trang phục) hoặc phân loại phụ kiện (Phụ Kiện) — lọc client-side theo Product.getColors(). */
+    public static final String EXTRA_TAG_FILTER    = "tag_filter";
 
     private ActivityCategoryBinding binding;
     private ProductRepository productRepository;
     private ProductAdapter productAdapter;
     private GridLayoutManager gridManager;
     private String categoryId;
+    private String tagFilter;
     private int spanCount = 2;
 
     @Override
@@ -43,6 +49,7 @@ public class CategoryActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         categoryId = getIntent().getStringExtra(EXTRA_CATEGORY_ID);
+        tagFilter = getIntent().getStringExtra(EXTRA_TAG_FILTER);
         String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
         binding.tvTitle.setText(categoryName != null ? categoryName
                 : getString(R.string.category_default_title));
@@ -137,7 +144,7 @@ public class CategoryActivity extends BaseActivity {
             binding.tvCartBadge.setVisibility(android.view.View.GONE);
         } else {
             binding.tvCartBadge.setVisibility(android.view.View.VISIBLE);
-            binding.tvCartBadge.setText(count > 9 ? "9+" : String.valueOf(count));
+            binding.tvCartBadge.setText(count > 9 ? getString(R.string.cart_badge_overflow) : String.valueOf(count));
         }
     }
 
@@ -156,41 +163,37 @@ public class CategoryActivity extends BaseActivity {
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                         products = response.body().getData();
                     }
-                    productAdapter.updateData(
-                            (products != null && !products.isEmpty()) ? products : buildMockProducts());
+                    List<Product> source = (products != null && !products.isEmpty())
+                            ? products : MockProductCatalog.getProducts(CategoryActivity.this, categoryId);
+                    productAdapter.updateData(applyTagFilter(source));
                 }
 
                 @Override
                 public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
                     binding.swipeRefresh.setRefreshing(false);
                     // Không có mạng/backend → hiển thị dữ liệu mẫu để xem trước lưới.
-                    productAdapter.updateData(buildMockProducts());
+                    productAdapter.updateData(applyTagFilter(MockProductCatalog.getProducts(CategoryActivity.this, categoryId)));
                 }
             });
     }
 
-    /** Dữ liệu mẫu Việt Phục cho chế độ xem trước offline (giống HomeFragment). */
-    private List<Product> buildMockProducts() {
-        String[][] data = {
-            {"1", "Áo Ngũ Thân Tay Chẽn",  "Gấm dệt hoa",  "1250000", "15", "4.8"},
-            {"2", "Áo Tấc Nam Truyền Thống","Đũi tơ tằm",   "980000",  "10", "4.7"},
-            {"3", "Áo Dài Nam Cách Tân",    "Lụa Hà Đông",  "850000",  "0",  "4.6"},
-            {"4", "Khăn Đóng Gấm Thêu",     "Gấm thêu chỉ", "320000",  "20", "4.9"},
-            {"5", "Áo Ngũ Thân Tay Thụng",  "Tơ sống",      "1450000", "12", "4.8"},
-            {"6", "Áo Bào Nhật Bình Nam",   "Gấm cao cấp",  "2350000", "18", "5.0"},
-        };
+    /**
+     * Lọc theo nhóm màu (5 danh mục trang phục, qua {@link ColorTaxonomy}) hoặc theo phân loại
+     * phụ kiện (Phụ Kiện, so khớp trực tiếp) — cả hai đều dựa trên {@link Product#getColors()}.
+     */
+    private List<Product> applyTagFilter(List<Product> products) {
+        if (tagFilter == null || products == null) return products;
+        boolean matchByColorBucket = !"PHỤ KIỆN".equals(categoryId);
 
-        java.util.List<Product> list = new java.util.ArrayList<>();
-        for (String[] row : data) {
-            Product p = new Product();
-            p.setId(row[0]);
-            p.setName(row[1]);
-            p.setMaterial(row[2]);
-            p.setPrice(Double.parseDouble(row[3]));
-            p.setDiscount(Integer.parseInt(row[4]));
-            p.setRating(Double.parseDouble(row[5]));
-            list.add(p);
+        List<Product> filtered = new ArrayList<>();
+        for (Product p : products) {
+            List<String> colors = p.getColors();
+            boolean matches = matchByColorBucket
+                    ? ColorTaxonomy.matchesBucket(colors, tagFilter)
+                    : (colors != null && colors.contains(tagFilter));
+            if (matches) filtered.add(p);
         }
-        return list;
+        return filtered;
     }
+
 }

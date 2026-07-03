@@ -104,7 +104,7 @@
 
     </LinearLayout>
 
-    <!-- ── Tab nhóm đối tượng (NỮ / NAM / TRẺ EM / PHỤ KIỆN / LỄ HỘI) ── -->
+    <!-- ── Tab nhóm kiểu áo (ÁO DÀI / NHẬT BÌNH / ÁO TẤC / GIAO LĨNH / YẾM ĐÀO) ── -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_groups"
         android:layout_width="match_parent"

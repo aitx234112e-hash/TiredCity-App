@@ -70,7 +70,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="@dimen/tc_elev_sm"
-                app:cardBackgroundColor="@color/black"
+                app:cardBackgroundColor="@color/bg_surface"
                 app:rippleColor="@color/tc_red_pale">
 
                 <!-- Horizontal: image (portrait, left) + details (right) -->
@@ -108,7 +108,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/store_1_name"
-                                android:textColor="@color/tc_on_dark"
+                                android:textColor="@color/text_primary"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:fontFamily="sans-serif-medium"
@@ -134,14 +134,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
-                                android:text="Xem bản đồ"
+                                android:text="@string/link_view_map"
                                 android:textColor="@color/tc_red"
                                 android:textSize="10sp"
                                 android:fontFamily="sans-serif-medium" />
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp"
-                            android:background="@color/tc_on_dark_divider"
+                            android:background="@color/tc_divider"
                             android:layout_marginBottom="10dp" />
 
                         <!-- Address -->
@@ -156,7 +156,7 @@
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="37 P. Hàng Hành, Hoàn Kiếm, Hà Nội"
-                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp"
+                                android:textColor="@color/text_secondary" android:textSize="12sp"
                                 android:lineSpacingExtra="2dp" />
                         </LinearLayout>
 
@@ -171,7 +171,7 @@
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="9:00 – 22:30 (T2 – CN)"
-                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
+                                android:textColor="@color/text_secondary" android:textSize="12sp" />
                         </LinearLayout>
 
                         <!-- Phone -->
@@ -184,7 +184,7 @@
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="024 6296 0306"
-                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
+                                android:textColor="@color/text_secondary" android:textSize="12sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -199,7 +199,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="@dimen/tc_elev_sm"
-                app:cardBackgroundColor="@color/black"
+                app:cardBackgroundColor="@color/bg_surface"
                 app:rippleColor="@color/tc_red_pale">
 
                 <LinearLayout
@@ -234,7 +234,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/store_2_name"
-                                android:textColor="@color/tc_on_dark"
+                                android:textColor="@color/text_primary"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:fontFamily="sans-serif-medium"
@@ -259,14 +259,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
-                                android:text="Xem bản đồ"
+                                android:text="@string/link_view_map"
                                 android:textColor="@color/tc_red"
                                 android:textSize="10sp"
                                 android:fontFamily="sans-serif-medium" />
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp"
-                            android:background="@color/tc_on_dark_divider"
+                            android:background="@color/tc_divider"
                             android:layout_marginBottom="10dp" />
 
                         <LinearLayout android:layout_width="match_parent"
@@ -280,7 +280,7 @@
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="97 P. Hàng Gai, Hoàn Kiếm, Hà Nội"
-                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp"
+                                android:textColor="@color/text_secondary" android:textSize="12sp"
                                 android:lineSpacingExtra="2dp" />
                         </LinearLayout>
 
@@ -294,7 +294,7 @@
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="9:00 – 22:30 (T2 – CN)"
-                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
+                                android:textColor="@color/text_secondary" android:textSize="12sp" />
                         </LinearLayout>
 
                         <LinearLayout android:layout_width="match_parent"
@@ -306,7 +306,7 @@
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                 android:layout_weight="1" android:layout_marginStart="6dp"
                                 android:text="024 6296 0306"
-                                android:textColor="@color/tc_on_dark_secondary" android:textSize="12sp" />
+                                android:textColor="@color/text_secondary" android:textSize="12sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

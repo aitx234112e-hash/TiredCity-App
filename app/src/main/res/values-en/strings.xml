@@ -232,6 +232,115 @@
     <string name="success_order">Order placed successfully!</string>
     <string name="success_profile_update">Profile updated successfully.</string>
 
+    <!-- ─── Mock catalog: materials ─────────────────────────────────────── -->
+    <string name="material_lua_to_tam">Mulberry Silk</string>
+    <string name="material_theu_tay">Traditional Hand Embroidery</string>
+    <string name="material_gam_theu">Embroidered Brocade</string>
+    <string name="material_dui_to">Raw Silk</string>
+    <string name="material_lua_mem">Soft Silk</string>
+    <string name="material_lua_cao_cap">Premium Silk</string>
+    <string name="material_gam_det_hoa">Floral Woven Brocade</string>
+    <string name="material_dui_to_tam">Raw Mulberry Silk</string>
+    <string name="material_lua_ha_dong">Hà Đông Silk</string>
+    <string name="material_gam_theu_chi">Thread-Embroidered Brocade</string>
+    <string name="material_to_song">Raw Silk Floss</string>
+    <string name="material_gam_cao_cap">Premium Brocade</string>
+
+    <!-- ─── Mock catalog: spec labels + default values ─────────────────── -->
+    <string name="label_style">Style</string>
+    <string name="label_occasion">Occasion</string>
+    <string name="spec_color_various">Various</string>
+    <string name="spec_style_accessory">Vietnamese Accessory</string>
+    <string name="spec_style_traditional">Traditional Vietnamese Attire</string>
+    <string name="spec_occasion_default">Festivals, Weddings, Photoshoots</string>
+    <string name="mock_style_ao_dai_truyen_thong">Traditional Áo Dài</string>
+
+    <!-- ─── Mock catalog: shared care instructions ──────────────────────── -->
+    <string name="care_hand_wash_cold_strict">Hand wash only, in cold water</string>
+    <string name="care_hand_wash_cold_gentle">Hand wash gently in cold water</string>
+    <string name="care_no_bleach">Do not use bleach</string>
+    <string name="care_iron_low">Iron on low heat</string>
+    <string name="care_iron_low_cloth">Iron on low heat, with a cloth barrier</string>
+    <string name="care_store_dry">Store in a dry place, away from direct sunlight</string>
+
+    <!-- ─── Mock catalog: default + per-product description/story ──────── -->
+    <string name="desc_template_default">%1$s is crafted from %2$s, showcasing elegant beauty and the spirit of traditional Vietnamese attire in every stitch.</string>
+    <string name="story_template_default">The design draws inspiration from royal and folk attire across Vietnamese dynasties, restored and reimagined to suit modern life while preserving its traditional essence.</string>
+    <string name="desc_ad1">This pure white áo dài draws inspiration from the beauty of the traditional Vietnamese bride. Its soft silk and delicate hand embroidery symbolize purity, harmony, and lasting love.</string>
+    <string name="story_ad1">The design is restored from Nguyễn dynasty ceremonial attire, blended with modern tailoring techniques to flatter the wearer\'s silhouette while preserving its solemn, timeless character.</string>
+    <string name="desc_ad7">A white áo dài with classic floral patterns, reminiscent of the schoolgirl áo dài of years past — light, elegant, and easy to style for many occasions.</string>
+
+    <!-- ─── Mock catalog: product names — Áo Dài ────────────────────────── -->
+    <string name="mock_ad1_name">White Mist of Destiny</string>
+    <string name="mock_ad2_name">Azure Silk of the Old Manor</string>
+    <string name="mock_ad3_name">Golden Rain, Blossoming Wind</string>
+    <string name="mock_ad4_name">Rose Dust Peony</string>
+    <string name="mock_ad5_name">Emerald Water, Golden Orchid</string>
+    <string name="mock_ad6_name">Moonlit Lute in Blush Pink</string>
+    <string name="mock_ad7_name">Classic Blossom</string>
+
+    <!-- ─── Mock catalog: product names — Nhật Bình ─────────────────────── -->
+    <string name="mock_nb1_name">Crimson Robe of the Royal Seal</string>
+    <string name="mock_nb2_name">Emerald Stone of the Royal Court</string>
+    <string name="mock_nb3_name">Green Court Banquet</string>
+    <string name="mock_nb4_name">Imperial Gold Thread</string>
+    <string name="mock_nb5_name">Moon-Gazing Azure Palace</string>
+    <string name="mock_nb6_name">Nhật Bình Azure Rain</string>
+    <string name="mock_nb7_name">Emerald Mist, Azure Treasure</string>
+    <string name="mock_nb8_name">Violet Cloud Grass</string>
+    <string name="mock_nb9_name">Deep Rose of the Ancient Pavilion</string>
+    <string name="mock_nb10_name">Golden Dust Peony</string>
+
+    <!-- ─── Mock catalog: product names — Áo Tấc ────────────────────────── -->
+    <string name="mock_at1_name">Emerald Jade Turban</string>
+    <string name="mock_at2_name">Jade Rain, Misty Gauze</string>
+    <string name="mock_at3_name">Earthen Cloud Ochre</string>
+    <string name="mock_at4_name">Azure Dragon of the Old Town</string>
+    <string name="mock_at5_name">Green Robe with Floating Fan</string>
+    <string name="mock_at6_name">Ivory Silk, Moonlit Wrap</string>
+
+    <!-- ─── Mock catalog: product names — Giao Lĩnh ─────────────────────── -->
+    <string name="mock_gl1_name">White Sand Lotus Rain</string>
+    <string name="mock_gl2_name">Azure Jade of the Old Town</string>
+    <string name="mock_gl3_name">Green Bamboo Cloud Melody</string>
+    <string name="mock_gl4_name">Golden Hue of the Royal Court</string>
+    <string name="mock_gl5_name">Amber Giao Lĩnh Robe</string>
+    <string name="mock_gl6_name">Black Gold Peony</string>
+
+    <!-- ─── Mock catalog: product names — Yếm Đào ───────────────────────── -->
+    <string name="mock_yd1_name">Morning Dew, White Rain</string>
+    <string name="mock_yd2_name">Bamboo Green of the Chamber</string>
+    <string name="mock_yd3_name">Misty Blossom, White Lotus</string>
+    <string name="mock_yd4_name">Azure Lotus Pond</string>
+    <string name="mock_yd5_name">Jade Azure Brocade</string>
+    <string name="mock_yd6_name">Night Gold Peony</string>
+
+    <!-- ─── Mock catalog: product names — Accessories ───────────────────── -->
+    <string name="mock_pk1_name">Moonlit Wrap, White Cloud Brocade</string>
+    <string name="mock_pk2_name">Antique Mulberry Hat</string>
+    <string name="mock_pk3_name">Peacock Folding Fan</string>
+    <string name="mock_pk4_name">Everlasting Peace Parasol</string>
+    <string name="mock_pk5_name">Earthen Wrap Scarf</string>
+    <string name="mock_pk6_name">Cloud-Shoulder Parasol</string>
+    <string name="mock_pk7_name">Phoenix Crown of the Court</string>
+    <string name="mock_pk8_name">Golden Sand Royal Hat</string>
+    <string name="mock_pk9_name">Golden Cloud Royal Parasol</string>
+
+    <!-- ─── Mock catalog: Home — recommended / trending ─────────────────── -->
+    <string name="mock_home1_name">Traditional Áo Dài</string>
+    <string name="mock_home2_name">Queen\'s Nhật Bình</string>
+    <string name="mock_home3_name">Nobleman\'s Áo Tấc</string>
+    <string name="mock_home4_name">Traditional Khăn Đóng</string>
+    <string name="mock_home5_name">Wedding Áo Dài Set</string>
+
+    <!-- ─── Mock catalog: general Vietnamese attire (fallback) ──────────── -->
+    <string name="mock_generic1_name">Ngũ Thân with Fitted Sleeves</string>
+    <string name="mock_generic2_name">Traditional Men\'s Áo Tấc</string>
+    <string name="mock_generic3_name">Modernized Men\'s Áo Dài</string>
+    <string name="mock_generic4_name">Embroidered Brocade Khăn Đóng</string>
+    <string name="mock_generic5_name">Ngũ Thân with Wide Sleeves</string>
+    <string name="mock_generic6_name">Men\'s Nhật Bình Robe</string>
+
     <!-- Product detail -->
     <string name="label_material">Material</string>
     <string name="label_origin">Origin</string>
@@ -241,6 +350,81 @@
     <string name="label_reviews">Customer Reviews</string>
     <string name="label_menh_tags">Suitable Elements</string>
     <string name="out_of_stock">Out of Stock</string>
+    <string name="label_colour">Colour</string>
+    <string name="label_size">Size</string>
+    <string name="label_quantity">Quantity</string>
+    <string name="label_details">Details</string>
+    <string name="label_size_guide">Size Guide</string>
+    <string name="size_guide_content">S: 42–48kg · M: 48–54kg · L: 54–60kg · XL: 60–68kg\nReference measurements — actual fit may vary by 1–2cm depending on body shape.</string>
+    <string name="label_you_may_also_like">You May Also Like</string>
+    <string name="btn_view_all_reviews">View All Reviews</string>
+    <string name="label_free_shipping">Free Shipping</string>
+    <string name="label_easy_returns">14-Day Returns</string>
+    <string name="label_secure_payment">Secure Payment</string>
+    <string name="label_service_commitments">Our Commitments</string>
+    <string name="label_story">Story</string>
+    <string name="label_care">Care Instructions</string>
+    <string name="status_in_stock">In Stock</string>
+    <string name="status_low_stock">Low Stock</string>
+    <string name="status_out_of_stock">Out of Stock</string>
+    <string name="reviews_count_format">Customer Reviews (%1$d)</string>
+    <string name="reviews_count_short">(%1$d reviews)</string>
+    <string name="size_label_s">S</string>
+    <string name="size_label_m">M</string>
+    <string name="size_label_l">L</string>
+    <string name="size_label_xl">XL</string>
+    <string name="error_product_load_failed">Failed to load product</string>
+    <string name="default_origin">Vietnam</string>
+    <string name="cart_badge_overflow">9+</string>
+
+    <!-- Color bucket display labels (ColorTaxonomy) — kept separate from the Vietnamese match keys used for data filtering -->
+    <string name="color_bucket_do">Red</string>
+    <string name="color_bucket_xanh">Blue</string>
+    <string name="color_bucket_vang">Yellow</string>
+    <string name="color_bucket_trang">White</string>
+    <string name="color_bucket_den">Black</string>
+    <string name="color_bucket_hong">Pink</string>
+    <string name="color_bucket_tim">Purple</string>
+    <string name="color_bucket_xanh_la">Green</string>
+    <string name="color_bucket_cam">Orange</string>
+
+    <!-- Styling: category preview descriptions — product names, proper nouns kept untranslated -->
+    <string name="desc_ao_dai_trang">Khói Trắng Kết Duyên, Phấn Hoa Cổ Điển,…</string>
+    <string name="desc_ao_dai_xanh">Lam Lụa Cố Trạch,…</string>
+    <string name="desc_ao_dai_vang">Kim Vũ Phong Hoa,…</string>
+    <string name="desc_ao_dai_hong">Hồng Trần Mộc Dược, Nguyệt Cầm Phấn Hồng,…</string>
+    <string name="desc_nhat_binh_trang">Xích Bào Đối Ấn,…</string>
+    <string name="desc_nhat_binh_xanh_la">Thạch Lam Hoàng Cung, Lục Triều Tiểu Yến,…</string>
+    <string name="desc_nhat_binh_xanh">Hoàng Triều Kim Tuyến, Nhật Bình Lam Vũ,…</string>
+    <string name="desc_nhat_binh_do">Vọng Nguyệt Lam Cung,…</string>
+    <string name="desc_nhat_binh_vang">Tử Vân Yên Thảo, Trầm Hồng Cổ Các,…</string>
+    <string name="desc_ao_tac_xanh">Lục Ngọc Vấn Khăn, Lục Y Phù Quạt,…</string>
+    <string name="desc_ao_tac_trang">Ngọc Vũ Yên Sa, Tơ Ngà Vấn Nguyệt,…</string>
+    <string name="desc_ao_tac_cam">Mộc Vân Thổ Xà,…</string>
+    <string name="desc_ao_tac_xanh_la">Thanh Long Cổ Trấn,…</string>
+    <string name="desc_giao_linh_xanh_la">Bạch Sa Liên Vũ, Lam Ngọc Cổ Trấn, Lục Trúc Vân Khúc,…</string>
+    <string name="desc_giao_linh_vang">Kim Sắc Hoàng Triều,…</string>
+    <string name="desc_giao_linh_do">Cam Giao Lĩnh Bào, Hắc Kim Mẫu Đơn,…</string>
+    <string name="desc_yem_dao_do">Sương Mai Bạch Vũ,…</string>
+    <string name="desc_yem_dao_xanh_la">Trúc Lục Khuê Phòng, Thanh Lam Trì Liên,…</string>
+    <string name="desc_yem_dao_vang">Yên Hoa Bạch Liên, Bích Lam Cẩm Tú,…</string>
+    <string name="desc_yem_dao_hong">Dạ Kim Mẫu Đơn,…</string>
+
+    <!-- Styling: Accessories — name + description per type -->
+    <string name="phukien_khan_title">Headscarf</string>
+    <string name="phukien_khan_desc">Traditional wrap scarves and headscarves,…</string>
+    <string name="phukien_quat_title">Fan</string>
+    <string name="phukien_quat_desc">Folding fans, silk hand fans,…</string>
+    <string name="phukien_oche_title">Parasol</string>
+    <string name="phukien_oche_desc">Traditional parasols and umbrellas,…</string>
+    <string name="phukien_mudoidau_title">Headwear</string>
+    <string name="phukien_mudoidau_desc">Modernized hats and headpieces,…</string>
+
+    <!-- Category page: garment-type tabs + chrome (tab labels are proper nouns, kept untranslated) -->
+    <string name="filter_label">Filters</string>
+    <string name="cd_scan">Scan code</string>
+    <string name="cd_view_mode">View mode</string>
+    <string name="filter_coming_soon">Filters coming soon</string>
 
     <!-- Shop / Search / Category -->
     <string name="nav_back">Back</string>
@@ -347,10 +531,10 @@
 
     <string name="about_contact_title">Contact</string>
     <string name="about_contact_brand">Tired City – Contemporary Việt Phục</string>
-    <string name="about_showroom_hn_title">Hanoi Showroom</string>
-    <string name="about_showroom_hn_address">12 Hang Gai, Hoan Kiem, Hanoi</string>
-    <string name="about_showroom_hcm_title">Ho Chi Minh City Showroom</string>
-    <string name="about_showroom_hcm_address">42 Nguyen Hue, District 1, Ho Chi Minh City</string>
+    <string name="about_showroom_hn_title">TiredCity 37 Hàng Hành</string>
+    <string name="about_showroom_hn_address">37 Hàng Hành St, Hoàn Kiếm, Hanoi</string>
+    <string name="about_showroom_hcm_title">TiredCity 97 Hàng Gai</string>
+    <string name="about_showroom_hcm_address">97 Hàng Gai St, Hoàn Kiếm, Hanoi</string>
     <string name="about_email">contact@tiredcity.vn</string>
     <string name="about_hotline">1900 6868</string>
     <string name="about_website">www.tiredcity.vn</string>
