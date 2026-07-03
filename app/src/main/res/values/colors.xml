@@ -72,6 +72,11 @@
     <color name="tc_red_ripple">#33FFFFFF</color>      <!-- highlight khi chạm -->
     <color name="tc_ripple_red_subtle">#22A80D15</color> <!-- ripple đỏ nhạt trên nền sáng (chip, nút viền) -->
 
+    <!-- ─── SPX EXPRESS (brand vận chuyển) ──────────────────────────── -->
+    <color name="tc_spx_orange">#EE4D2D</color>
+    <color name="tc_spx_orange_deep">#C93D22</color>
+    <color name="tc_spx_orange_pale">#FCE4DE</color>
+
     <!-- ─── Vàng kim (accent dân tộc) ───────────────────────────────── -->
     <color name="tc_gold">#C9A45C</color>              <!-- vàng kim ấm hơn, sang hơn -->
     <color name="tc_gold_deep">#9A7838</color>
@@ -173,6 +178,9 @@
     <color name="tc_warning">#D4A04B</color>
     <color name="tc_error">#A80D15</color>
     <color name="tc_info">#3B5A7A</color>
+
+    <!-- ─── Favorite star (nút yêu thích) ───────────────────────────── -->
+    <color name="tc_star_outline">#ABABAB</color>
 
     <!-- ─── Product color swatches (danh mục Áo Dài theo màu) ─────────── -->
     <color name="tc_swatch_do">#A80D15</color>

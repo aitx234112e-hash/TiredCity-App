@@ -19,6 +19,10 @@ public class CartItem {
     @SerializedName("selected_color")
     private String selectedColor;
 
+    /** Người dùng có chọn sản phẩm này để thanh toán hay không. Mặc định chọn sẵn. */
+    @SerializedName("selected")
+    private boolean selected = true;
+
     public CartItem() {}
 
     public CartItem(Product product, int quantity) {
@@ -60,4 +64,7 @@ public class CartItem {
 
     public String getSelectedColor()                { return selectedColor; }
     public void setSelectedColor(String color)      { this.selectedColor = color; }
+
+    public boolean isSelected()                     { return selected; }
+    public void setSelected(boolean selected)       { this.selected = selected; }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MoMo — logo hồng đặc trưng, chữ "M" trắng bo tròn. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:pathData="M10,2 L38,2 A8,8 0 0 1 46,10 L46,38 A8,8 0 0 1 38,46 L10,46 A8,8 0 0 1 2,38 L2,10 A8,8 0 0 1 10,2 Z"
+        android:fillColor="#A50064" />
+    <!-- Chữ M trắng: 4 nét dọc + 2 nét chéo tạo hình chữ M -->
+    <path
+        android:pathData="M13,33 L13,17 A3,3 0 0 1 18.4,15.2 L23,21.5 L27.6,15.2 A3,3 0 0 1 33,17 L33,33"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>

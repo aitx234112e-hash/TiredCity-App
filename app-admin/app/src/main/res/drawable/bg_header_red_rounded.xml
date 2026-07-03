@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Header đỏ sơn mài, bo góc dưới tạo hiệu ứng vòm mềm mại chuyển sang nền kem -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="135"
+        android:startColor="@color/tc_red_lacquer_top"
+        android:centerColor="@color/tc_red_lacquer_mid"
+        android:endColor="@color/tc_red_lacquer_bot" />
+    <corners
+        android:bottomLeftRadius="26dp"
+        android:bottomRightRadius="26dp" />
+</shape>

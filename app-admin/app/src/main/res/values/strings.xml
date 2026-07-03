@@ -18,11 +18,16 @@
 
     <!-- Dashboard -->
     <string name="dashboard_subtitle">Chào mừng quay lại</string>
+    <string name="dashboard_date_fmt">%1$s, %2$s</string>
+    <string name="dashboard_greeting_fmt">Chào %1$s, hôm nay là %2$s</string>
+    <string name="role_admin">admin</string>
     <string name="dashboard_pending_fmt">%d đơn chờ xử lý</string>
     <string name="stat_revenue">Doanh thu</string>
     <string name="stat_orders">Tổng đơn hàng</string>
     <string name="stat_customers">Khách hàng</string>
-    <string name="section_functions">Chức năng quản lý</string>
+    <string name="section_auth">Xác thực</string>
+    <string name="section_functions">Chức năng</string>
+    <string name="section_system">Hệ thống</string>
     <string name="btn_logout">Đăng xuất</string>
 
     <!-- Modules (mirror nav.html + admin-routing-module.ts) -->
@@ -38,8 +43,8 @@
     <string name="m_events_desc">Sự kiện cửa hàng</string>
     <string name="m_shipping">Vận chuyển</string>
     <string name="m_shipping_desc">Phương thức giao hàng</string>
-    <string name="m_feedback">Liên hệ</string>
-    <string name="m_feedback_desc">Phản hồi từ khách hàng</string>
+    <string name="m_feedback">Phản hồi</string>
+    <string name="m_feedback_desc">Ý kiến, đánh giá khách hàng</string>
     <string name="m_blogs">Blogs</string>
     <string name="m_blogs_desc">Bài viết, tin tức</string>
     <string name="m_audit">Audit logs</string>
@@ -50,6 +55,42 @@
     <string name="m_reports_desc">Xuất dữ liệu thống kê</string>
     <string name="m_chatbot">Trợ lý AI</string>
     <string name="m_chatbot_desc">Hỏi nhanh về cửa hàng</string>
+
+    <!-- Shipping config -->
+    <string name="scfg_title">Quản lý vận chuyển</string>
+    <string name="scfg_price_label">Phí vận chuyển</string>
+    <string name="scfg_price_hint">Ví dụ: 30000</string>
+    <string name="scfg_estimate_label">Thời gian dự kiến</string>
+    <string name="scfg_estimate_hint">Ví dụ: 1-2 ngày</string>
+    <string name="scfg_active_label">Đang áp dụng</string>
+    <string name="scfg_active">Đang bật</string>
+    <string name="scfg_inactive">Đang tắt</string>
+    <string name="scfg_saved">Đã lưu cấu hình</string>
+    <string name="scfg_save_error">Lưu thất bại: %s</string>
+    <string name="scfg_price_invalid">Giá không hợp lệ</string>
+
+    <!-- Shipping config — sections -->
+    <string name="scfg_section_pickup">Địa chỉ lấy hàng</string>
+    <string name="scfg_section_spx">Đơn vị vận chuyển</string>
+    <string name="scfg_section_spx_sub">SPX Express</string>
+    <string name="scfg_section_general">Thiết lập chung</string>
+
+    <!-- Shipping config — pick-up points -->
+    <string name="scfg_pickup_default">Mặc định</string>
+    <string name="scfg_pickup_active">Đang lấy hàng</string>
+    <string name="scfg_pickup_choose">Đổi kho</string>
+    <string name="scfg_pickup_1_name">TiredCity 37 Hàng Hành</string>
+    <string name="scfg_pickup_1_addr">37 Hàng Hành, Hoàn Kiếm, Hà Nội</string>
+    <string name="scfg_pickup_2_name">TiredCity 97 Hàng Gai</string>
+    <string name="scfg_pickup_2_addr">97 Hàng Gai, Hoàn Kiếm, Hà Nội</string>
+
+    <!-- Shipping config — general settings -->
+    <string name="scfg_freeship_label">Mức đơn hàng tối thiểu để Freeship</string>
+    <string name="scfg_freeship_hint">Ví dụ: 500000 (0 = không áp dụng)</string>
+    <string name="scfg_shipper_note_label">Ghi chú mặc định cho shipper</string>
+    <string name="scfg_shipper_note_hint">Ví dụ: Hàng dễ vỡ, gọi trước khi đến</string>
+    <string name="scfg_general_saved">Đã lưu thiết lập chung</string>
+    <string name="scfg_settings_desc">Cài đặt</string>
 
     <!-- Module list -->
     <string name="hint_search">Tìm kiếm…</string>

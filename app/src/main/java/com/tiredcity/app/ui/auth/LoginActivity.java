@@ -69,6 +69,11 @@ public class LoginActivity extends BaseActivity {
     private ActivityLoginBinding binding;
     private AuthRepository authRepository;
 
+    // true sau khi vừa mở app Quản trị: chờ tới khi Activity này HIỆN LẠI (onResume) mới
+    // đưa toggle về "Khách hàng" — làm ngay lúc startActivity() sẽ bị người dùng nhìn thấy
+    // thanh toggle giật nhảy sang trái trong lúc màn hình còn đang animate chuyển đi.
+    private boolean pendingAdminToggleReset = false;
+
     private GoogleSignInClient googleSignInClient;
     private ActivityResultLauncher<Intent> googleSignInLauncher;
 
@@ -160,6 +165,17 @@ public class LoginActivity extends BaseActivity {
         binding.toggleRole.check(binding.btnRoleCustomer.getId());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Màn hình này vừa hiện LẠI (quay lại từ app Quản trị hoặc từ hộp thoại "chưa cài") —
+        // giờ mới an toàn để đưa toggle về "Khách hàng" mà không bị thấy nhảy giữa chừng.
+        if (pendingAdminToggleReset && binding != null) {
+            binding.toggleRole.check(binding.btnRoleCustomer.getId());
+            pendingAdminToggleReset = false;
+        }
+    }
+
     /**
      * Mở app Quản trị (TiredCity Admin) qua package, kèm email/mật khẩu vừa nhập để app đó
      * vào THẲNG Dashboard (không hiện lại form đăng nhập). Chưa cài thì hiện hộp thoại hướng dẫn.
@@ -173,8 +189,10 @@ public class LoginActivity extends BaseActivity {
             // (mang task cũ lên không thôi sẽ làm rơi mất email/mật khẩu).
             launch.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(launch);
-            // Trả toggle về "Khách hàng" để khi quay lại màn login không kẹt ở trạng thái Admin.
-            binding.toggleRole.check(binding.btnRoleCustomer.getId());
+            // Trả toggle về "Khách hàng" để khi quay lại màn login không kẹt ở trạng thái Admin —
+            // nhưng CHỜ tới onResume() (xem pendingAdminToggleReset) để không bị thấy nhảy khi
+            // màn hình còn đang animate chuyển sang app Quản trị.
+            pendingAdminToggleReset = true;
         } else {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.role_admin)

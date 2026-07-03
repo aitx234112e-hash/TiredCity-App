@@ -18,6 +18,7 @@ public class CartActivity extends BaseActivity {
     private ActivityCartBinding binding;
     private CartLocalStore cartLocalStore;
     private CartAdapter cartAdapter;
+    private List<CartItem> cartItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,26 +48,40 @@ public class CartActivity extends BaseActivity {
     }
 
     private void loadCart() {
-        List<CartItem> items = cartLocalStore.getCartItems();
-        cartAdapter = new CartAdapter(items, item -> {
+        cartItems = cartLocalStore.getCartItems();
+        cartAdapter = new CartAdapter(cartItems, item -> {
             cartLocalStore.removeItem(item.getProduct().getId());
             loadCart();
         });
+        cartAdapter.setOnCartChangeListener(this::refreshTotal);
         binding.rvCartItems.setAdapter(cartAdapter);
 
-        // Update total
+        refreshTotal();
+    }
+
+    private void refreshTotal() {
         double total = 0;
-        for (CartItem item : items) total += item.getSubtotal();
+        boolean anySelected = false;
+        for (CartItem item : cartItems) {
+            if (item.isSelected()) {
+                total += item.getSubtotal();
+                anySelected = true;
+            }
+        }
         binding.tvTotal.setText(PriceUtils.format(total));
-        binding.btnCheckout.setEnabled(!items.isEmpty());
+        binding.btnCheckout.setEnabled(!cartItems.isEmpty() && anySelected);
     }
 
     private void proceedToPayment() {
-        List<CartItem> items = cartLocalStore.getCartItems();
-        if (items.isEmpty()) {
+        boolean anySelected = false;
+        for (CartItem item : cartItems) {
+            if (item.isSelected()) { anySelected = true; break; }
+        }
+        if (cartItems.isEmpty() || !anySelected) {
             Toast.makeText(this, getString(com.tiredcity.app.R.string.error_empty_cart), Toast.LENGTH_SHORT).show();
             return;
         }
+        cartLocalStore.saveCartItems(cartItems);
         startActivity(new Intent(this, PaymentActivity.class));
     }
 }

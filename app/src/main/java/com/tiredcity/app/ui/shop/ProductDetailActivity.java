@@ -17,6 +17,7 @@ import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.ReviewAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
+import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.ApiResponse;
@@ -51,6 +52,7 @@ public class ProductDetailActivity extends BaseActivity {
     private ActivityProductDetailBinding binding;
     private ProductRepository productRepository;
     private CartLocalStore cartLocalStore;
+    private FavoritesLocalStore favoritesStore;
     private Product currentProduct;
 
     private String selectedColor;
@@ -77,6 +79,7 @@ public class ProductDetailActivity extends BaseActivity {
         String productId = getIntent().getStringExtra(EXTRA_PRODUCT_ID);
         productRepository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
         cartLocalStore     = new CartLocalStore(this);
+        favoritesStore     = new FavoritesLocalStore(this);
 
         binding.btnAddToCart.setOnClickListener(v -> addToCart());
         binding.btnBuyNow.setOnClickListener(v -> {
@@ -139,8 +142,19 @@ public class ProductDetailActivity extends BaseActivity {
         bindSpecifications(product);
         bindCareInstructions(product);
         bindQuantityStepper(product);
+        bindFavoriteButton(product);
         loadReviews(product.getId());
         loadRelatedProducts(product);
+    }
+
+    // ── Favorite (yêu thích) ─────────────────────────────────────────────────
+
+    private void bindFavoriteButton(Product product) {
+        binding.ibSave.setSaved(favoritesStore.isFavorite(product.getId()), false);
+        binding.ibSave.setOnClickListener(v -> {
+            boolean nowSaved = favoritesStore.toggleFavorite(product);
+            binding.ibSave.setSaved(nowSaved, true);
+        });
     }
 
     // ── Availability ─────────────────────────────────────────────────────────

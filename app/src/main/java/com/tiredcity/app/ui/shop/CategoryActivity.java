@@ -69,6 +69,8 @@ public class CategoryActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         updateCartBadge();
+        // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
+        productAdapter.notifyDataSetChanged();
     }
 
     // ── Lưới sản phẩm ──────────────────────────────────────────────────────────

@@ -8,18 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.tiredcity.app.R;
+import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.databinding.ItemProductBinding;
 import com.tiredcity.app.utils.ColorTaxonomy;
 import com.tiredcity.app.utils.PriceUtils;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private List<Product>           products;
-    private final Set<String>       savedIds = new HashSet<>();
     private OnProductClickListener  listener;
     private boolean                 fillWidth = false;
 
@@ -56,12 +54,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public void setSavedIds(Set<String> ids) {
-        savedIds.clear();
-        savedIds.addAll(ids);
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -79,7 +71,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(products.get(position), savedIds, listener);
+        holder.bind(products.get(position), listener);
     }
 
     @Override
@@ -92,13 +84,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemProductBinding b;
+        private final FavoritesLocalStore favoritesStore;
 
         ViewHolder(ItemProductBinding binding) {
             super(binding.getRoot());
             this.b = binding;
+            this.favoritesStore = new FavoritesLocalStore(binding.getRoot().getContext());
         }
 
-        void bind(Product product, Set<String> savedIds, OnProductClickListener listener) {
+        void bind(Product product, OnProductClickListener listener) {
             b.tvProductName.setText(product.getName());
             b.tvProductMaterial.setText(product.getMaterial() != null ? product.getMaterial() : "");
             b.tvProductPrice.setText(PriceUtils.formatVnd(product.getEffectivePrice()));
@@ -142,19 +136,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 b.ivProductImage.setImageDrawable(null);
             }
 
-            // Save / wishlist toggle
-            boolean saved = savedIds.contains(product.getId());
-            b.ibSave.setImageResource(saved
-                    ? android.R.drawable.btn_star_big_on
-                    : android.R.drawable.btn_star_big_off);
+            // Save / wishlist toggle — trạng thái đọc từ FavoritesLocalStore để đồng bộ mọi màn hình
+            b.ibSave.setSaved(favoritesStore.isFavorite(product.getId()), false);
             b.ibSave.setOnClickListener(v -> {
                 if (product.getId() == null) return;
-                boolean nowSaved = !savedIds.contains(product.getId());
-                if (nowSaved) savedIds.add(product.getId());
-                else          savedIds.remove(product.getId());
-                b.ibSave.setImageResource(nowSaved
-                        ? android.R.drawable.btn_star_big_on
-                        : android.R.drawable.btn_star_big_off);
+                boolean nowSaved = favoritesStore.toggleFavorite(product);
+                b.ibSave.setSaved(nowSaved, true);
                 if (listener != null) listener.onSaveToggle(product, nowSaved);
             });
 

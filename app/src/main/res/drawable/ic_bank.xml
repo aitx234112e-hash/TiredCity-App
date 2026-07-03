@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ngân hàng — flat design (mái tam giác + cột + bệ), tông xanh tin cậy. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:pathData="M6,6 L42,6 A4,4 0 0 1 46,10 L46,38 A4,4 0 0 1 42,42 L6,42 A4,4 0 0 1 2,38 L2,10 A4,4 0 0 1 6,6 Z"
+        android:fillColor="#EAF1FB" />
+    <!-- Mái -->
+    <path
+        android:pathData="M24,11 L37,19 L11,19 Z"
+        android:fillColor="#1A56A8" />
+    <!-- Cột -->
+    <path android:pathData="M14,21 L17,21 L17,33 L14,33 Z" android:fillColor="#1A56A8" />
+    <path android:pathData="M22.5,21 L25.5,21 L25.5,33 L22.5,33 Z" android:fillColor="#1A56A8" />
+    <path android:pathData="M31,21 L34,21 L34,33 L31,33 Z" android:fillColor="#1A56A8" />
+    <!-- Bệ -->
+    <path android:pathData="M11,35 L37,35 L37,38 L11,38 Z" android:fillColor="#1A56A8" />
+</vector>

@@ -113,6 +113,13 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
+        productAdapter.notifyDataSetChanged();
+    }
+
     /** Builds the multi-view-type discovery list (promotion + event + product). */
     private void setupSuggestions() {
         List<SearchItem> suggestions = Arrays.asList(

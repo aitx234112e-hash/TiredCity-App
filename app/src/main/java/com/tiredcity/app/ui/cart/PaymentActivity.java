@@ -2,25 +2,29 @@ package com.tiredcity.app.ui.cart;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.tiredcity.app.utils.AddressData;
+import com.tiredcity.app.adapter.CheckoutItemAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
-import com.tiredcity.app.data.model.ApiResponse;
 import com.tiredcity.app.data.model.CartItem;
-import com.tiredcity.app.data.model.Order;
+import com.tiredcity.app.data.model.ShippingOption;
 import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.repository.OrderRepository;
 import com.tiredcity.app.databinding.ActivityPaymentBinding;
+import com.tiredcity.app.databinding.DialogEditRecipientBinding;
+import com.tiredcity.app.databinding.DialogVoucherCodeBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.utils.CheckoutPriceCalculator;
 import com.tiredcity.app.utils.PriceUtils;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import java.util.List;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.UserProfile;
@@ -37,11 +41,20 @@ public class PaymentActivity extends BaseActivity {
     private ActivityPaymentBinding binding;
     private OrderRepository orderRepository;
     private CartLocalStore cartLocalStore;
+    private final CheckoutPriceCalculator priceCalculator = new CheckoutPriceCalculator();
 
-    /** Phí ship mặc định khi admin chưa cấu hình đơn vị vận chuyển nào. */
+    /** Phí ship mặc định khi chưa tải được cấu hình SPX Express (mất mạng...). */
     private static final double DEFAULT_SHIPPING_FEE = 30_000;
-    private double shippingFee = DEFAULT_SHIPPING_FEE;
+    private static final String SHIPPING_COLLECTION = "shipping_configs";
+    private static final String[] SHIPPING_ORDER = {"economy", "standard", "express"};
+    private static final String DEFAULT_SHIPPING_ID = "standard";
+
     private String shippingMethodName = "";
+    private final List<ShippingOption> activeShippingOptions = new ArrayList<>();
+    private ShippingOption selectedShippingOption;
+
+    /** Phương thức thanh toán đang chọn — mặc định MoMo (đã bỏ COD). */
+    private String selectedPaymentMethod = "MOMO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,124 +68,321 @@ public class PaymentActivity extends BaseActivity {
 
         orderRepository = new OrderRepository(ApiClient.getApiService(preferenceManager.getToken()));
         cartLocalStore  = new CartLocalStore(this);
+        AddressData.init(this);
+
+        priceCalculator.setShippingFee(DEFAULT_SHIPPING_FEE);
 
         setupOrderSummary();
+        setupOrderItems();
+        setupPaymentSelector();
         loadShippingMethods();
 
+        binding.rowVoucher.setOnClickListener(v -> showVoucherDialog());
+        binding.tvChangeAddress.setOnClickListener(v -> showEditRecipientDialog());
+        binding.rowAddress.setOnClickListener(v -> showEditRecipientDialog());
+        binding.rowShippingMethod.setOnClickListener(v -> showShippingMethodSheet());
+
         binding.btnPlaceOrder.setOnClickListener(v -> {
-            String address = binding.tvRecipientAddress.getText().toString();
-            String method  = getSelectedPaymentMethod();
-            placeOrder(address, method);
+            UserProfile user = preferenceManager.getUser();
+            String address = user != null ? user.getFullAddress() : "";
+            if (TextUtils.isEmpty(address)) {
+                Toast.makeText(this, com.tiredcity.app.R.string.pay_address_required, Toast.LENGTH_SHORT).show();
+                showEditRecipientDialog();
+                return;
+            }
+            showSlideCaptcha(() -> placeOrder(address, selectedPaymentMethod));
         });
     }
 
     private void setupOrderSummary() {
+        bindRecipientCard();
         refreshTotals();
+    }
 
-        // Prefill recipient info from saved profile
-        com.tiredcity.app.data.model.UserProfile user = preferenceManager.getUser();
-        if (user != null) {
-            binding.tvRecipientName.setText(user.getName());
-            binding.tvRecipientPhone.setText(user.getPhone());
-            binding.tvRecipientAddress.setText(user.getAddress());
-        }
+    /** Đổ thông tin người nhận + địa chỉ đầy đủ vào card; hiện trạng thái trống nếu chưa có địa chỉ. */
+    private void bindRecipientCard() {
+        UserProfile user = preferenceManager.getUser();
+        String name = user != null ? user.getName() : "";
+        String phone = user != null ? user.getPhone() : "";
+        String fullAddress = user != null ? user.getFullAddress() : "";
+
+        binding.tvRecipientName.setText(name);
+        binding.tvRecipientPhone.setText(phone);
+
+        boolean hasAddress = !TextUtils.isEmpty(fullAddress);
+        binding.tvRecipientAddress.setVisibility(hasAddress ? View.VISIBLE : View.GONE);
+        binding.tvAddressEmpty.setVisibility(hasAddress ? View.GONE : View.VISIBLE);
+        if (hasAddress) binding.tvRecipientAddress.setText(fullAddress);
+    }
+
+    private void setupOrderItems() {
+        List<CartItem> items = selectedItems();
+        binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvOrderItems.setAdapter(new CheckoutItemAdapter(items));
+    }
+
+    /** Chỉ những sản phẩm được tick chọn ở màn Giỏ hàng mới được đưa vào thanh toán. */
+    private List<CartItem> selectedItems() {
+        List<CartItem> result = new ArrayList<>();
+        List<CartItem> items = cartLocalStore.getCartItems();
+        if (items != null) for (CartItem item : items) if (item.isSelected()) result.add(item);
+        return result;
     }
 
     private double currentSubtotal() {
         double subtotal = 0;
-        List<CartItem> items = cartLocalStore.getCartItems();
-        if (items != null) for (CartItem item : items) subtotal += item.getSubtotal();
+        for (CartItem item : selectedItems()) subtotal += item.getSubtotal();
         return subtotal;
     }
 
     private void refreshTotals() {
-        double subtotal = currentSubtotal();
-        binding.tvSubtotal.setText(PriceUtils.format(subtotal));
-        binding.tvShippingFee.setText(shippingFee <= 0 ? getString(com.tiredcity.app.R.string.pay_shipping_free)
-                : PriceUtils.format(shippingFee));
-        binding.tvTotal.setText(PriceUtils.format(subtotal + shippingFee));
+        priceCalculator.setSubtotal(currentSubtotal());
+
+        binding.tvSubtotal.setText(PriceUtils.format(priceCalculator.getSubtotal()));
+
+        double effectiveShipping = priceCalculator.getEffectiveShippingFee();
+        binding.tvShippingFee.setText(effectiveShipping <= 0
+                ? getString(com.tiredcity.app.R.string.pay_shipping_free)
+                : PriceUtils.format(effectiveShipping));
+
+        double discount = priceCalculator.getDiscountAmount();
+        binding.rowDiscount.setVisibility(discount > 0 ? View.VISIBLE : View.GONE);
+        if (discount > 0) {
+            binding.tvDiscount.setText("-" + PriceUtils.format(discount));
+        }
+
+        binding.tvTotal.setText(PriceUtils.format(priceCalculator.getTotal()));
     }
 
-    /** Đọc các phương thức vận chuyển admin cấu hình (collection "shipping") và cho khách chọn. */
+    /** Đọc 3 gói SPX Express (collection "shipping_configs") đang isActive=true và cho khách chọn. */
     private void loadShippingMethods() {
         FirebaseFirestore.getInstance()
-                .collection("shipping")
+                .collection(SHIPPING_COLLECTION)
                 .get()
                 .addOnSuccessListener(snap -> {
-                    binding.rgShippingMethod.removeAllViews();
-                    List<Map<String, Object>> methods = new ArrayList<>();
-                    for (com.google.firebase.firestore.QueryDocumentSnapshot d : snap) {
-                        methods.add(d.getData());
+                    Map<String, DocumentSnapshot> byId = new HashMap<>();
+                    for (com.google.firebase.firestore.QueryDocumentSnapshot d : snap) byId.put(d.getId(), d);
+
+                    activeShippingOptions.clear();
+                    for (String id : SHIPPING_ORDER) {
+                        DocumentSnapshot d = byId.get(id);
+                        if (d == null || !Boolean.TRUE.equals(d.getBoolean("isActive"))) continue;
+                        String name = d.getString("name");
+                        String estimate = d.getString("estimate");
+                        Double price = d.getDouble("price");
+                        activeShippingOptions.add(new ShippingOption(
+                                id, name != null ? name : "", price != null ? price : 0,
+                                estimate != null ? estimate : ""));
                     }
-                    if (methods.isEmpty()) {
-                        // Không có cấu hình → giữ mức mặc định, ẩn danh sách
-                        binding.tvShippingLoading.setVisibility(View.GONE);
-                        binding.rgShippingMethod.setVisibility(View.GONE);
-                        shippingFee = DEFAULT_SHIPPING_FEE;
-                        shippingMethodName = "";
-                        refreshTotals();
+
+                    if (activeShippingOptions.isEmpty()) {
+                        applyFallbackShipping();
                         return;
                     }
-                    // Sắp xếp theo phí tăng dần cho khớp trang admin
-                    methods.sort((a, b) -> Double.compare(feeOf(a), feeOf(b)));
 
                     binding.tvShippingLoading.setVisibility(View.GONE);
-                    binding.rgShippingMethod.setVisibility(View.VISIBLE);
-                    for (int i = 0; i < methods.size(); i++) {
-                        Map<String, Object> m = methods.get(i);
-                        double fee = feeOf(m);
-                        String name = m.get("name") != null ? String.valueOf(m.get("name")) : "";
-                        String eta = m.get("estimatedTime") != null ? String.valueOf(m.get("estimatedTime")) : "";
+                    binding.tvSpxPackage.setVisibility(View.VISIBLE);
 
-                        RadioButton rb = new RadioButton(this);
-                        rb.setId(View.generateViewId());
-                        StringBuilder label = new StringBuilder(name);
-                        label.append("  •  ").append(fee <= 0
-                                ? getString(com.tiredcity.app.R.string.pay_shipping_free) : PriceUtils.format(fee));
-                        if (!eta.isEmpty()) label.append("  •  ").append(eta);
-                        rb.setText(label.toString());
-                        rb.setTextColor(getColor(com.tiredcity.app.R.color.text_primary));
-                        rb.setTextSize(14);
-                        rb.setButtonTintList(android.content.res.ColorStateList.valueOf(
-                                getColor(com.tiredcity.app.R.color.tc_red)));
-                        rb.setTag(fee);
-                        rb.setTag(com.tiredcity.app.R.id.rg_shipping_method, name);
-                        binding.rgShippingMethod.addView(rb);
-                    }
-
-                    binding.rgShippingMethod.setOnCheckedChangeListener((group, checkedId) -> {
-                        RadioButton rb = group.findViewById(checkedId);
-                        if (rb == null) return;
-                        shippingFee = rb.getTag() instanceof Double ? (Double) rb.getTag() : DEFAULT_SHIPPING_FEE;
-                        Object nameTag = rb.getTag(com.tiredcity.app.R.id.rg_shipping_method);
-                        shippingMethodName = nameTag != null ? String.valueOf(nameTag) : "";
-                        refreshTotals();
-                    });
-
-                    // Chọn phương thức rẻ nhất mặc định
-                    ((RadioButton) binding.rgShippingMethod.getChildAt(0)).setChecked(true);
+                    ShippingOption initial = findShippingOptionById(DEFAULT_SHIPPING_ID);
+                    if (initial == null) initial = activeShippingOptions.get(0);
+                    selectShippingOption(initial);
                 })
-                .addOnFailureListener(e -> {
-                    binding.tvShippingLoading.setVisibility(View.GONE);
-                    binding.rgShippingMethod.setVisibility(View.GONE);
-                    shippingFee = DEFAULT_SHIPPING_FEE;
-                    shippingMethodName = "";
+                .addOnFailureListener(e -> applyFallbackShipping());
+    }
+
+    /** Không tải được cấu hình từ Firestore → dùng gói "SPX Cơ bản" mặc định. */
+    private void applyFallbackShipping() {
+        activeShippingOptions.clear();
+        ShippingOption fallback = new ShippingOption(DEFAULT_SHIPPING_ID, "SPX Cơ bản", DEFAULT_SHIPPING_FEE, "");
+        activeShippingOptions.add(fallback);
+        binding.tvShippingLoading.setVisibility(View.GONE);
+        binding.tvSpxPackage.setVisibility(View.VISIBLE);
+        selectShippingOption(fallback);
+    }
+
+    private ShippingOption findShippingOptionById(String id) {
+        for (ShippingOption o : activeShippingOptions) if (o.id.equals(id)) return o;
+        return null;
+    }
+
+    private void selectShippingOption(ShippingOption option) {
+        selectedShippingOption = option;
+        shippingMethodName = option.name;
+        priceCalculator.setShippingFee(option.price);
+
+        String priceText = option.price <= 0
+                ? getString(com.tiredcity.app.R.string.pay_shipping_free) : PriceUtils.format(option.price);
+        binding.tvSpxPackage.setText(option.name + "  •  " + priceText);
+
+        if (option.estimate != null && !option.estimate.isEmpty()) {
+            binding.tvShippingEta.setVisibility(View.VISIBLE);
+            binding.tvShippingEta.setText(
+                    getString(com.tiredcity.app.R.string.pay_shipping_eta, deliveryEtaText(option.estimate)));
+        } else {
+            binding.tvShippingEta.setVisibility(View.GONE);
+        }
+        refreshTotals();
+    }
+
+    /**
+     * Chuyển "estimate" của gói thành ngày dự kiến nhận hàng.
+     * Nếu tính theo ngày (vd "3-5 ngày") thì cộng số ngày lớn nhất vào hôm nay và trả về dd/MM/yyyy;
+     * nếu theo giờ (vd "2 giờ") thì hiển thị "hôm nay". Không đọc được thì giữ nguyên chuỗi gốc.
+     */
+    private String deliveryEtaText(String estimate) {
+        String lower = estimate.toLowerCase(Locale.ROOT);
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)").matcher(lower);
+        int lastNumber = -1;
+        while (m.find()) {
+            try { lastNumber = Integer.parseInt(m.group(1)); } catch (NumberFormatException ignored) {}
+        }
+        if (lower.contains("giờ") || lower.contains("gio")) {
+            return "hôm nay (" + estimate + ")";
+        }
+        if (lastNumber >= 0 && (lower.contains("ngày") || lower.contains("ngay"))) {
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.DAY_OF_YEAR, lastNumber);
+            return new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(cal.getTime());
+        }
+        return estimate;
+    }
+
+    /** Mở bottom sheet cho khách chọn lại 1 trong các gói SPX Express đang bật. */
+    private void showShippingMethodSheet() {
+        if (activeShippingOptions.isEmpty()) return;
+        String selectedId = selectedShippingOption != null ? selectedShippingOption.id : DEFAULT_SHIPPING_ID;
+        ShippingMethodBottomSheet sheet = ShippingMethodBottomSheet.newInstance(
+                new ArrayList<>(activeShippingOptions), selectedId);
+        sheet.setOnShippingSelectedListener(this::selectShippingOption);
+        sheet.show(getSupportFragmentManager(), "shipping_method");
+    }
+
+    /** Hiện Slider Captcha (kéo mảnh ghép); chỉ khi khớp mới cho đặt hàng. */
+    private void showSlideCaptcha(Runnable onVerified) {
+        SlideCaptchaBottomSheet sheet = new SlideCaptchaBottomSheet();
+        sheet.setOnVerifiedListener(onVerified::run);
+        sheet.show(getSupportFragmentManager(), "slide_captcha");
+    }
+
+    /** Hai lựa chọn thanh toán dạng card có hiệu ứng viền + dấu tick khi được chọn. */
+    private void setupPaymentSelector() {
+        binding.optMomo.setOnClickListener(v -> setPaymentMethod("MOMO"));
+        binding.optBank.setOnClickListener(v -> setPaymentMethod("BANK_TRANSFER"));
+        setPaymentMethod(selectedPaymentMethod);
+    }
+
+    private void setPaymentMethod(String method) {
+        selectedPaymentMethod = method;
+        boolean momo = "MOMO".equals(method);
+        binding.optMomo.setSelected(momo);
+        binding.optBank.setSelected(!momo);
+        binding.checkMomo.setVisibility(momo ? View.VISIBLE : View.INVISIBLE);
+        binding.checkBank.setVisibility(momo ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    private void updateVoucherStatusLabel() {
+        String code = priceCalculator.getAppliedVoucherCode();
+        if (code != null) {
+            binding.tvVoucherStatus.setText(getString(com.tiredcity.app.R.string.pay_voucher_applied, code));
+        } else {
+            binding.tvVoucherStatus.setText(com.tiredcity.app.R.string.pay_voucher_hint);
+        }
+    }
+
+    private void showVoucherDialog() {
+        DialogVoucherCodeBinding dialogBinding = DialogVoucherCodeBinding.inflate(getLayoutInflater());
+        String currentCode = priceCalculator.getAppliedVoucherCode();
+        if (currentCode != null) dialogBinding.etVoucherCode.setText(currentCode);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(com.tiredcity.app.R.string.pay_voucher_dialog_title)
+                .setView(dialogBinding.getRoot())
+                .setPositiveButton(com.tiredcity.app.R.string.btn_save, (dialog, which) -> {
+                    String code = dialogBinding.etVoucherCode.getText().toString().trim();
+                    if (code.isEmpty()) {
+                        priceCalculator.clearVoucher();
+                    } else if (!priceCalculator.applyVoucher(code)) {
+                        Toast.makeText(this, com.tiredcity.app.R.string.pay_voucher_invalid, Toast.LENGTH_SHORT).show();
+                    }
+                    updateVoucherStatusLabel();
                     refreshTotals();
-                });
+                })
+                .setNegativeButton(com.tiredcity.app.R.string.btn_cancel, null);
+
+        if (currentCode != null) {
+            builder.setNeutralButton(com.tiredcity.app.R.string.btn_remove_short, (dialog, which) -> {
+                priceCalculator.clearVoucher();
+                updateVoucherStatusLabel();
+                refreshTotals();
+                Toast.makeText(this, com.tiredcity.app.R.string.pay_voucher_removed, Toast.LENGTH_SHORT).show();
+            });
+        }
+        builder.show();
     }
 
-    private double feeOf(Map<String, Object> m) {
-        Object f = m.get("fee");
-        if (f instanceof Number) return ((Number) f).doubleValue();
-        try { return f != null ? Double.parseDouble(String.valueOf(f)) : 0; }
-        catch (NumberFormatException ex) { return 0; }
+    private void showEditRecipientDialog() {
+        DialogEditRecipientBinding dialogBinding = DialogEditRecipientBinding.inflate(getLayoutInflater());
+        UserProfile user = preferenceManager.getUser();
+
+        // Prefill từ hồ sơ đã lưu
+        if (user != null) {
+            dialogBinding.etRecipientName.setText(user.getName());
+            dialogBinding.etRecipientPhone.setText(user.getPhone());
+            dialogBinding.etRecipientAddress.setText(user.getStreet());
+        }
+
+        // Dropdown địa chỉ 3 cấp: Tỉnh → Quận/Huyện → Phường/Xã (tái dùng AddressData)
+        AutoCompleteTextView actProvince = dialogBinding.actProvince;
+        AutoCompleteTextView actDistrict = dialogBinding.actDistrict;
+        AutoCompleteTextView actWard = dialogBinding.actWard;
+
+        setDropdown(actProvince, new ArrayList<>(java.util.Arrays.asList(
+                getResources().getStringArray(com.tiredcity.app.R.array.vn_provinces))));
+
+        actProvince.setOnItemClickListener((parent, v, pos, id) -> {
+            String prov = actProvince.getText().toString();
+            setDropdown(actDistrict, AddressData.getDistricts(prov));
+            actDistrict.setText("", false);
+            setDropdown(actWard, new ArrayList<>());
+            actWard.setText("", false);
+        });
+        actDistrict.setOnItemClickListener((parent, v, pos, id) -> {
+            String prov = actProvince.getText().toString();
+            String dist = actDistrict.getText().toString();
+            setDropdown(actWard, AddressData.getWards(prov, dist));
+            actWard.setText("", false);
+        });
+
+        if (user != null) {
+            actProvince.setText(user.getProvince(), false);
+            setDropdown(actDistrict, AddressData.getDistricts(user.getProvince()));
+            actDistrict.setText(user.getDistrict(), false);
+            setDropdown(actWard, AddressData.getWards(user.getProvince(), user.getDistrict()));
+            actWard.setText(user.getWard(), false);
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(com.tiredcity.app.R.string.pay_edit_recipient_title)
+                .setView(dialogBinding.getRoot())
+                .setPositiveButton(com.tiredcity.app.R.string.btn_save, (dialog, which) -> {
+                    UserProfile p = preferenceManager.getUser();
+                    if (p == null) p = new UserProfile();
+                    p.setName(dialogBinding.etRecipientName.getText().toString().trim());
+                    p.setPhone(dialogBinding.etRecipientPhone.getText().toString().trim());
+                    p.setProvince(actProvince.getText().toString().trim());
+                    p.setDistrict(actDistrict.getText().toString().trim());
+                    p.setWard(actWard.getText().toString().trim());
+                    p.setStreet(dialogBinding.etRecipientAddress.getText().toString().trim());
+                    p.setAddress(p.getFullAddress());
+                    preferenceManager.saveUser(p);
+                    bindRecipientCard();
+                })
+                .setNegativeButton(com.tiredcity.app.R.string.btn_cancel, null)
+                .show();
     }
 
-    private String getSelectedPaymentMethod() {
-        int id = binding.rgPaymentMethod.getCheckedRadioButtonId();
-        if (id == binding.rbBankTransfer.getId()) return "BANK_TRANSFER";
-        if (id == binding.rbMomo.getId())         return "MOMO";
-        return "COD";
+    private void setDropdown(AutoCompleteTextView view, List<String> items) {
+        view.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items));
     }
 
     /**
@@ -181,7 +391,7 @@ public class PaymentActivity extends BaseActivity {
      */
     private void placeOrder(String address, String paymentMethod) {
         binding.btnPlaceOrder.setEnabled(false);
-        List<CartItem> items = cartLocalStore.getCartItems();
+        List<CartItem> items = selectedItems();
 
         if (items == null || items.isEmpty()) {
             binding.btnPlaceOrder.setEnabled(true);
@@ -208,7 +418,9 @@ public class PaymentActivity extends BaseActivity {
             m.put("lineTotal", lineTotal);
             itemList.add(m);
         }
-        double total = subtotal + shippingFee;
+        double shippingFee = priceCalculator.getEffectiveShippingFee();
+        double discount = priceCalculator.getDiscountAmount();
+        double total = priceCalculator.getTotal();
 
         UserProfile user = preferenceManager.getUser();
 
@@ -227,6 +439,8 @@ public class PaymentActivity extends BaseActivity {
         order.put("subTotal", subtotal);
         order.put("shippingFee", shippingFee);
         order.put("shippingMethod", shippingMethodName);
+        order.put("discountAmount", discount);
+        order.put("voucherCode", priceCalculator.getAppliedVoucherCode());
         order.put("totalPrice", total);
         order.put("status", "pending");
         order.put("paymentMethod", paymentMethod);
@@ -238,7 +452,9 @@ public class PaymentActivity extends BaseActivity {
                 .collection("orders")
                 .add(order)
                 .addOnSuccessListener(ref -> {
-                    cartLocalStore.clearCart();
+                    for (CartItem item : items) {
+                        if (item.getProduct() != null) cartLocalStore.removeItem(item.getProduct().getId());
+                    }
                     Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
                     intent.putExtra("order_id", ref.getId());
                     startActivity(intent);

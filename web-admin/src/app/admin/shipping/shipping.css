@@ -107,11 +107,56 @@
     border-radius: 14px;
     padding: 18px 20px;
     box-shadow: var(--shadow-sm);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-top: 3px solid var(--tc-red);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    border-top: 3px solid #EE4D2D;
+    display: flex;
+    flex-direction: column;
 }
 
 .sh-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.sh-card.sh-off { opacity: 0.62; }
+
+/* Active / inactive badge */
+.sh-status {
+    padding: 4px 11px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+.sh-status.on { background: rgba(74, 107, 58, 0.14); color: #4A6B3A; }
+.sh-status.off { background: rgba(168, 13, 21, 0.12); color: var(--tc-red); }
+
+.btn-edit-full {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 16px;
+    background: #FCE4DE;
+    color: #C93D22;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.2s ease;
+}
+.btn-edit-full:hover { border-color: #EE4D2D; transform: translateY(-1px); }
+.btn-edit-full svg { width: 16px; height: 16px; }
+
+.field-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 4px 2px;
+}
+.field-switch input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #EE4D2D; }
 
 .sh-top {
     display: flex;
@@ -127,8 +172,8 @@
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    background: var(--tc-red-soft);
-    color: var(--tc-red);
+    background: #FCE4DE;
+    color: #EE4D2D;
 }
 
 .sh-icon svg { width: 22px; height: 22px; }
@@ -164,7 +209,7 @@
     display: inline-block;
     font-size: 1.1rem;
     font-weight: 800;
-    color: var(--tc-red);
+    color: #EE4D2D;
     margin-bottom: 12px;
 }
 
@@ -184,7 +229,7 @@
     font-weight: 500;
 }
 
-.sh-meta-item svg { width: 15px; height: 15px; color: var(--tc-red); flex-shrink: 0; }
+.sh-meta-item svg { width: 15px; height: 15px; color: #EE4D2D; flex-shrink: 0; }
 
 .sh-desc {
     margin: 0;
@@ -278,6 +323,119 @@
     padding: 16px 22px;
     border-top: 1px solid var(--border);
 }
+
+/* ─── Sections ─── */
+.sh-section { margin-bottom: 30px; }
+
+.sh-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+}
+
+.sh-section-tag {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--tc-red-soft);
+    color: var(--tc-red);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+/* ─── Section 1: pick-up points ─── */
+.pickup-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+}
+
+.pickup-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.pickup-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.pickup-card.active { border-color: var(--tc-red); background: var(--tc-red-tint); }
+
+.pickup-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--tc-red-soft);
+    color: var(--tc-red);
+    flex-shrink: 0;
+}
+.pickup-icon svg { width: 22px; height: 22px; }
+
+.pickup-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+
+.pickup-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pickup-name { font-size: 0.98rem; font-weight: 700; color: var(--text-primary); }
+
+.pickup-default {
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--tc-red-soft);
+    color: var(--tc-red);
+    font-size: 0.66rem;
+    font-weight: 700;
+}
+
+.pickup-addr { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+
+.pickup-radio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    color: #fff;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+.pickup-radio.on { background: var(--tc-red); border-color: var(--tc-red); }
+.pickup-radio svg { width: 14px; height: 14px; }
+
+/* ─── Section 3: general settings ─── */
+.settings-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 620px;
+    padding: 20px 22px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+}
+
+.settings-foot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+.saved-hint { font-size: 0.82rem; font-weight: 700; color: #4A6B3A; }
 
 @media (max-width: 560px) {
     .field-row { flex-direction: column; }
