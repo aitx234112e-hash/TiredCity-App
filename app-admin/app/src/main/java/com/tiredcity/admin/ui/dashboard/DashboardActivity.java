@@ -88,17 +88,23 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void openModule(AdminModule m) {
         Intent i;
-        if (m == AdminModule.REVENUE) {
-            i = new Intent(this, RevenueActivity.class);
-        } else if (m == AdminModule.REPORTS) {
-            i = new Intent(this, ReportsActivity.class);
-        } else if (m == AdminModule.CHATBOT) {
-            i = new Intent(this, ChatbotActivity.class);
-        } else if (m == AdminModule.SHIPPING) {
-            i = new Intent(this, ShippingConfigActivity.class);
-        } else {
-            i = new Intent(this, ModuleListActivity.class);
-            i.putExtra(ModuleListActivity.EXTRA_MODULE, m.name());
+        switch (m) {
+            case REVENUE:
+                i = new Intent(this, RevenueActivity.class);
+                break;
+            case REPORTS:
+                i = new Intent(this, ReportsActivity.class);
+                break;
+            case CHATBOT:
+                i = new Intent(this, ChatbotActivity.class);
+                break;
+            case SHIPPING:
+                i = new Intent(this, ShippingConfigActivity.class);
+                break;
+            default:
+                i = new Intent(this, ModuleListActivity.class);
+                i.putExtra(ModuleListActivity.EXTRA_MODULE, m.name());
+                break;
         }
         startActivity(i);
     }
@@ -108,20 +114,21 @@ public class DashboardActivity extends AppCompatActivity {
         binding.swipeRefresh.setRefreshing(true);
 
         db.collection("orders").get().addOnSuccessListener(snap -> {
-            double revenue = 0;
+            double totalRev = 0;
             int pending = 0;
             for (QueryDocumentSnapshot d : snap) {
-                revenue += DocUtils.num(d, "totalPrice", "total", "amount");
+                totalRev += DocUtils.num(d, "totalPrice", "total", "amount");
                 if ("pending".equalsIgnoreCase(DocUtils.str(d, "status"))) pending++;
             }
-            binding.tvRevenue.setText(DocUtils.money(revenue));
+            binding.tvRevenue.setText(DocUtils.money(totalRev));
             binding.tvOrders.setText(String.valueOf(snap.size()));
             binding.tvPending.setText(getString(R.string.dashboard_pending_fmt, pending));
             binding.swipeRefresh.setRefreshing(false);
         }).addOnFailureListener(e -> binding.swipeRefresh.setRefreshing(false));
 
         db.collection("users").get()
-                .addOnSuccessListener(snap -> binding.tvCustomers.setText(String.valueOf(snap.size())));
+                .addOnSuccessListener(snap -> binding.tvCustomers.setText(String.valueOf(snap.size())))
+                .addOnFailureListener(e -> {});
     }
 
     /** VD: "Thứ Sáu, 03/07/2026". */

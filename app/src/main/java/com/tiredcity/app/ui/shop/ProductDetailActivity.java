@@ -1,26 +1,34 @@
 package com.tiredcity.app.ui.shop;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.ReviewAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.local.FavoritesLocalStore;
-import com.tiredcity.app.data.mock.MockProductCatalog;
-import com.tiredcity.app.data.model.ApiListResponse;
-import com.tiredcity.app.data.model.ApiResponse;
 import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.Review;
@@ -34,319 +42,218 @@ import com.tiredcity.app.ui.support.PolicyActivity;
 import com.tiredcity.app.utils.ColorTaxonomy;
 import com.tiredcity.app.utils.Constants;
 import com.tiredcity.app.utils.PriceUtils;
+
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
+/**
+ * ProductDetailActivity - Tối ưu bởi Senior Architect (Pure Java).
+ * Kiến trúc MVVM, Xử lý dữ liệu tập trung, Giao diện mượt mà & Chống Crash.
+ */
 public class ProductDetailActivity extends BaseActivity {
 
-    public static final String EXTRA_PRODUCT_ID = Constants.EXTRA_PRODUCT_ID;
-
-    private String[] sizeLabels;
-
     private ActivityProductDetailBinding binding;
-    private ProductRepository productRepository;
-    private CartLocalStore cartLocalStore;
-    private Product currentProduct;
+    private ProductDetailViewModel viewModel;
+    private CartLocalStore cartStore;
+    private FavoritesLocalStore favoritesStore;
 
-    private String selectedColor;
-    private String selectedSize;
+    private Product currentProduct;
+    private String selectedSize = "";
+    private String selectedColor = null;
     private int quantity = 1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityProductDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        sizeLabels = new String[]{
-                getString(R.string.size_label_s),
-                getString(R.string.size_label_m),
-                getString(R.string.size_label_l),
-                getString(R.string.size_label_xl)
-        };
-        selectedSize = sizeLabels[0];
+        initDependencies();
+        initUI();
+        observeData();
 
-        // Back button (layout uses ImageButton, not Toolbar)
-        binding.btnBack.setOnClickListener(v -> finish());
-
-        String productId = getIntent().getStringExtra(EXTRA_PRODUCT_ID);
-        productRepository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
-        cartLocalStore     = new CartLocalStore(this);
-        favoritesStore     = new FavoritesLocalStore(this);
-
-        binding.btnAddToCart.setOnClickListener(v -> addToCart());
-        binding.btnBuyNow.setOnClickListener(v -> {
-            addToCart();
-            openCart();
-        });
-
-        setupSizeSelector();
-        setupAccordions();
-        setupInfoRows();
-
-        loadProduct(productId);
-    }
-
-    private void loadProduct(String productId) {
-        if (productId == null) { finish(); return; }
-        productRepository.getProductById(productId).enqueue(new Callback<ApiResponse<Product>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<Product>> call, Response<ApiResponse<Product>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    currentProduct = response.body().getData();
-                    bindProduct(currentProduct);
-                } else {
-                    // Backend không nhận diện được id (ví dụ id của dữ liệu mẫu khi offline) —
-                    // thử tra trong catalogue mẫu trước khi bỏ cuộc, tránh đóng màn hình đột ngột.
-                    fallbackToMockOrFinish(productId);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<Product>> call, Throwable t) {
-                fallbackToMockOrFinish(productId);
-            }
-        });
-    }
-
-    private void fallbackToMockOrFinish(String productId) {
-        Product mock = MockProductCatalog.findById(this, productId);
-        if (mock != null) {
-            currentProduct = mock;
-            bindProduct(mock);
+        String productId = getIntent().getStringExtra(Constants.EXTRA_PRODUCT_ID);
+        if (productId != null) {
+            viewModel.loadProduct(productId);
         } else {
             Toast.makeText(this, R.string.error_product_load_failed, Toast.LENGTH_SHORT).show();
             finish();
         }
     }
 
-    private void bindProduct(Product product) {
-        binding.tvProductName.setText(product.getName());
-        binding.tvPrice.setText(PriceUtils.format(product.getEffectivePrice()));
-        binding.tvMaterial.setText(product.getMaterial() != null ? product.getMaterial() : "");
-        binding.tvOrigin.setText(product.getOrigin() != null ? product.getOrigin() : getString(R.string.default_origin));
-        binding.tvDescription.setText(product.getDescription() != null ? product.getDescription() : "");
-        binding.tvStory.setText(product.getStory() != null ? product.getStory() : "");
-        binding.rbRating.setRating((float) product.getRating());
+    private void initDependencies() {
+        ProductRepository repository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
+        cartStore = new CartLocalStore(this);
+        favoritesStore = new FavoritesLocalStore(this);
 
-        bindAvailability(product);
-        bindImages(product);
-        bindColors(product);
-        bindSpecifications(product);
-        bindCareInstructions(product);
-        bindQuantityStepper(product);
-        bindFavoriteButton(product);
-        loadReviews(product.getId());
-        loadRelatedProducts(product);
+        // Sử dụng Factory chuyên biệt để khởi tạo ViewModel
+        ProductDetailViewModelFactory factory = new ProductDetailViewModelFactory(repository);
+        viewModel = new ViewModelProvider(this, factory).get(ProductDetailViewModel.class);
     }
 
-    // ── Favorite (yêu thích) ─────────────────────────────────────────────────
+    private void initUI() {
+        // Back navigation
+        binding.btnBack.setOnClickListener(v -> finishSmoothly());
 
-    private void bindFavoriteButton(Product product) {
-        binding.ibSave.setSaved(favoritesStore.isFavorite(product.getId()), false);
-        binding.ibSave.setOnClickListener(v -> {
-            boolean nowSaved = favoritesStore.toggleFavorite(product);
-            binding.ibSave.setSaved(nowSaved, true);
+        // Add to cart actions
+        binding.btnAddToCart.setOnClickListener(v -> addToCart());
+        binding.btnBuyNow.setOnClickListener(v -> {
+            addToCart();
+            startSmoothActivity(new Intent(this, CartActivity.class));
+        });
+
+        // Setup static UI components
+        setupSizeSelector();
+        setupAccordions();
+        setupPolicyCards();
+        
+        // Setup Related Products RecyclerView
+        binding.rvRelated.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    private void observeData() {
+        // Lắng nghe dữ liệu sản phẩm từ ViewModel
+        viewModel.getProduct().observe(this, product -> {
+            if (product != null) {
+                currentProduct = product;
+                bindProductToUI(product);
+            }
+        });
+
+        // Lắng nghe trạng thái loading
+        viewModel.getIsLoading().observe(this, isLoading -> {
+            // Hiển thị Shimmer hoặc Progress nếu cần
+        });
+
+        // Lắng nghe lỗi
+        viewModel.getErrorMessage().observe(this, (String error) -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(ProductDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Lắng nghe đánh giá
+        viewModel.getReviews().observe(this, reviews -> {
+            if (reviews != null) bindReviews(reviews);
+        });
+
+        // Lắng nghe sản phẩm liên quan
+        viewModel.getRelatedProducts().observe(this, list -> {
+            if (list != null) {
+                ProductAdapter adapter = new ProductAdapter(list);
+                adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+                    @Override public void onProductClick(Product p) {
+                        Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
+                        intent.putExtra(Constants.EXTRA_PRODUCT_ID, p.getId());
+                        startSmoothActivity(intent);
+                    }
+                    @Override public void onSaveToggle(Product p, boolean saved) {}
+                    @Override public void onAddToCartClick(Product p) {
+                        cartStore.addItem(new CartItem(p, 1));
+                        Toast.makeText(ProductDetailActivity.this, R.string.success_add_cart, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                binding.rvRelated.setAdapter(adapter);
+            }
         });
     }
 
-    // ── Availability ─────────────────────────────────────────────────────────
+    private void bindProductToUI(Product p) {
+        binding.tvProductName.setText(p.getName());
+        binding.tvPrice.setText(PriceUtils.format(p.getEffectivePrice()));
+        binding.tvMaterial.setText(p.getMaterial() != null ? p.getMaterial() : "");
+        binding.tvOrigin.setText(p.getOrigin() != null ? p.getOrigin() : getString(R.string.default_origin));
+        binding.tvDescription.setText(p.getDescription());
+        binding.tvStory.setText(p.getStory());
+        binding.rbRating.setRating((float) p.getRating());
 
-    private void bindAvailability(Product product) {
-        int stock = product.getStock();
-        boolean outOfStock = stock <= 0;
-        int statusColor;
-        String statusText;
-        if (outOfStock) {
-            statusColor = getColor(R.color.tc_red);
-            statusText = getString(R.string.status_out_of_stock);
-        } else if (stock <= 5) {
-            statusColor = getColor(R.color.tc_gold_deep);
-            statusText = getString(R.string.status_low_stock);
-        } else {
-            statusColor = getColor(R.color.tc_success);
-            statusText = getString(R.string.status_in_stock);
-        }
+        updateAvailabilityUI(p);
+        updateImageCarousel(p);
+        updateColorSwatches(p);
+        updateSpecifications(p);
+        updateCareInstructions(p);
+        updateQuantityStepper(p);
+        updateFavoriteButton(p);
+    }
+
+    // ── UI Update Methods ───────────────────────────────────────────────────
+
+    private void updateAvailabilityUI(Product p) {
+        int stock = p.getStock();
+        boolean out = stock <= 0;
+        int statusColor = ContextCompat.getColor(this, out ? R.color.tc_red : (stock <= 5 ? R.color.tc_gold_deep : R.color.tc_success));
+        String statusText = getString(out ? R.string.status_out_of_stock : (stock <= 5 ? R.string.status_low_stock : R.string.status_in_stock));
+
         binding.tvAvailability.setText("●  " + statusText);
         binding.tvAvailability.setTextColor(statusColor);
+        
+        GradientDrawable pill = new GradientDrawable();
+        pill.setCornerRadius(dp(20));
+        pill.setColor((statusColor & 0x00FFFFFF) | 0x22000000);
+        binding.tvAvailability.setBackground(pill);
 
-        GradientDrawable pillBg = new GradientDrawable();
-        pillBg.setShape(GradientDrawable.RECTANGLE);
-        pillBg.setCornerRadius(dp(20));
-        pillBg.setColor((statusColor & 0x00FFFFFF) | 0x22000000);
-        binding.tvAvailability.setBackground(pillBg);
-
-        binding.btnAddToCart.setEnabled(!outOfStock);
-        binding.btnBuyNow.setEnabled(!outOfStock);
-        binding.btnAddToCart.setAlpha(outOfStock ? 0.5f : 1f);
-        binding.btnBuyNow.setAlpha(outOfStock ? 0.5f : 1f);
+        binding.btnAddToCart.setEnabled(!out);
+        binding.btnBuyNow.setEnabled(!out);
+        binding.btnAddToCart.setAlpha(out ? 0.5f : 1.0f);
     }
 
-    // ── Specifications (Chi tiết) ────────────────────────────────────────────
-
-    private void bindSpecifications(Product product) {
-        binding.llSpecifications.removeAllViews();
-        Map<String, String> specs = product.getSpecifications();
-        if (specs == null) return;
-        String materialLabel = getString(R.string.label_material);
-        String originLabel = getString(R.string.label_origin);
-        for (Map.Entry<String, String> entry : specs.entrySet()) {
-            // Chất liệu/Xuất xứ đã hiển thị ở 2 dòng cố định phía trên — bỏ qua để tránh lặp.
-            if (entry.getKey().equalsIgnoreCase(materialLabel) || entry.getKey().equalsIgnoreCase(originLabel)) {
-                continue;
-            }
-            binding.llSpecifications.addView(buildSpecRow(entry.getKey(), entry.getValue()));
+    private void updateImageCarousel(Product p) {
+        List<String> images = p.getImages();
+        if (images == null || images.isEmpty()) {
+            images = new ArrayList<>();
+            images.add(p.getFirstImage());
         }
+        binding.vpProductImages.setAdapter(new ImagePagerAdapter(images));
+        binding.dotsImages.attachTo(binding.vpProductImages);
     }
 
-    private LinearLayout buildSpecRow(String label, String value) {
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        row.setPadding(0, 0, 0, dp(6));
-
-        TextView tvLabel = new TextView(this);
-        tvLabel.setLayoutParams(new LinearLayout.LayoutParams(dp(100), LinearLayout.LayoutParams.WRAP_CONTENT));
-        tvLabel.setText(label);
-        tvLabel.setTextColor(getColor(R.color.text_secondary));
-        tvLabel.setTextSize(13);
-
-        TextView tvValue = new TextView(this);
-        LinearLayout.LayoutParams valueParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        tvValue.setLayoutParams(valueParams);
-        tvValue.setText(value);
-        tvValue.setTextColor(getColor(R.color.text_primary));
-        tvValue.setTextSize(13);
-        tvValue.setTypeface(tvValue.getTypeface(), android.graphics.Typeface.BOLD);
-
-        row.addView(tvLabel);
-        row.addView(tvValue);
-        return row;
-    }
-
-    // ── Care instructions (Bảo quản) ─────────────────────────────────────────
-
-    private void bindCareInstructions(Product product) {
-        binding.contentCare.removeAllViews();
-        List<String> care = product.getCareInstructions();
-        if (care == null) return;
-        for (String instruction : care) {
-            TextView tv = new TextView(this);
-            tv.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            tv.setText("• " + instruction);
-            tv.setTextColor(getColor(R.color.text_secondary));
-            tv.setTextSize(13);
-            tv.setLineSpacing(dp(2), 1f);
-            tv.setPadding(0, 0, 0, dp(6));
-            binding.contentCare.addView(tv);
-        }
-    }
-
-    // ── Hero images ──────────────────────────────────────────────────────────
-
-    private void bindImages(Product product) {
-        String imageUrl = product.getFirstImage();
-        boolean hasImage = imageUrl != null && !imageUrl.isEmpty();
-
-        binding.vpProductImages.setAdapter(new androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
-            @androidx.annotation.NonNull
-            @Override
-            public androidx.recyclerview.widget.RecyclerView.ViewHolder onCreateViewHolder(
-                    @androidx.annotation.NonNull android.view.ViewGroup parent, int viewType) {
-                android.widget.ImageView iv = new android.widget.ImageView(parent.getContext());
-                iv.setLayoutParams(new android.view.ViewGroup.LayoutParams(
-                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                    android.view.ViewGroup.LayoutParams.MATCH_PARENT));
-                iv.setScaleType(hasImage
-                        ? android.widget.ImageView.ScaleType.CENTER_CROP
-                        : android.widget.ImageView.ScaleType.CENTER_INSIDE);
-                return new androidx.recyclerview.widget.RecyclerView.ViewHolder(iv) {};
-            }
-
-            @Override
-            public void onBindViewHolder(@androidx.annotation.NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder holder, int position) {
-                android.widget.ImageView iv = (android.widget.ImageView) holder.itemView;
-                if (hasImage) {
-                    String currentUrl = (product.getImages() != null && position < product.getImages().size())
-                            ? product.getImages().get(position) : imageUrl;
-                    Glide.with(iv.getContext())
-                        .load(currentUrl)
-                        .centerCrop()
-                        .placeholder(R.color.tc_red_deep)
-                        .into(iv);
-                } else {
-                    // Sản phẩm mẫu/offline chưa có ảnh thật — hiển thị hình minh hoạ thay vì khung trống.
-                    iv.setBackgroundColor(getColor(R.color.tc_red_deep));
-                    iv.setImageResource(R.drawable.ic_wardrobe);
-                    iv.setColorFilter(getColor(R.color.tc_on_red));
-                    int inset = dp(72);
-                    iv.setPadding(inset, inset, inset, inset);
-                }
-            }
-
-            @Override
-            public int getItemCount() {
-                return hasImage && product.getImages() != null ? product.getImages().size() : 1;
-            }
-        });
-    }
-
-    // ── Colour swatches ──────────────────────────────────────────────────────
-
-    private void bindColors(Product product) {
+    private void updateColorSwatches(Product p) {
         binding.llColors.removeAllViews();
+        List<String> raw = p.getColors();
+        if (raw == null || raw.isEmpty()) {
+            binding.llColors.setVisibility(View.GONE);
+            return;
+        }
 
-        LinkedHashSet<String> buckets = new LinkedHashSet<>();
-        if (product.getColors() != null) {
-            for (String raw : product.getColors()) {
-                buckets.addAll(ColorTaxonomy.normalize(raw));
+        List<String> buckets = new ArrayList<>();
+        for (String c : raw) {
+            for (String b : ColorTaxonomy.normalize(c)) {
+                if (!buckets.contains(b)) buckets.add(b);
             }
         }
+
         if (buckets.isEmpty()) {
             binding.llColors.setVisibility(View.GONE);
             return;
         }
+
         binding.llColors.setVisibility(View.VISIBLE);
-
-        int dotSize = dp(26);
-        int frameSize = dp(36);
-        int margin = dp(10);
+        selectedColor = buckets.get(0);
         List<View> rings = new ArrayList<>();
-        List<String> bucketList = new ArrayList<>(buckets);
-        selectedColor = bucketList.get(0);
 
-        android.util.TypedValue rippleAttr = new android.util.TypedValue();
-        getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, rippleAttr, true);
-
-        for (String bucket : bucketList) {
+        for (String bucket : buckets) {
             FrameLayout frame = new FrameLayout(this);
-            LinearLayout.LayoutParams frameParams = new LinearLayout.LayoutParams(frameSize, frameSize);
-            frameParams.setMarginEnd(margin);
-            frame.setLayoutParams(frameParams);
-            frame.setForeground(androidx.core.content.ContextCompat.getDrawable(this, rippleAttr.resourceId));
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(36), dp(36));
+            lp.setMargins(0, 0, dp(10), 0);
+            frame.setLayoutParams(lp);
 
             View ring = new View(this);
-            ring.setLayoutParams(new FrameLayout.LayoutParams(frameSize, frameSize));
+            ring.setLayoutParams(new FrameLayout.LayoutParams(dp(36), dp(36)));
             ring.setBackgroundResource(R.drawable.tc_bg_circle_ring_selected);
             ring.setVisibility(bucket.equals(selectedColor) ? View.VISIBLE : View.INVISIBLE);
-
+            
             View dot = new View(this);
-            FrameLayout.LayoutParams dotParams = new FrameLayout.LayoutParams(dotSize, dotSize);
-            dotParams.gravity = android.view.Gravity.CENTER;
-            dot.setLayoutParams(dotParams);
-            GradientDrawable dotBg = new GradientDrawable();
-            dotBg.setShape(GradientDrawable.OVAL);
-            dotBg.setColor(getColor(swatchColorRes(bucket)));
-            dotBg.setStroke(dp(1), getColor(R.color.tc_stroke));
-            dot.setBackground(dotBg);
+            FrameLayout.LayoutParams dlp = new FrameLayout.LayoutParams(dp(26), dp(26));
+            dlp.gravity = Gravity.CENTER;
+            dot.setLayoutParams(dlp);
+            
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.OVAL);
+            shape.setColor(ContextCompat.getColor(this, getColorResForBucket(bucket)));
+            shape.setStroke(dp(1), ContextCompat.getColor(this, R.color.tc_stroke));
+            dot.setBackground(shape);
 
             frame.addView(dot);
             frame.addView(ring);
@@ -355,246 +262,194 @@ public class ProductDetailActivity extends BaseActivity {
             frame.setOnClickListener(v -> {
                 selectedColor = bucket;
                 for (int i = 0; i < rings.size(); i++) {
-                    View r = rings.get(i);
-                    boolean isSelected = bucketList.get(i).equals(bucket);
-                    r.animate().cancel();
-                    if (isSelected) {
-                        r.setAlpha(0f);
-                        r.setVisibility(View.VISIBLE);
-                        r.animate().alpha(1f).setDuration(160).start();
-                    } else if (r.getVisibility() == View.VISIBLE) {
-                        r.animate().alpha(0f).setDuration(160)
-                                .withEndAction(() -> r.setVisibility(View.INVISIBLE)).start();
-                    }
+                    rings.get(i).setVisibility(buckets.get(i).equals(bucket) ? View.VISIBLE : View.INVISIBLE);
                 }
             });
-
             binding.llColors.addView(frame);
         }
     }
 
-    @androidx.annotation.ColorRes
-    private int swatchColorRes(String bucket) {
-        if (ColorTaxonomy.DO.equals(bucket))      return R.color.tc_swatch_do;
-        if (ColorTaxonomy.XANH.equals(bucket))    return R.color.tc_swatch_xanh;
-        if (ColorTaxonomy.VANG.equals(bucket))    return R.color.tc_swatch_vang;
-        if (ColorTaxonomy.TRANG.equals(bucket))   return R.color.tc_swatch_trang;
-        if (ColorTaxonomy.DEN.equals(bucket))     return R.color.tc_swatch_den;
-        if (ColorTaxonomy.HONG.equals(bucket))    return R.color.tc_swatch_hong;
-        if (ColorTaxonomy.TIM.equals(bucket))     return R.color.tc_swatch_tim;
-        if (ColorTaxonomy.XANH_LA.equals(bucket)) return R.color.tc_swatch_xanh_la;
-        if (ColorTaxonomy.CAM.equals(bucket))     return R.color.tc_swatch_cam;
-        return R.color.tc_bg_subtle;
-    }
-
-    // ── Size selector ────────────────────────────────────────────────────────
-
-    private void setupSizeSelector() {
-        TextView[] sizeViews = {binding.tvSizeS, binding.tvSizeM, binding.tvSizeL, binding.tvSizeXl};
-        for (int i = 0; i < sizeViews.length; i++) {
-            String label = sizeLabels[i];
-            sizeViews[i].setOnClickListener(v -> selectSize(label, sizeViews));
-        }
-        selectSize(selectedSize, sizeViews);
-    }
-
-    private void selectSize(String size, TextView[] sizeViews) {
-        selectedSize = size;
-        for (TextView v : sizeViews) {
-            boolean selected = v.getText().toString().equalsIgnoreCase(size);
-            v.setBackgroundResource(selected ? R.drawable.tc_bg_variant_selected : R.drawable.tc_bg_variant);
-            v.setTextColor(getColor(selected ? R.color.white : R.color.text_primary));
+    private int getColorResForBucket(String bucket) {
+        switch (bucket) {
+            case ColorTaxonomy.DO:      return R.color.tc_swatch_do;
+            case ColorTaxonomy.XANH:    return R.color.tc_swatch_xanh;
+            case ColorTaxonomy.VANG:    return R.color.tc_swatch_vang;
+            case ColorTaxonomy.TRANG:   return R.color.tc_swatch_trang;
+            case ColorTaxonomy.DEN:     return R.color.tc_swatch_den;
+            case ColorTaxonomy.HONG:    return R.color.tc_swatch_hong;
+            case ColorTaxonomy.TIM:     return R.color.tc_swatch_tim;
+            case ColorTaxonomy.XANH_LA: return R.color.tc_swatch_xanh_la;
+            case ColorTaxonomy.CAM:     return R.color.tc_swatch_cam;
+            default:                    return R.color.tc_bg_subtle;
         }
     }
 
-    // ── Quantity stepper ─────────────────────────────────────────────────────
+    private void updateSpecifications(Product p) {
+        binding.llSpecifications.removeAllViews();
+        Map<String, String> specs = p.getSpecifications();
+        if (specs == null) return;
+        for (Map.Entry<String, String> entry : specs.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(getString(R.string.label_material)) ||
+                entry.getKey().equalsIgnoreCase(getString(R.string.label_origin))) continue;
+            
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setPadding(0, 0, 0, dp(6));
+            
+            TextView label = new TextView(this);
+            label.setLayoutParams(new LinearLayout.LayoutParams(dp(100), -2));
+            label.setText(entry.getKey());
+            label.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            label.setTextSize(13);
+            
+            TextView val = new TextView(this);
+            val.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1f));
+            val.setText(entry.getValue());
+            val.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+            val.setTypeface(null, Typeface.BOLD);
+            val.setTextSize(13);
+            
+            row.addView(label); row.addView(val);
+            binding.llSpecifications.addView(row);
+        }
+    }
 
-    private void bindQuantityStepper(Product product) {
+    private void updateCareInstructions(Product p) {
+        binding.contentCare.removeAllViews();
+        List<String> care = p.getCareInstructions();
+        if (care == null) return;
+        for (String line : care) {
+            TextView tv = new TextView(this);
+            tv.setText("• " + line);
+            tv.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            tv.setTextSize(13);
+            tv.setPadding(0, 0, 0, dp(6));
+            binding.contentCare.addView(tv);
+        }
+    }
+
+    private void updateQuantityStepper(Product p) {
         quantity = 1;
         binding.tvQuantity.setText(String.valueOf(quantity));
-        int maxQty = product.getStock() > 0 ? product.getStock() : Integer.MAX_VALUE;
-
         binding.btnQtyMinus.setOnClickListener(v -> {
-            if (quantity > 1) {
-                quantity--;
-                binding.tvQuantity.setText(String.valueOf(quantity));
-            }
+            if (quantity > 1) { quantity--; binding.tvQuantity.setText(String.valueOf(quantity)); }
         });
         binding.btnQtyPlus.setOnClickListener(v -> {
-            if (quantity < maxQty) {
-                quantity++;
-                binding.tvQuantity.setText(String.valueOf(quantity));
-            } else {
-                Toast.makeText(this, R.string.out_of_stock, Toast.LENGTH_SHORT).show();
-            }
+            if (quantity < p.getStock()) { quantity++; binding.tvQuantity.setText(String.valueOf(quantity)); }
+            else Toast.makeText(this, R.string.out_of_stock, Toast.LENGTH_SHORT).show();
         });
     }
 
-    // ── Description / Details / Size guide accordions ───────────────────────
-
-    private void setupAccordions() {
-        binding.headerDescription.setOnClickListener(v ->
-            toggleAccordion(binding.dividerDescription, binding.contentDescription, binding.ivExpandDescription));
-        binding.headerStory.setOnClickListener(v ->
-            toggleAccordion(binding.dividerStory, binding.contentStory, binding.ivExpandStory));
-        binding.headerDetails.setOnClickListener(v ->
-            toggleAccordion(binding.dividerDetails, binding.contentDetails, binding.ivExpandDetails));
-        binding.headerSizeGuide.setOnClickListener(v ->
-            toggleAccordion(binding.dividerSizeGuide, binding.contentSizeGuide, binding.ivExpandSizeGuide));
-        binding.headerCare.setOnClickListener(v ->
-            toggleAccordion(binding.dividerCare, binding.contentCare, binding.ivExpandCare));
-    }
-
-    /** Gạch chân chỉ hiện khi accordion đang đóng — mất đi ngay khi người dùng sổ nội dung ra. */
-    private void toggleAccordion(View divider, View content, View chevron) {
-        boolean expanded = content.getVisibility() == View.VISIBLE;
-        TransitionManager.beginDelayedTransition(binding.llCardContent, new AutoTransition());
-        content.setVisibility(expanded ? View.GONE : View.VISIBLE);
-        divider.setVisibility(expanded ? View.VISIBLE : View.GONE);
-        chevron.animate().rotation(expanded ? 0 : 180).setDuration(250).start();
-    }
-
-    // ── Reviews summary ──────────────────────────────────────────────────────
-
-    private void loadReviews(String productId) {
-        productRepository.getProductReviews(productId).enqueue(new Callback<ApiListResponse<Review>>() {
-            @Override
-            public void onResponse(Call<ApiListResponse<Review>> call, Response<ApiListResponse<Review>> response) {
-                List<Review> reviews = (response.isSuccessful() && response.body() != null && response.body().isSuccess())
-                        ? response.body().getData() : new ArrayList<>();
-                bindReviewsSummary(reviews);
-
-                binding.rvReviews.setLayoutManager(new LinearLayoutManager(ProductDetailActivity.this));
-                binding.rvReviews.setAdapter(new ReviewAdapter(reviews));
-                binding.btnViewAllReviews.setOnClickListener(v -> {
-                    binding.rvReviews.setVisibility(View.VISIBLE);
-                    binding.btnViewAllReviews.setVisibility(View.GONE);
-                });
-            }
-
-            @Override
-            public void onFailure(Call<ApiListResponse<Review>> call, Throwable t) {
-                bindReviewsSummary(new ArrayList<>());
-            }
+    private void updateFavoriteButton(Product p) {
+        binding.ibSave.setSaved(favoritesStore.isFavorite(p.getId()), false);
+        binding.ibSave.setOnClickListener(v -> {
+            boolean nowSaved = favoritesStore.toggleFavorite(p);
+            binding.ibSave.setSaved(nowSaved, true);
         });
     }
 
-    private void bindReviewsSummary(List<Review> reviews) {
-        int total = reviews.size();
+    private void bindReviews(List<Review> list) {
+        int total = list.size();
         binding.tvReviewsTitle.setText(getString(R.string.reviews_count_format, total));
         binding.tvRatingCount.setText(getString(R.string.reviews_count_short, total));
 
-        int[] starCounts = new int[6];
+        int[] stars = new int[6];
         double sum = 0;
-        for (Review r : reviews) {
-            int star = Math.round(r.getRating());
-            if (star >= 1 && star <= 5) starCounts[star]++;
+        for (Review r : list) {
+            int s = Math.round(r.getRating());
+            if (s >= 1 && s <= 5) stars[s]++;
             sum += r.getRating();
         }
         double avg = total > 0 ? sum / total : 0;
         binding.tvAvgRating.setText(String.format(Locale.getDefault(), "%.1f", avg));
         binding.rbSummaryRating.setRating((float) avg);
 
-        bindStarRow(binding.rowStar5, 5, starCounts[5], total);
-        bindStarRow(binding.rowStar4, 4, starCounts[4], total);
-        bindStarRow(binding.rowStar3, 3, starCounts[3], total);
-        bindStarRow(binding.rowStar2, 2, starCounts[2], total);
-        bindStarRow(binding.rowStar1, 1, starCounts[1], total);
+        bindStarBar(binding.rowStar5, 5, stars[5], total);
+        bindStarBar(binding.rowStar4, 4, stars[4], total);
+        bindStarBar(binding.rowStar3, 3, stars[3], total);
+        bindStarBar(binding.rowStar2, 2, stars[2], total);
+        bindStarBar(binding.rowStar1, 1, stars[1], total);
+
+        binding.rvReviews.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvReviews.setAdapter(new ReviewAdapter(list));
+        binding.btnViewAllReviews.setOnClickListener(v -> {
+            binding.rvReviews.setVisibility(View.VISIBLE);
+            binding.btnViewAllReviews.setVisibility(View.GONE);
+        });
     }
 
-    private void bindStarRow(ItemRatingBarRowBinding row, int star, int count, int total) {
+    private void bindStarBar(ItemRatingBarRowBinding row, int star, int count, int total) {
         row.tvStarLabel.setText(String.valueOf(star));
         row.tvStarCount.setText(String.valueOf(count));
-
-        int percent = total > 0 ? Math.round(count * 100f / total) : 0;
-        LinearLayout.LayoutParams fillParams = (LinearLayout.LayoutParams) row.barFill.getLayoutParams();
-        fillParams.weight = percent;
-        row.barFill.setLayoutParams(fillParams);
-
-        LinearLayout.LayoutParams spacerParams = (LinearLayout.LayoutParams) row.barSpacer.getLayoutParams();
-        spacerParams.weight = 100 - percent;
-        row.barSpacer.setLayoutParams(spacerParams);
+        int pct = total > 0 ? (count * 100 / total) : 0;
+        ((LinearLayout.LayoutParams) row.barFill.getLayoutParams()).weight = pct;
+        ((LinearLayout.LayoutParams) row.barSpacer.getLayoutParams()).weight = 100 - pct;
     }
 
-    // ── You may also like ────────────────────────────────────────────────────
-
-    private void loadRelatedProducts(Product product) {
-        binding.rvRelated.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        ProductAdapter relatedAdapter = new ProductAdapter(new ArrayList<>());
-        relatedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Product related) {
-                Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
-                intent.putExtra(Constants.EXTRA_PRODUCT_ID, related.getId());
-                startActivity(intent);
-            }
-
-            @Override
-            public void onSaveToggle(Product related, boolean saved) { }
-
-            @Override
-            public void onAddToCartClick(Product related) {
-                cartLocalStore.addItem(new CartItem(related, 1));
-                Toast.makeText(ProductDetailActivity.this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
-            }
-        });
-        binding.rvRelated.setAdapter(relatedAdapter);
-
-        productRepository.getProducts(1, 10, product.getCategory(), null).enqueue(new Callback<ApiListResponse<Product>>() {
-            @Override
-            public void onResponse(Call<ApiListResponse<Product>> call, Response<ApiListResponse<Product>> response) {
-                List<Product> source = (response.isSuccessful() && response.body() != null && response.body().isSuccess())
-                        ? response.body().getData() : null;
-                if (source == null || source.isEmpty()) {
-                    source = MockProductCatalog.getProducts(ProductDetailActivity.this, product.getCategory());
-                }
-                relatedAdapter.updateData(excludeCurrent(source, product.getId()));
-            }
-
-            @Override
-            public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
-                relatedAdapter.updateData(excludeCurrent(
-                        MockProductCatalog.getProducts(ProductDetailActivity.this, product.getCategory()), product.getId()));
-            }
-        });
-    }
-
-    private List<Product> excludeCurrent(List<Product> products, String currentId) {
-        List<Product> filtered = new ArrayList<>();
-        for (Product p : products) {
-            if (!p.getId().equals(currentId)) filtered.add(p);
-        }
-        return filtered;
-    }
-
-    private void setupInfoRows() {
-        bindInfoCard(binding.rowShipping, binding.ivShippingIcon, binding.tvShippingText,
-                R.drawable.ic_policy_shipping, getString(R.string.label_free_shipping));
-        bindInfoCard(binding.rowReturns, binding.ivReturnsIcon, binding.tvReturnsText,
-                R.drawable.ic_policy_return, getString(R.string.label_easy_returns));
-        bindInfoCard(binding.rowPayment, binding.ivPaymentIcon, binding.tvPaymentText,
-                R.drawable.ic_policy_payment, getString(R.string.label_secure_payment));
-    }
-
-    private void bindInfoCard(View card, ImageView icon, TextView text, int iconRes, String label) {
-        icon.setImageResource(iconRes);
-        text.setText(label);
-        card.setOnClickListener(v -> startActivity(new Intent(this, PolicyActivity.class)));
-    }
+    // ── Interaction Logic ───────────────────────────────────────────────────
 
     private void addToCart() {
         if (currentProduct == null) return;
-        CartItem item = new CartItem(currentProduct, quantity, selectedSize, selectedColor);
-        cartLocalStore.addItem(item);
+        cartStore.addItem(new CartItem(currentProduct, quantity, selectedSize, selectedColor));
         Toast.makeText(this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
     }
 
-    private void openCart() {
-        startActivity(new Intent(this, CartActivity.class));
+    private void setupSizeSelector() {
+        TextView[] views = {binding.tvSizeS, binding.tvSizeM, binding.tvSizeL, binding.tvSizeXl};
+        String[] labels = {getString(R.string.size_label_s), getString(R.string.size_label_m), getString(R.string.size_label_l), getString(R.string.size_label_xl)};
+        selectedSize = labels[0];
+        for (int i = 0; i < views.length; i++) {
+            final int idx = i;
+            views[i].setOnClickListener(v -> {
+                selectedSize = labels[idx];
+                for (TextView tv : views) {
+                    boolean isSel = tv.getText().toString().equalsIgnoreCase(selectedSize);
+                    tv.setBackgroundResource(isSel ? R.drawable.tc_bg_variant_selected : R.drawable.tc_bg_variant);
+                    tv.setTextColor(ContextCompat.getColor(this, isSel ? R.color.white : R.color.text_primary));
+                }
+            });
+        }
     }
 
-    private int dp(int value) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round(value * density);
+    private void setupAccordions() {
+        binding.headerDescription.setOnClickListener(v -> toggleAccordion(binding.dividerDescription, binding.contentDescription, binding.ivExpandDescription));
+        binding.headerStory.setOnClickListener(v -> toggleAccordion(binding.dividerStory, binding.contentStory, binding.ivExpandStory));
+        binding.headerDetails.setOnClickListener(v -> toggleAccordion(binding.dividerDetails, binding.contentDetails, binding.ivExpandDetails));
+        binding.headerSizeGuide.setOnClickListener(v -> toggleAccordion(binding.dividerSizeGuide, binding.contentSizeGuide, binding.ivExpandSizeGuide));
+        binding.headerCare.setOnClickListener(v -> toggleAccordion(binding.dividerCare, binding.contentCare, binding.ivExpandCare));
+    }
+
+    private void toggleAccordion(View div, View cont, View chev) {
+        boolean expanded = cont.getVisibility() == View.VISIBLE;
+        TransitionManager.beginDelayedTransition(binding.llCardContent, new AutoTransition());
+        cont.setVisibility(expanded ? View.GONE : View.VISIBLE);
+        div.setVisibility(expanded ? View.VISIBLE : View.GONE);
+        chev.animate().rotation(expanded ? 0f : 180f).setDuration(250).start();
+    }
+
+    private void setupPolicyCards() {
+        binding.rowShipping.setOnClickListener(v -> startSmoothActivity(new Intent(this, PolicyActivity.class)));
+        binding.rowReturns.setOnClickListener(v -> startSmoothActivity(new Intent(this, PolicyActivity.class)));
+        binding.rowPayment.setOnClickListener(v -> startSmoothActivity(new Intent(v.getContext(), PolicyActivity.class)));
+    }
+
+    private int dp(int val) { return (int) (val * getResources().getDisplayMetrics().density); }
+
+    // ── Inner Adapter for ViewPager2 ────────────────────────────────────────
+
+    private class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.ViewHolder> {
+        private final List<String> list;
+        ImagePagerAdapter(List<String> list) { this.list = list; }
+        @NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup p, int vt) {
+            ImageView iv = new ImageView(p.getContext());
+            iv.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            return new ViewHolder(iv);
+        }
+        @Override public void onBindViewHolder(@NonNull ViewHolder h, int pos) {
+            Glide.with(ProductDetailActivity.this).load(list.get(pos)).placeholder(R.color.tc_red_pale).into((ImageView) h.itemView);
+        }
+        @Override public int getItemCount() { return list.size(); }
+        class ViewHolder extends RecyclerView.ViewHolder { ViewHolder(View v) { super(v); } }
     }
 }

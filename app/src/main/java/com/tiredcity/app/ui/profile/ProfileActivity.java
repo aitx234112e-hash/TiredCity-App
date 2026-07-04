@@ -142,7 +142,9 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void logout() {
+        com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
         preferenceManager.clearToken();
+        preferenceManager.clearCredentials();
         startActivity(new Intent(this, LoginActivity.class));
         finishAffinity();
     }

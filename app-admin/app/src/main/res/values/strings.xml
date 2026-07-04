@@ -110,10 +110,16 @@
     <string name="update_error">Cập nhật thất bại: %s</string>
 
     <string name="status_pending">Chờ xác nhận</string>
+    <string name="status_confirmed">Đã xác nhận</string>
     <string name="status_processing">Đang chuẩn bị hàng</string>
     <string name="status_shipped">Đang giao hàng</string>
     <string name="status_delivered">Đã giao hàng</string>
     <string name="status_cancelled">Đã hủy</string>
+
+    <string name="order_item_title_fmt">%1$s: #%2$s</string>
+    <string name="order_item_subtitle_fmt">%1$s: %2$s</string>
+    <string name="order_summary_fmt">%1$s: #%2$s\n%3$s: %4$s\n%5$s: %6$s</string>
+    <string name="error_load_orders">Không thể tải danh sách đơn hàng</string>
 
     <string name="btn_confirm_order">Xác nhận đơn</string>
     <string name="btn_ship_order">Gửi hàng</string>

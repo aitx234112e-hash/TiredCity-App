@@ -26,7 +26,7 @@ public class ProductRepository {
      */
     public void getProductsFromFirestore(OnProductsLoadedListener listener) {
         db.collection("products")
-            .orderBy("id", Query.Direction.ASCENDING)
+            .orderBy("_id", Query.Direction.ASCENDING)
             .addSnapshotListener((value, error) -> {
                 if (error != null) {
                     listener.onError(error.getMessage());
@@ -45,10 +45,10 @@ public class ProductRepository {
     }
 
     public void getProductByIdFromFirestore(String id, OnProductLoadedListener listener) {
-        db.collection("products").whereEqualTo("id", id).limit(1).get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                if (!queryDocumentSnapshots.isEmpty()) {
-                    Product p = queryDocumentSnapshots.getDocuments().get(0).toObject(Product.class);
+        db.collection("products").document(id).get()
+            .addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    Product p = documentSnapshot.toObject(Product.class);
                     listener.onSuccess(p);
                 } else {
                     listener.onError("Không tìm thấy sản phẩm");

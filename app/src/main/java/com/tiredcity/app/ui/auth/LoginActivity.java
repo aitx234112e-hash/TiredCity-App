@@ -102,9 +102,16 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Đã đăng nhập (bản release) → vào thẳng Main, không hiện form đăng nhập.
-        if (preferenceManager.isLoggedIn()) {
-            startActivity(new Intent(this, MainActivity.class));
+        // Kiểm tra đăng nhập: Kết hợp PreferenceManager và FirebaseAuth
+        boolean isLogged = preferenceManager.isLoggedIn() || FirebaseAuth.getInstance().getCurrentUser() != null;
+        
+        if (isLogged) {
+            // Nếu đã qua Onboarding thì vào Home, nếu chưa thì vào Onboarding
+            if (preferenceManager.isOnboardingShown()) {
+                startActivity(new Intent(this, MainActivity.class));
+            } else {
+                startActivity(new Intent(this, OnboardingActivity.class));
+            }
             finish();
             return;
         }
@@ -405,6 +412,12 @@ public class LoginActivity extends BaseActivity {
                             profile.setName(prettifyName(raw));
                             preferenceManager.saveUser(profile);
                         }
+
+                        // ĐỒNG BỘ NGAY LÊN CLOUD
+                        if (authRepository == null) {
+                            authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
+                        }
+                        authRepository.syncUserProfileToFirestore(profile);
                         
                         ApiClient.reset();
                         startActivity(new Intent(LoginActivity.this, OnboardingActivity.class));
