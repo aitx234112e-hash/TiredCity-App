@@ -157,7 +157,16 @@
       "Bash(node -e ' *)",
       "Bash(git fetch *)",
       "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' logcat *)",
-      "Bash(curl -s 'https://firestore.googleapis.com/v1/projects/tiredcity-daf1e/databases/\\(default\\)/documents/products?pageSize=300&key=AIzaSyAFKXern20RnlEdF_qbgp8n18q7KD2c4gc' -o 'C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--TiredCity-App-main-TiredCity-App-main\\\\4e373340-d79b-4716-835c-d106e1cba41c\\\\scratchpad\\\\tc_products3.json')"
+      "Bash(curl -s 'https://firestore.googleapis.com/v1/projects/tiredcity-daf1e/databases/\\(default\\)/documents/products?pageSize=300&key=AIzaSyAFKXern20RnlEdF_qbgp8n18q7KD2c4gc' -o 'C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--TiredCity-App-main-TiredCity-App-main\\\\4e373340-d79b-4716-835c-d106e1cba41c\\\\scratchpad\\\\tc_products3.json')",
+      "Bash(git commit -q -m ' *)",
+      "Bash(node parse.js)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('firebase:', \\(p.dependencies&&p.dependencies.firebase\\)||'\\(not in deps\\)'\\); console.log\\('@angular/fire:', \\(p.dependencies&&p.dependencies['@angular/fire']\\)||'-'\\);\")",
+      "Bash(node -e \"try{console.log\\('firebase installed:', require\\('firebase/package.json'\\).version\\)}catch\\(e\\){console.log\\('firebase NOT resolvable:', e.message\\)}\")",
+      "Bash(node -e \"console.log\\('pkg type:', require\\('./package.json'\\).type||'commonjs'\\)\")",
+      "PowerShell($env:JAVA_HOME='C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr'; $g='C:\\\\Users\\\\Acer\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\\\\arn2x92ynaizyzdaamcbpbhtj\\\\gradle-9.4.1\\\\bin\\\\gradle.bat'; & $g -p 'D:\\\\TiredCity-App-main\\\\TiredCity-App-main' :app:assembleDebug --console=plain 2>&1 | Select-Object -Last 40)",
+      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/emulator/emulator.exe' -list-avds)",
+      "Bash(echo \"---\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4300)"
     ]
   }
 }

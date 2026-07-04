@@ -64,6 +64,7 @@ export class ProductManagement implements OnInit {
     this.productForm = this.fb.group({
       product_name: ['', Validators.required],
       product_dept: ['', Validators.required],
+      color: [''],
       description: [''],
       unit_price: [0, [Validators.required, Validators.min(0)]],
       // stock used for accessories
@@ -208,6 +209,7 @@ export class ProductManagement implements OnInit {
     this.productForm.patchValue({
       product_name: product.product_name || '',
       product_dept: product.product_dept || '',
+      color: product.color || '',
       short_description: product.short_description || '',
       description: product.description || '',
       unit_price: product.unit_price || 0,

@@ -88,10 +88,14 @@ public class FirestoreProductRepository {
             if (total > 0) p.setStock(total);
         }
 
-        // Firestore không có field màu riêng — cụm đầu của description
-        // ("Trắng. Chất liệu:...") chính là màu/loại, dùng làm nhãn màu và để lọc theo màu.
-        String color = colorFromDescription(desc);
-        if (color != null) p.setColors(new ArrayList<>(Arrays.asList(color)));
+        // Màu để lọc danh mục con: ưu tiên field "color" do admin chọn (chuẩn, có
+        // thể lọc chắc chắn). Sản phẩm cũ chưa có field này thì fallback: lấy cụm đầu
+        // của description ("Trắng. Chất liệu:...") làm màu như trước đây.
+        String color = str(d, "color");
+        if (color == null || color.trim().isEmpty()) color = colorFromDescription(desc);
+        if (color != null && !color.trim().isEmpty()) {
+            p.setColors(new ArrayList<>(Arrays.asList(color.trim())));
+        }
 
         return p;
     }

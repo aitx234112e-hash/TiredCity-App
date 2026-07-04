@@ -184,8 +184,10 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     private static String categoryLabel(String dept) {
         switch (dept) {
             case "ao-dai":   return "ÁO DÀI";
+            case "nhat-binh": return "NHẬT BÌNH";
             case "viet-phuc": return "VIỆT PHỤC";
             case "ao-tac":   return "ÁO TẤC";
+            case "giao-linh": return "GIAO LĨNH";
             case "yem-dao":  return "YẾM ĐÀO";
             case "phu-kien": return "PHỤ KIỆN";
             default:         return dept.toUpperCase(Locale.ROOT);

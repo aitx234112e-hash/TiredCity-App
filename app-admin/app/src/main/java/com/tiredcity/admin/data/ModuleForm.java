@@ -65,8 +65,8 @@ public final class ModuleForm {
                 f.add(new FormField("product_name", "Tên sản phẩm", FormField.Type.TEXT, true)
                         .value(s(d, "product_name")));
                 f.add(new FormField("product_dept", "Danh mục", FormField.Type.SELECT, true,
-                        new String[]{"Áo dài", "Việt phục", "Áo tấc", "Yếm đào", "Phụ kiện"},
-                        new String[]{"ao-dai", "viet-phuc", "ao-tac", "yem-dao", "phu-kien"})
+                        new String[]{"Áo dài", "Nhật bình", "Áo tấc", "Giao lĩnh", "Yếm đào", "Phụ kiện", "Việt phục"},
+                        new String[]{"ao-dai", "nhat-binh", "ao-tac", "giao-linh", "yem-dao", "phu-kien", "viet-phuc"})
                         .value(s(d, "product_dept")));
                 f.add(new FormField("unit_price", "Giá bán (₫)", FormField.Type.NUMBER, true)
                         .value(n(d, "unit_price")));

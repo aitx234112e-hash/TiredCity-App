@@ -100,10 +100,12 @@
         <select [(ngModel)]="filterCategory" class="filter-select" (change)="applyProductFilter()">
           <option value="">Tất cả danh mục</option>
           <option value="ao-dai">Áo dài</option>
-          <option value="viet-phuc">Việt phục</option>
+          <option value="nhat-binh">Nhật bình</option>
           <option value="ao-tac">Áo tấc</option>
+          <option value="giao-linh">Giao lĩnh</option>
           <option value="yem-dao">Yếm đào</option>
           <option value="phu-kien">Phụ kiện</option>
+          <option value="viet-phuc">Việt phục</option>
         </select>
       </div>
     </div>
@@ -266,16 +268,34 @@
             <select class="form-input form-select" formControlName="product_dept">
               <option value="">-- Chọn danh mục --</option>
               <option value="ao-dai">Áo dài</option>
-              <option value="viet-phuc">Việt phục</option>
+              <option value="nhat-binh">Nhật bình</option>
               <option value="ao-tac">Áo tấc</option>
+              <option value="giao-linh">Giao lĩnh</option>
               <option value="yem-dao">Yếm đào</option>
               <option value="phu-kien">Phụ kiện</option>
+              <option value="viet-phuc">Việt phục</option>
             </select>
             <small class="field-error"
               *ngIf="productForm.get('product_dept')?.invalid && productForm.get('product_dept')?.touched">
               Vui lòng chọn danh mục
             </small>
           </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Màu sắc</label>
+          <select class="form-input form-select" formControlName="color">
+            <option value="">-- Chọn màu --</option>
+            <option value="Đỏ">Đỏ</option>
+            <option value="Xanh">Xanh</option>
+            <option value="Vàng">Vàng</option>
+            <option value="Trắng">Trắng</option>
+            <option value="Đen">Đen</option>
+            <option value="Hồng">Hồng</option>
+            <option value="Tím">Tím</option>
+            <option value="Xanh lá">Xanh lá</option>
+            <option value="Cam">Cam</option>
+          </select>
+          <small class="field-hint">Dùng để lọc sản phẩm theo màu trong app khách hàng.</small>
         </div>
         <div class="form-group">
           <label class="form-label">Mô tả chi tiết</label>
