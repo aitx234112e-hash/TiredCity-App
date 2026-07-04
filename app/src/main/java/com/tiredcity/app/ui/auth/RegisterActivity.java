@@ -137,31 +137,44 @@ public class RegisterActivity extends BaseActivity {
                     binding.btnRegister.setEnabled(true);
                     if (task.isSuccessful()) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        String uid = user != null ? user.getUid() : email;
+                        if (user != null) {
+                            user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                                String token = tokenTask.isSuccessful() ? tokenTask.getResult().getToken() : "firebase-token-local";
+                                String uid = user.getUid();
 
-                        String menh   = MenhCalculator.tinhMenh(birthYear);
-                        String sign   = MenhCalculator.tinhCungHoangDao(birthMonth, birthDay);
-                        String animal = MenhCalculator.tinhConGiap(birthYear);
+                                // SỬ DỤNG CÔNG THỨC MỚI NHẤT
+                                String menh   = MenhCalculator.tinhMenh(birthYear);
+                                String sign   = MenhCalculator.tinhCungHoangDao(birthMonth, birthDay);
+                                String animal = MenhCalculator.tinhConGiap(birthYear);
 
-                        preferenceManager.setMenh(menh);
-                        preferenceManager.setZodiac(sign);
+                                preferenceManager.setMenh(menh);
+                                preferenceManager.setZodiac(sign);
 
-                        UserProfile profile = new UserProfile();
-                        profile.setName(fullName);
-                        profile.setEmail(email);
-                        profile.setPhone(phone);
-                        profile.setBirthDate(String.format(Locale.US, "%04d-%02d-%02d", birthYear, birthMonth, birthDay));
-                        profile.setMenh(menh);
-                        profile.setZodiac(sign);
-                        profile.setAnimal(animal);
-                        preferenceManager.saveUser(profile);
+                                UserProfile profile = new UserProfile();
+                                profile.setName(fullName);
+                                profile.setEmail(email);
+                                profile.setPhone(phone);
+                                profile.setBirthDate(String.format(Locale.US, "%04d-%02d-%02d", birthYear, birthMonth, birthDay));
+                                profile.setMenh(menh);
+                                profile.setZodiac(sign);
+                                profile.setAnimal(animal);
+                                preferenceManager.saveUser(profile);
 
-                        preferenceManager.saveToken("firebase-token-local");
-                        preferenceManager.saveUserId(uid);
-                        ApiClient.reset();
-                        Toast.makeText(this, "Chào mừng " + fullName + "!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                        finishAffinity();
+                                preferenceManager.saveToken(token);
+                                preferenceManager.saveUserId(uid);
+
+                                // ĐỒNG BỘ LÊN CLOUD NGAY
+                                authRepository.syncUserProfileToFirestore(profile);
+
+                                // Gửi email xác thực
+                                user.sendEmailVerification();
+
+                                ApiClient.reset();
+                                Toast.makeText(this, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực.", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                finishAffinity();
+                            });
+                        }
                     } else {
                         Toast.makeText(this, "Đăng ký thất bại: " + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT).show();

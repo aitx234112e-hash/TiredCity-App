@@ -41,6 +41,22 @@ public class OrderTrackingActivity extends BaseActivity {
 
     private void loadOrder(String orderId) {
         if (orderId == null) { finish(); return; }
+        
+        orderRepository.getOrderByIdFromFirestore(orderId, new OrderRepository.OnOrderLoadedListener() {
+            @Override
+            public void onSuccess(Order order) {
+                bindOrder(order);
+            }
+
+            @Override
+            public void onError(String message) {
+                // Fallback to API
+                loadOrderFromApi(orderId);
+            }
+        });
+    }
+
+    private void loadOrderFromApi(String orderId) {
         orderRepository.getOrderById(orderId).enqueue(new Callback<ApiResponse<Order>>() {
             @Override
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {

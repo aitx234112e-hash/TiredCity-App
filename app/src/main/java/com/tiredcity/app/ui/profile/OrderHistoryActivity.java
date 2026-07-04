@@ -47,19 +47,37 @@ public class OrderHistoryActivity extends BaseActivity {
 
     private void loadOrders() {
         binding.swipeRefresh.setRefreshing(true);
+        String userId = preferenceManager.getUserId();
+        if (userId == null) {
+            binding.swipeRefresh.setRefreshing(false);
+            return;
+        }
+
+        orderRepository.getOrdersFromFirestore(userId, new OrderRepository.OnOrdersLoadedListener() {
+            @Override
+            public void onSuccess(List<Order> orders) {
+                binding.swipeRefresh.setRefreshing(false);
+                displayOrders(orders);
+            }
+
+            @Override
+            public void onError(String message) {
+                binding.swipeRefresh.setRefreshing(false);
+                // Fallback to API if Firestore fails
+                loadOrdersFromApi();
+            }
+        });
+    }
+
+    private void loadOrdersFromApi() {
         orderRepository.getOrders().enqueue(new Callback<ApiListResponse<Order>>() {
             @Override
             public void onResponse(Call<ApiListResponse<Order>> call, Response<ApiListResponse<Order>> response) {
-                binding.swipeRefresh.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     displayOrders(response.body().getData());
                 }
             }
-
-            @Override
-            public void onFailure(Call<ApiListResponse<Order>> call, Throwable t) {
-                binding.swipeRefresh.setRefreshing(false);
-            }
+            @Override public void onFailure(Call<ApiListResponse<Order>> call, Throwable t) { }
         });
     }
 

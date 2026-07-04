@@ -35,6 +35,7 @@ public final class Constants {
 
     // Settings — security
     public static final String KEY_PIN_UNLOCK       = "key_pin_unlock";
+    public static final String KEY_PIN_VALUE        = "key_pin_value";
 
     // Intent extras
     public static final String EXTRA_PRODUCT_ID = "extra_product_id";

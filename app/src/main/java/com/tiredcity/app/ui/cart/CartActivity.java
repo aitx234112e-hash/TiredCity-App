@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.adapter.CartAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.model.CartItem;
+import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.CartRepository;
 import com.tiredcity.app.databinding.ActivityCartBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.utils.PriceUtils;
@@ -17,6 +19,7 @@ public class CartActivity extends BaseActivity {
 
     private ActivityCartBinding binding;
     private CartLocalStore cartLocalStore;
+    private CartRepository cartRepository;
     private CartAdapter cartAdapter;
     private List<CartItem> cartItems;
 
@@ -34,9 +37,13 @@ public class CartActivity extends BaseActivity {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
         cartLocalStore = new CartLocalStore(this);
+        cartRepository = new CartRepository(ApiClient.getApiService(null), cartLocalStore);
 
         binding.rvCartItems.setLayoutManager(new LinearLayoutManager(this));
         binding.btnCheckout.setOnClickListener(v -> proceedToPayment());
+
+        // Đồng bộ từ Cloud về trước khi hiện
+        cartRepository.fetchCartFromCloud(items -> runOnUiThread(this::loadCart));
 
         loadCart();
     }
@@ -51,9 +58,13 @@ public class CartActivity extends BaseActivity {
         cartItems = cartLocalStore.getCartItems();
         cartAdapter = new CartAdapter(cartItems, item -> {
             cartLocalStore.removeItem(item.getProduct().getId());
+            cartRepository.syncCartToCloud(); // Sync xóa
             loadCart();
         });
-        cartAdapter.setOnCartChangeListener(this::refreshTotal);
+        cartAdapter.setOnCartChangeListener(() -> {
+            cartRepository.syncCartToCloud(); // Sync thay đổi số lượng/chọn
+            refreshTotal();
+        });
         binding.rvCartItems.setAdapter(cartAdapter);
 
         refreshTotal();

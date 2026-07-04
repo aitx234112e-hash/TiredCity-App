@@ -11,6 +11,7 @@ import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.model.Product;
+import com.tiredcity.app.data.repository.FavoritesRepository;
 import com.tiredcity.app.databinding.ActivityWardrobeBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.shop.ProductDetailActivity;
@@ -23,6 +24,7 @@ public class WardrobeActivity extends BaseActivity {
     private ActivityWardrobeBinding binding;
     private ProductAdapter productAdapter;
     private FavoritesLocalStore favoritesStore;
+    private FavoritesRepository favoritesRepository;
     private final List<Product> wardrobeItems = new ArrayList<>();
 
     @Override
@@ -39,6 +41,8 @@ public class WardrobeActivity extends BaseActivity {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
         favoritesStore = new FavoritesLocalStore(this);
+        favoritesRepository = new FavoritesRepository(favoritesStore);
+        
         productAdapter = new ProductAdapter(wardrobeItems);
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -68,6 +72,9 @@ public class WardrobeActivity extends BaseActivity {
             getResources().getColor(R.color.tc_red, getTheme()));
         binding.swipeRefresh.setOnRefreshListener(this::loadWardrobeItems);
 
+        // Sync từ cloud về
+        favoritesRepository.fetchFavoritesFromCloud(items -> runOnUiThread(this::loadWardrobeItems));
+
         loadWardrobeItems();
     }
 
@@ -95,6 +102,7 @@ public class WardrobeActivity extends BaseActivity {
 
     private void removeFromWardrobe(Product product) {
         wardrobeItems.remove(product);
+        favoritesRepository.syncFavoritesToCloud(); // Đồng bộ sau khi xoá
         productAdapter.notifyDataSetChanged();
         if (wardrobeItems.isEmpty()) {
             binding.layoutEmpty.setVisibility(View.VISIBLE);

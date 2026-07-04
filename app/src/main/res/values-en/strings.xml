@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- App -->
     <string name="app_name">Tired City</string>
-    <string name="brand_tagline">TRADITIONAL VIETNAMESE ATTIRE</string>
 
     <!-- Greeting -->
-    <string name="greeting_morning">Good morning ☀️</string>
-    <string name="greeting_afternoon">Good afternoon 🌤️</string>
-    <string name="greeting_evening">Good evening 🌙</string>
+    <string name="greeting_morning">Good Morning ☀️</string>
+    <string name="greeting_afternoon">Good Afternoon 🌤️</string>
+    <string name="greeting_evening">Good Evening 🌙</string>
     <string name="greeting_guest">Guest</string>
 
     <!-- Bottom navigation -->
-    <string name="nav_home">HOME</string>
-    <string name="nav_shop">PRODUCTS</string>
-    <string name="nav_styling">STYLING</string>
-    <string name="nav_explore">EXPLORE</string>
-    <string name="nav_about">ABOUT US</string>
-    <string name="nav_collections">COLLECTIONS</string>
-    <string name="nav_policies">POLICIES</string>
-    <string name="nav_contact">CONTACT</string>
-
-    <!-- Bottom nav (short labels) -->
     <string name="nav_short_home">Home</string>
     <string name="nav_short_shop">Shop</string>
     <string name="nav_short_styling">Styling</string>
@@ -28,122 +16,20 @@
     <string name="nav_short_about">About</string>
     <string name="nav_short_profile">Me</string>
 
-    <!-- Birth date / Element -->
-    <string name="hint_birthdate">Date of Birth</string>
-    <string name="hint_birthdate_pick">Select date of birth</string>
-    <string name="error_birthdate">Please select your date of birth</string>
-    <string name="profile_avatar_desc">My profile</string>
-
     <!-- Home sections -->
-    <string name="section_recommended">Recommended for You</string>
-    <string name="section_hot">Featured Products</string>
+    <string name="section_recommended">For You</string>
+    <string name="section_hot">Trending</string>
     <string name="section_categories">Categories</string>
-    <string name="see_all">See all</string>
-    <string name="banner_eyebrow">COLLECTION</string>
-    <string name="home_eyebrow_recommended">JUST FOR YOU</string>
+    <string name="see_all">See All</string>
+    <string name="home_eyebrow_recommended">RECOMMENDED</string>
     <string name="home_eyebrow_hot">TRENDING</string>
-    <string name="home_eyebrow_categories">BROWSE</string>
-    <string name="footer_tagline">Vietnamese attire for a new generation</string>
-    <string name="footer_cities">HÀ NỘI • SÀI GÒN</string>
-
-    <!-- Category names (proper nouns kept) -->
-    <string name="category_all">All</string>
-    <string name="category_ao_dai">Áo Dài</string>
-    <string name="category_ao_tac">Áo Tấc</string>
-    <string name="category_nhat_binh">Nhật Bình</string>
-    <string name="category_accessories">Accessories</string>
-    <string name="category_set">Full Sets</string>
-
-    <!-- AI strip -->
-    <string name="ai_strip_title">✨ AI Style Advisor</string>
-    <string name="ai_strip_eyebrow">AI FASHION ADVISOR</string>
-    <string name="ai_strip_title_new">What to wear today?</string>
-    <string name="ai_strip_cta">ASK NOW ✦</string>
+    <string name="home_eyebrow_categories">CATEGORIES</string>
 
     <!-- Menh banner -->
-    <string name="menh_label">Element: %s</string>
-    <string name="zodiac_label">Sign: %s</string>
-    <string name="menh_tap_hint">Tap to see outfit recommendations</string>
-
-    <!-- Menh CTA (not calculated yet) -->
-    <string name="menh_cta_eyebrow">FIVE ELEMENTS · ZODIAC</string>
-    <string name="menh_cta_title">Discover your element</string>
-    <string name="menh_cta_desc">Enter your birthdate to find your element, lucky colours and personalised outfit suggestions.</string>
-    <string name="menh_cta_button">FIND MY ELEMENT ✦</string>
+    <string name="menh_label">%s Element</string>
+    <string name="zodiac_label">%s Zodiac</string>
+    <string name="menh_tap_hint">Tap for styling suggestions</string>
     <string name="menh_colors_label">YOUR LUCKY COLOURS</string>
-
-    <!-- Five elements (element name) -->
-    <string name="menh_name_kim">Metal</string>
-    <string name="menh_name_moc">Wood</string>
-    <string name="menh_name_thuy">Water</string>
-    <string name="menh_name_hoa">Fire</string>
-    <string name="menh_name_tho">Earth</string>
-
-    <!-- Zodiac signs -->
-    <string name="zodiac_aries">Aries</string>
-    <string name="zodiac_taurus">Taurus</string>
-    <string name="zodiac_gemini">Gemini</string>
-    <string name="zodiac_cancer">Cancer</string>
-    <string name="zodiac_leo">Leo</string>
-    <string name="zodiac_virgo">Virgo</string>
-    <string name="zodiac_libra">Libra</string>
-    <string name="zodiac_scorpio">Scorpio</string>
-    <string name="zodiac_sagittarius">Sagittarius</string>
-    <string name="zodiac_capricorn">Capricorn</string>
-    <string name="zodiac_aquarius">Aquarius</string>
-    <string name="zodiac_pisces">Pisces</string>
-
-    <!-- Lucky colours -->
-    <string name="color_white">White</string>
-    <string name="color_yellow">Yellow</string>
-    <string name="color_silver">Silver</string>
-    <string name="color_gray">Grey</string>
-    <string name="color_green">Green</string>
-    <string name="color_blue">Blue</string>
-    <string name="color_moss">Moss Green</string>
-    <string name="color_black">Black</string>
-    <string name="color_navy">Navy</string>
-    <string name="color_purple">Purple</string>
-    <string name="color_red">Red</string>
-    <string name="color_pink">Pink</string>
-    <string name="color_orange">Orange</string>
-    <string name="color_earth_yellow">Earthy Yellow</string>
-    <string name="color_brown">Brown</string>
-    <string name="color_beige">Beige</string>
-    <string name="color_light_orange">Light Orange</string>
-
-    <!-- Home sections: Events & News -->
-    <string name="home_section_events">Events</string>
-    <string name="home_events_eyebrow">FEATURED EVENTS</string>
-    <string name="home_events_title">Exhibitions &amp; Workshops</string>
-    <string name="home_events_cta">VIEW EVENTS ✦</string>
-    <string name="home_section_news">News</string>
-    <string name="home_news_eyebrow">NEWS &amp; INSPIRATION</string>
-    <string name="home_news_title">Vietnamese fashion stories</string>
-    <string name="home_news_cta">READ MORE ✦</string>
-
-    <!-- Banners (mock titles) -->
-    <string name="banner_title_1">Autumn – Winter Collection 2025</string>
-    <string name="banner_title_2">Nhật Bình – Imperial Beauty</string>
-    <string name="banner_title_3">Áo Dài – Elegant &amp; Refined</string>
-
-    <!-- Promo strip (mini banner between Events and News) -->
-    <string name="promo_strip_eyebrow">SPECIAL OFFER</string>
-    <string name="promo_strip_1_title">30% off all silk áo dài</string>
-    <string name="promo_strip_1_sub">Valid until end of this month</string>
-    <string name="promo_strip_2_eyebrow">TẾT 2025 COLLECTION</string>
-    <string name="promo_strip_2_title">Nhật Bình &amp; Áo Tấc Imperial</string>
-    <string name="promo_strip_2_sub">Pre-order now – free gift included</string>
-    <string name="promo_strip_3_eyebrow">FREE SHIPPING</string>
-    <string name="promo_strip_3_title">On orders from 500,000đ</string>
-    <string name="promo_strip_3_sub">Nationwide – delivered in 2 days</string>
-    <string name="promo_strip_cta">SHOP NOW ✦</string>
-
-    <!-- Language toggle -->
-    <string name="language_toggle">Change language</string>
-    <!-- Button label: shows the language you'll switch TO (mirrors values/) -->
-    <string name="switch_to_other_lang">VI</string>
-    <string name="switch_to_other_lang_full">Tiếng Việt</string>
 
     <!-- Buttons -->
     <string name="btn_add_to_cart">Add to Cart</string>
@@ -152,501 +38,43 @@
     <string name="btn_save">Save</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_confirm">Confirm</string>
-    <string name="btn_get_started">Get Started</string>
-    <string name="btn_login">Log In</string>
+    <string name="btn_login">Login</string>
     <string name="btn_register">Register</string>
-    <string name="btn_logout">Log Out</string>
+    <string name="btn_logout">Logout</string>
     <string name="btn_edit_profile">Edit Profile</string>
-    <string name="btn_view_order">View Order</string>
-    <string name="btn_continue_shopping">Continue Shopping</string>
 
     <!-- Auth -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_fullname">Full Name</string>
     <string name="hint_phone">Phone Number</string>
-    <string name="hint_address">Delivery Address</string>
-    <string name="login_remember_me">Remember me</string>
-    <string name="login_forgot_password">Forgot password?</string>
-    <string name="forgot_pw_title">Forgot Password</string>
-    <string name="forgot_pw_subtitle">Enter your registered email and we\'ll send you a password reset link.</string>
-    <string name="forgot_pw_send">SEND RESET LINK</string>
-    <string name="forgot_pw_back">Back to login</string>
-    <string name="forgot_pw_success_title">Link Sent!</string>
-    <string name="forgot_pw_success_desc">Please check your inbox %1$s and follow the instructions to reset your password.</string>
-    <string name="forgot_pw_error_email">Please enter a valid email</string>
-    <string name="login_subtitle">Log in to continue</string>
-    <string name="login_no_account">Don\'t have an account? </string>
+    <string name="hint_birthdate">Birth Date</string>
+    <string name="login_remember_me">Remember Me</string>
+    <string name="login_forgot_password">Forgot Password?</string>
+    <string name="login_subtitle">Sign in to continue</string>
+    <string name="login_no_account">No account? </string>
     <string name="login_or_with">OR LOGIN WITH</string>
     <string name="role_customer">Customer</string>
     <string name="role_admin">Admin</string>
-    <string name="admin_app_not_installed">The Admin app (TiredCity Admin) is not installed. Please build &amp; install app-admin first.</string>
-    <string name="google_signin_failed">Google sign-in failed</string>
-    <string name="google_signin_not_configured">Google Sign-In has no Web Client ID configured — using demo mode.</string>
-    <string name="brand_name_caps">TIREDCITY</string>
-
-    <!-- Register screen -->
-    <string name="register_title">Create Account</string>
-    <string name="register_subtitle">Sign up to begin your Việt Phục journey</string>
-    <string name="register_have_account">Already have an account? </string>
-    <string name="hint_confirm_password">Confirm Password</string>
-    <string name="register_agree_terms">I agree to the Terms and Conditions</string>
-    <string name="error_confirm_password">Passwords do not match</string>
-    <string name="error_agree_terms">Please agree to the terms</string>
-
-    <!-- Splash -->
-    <string name="splash_slogan">Preserving the Vietnamese soul in every design</string>
-
-    <!-- Onboarding -->
-    <string name="onboarding_next">Next</string>
-    <string name="onboarding_skip">Skip</string>
-    <string name="onboarding_title_1">Discover Việt Phục</string>
-    <string name="onboarding_desc_1">Áo dài, áo tấc, nhật bình… a collection of traditional Vietnamese attire, crafted with care by long-standing artisan villages.</string>
-    <string name="onboarding_title_2">Style by Element</string>
-    <string name="onboarding_desc_2">Our AI suggests outfits matching your Five-Element destiny and zodiac sign, bringing luck and a beauty all your own.</string>
-    <string name="onboarding_title_3">AI Fashion Assistant</string>
-    <string name="onboarding_desc_3">Chat directly with the AI assistant for personalized Việt Phục styling advice anytime, anywhere.</string>
-    <string name="onboarding_title_4">Easy Ordering</string>
-    <string name="onboarding_desc_4">Pick your favorite outfits and order in just a few taps, with nationwide delivery.</string>
-    <string name="onboarding_title_5">Start Your Journey</string>
-    <string name="onboarding_desc_5">Create an account and explore the world of Việt phục with TiredCity today.</string>
-
-    <!-- Order statuses -->
-    <string name="order_pending">Pending</string>
-    <string name="order_confirmed">Confirmed</string>
-    <string name="order_shipping">Shipping</string>
-    <string name="order_delivered">Delivered</string>
-    <string name="order_cancelled">Cancelled</string>
-
-    <!-- Error messages -->
-    <string name="error_network">No internet connection. Please try again.</string>
-    <string name="error_loading">Could not load data. Please try again.</string>
-    <string name="error_empty_cart">Your cart is empty.</string>
-    <string name="error_login_failed">Login failed. Please check your credentials.</string>
-    <string name="error_register_failed">Registration failed. Email may already be in use.</string>
-    <string name="error_update_failed">Update failed. Please try again.</string>
-    <string name="error_order_failed">Order failed. Please try again.</string>
-
-    <!-- Success messages -->
-    <string name="success_add_cart">Added to cart.</string>
-    <string name="success_order">Order placed successfully!</string>
-    <string name="success_profile_update">Profile updated successfully.</string>
-
-    <!-- ─── Mock catalog: materials ─────────────────────────────────────── -->
-    <string name="material_lua_to_tam">Mulberry Silk</string>
-    <string name="material_theu_tay">Traditional Hand Embroidery</string>
-    <string name="material_gam_theu">Embroidered Brocade</string>
-    <string name="material_dui_to">Raw Silk</string>
-    <string name="material_lua_mem">Soft Silk</string>
-    <string name="material_lua_cao_cap">Premium Silk</string>
-    <string name="material_gam_det_hoa">Floral Woven Brocade</string>
-    <string name="material_dui_to_tam">Raw Mulberry Silk</string>
-    <string name="material_lua_ha_dong">Hà Đông Silk</string>
-    <string name="material_gam_theu_chi">Thread-Embroidered Brocade</string>
-    <string name="material_to_song">Raw Silk Floss</string>
-    <string name="material_gam_cao_cap">Premium Brocade</string>
-
-    <!-- ─── Mock catalog: spec labels + default values ─────────────────── -->
-    <string name="label_style">Style</string>
-    <string name="label_occasion">Occasion</string>
-    <string name="spec_color_various">Various</string>
-    <string name="spec_style_accessory">Vietnamese Accessory</string>
-    <string name="spec_style_traditional">Traditional Vietnamese Attire</string>
-    <string name="spec_occasion_default">Festivals, Weddings, Photoshoots</string>
-    <string name="mock_style_ao_dai_truyen_thong">Traditional Áo Dài</string>
-
-    <!-- ─── Mock catalog: shared care instructions ──────────────────────── -->
-    <string name="care_hand_wash_cold_strict">Hand wash only, in cold water</string>
-    <string name="care_hand_wash_cold_gentle">Hand wash gently in cold water</string>
-    <string name="care_no_bleach">Do not use bleach</string>
-    <string name="care_iron_low">Iron on low heat</string>
-    <string name="care_iron_low_cloth">Iron on low heat, with a cloth barrier</string>
-    <string name="care_store_dry">Store in a dry place, away from direct sunlight</string>
-
-    <!-- ─── Mock catalog: default + per-product description/story ──────── -->
-    <string name="desc_template_default">%1$s is crafted from %2$s, showcasing elegant beauty and the spirit of traditional Vietnamese attire in every stitch.</string>
-    <string name="story_template_default">The design draws inspiration from royal and folk attire across Vietnamese dynasties, restored and reimagined to suit modern life while preserving its traditional essence.</string>
-    <string name="desc_ad1">This pure white áo dài draws inspiration from the beauty of the traditional Vietnamese bride. Its soft silk and delicate hand embroidery symbolize purity, harmony, and lasting love.</string>
-    <string name="story_ad1">The design is restored from Nguyễn dynasty ceremonial attire, blended with modern tailoring techniques to flatter the wearer\'s silhouette while preserving its solemn, timeless character.</string>
-    <string name="desc_ad7">A white áo dài with classic floral patterns, reminiscent of the schoolgirl áo dài of years past — light, elegant, and easy to style for many occasions.</string>
-
-    <!-- ─── Mock catalog: product names — Áo Dài ────────────────────────── -->
-    <string name="mock_ad1_name">White Mist of Destiny</string>
-    <string name="mock_ad2_name">Azure Silk of the Old Manor</string>
-    <string name="mock_ad3_name">Golden Rain, Blossoming Wind</string>
-    <string name="mock_ad4_name">Rose Dust Peony</string>
-    <string name="mock_ad5_name">Emerald Water, Golden Orchid</string>
-    <string name="mock_ad6_name">Moonlit Lute in Blush Pink</string>
-    <string name="mock_ad7_name">Classic Blossom</string>
-
-    <!-- ─── Mock catalog: product names — Nhật Bình ─────────────────────── -->
-    <string name="mock_nb1_name">Crimson Robe of the Royal Seal</string>
-    <string name="mock_nb2_name">Emerald Stone of the Royal Court</string>
-    <string name="mock_nb3_name">Green Court Banquet</string>
-    <string name="mock_nb4_name">Imperial Gold Thread</string>
-    <string name="mock_nb5_name">Moon-Gazing Azure Palace</string>
-    <string name="mock_nb6_name">Nhật Bình Azure Rain</string>
-    <string name="mock_nb7_name">Emerald Mist, Azure Treasure</string>
-    <string name="mock_nb8_name">Violet Cloud Grass</string>
-    <string name="mock_nb9_name">Deep Rose of the Ancient Pavilion</string>
-    <string name="mock_nb10_name">Golden Dust Peony</string>
-
-    <!-- ─── Mock catalog: product names — Áo Tấc ────────────────────────── -->
-    <string name="mock_at1_name">Emerald Jade Turban</string>
-    <string name="mock_at2_name">Jade Rain, Misty Gauze</string>
-    <string name="mock_at3_name">Earthen Cloud Ochre</string>
-    <string name="mock_at4_name">Azure Dragon of the Old Town</string>
-    <string name="mock_at5_name">Green Robe with Floating Fan</string>
-    <string name="mock_at6_name">Ivory Silk, Moonlit Wrap</string>
-
-    <!-- ─── Mock catalog: product names — Giao Lĩnh ─────────────────────── -->
-    <string name="mock_gl1_name">White Sand Lotus Rain</string>
-    <string name="mock_gl2_name">Azure Jade of the Old Town</string>
-    <string name="mock_gl3_name">Green Bamboo Cloud Melody</string>
-    <string name="mock_gl4_name">Golden Hue of the Royal Court</string>
-    <string name="mock_gl5_name">Amber Giao Lĩnh Robe</string>
-    <string name="mock_gl6_name">Black Gold Peony</string>
-
-    <!-- ─── Mock catalog: product names — Yếm Đào ───────────────────────── -->
-    <string name="mock_yd1_name">Morning Dew, White Rain</string>
-    <string name="mock_yd2_name">Bamboo Green of the Chamber</string>
-    <string name="mock_yd3_name">Misty Blossom, White Lotus</string>
-    <string name="mock_yd4_name">Azure Lotus Pond</string>
-    <string name="mock_yd5_name">Jade Azure Brocade</string>
-    <string name="mock_yd6_name">Night Gold Peony</string>
-
-    <!-- ─── Mock catalog: product names — Accessories ───────────────────── -->
-    <string name="mock_pk1_name">Moonlit Wrap, White Cloud Brocade</string>
-    <string name="mock_pk2_name">Antique Mulberry Hat</string>
-    <string name="mock_pk3_name">Peacock Folding Fan</string>
-    <string name="mock_pk4_name">Everlasting Peace Parasol</string>
-    <string name="mock_pk5_name">Earthen Wrap Scarf</string>
-    <string name="mock_pk6_name">Cloud-Shoulder Parasol</string>
-    <string name="mock_pk7_name">Phoenix Crown of the Court</string>
-    <string name="mock_pk8_name">Golden Sand Royal Hat</string>
-    <string name="mock_pk9_name">Golden Cloud Royal Parasol</string>
-
-    <!-- ─── Mock catalog: Home — recommended / trending ─────────────────── -->
-    <string name="mock_home1_name">Traditional Áo Dài</string>
-    <string name="mock_home2_name">Queen\'s Nhật Bình</string>
-    <string name="mock_home3_name">Nobleman\'s Áo Tấc</string>
-    <string name="mock_home4_name">Traditional Khăn Đóng</string>
-    <string name="mock_home5_name">Wedding Áo Dài Set</string>
-
-    <!-- ─── Mock catalog: general Vietnamese attire (fallback) ──────────── -->
-    <string name="mock_generic1_name">Ngũ Thân with Fitted Sleeves</string>
-    <string name="mock_generic2_name">Traditional Men\'s Áo Tấc</string>
-    <string name="mock_generic3_name">Modernized Men\'s Áo Dài</string>
-    <string name="mock_generic4_name">Embroidered Brocade Khăn Đóng</string>
-    <string name="mock_generic5_name">Ngũ Thân with Wide Sleeves</string>
-    <string name="mock_generic6_name">Men\'s Nhật Bình Robe</string>
-
-    <!-- Product detail -->
-    <string name="label_material">Material</string>
-    <string name="label_origin">Origin</string>
-    <string name="label_rating">Rating</string>
-    <string name="label_price">Price</string>
-    <string name="label_description">Description</string>
-    <string name="label_reviews">Customer Reviews</string>
-    <string name="label_menh_tags">Suitable Elements</string>
-    <string name="out_of_stock">Out of Stock</string>
-    <string name="label_colour">Colour</string>
-    <string name="label_size">Size</string>
-    <string name="label_quantity">Quantity</string>
-    <string name="label_details">Details</string>
-    <string name="label_size_guide">Size Guide</string>
-    <string name="size_guide_content">S: 42–48kg · M: 48–54kg · L: 54–60kg · XL: 60–68kg\nReference measurements — actual fit may vary by 1–2cm depending on body shape.</string>
-    <string name="label_you_may_also_like">You May Also Like</string>
-    <string name="btn_view_all_reviews">View All Reviews</string>
-    <string name="label_free_shipping">Free Shipping</string>
-    <string name="label_easy_returns">14-Day Returns</string>
-    <string name="label_secure_payment">Secure Payment</string>
-    <string name="label_service_commitments">Our Commitments</string>
-    <string name="label_story">Story</string>
-    <string name="label_care">Care Instructions</string>
-    <string name="status_in_stock">In Stock</string>
-    <string name="status_low_stock">Low Stock</string>
-    <string name="status_out_of_stock">Out of Stock</string>
-    <string name="reviews_count_format">Customer Reviews (%1$d)</string>
-    <string name="reviews_count_short">(%1$d reviews)</string>
-    <string name="size_label_s">S</string>
-    <string name="size_label_m">M</string>
-    <string name="size_label_l">L</string>
-    <string name="size_label_xl">XL</string>
-    <string name="error_product_load_failed">Failed to load product</string>
-    <string name="default_origin">Vietnam</string>
-    <string name="cart_badge_overflow">9+</string>
-
-    <!-- Color bucket display labels (ColorTaxonomy) — kept separate from the Vietnamese match keys used for data filtering -->
-    <string name="color_bucket_do">Red</string>
-    <string name="color_bucket_xanh">Blue</string>
-    <string name="color_bucket_vang">Yellow</string>
-    <string name="color_bucket_trang">White</string>
-    <string name="color_bucket_den">Black</string>
-    <string name="color_bucket_hong">Pink</string>
-    <string name="color_bucket_tim">Purple</string>
-    <string name="color_bucket_xanh_la">Green</string>
-    <string name="color_bucket_cam">Orange</string>
-
-    <!-- Styling: category preview descriptions — product names, proper nouns kept untranslated -->
-    <string name="desc_ao_dai_trang">Khói Trắng Kết Duyên, Phấn Hoa Cổ Điển,…</string>
-    <string name="desc_ao_dai_xanh">Lam Lụa Cố Trạch,…</string>
-    <string name="desc_ao_dai_vang">Kim Vũ Phong Hoa,…</string>
-    <string name="desc_ao_dai_hong">Hồng Trần Mộc Dược, Nguyệt Cầm Phấn Hồng,…</string>
-    <string name="desc_nhat_binh_trang">Xích Bào Đối Ấn,…</string>
-    <string name="desc_nhat_binh_xanh_la">Thạch Lam Hoàng Cung, Lục Triều Tiểu Yến,…</string>
-    <string name="desc_nhat_binh_xanh">Hoàng Triều Kim Tuyến, Nhật Bình Lam Vũ,…</string>
-    <string name="desc_nhat_binh_do">Vọng Nguyệt Lam Cung,…</string>
-    <string name="desc_nhat_binh_vang">Tử Vân Yên Thảo, Trầm Hồng Cổ Các,…</string>
-    <string name="desc_ao_tac_xanh">Lục Ngọc Vấn Khăn, Lục Y Phù Quạt,…</string>
-    <string name="desc_ao_tac_trang">Ngọc Vũ Yên Sa, Tơ Ngà Vấn Nguyệt,…</string>
-    <string name="desc_ao_tac_cam">Mộc Vân Thổ Xà,…</string>
-    <string name="desc_ao_tac_xanh_la">Thanh Long Cổ Trấn,…</string>
-    <string name="desc_giao_linh_xanh_la">Bạch Sa Liên Vũ, Lam Ngọc Cổ Trấn, Lục Trúc Vân Khúc,…</string>
-    <string name="desc_giao_linh_vang">Kim Sắc Hoàng Triều,…</string>
-    <string name="desc_giao_linh_do">Cam Giao Lĩnh Bào, Hắc Kim Mẫu Đơn,…</string>
-    <string name="desc_yem_dao_do">Sương Mai Bạch Vũ,…</string>
-    <string name="desc_yem_dao_xanh_la">Trúc Lục Khuê Phòng, Thanh Lam Trì Liên,…</string>
-    <string name="desc_yem_dao_vang">Yên Hoa Bạch Liên, Bích Lam Cẩm Tú,…</string>
-    <string name="desc_yem_dao_hong">Dạ Kim Mẫu Đơn,…</string>
-
-    <!-- Styling: Accessories — name + description per type -->
-    <string name="phukien_khan_title">Headscarf</string>
-    <string name="phukien_khan_desc">Traditional wrap scarves and headscarves,…</string>
-    <string name="phukien_quat_title">Fan</string>
-    <string name="phukien_quat_desc">Folding fans, silk hand fans,…</string>
-    <string name="phukien_oche_title">Parasol</string>
-    <string name="phukien_oche_desc">Traditional parasols and umbrellas,…</string>
-    <string name="phukien_mudoidau_title">Headwear</string>
-    <string name="phukien_mudoidau_desc">Modernized hats and headpieces,…</string>
-
-    <!-- Category page: garment-type tabs + chrome (tab labels are proper nouns, kept untranslated) -->
-    <string name="filter_label">Filters</string>
-    <string name="cd_scan">Scan code</string>
-    <string name="cd_view_mode">View mode</string>
-    <string name="filter_coming_soon">Filters coming soon</string>
-
-    <!-- Shop / Search / Category -->
-    <string name="nav_back">Back</string>
-    <string name="search_hint">Search for attire…</string>
-    <string name="search_recent">Recent searches</string>
-    <string name="search_clear_all">Clear all</string>
-    <string name="search_popular">Popular searches</string>
-    <string name="search_empty_title">No results found</string>
-    <string name="search_empty_desc">Try a different keyword</string>
-    <string name="search_searching">Searching…</string>
-    <string name="search_result_count">%1$d results found</string>
-    <string name="search_not_found">No results for \"%1$s\"</string>
-    <string name="sort_popular">Popular</string>
-    <string name="sort_newest">Newest</string>
-    <string name="sort_price_asc">Price: Low to High</string>
-    <string name="sort_price_desc">Price: High to Low</string>
-    <string name="category_default_title">Category</string>
-
-    <!-- Profile / Wardrobe / Orders -->
-    <string name="profile_title">My Profile</string>
-    <string name="edit_profile_title">Edit Profile</string>
-    <string name="edit_change_avatar">Change</string>
-    <string name="edit_label_address">Delivery Address</string>
-    <string name="addr_province">Province/City</string>
-    <string name="addr_district">District</string>
-    <string name="addr_ward">Ward</string>
-    <string name="addr_street">House no., Street</string>
-    <string name="edit_save">Save changes</string>
-    <string name="wardrobe_empty_title">Your wardrobe is empty</string>
-    <string name="wardrobe_empty_desc">Save your favorite outfits\nto your wardrobe</string>
-    <string name="wardrobe_explore">Explore now</string>
-    <string name="order_history_title">Order History</string>
-    <string name="order_tab_all">All</string>
-    <string name="order_tab_pending">Processing</string>
-    <string name="order_tab_shipping">Shipping</string>
-    <string name="order_tab_received">Received</string>
-    <string name="order_tab_cancelled">Cancelled</string>
-    <string name="order_empty_title">No orders yet</string>
-    <string name="order_empty_desc">Explore and place your first\nViệt Phục order</string>
-    <string name="order_shop_now">Shop now</string>
-
-    <!-- Cart / Payment / Tracking -->
-    <string name="cart_title">Cart</string>
-    <string name="order_code_prefix">Order: </string>
-    <string name="cart_total">Total payment</string>
-    <string name="label_total">Total</string>
-    <string name="pay_change">Change</string>
-    <string name="pay_products">Products</string>
-    <string name="pay_method">Payment method</string>
-    <string name="pay_cod">💵  Cash on delivery (COD)</string>
-    <string name="pay_bank">Bank transfer</string>
-    <string name="pay_momo">MoMo wallet</string>
-    <string name="pay_address_empty">No delivery address yet — tap to add</string>
-    <string name="pay_address_required">Please enter a complete delivery address.</string>
-    <string name="pay_note_label">Order note</string>
-    <string name="pay_note_hint">Note to seller (optional)…</string>
-    <string name="pay_summary">Order summary</string>
-    <string name="pay_subtotal">Subtotal</string>
-    <string name="pay_shipping">Shipping fee</string>
-    <string name="pay_shipping_loading">Loading shipping methods…</string>
-    <string name="pay_shipping_free">Free</string>
-    <string name="pay_grand_total">Grand total</string>
-    <string name="pay_place_order">Place order</string>
-    <string name="track_title">Track order</string>
-    <string name="track_order_id">Order ID</string>
-    <string name="track_order_date">Order date</string>
-    <string name="track_status">Order status</string>
-    <string name="track_address">📍  Delivery address</string>
-    <string name="track_ordered_items">Ordered items</string>
-    <string name="track_step_placed">Order placed</string>
-    <string name="track_step_confirmed">Confirmed</string>
-    <string name="track_step_shipping">Shipping</string>
-    <string name="track_step_delivered">Delivered</string>
-
-    <!-- Styling / Chatbot / Explore / About -->
-    <string name="styling_title">Your Style</string>
-    <string name="styling_subtitle">Discover styles that match your element and zodiac sign</string>
-    <string name="styling_ai_title">AI Style Suggestions</string>
-    <string name="styling_ai_desc">Outfits matching your element &amp; sign</string>
-    <string name="styling_chat_title">AI Fashion Assistant</string>
-    <string name="styling_chat_desc">Chat with AI for direct advice</string>
-    <string name="styling_recent">Recent suggestions</string>
-    <string name="chatbot_name">TiredCity Assistant</string>
-    <string name="chatbot_subtitle">Outfit suggestions by element</string>
-    <string name="explore_tab_articles">About</string>
-    <string name="explore_tab_events">Store Location</string>
-    <string name="about_hero_subtitle">Việt Phục – Traditional Beauty</string>
-    <string name="about_hero_image_desc">TiredCity store photo</string>
-    <string name="about_section_title">About Us</string>
-    <string name="about_description"><font color="#A80D15"><b>Tired City</b></font> is a marketplace for lovers of Vietnamese culture, bringing contemporary <font color="#A80D15"><b>Việt Phục</b></font> designs rooted in <font color="#A80D15"><b>tradition and identity</b></font>. We help users discover and shop Vietnamese fashion in a fresh, inspiring way.</string>
-    <string name="about_vision_title">Vision</string>
-    <string name="about_vision_desc"><font color="#A80D15"><b>Tired City</b></font> aims to become Vietnam\'s <font color="#A80D15"><b>top digital platform</b></font>, bringing <font color="#A80D15"><b>Việt Phục</b></font> back into everyday life as part of youth lifestyle, not just for festivals but for modern living.</string>
-    <string name="about_mission_title">Mission</string>
-    <string name="about_mission_desc"><font color="#A80D15"><b>Tired City</b></font> connects users with artisans and designers through smart shopping, using <font color="#A80D15"><b>AI</b></font> to preserve and spread <font color="#A80D15"><b>Vietnamese culture</b></font> in a meaningful, sustainable way.</string>
-
-    <string name="about_core_values_title">Core Values</string>
-    <string name="about_value1_title">Vietnamese Identity</string>
-    <string name="about_value1_desc">Preserving and spreading Vietnam\'s traditional cultural values.</string>
-    <string name="about_value2_title">Creativity</string>
-    <string name="about_value2_desc">Reimagining Việt Phục with a contemporary design language.</string>
-    <string name="about_value3_title">Technology</string>
-    <string name="about_value3_desc">Applying AI to personalize the shopping experience.</string>
-    <string name="about_value4_title">Connection</string>
-    <string name="about_value4_desc">Bringing together the community of Việt Phục lovers, artisans, and designers.</string>
-
-    <string name="about_contact_title">Contact</string>
-    <string name="about_contact_brand">Tired City – Contemporary Việt Phục</string>
-    <string name="about_showroom_hn_title">TiredCity 37 Hàng Hành</string>
-    <string name="about_showroom_hn_address">37 Hàng Hành St, Hoàn Kiếm, Hanoi</string>
-    <string name="about_showroom_hcm_title">TiredCity 97 Hàng Gai</string>
-    <string name="about_showroom_hcm_address">97 Hàng Gai St, Hoàn Kiếm, Hanoi</string>
-    <string name="about_email">contact@tiredcity.vn</string>
-    <string name="about_hotline">1900 6868</string>
-    <string name="about_website">www.tiredcity.vn</string>
-    <string name="about_hours">09:00 – 21:00 (Monday – Sunday)</string>
-
-    <!-- AI Styling -->
-    <string name="aistyle_palette">🎨  Colors for your element</string>
-    <string name="aistyle_suggestions">✨  Outfit suggestions</string>
-    <string name="aistyle_refresh">Refresh</string>
-    <string name="aistyle_tips">💡  Styling tips</string>
-    <string name="aistyle_color_desc">White, yellow, silver and gray bring good fortune to those of the Metal element.</string>
-    <string name="aistyle_tip_desc">Those of the Metal element should choose light-toned garments with refined tailoring. A white or bronze silk áo dài is perfect for formal occasions.</string>
-    <string name="aistyle_menh_tagline">Style suggestions based on your Five-Element destiny</string>
+    <string name="admin_app_not_installed">Admin app not installed.</string>
+    <string name="google_signin_failed">Google Sign-in failed</string>
+    <string name="brand_tagline">TRADITIONAL VIET ATTIRE</string>
 
     <!-- Profile -->
+    <string name="profile_title">My Profile</string>
+    <string name="edit_profile_title">Edit Profile</string>
     <string name="label_my_orders">My Orders</string>
     <string name="label_wardrobe">My Wardrobe</string>
-    <string name="label_settings">Settings</string>
-    <string name="profile_hello">Hello,</string>
-    <string name="label_chat_tiredcity">Share with TiredCity</string>
+    <string name="label_chat_tiredcity">Chat with TiredCity</string>
     <string name="label_contact_tiredcity">Contact TiredCity</string>
-    <string name="label_notification_settings">Notification Settings</string>
+    <string name="label_notification_settings">Notifications</string>
     <string name="label_sales_policy">Sales Policy</string>
     <string name="label_general_settings">General Settings</string>
     <string name="label_terms_conditions">Terms &amp; Conditions</string>
-    <!-- Quick actions -->
-    <string name="label_styling_ai">AI Styling</string>
-    <string name="label_orders_short">Orders</string>
-    <string name="label_find_store">Find Store</string>
-    <string name="label_promotions">Promotions</string>
-    <string name="label_events">Events</string>
-    <string name="label_blogs">Blogs</string>
+    <string name="profile_hello">Hello,</string>
 
-    <!-- Chatbot -->
-    <string name="bot_intro_message">Hi! I\'m your virtual guide to the creative world of TiredCity</string>
-    <string name="chatbot_welcome">Hello! I\'m your TiredCity style advisor. What outfit you are looking for?</string>
-    <string name="hint_message">Type a message…</string>
-    <string name="btn_send">Send</string>
-
-    <!-- News / Events screens -->
-    <string name="empty_news">No articles yet</string>
-    <string name="empty_events">No events yet</string>
-    <string name="cd_back">Back</string>
-
-    <!-- Rewards / Promotions (Ưu đãi) -->
-    <string name="reward_title">REWARDS</string>
-    <string name="reward_tab_all">ALL</string>
-    <string name="reward_tab_birthday">BIRTHDAY</string>
-    <string name="reward_tab_last_chance">LAST CHANCE</string>
-    <string name="reward_tab_featured">FEATURED</string>
-    <string name="reward_use_now">Use now</string>
-    <string name="reward_empty_title">More rewards coming soon!</string>
-    <string name="reward_explore">EXPLORE</string>
-    <string name="reward_voucher_birthday_title">Birthday TO YOU</string>
-    <string name="reward_voucher_birthday_subtitle">July birthday voucher</string>
-    <string name="cd_gift">Gifts</string>
-
-    <!-- Reward: Appreciation Voucher (Ao Dai / Nhat Binh collection) -->
-    <string name="reward_voucher_tri_an_title">Appreciation Voucher</string>
-    <string name="reward_voucher_tri_an_subtitle">Ao Dai / Nhat Binh Collection</string>
-
-    <!-- Voucher detail screen -->
-    <string name="voucher_detail_validity">01/06/2026 - 30/06/2026</string>
-    <string name="voucher_detail_time">00:00 - 23:59</string>
-    <string name="voucher_detail_days_left">4 DAYS LEFT</string>
-    <string name="voucher_detail_desc">Appreciation Voucher - Ao Dai / Nhat Binh Collection\nDiscount on full-priced traditional outfits (*)\n\nValid: from 01/06/2026 to end of 30/06/2026\n\nTiredCity offers a special discount when you buy designs from the Ao Dai and Nhat Binh collections:\n- Instant discount on full-priced traditional outfits.\n- Applicable both in store and online.\n\n(*) Applicable across the entire TiredCity system for full-priced Ao Dai / Nhat Binh collection items. Cannot be combined with other promotions.</string>
-    <string name="voucher_gifted">GIFTED</string>
-    <string name="voucher_use_now">USE NOW</string>
-    <string name="cd_share">Share</string>
-
-    <!-- Barcode redemption screen -->
-    <string name="barcode_in_store_title">In-store purchase: </string>
-    <string name="barcode_in_store_desc">Please show this code to staff when paying in store to use the offer.</string>
-    <string name="barcode_label">Offer barcode</string>
-    <string name="barcode_online_title">Online purchase: </string>
-    <string name="barcode_online_desc">Enter this promo code at checkout in the TiredCity app or on www.tiredcity.com</string>
-    <string name="barcode_code">39TRIAN0626O1VW1WCQXZ</string>
-    <string name="barcode_copy">Copy</string>
-    <string name="barcode_copied">Offer code copied</string>
-
-    <!-- Contact &amp; Store Locator -->
-    <string name="contact_customer_care">CUSTOMER CARE</string>
-    <string name="contact_title">CONTACT TIREDCITY</string>
-    <string name="contact_subtitle">Leave a message, the TiredCity team will respond as soon as possible to support you.</string>
-    <string name="hint_name">Full Name *</string>
-    <string name="hint_phone_contact">Phone Number *</string>
-    <string name="hint_message_long">Your message *</string>
-    <string name="btn_send_message">SEND MESSAGE ✦</string>
-
-    <string name="title_store_locator">STORE LOCATOR</string>
-    <string name="label_address">Address: </string>
-    <string name="label_opening_hours">Opening hours: </string>
-    <string name="label_email">Email: </string>
-    <string name="label_mobile">Mobile: </string>
-    <string name="link_view_map">View map</string>
-    <string name="map_tap_hint">Tap to view all locations on Google Maps</string>
-
-    <string name="store_1_name">1. TiredCity 37 Hàng Hành</string>
-    <string name="store_1_details">Address: 37 Hàng Hành St, Hàng Trống, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
-
-    <string name="store_2_name">2. TiredCity 97 Hàng Gai</string>
-    <string name="store_2_details">Address: 97 Hàng Gai St, Hàng Trống, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
-
-    <string name="store_3_name">3. TiredCity 19 Nhà Thờ</string>
-    <string name="store_3_details">Address: 19 Nhà Thờ St, Hàng Trống, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
-
-    <string name="store_4_name">4. TiredCity 100 Hàng Đào</string>
-    <string name="store_4_details">Address: 100 Hàng Đào St, Hàng Đào, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
-
-    <string name="store_5_name">5. TiredCity 8 Lương Ngọc Quyến</string>
-    <string name="store_5_details">Address: 8 Lương Ngọc Quyến St, Hàng Buồm, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
+    <!-- Language toggle -->
+    <string name="switch_to_other_lang">VI</string>
 
     <!-- Policies Detail Content -->
     <string name="policy_subtitle">Learn about TiredCity\'s policies and terms to ensure a safe and meaningful shopping experience.</string>
@@ -704,7 +132,7 @@
         Delivery time may vary due to weather, holidays, or other objective factors.
     ]]></string>
 
-    <string name="policy_return_title">Return And Refund Policy</string>
+    <string name="policy_return_title">Return &amp; Refund Policy</string>
     <string name="policy_return_content"><![CDATA[
         <b>Return Period</b><br/>
         We accept returns within 07 days from the date the customer receives the product.<br/><br/>
@@ -743,7 +171,35 @@
     ]]></string>
     <string name="str_policy_term">POLICY &amp; TERMS</string>
 
-    <!-- Header buttons (content descriptions) -->
+    <!-- Terms -->
+    <string name="terms_title">Terms of Use</string>
+    <string name="terms_content" translatable="false">
+        <![CDATA[
+        <h3>1. Acceptance of Terms</h3>
+        <p>By using the TiredCity app, you agree to comply with these terms and conditions.</p>
+
+        <h3>2. Intellectual Property Rights</h3>
+        <p>All content, images, and designs on the app are the copyright of TiredCity or our artist partners. Copying without consent is a violation of the law.</p>
+
+        <h3>3. User Accounts</h3>
+        <p>You are responsible for maintaining the confidentiality of your password and account information. All activities under your account are your responsibility.</p>
+
+        <h3>4. Sales Policy</h3>
+        <p>Prices and availability of goods are subject to change without notice. We reserve the right to refuse orders in case of errors in pricing or product information.</p>
+
+        <h3>5. Limitation of Liability</h3>
+        <p>TiredCity is not responsible for any indirect damages arising from the use of the app.</p>
+
+        <h3>6. Changes to Terms</h3>
+        <p>We may update these terms from time to time. Continued use of the app implies acceptance of those changes.</p>
+        ]]>
+    </string>
+
+    <!-- Store Locator -->
+    <string name="title_store_locator">STORE LOCATOR</string>
+    <string name="link_view_map">View map</string>
+
+    <!-- Header buttons -->
     <string name="cd_cart">Cart</string>
     <string name="cd_notifications">Notifications</string>
 
@@ -751,13 +207,11 @@
     <string name="notification_title">Notifications</string>
     <string name="notification_empty_title">No notifications yet</string>
     <string name="notification_empty_desc">Updates about your orders and offers\nwill appear here.</string>
-    <string name="notif_order_title">Your order is on the way</string>
-    <string name="notif_order_message">Order #DH2024001 is out for delivery.</string>
-    <string name="notif_promo_title">Summer offer 🎉</string>
-    <string name="notif_promo_message">Up to 30% off the new Áo Dài collection. Don\'t miss out!</string>
-    <string name="notif_system_title">Welcome to Tired City</string>
-    <string name="notif_system_message">Explore the world of traditional Vietnamese attire with us.</string>
-    <string name="notif_time_recent">2 hours ago</string>
-    <string name="notif_time_today">Today</string>
-    <string name="notif_time_yesterday">Yesterday</string>
+
+    <!-- Settings -->
+    <string name="settings_general_title">GENERAL</string>
+    <string name="settings_general_security_title">Security</string>
+    <string name="settings_general_app_info_title">App Info</string>
+    <string name="settings_general_rate_title">Rate App</string>
+    <string name="settings_general_delete_title">Request Account Deletion</string>
 </resources>

@@ -20,6 +20,9 @@ import com.tiredcity.app.adapter.PromoStripAdapter;
 import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.UserProfile;
+import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.AuthRepository;
+import com.tiredcity.app.data.repository.FavoritesRepository;
 import com.tiredcity.app.databinding.FragmentHomeBinding;
 import com.tiredcity.app.ui.styling.AiStylingActivity;
 import com.tiredcity.app.ui.styling.ChatBotActivity;
@@ -34,6 +37,8 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private PreferenceManager   prefs;
+    private AuthRepository      authRepository;
+    private FavoritesRepository favoritesRepository;
     private Handler             autoScrollHandler;
     private Runnable            autoScrollRunnable;
     private BannerAdapter       bannerAdapter;
@@ -58,7 +63,10 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         prefs = new PreferenceManager(requireContext());
+        authRepository = new AuthRepository(ApiClient.getApiService(null), prefs);
+        favoritesRepository = new FavoritesRepository(new com.tiredcity.app.data.local.FavoritesLocalStore(requireContext()));
 
+        syncUserProfile();
         setupGreeting();
         setupMenhBanner();
         setupBanner();
@@ -97,6 +105,17 @@ public class HomeFragment extends Fragment {
         hotProductsAdapter = null;
     }
 
+    private void syncUserProfile() {
+        authRepository.syncAccount(prefs.getUser(), cloudProfile -> {
+            if (isAdded() && cloudProfile != null) {
+                requireActivity().runOnUiThread(() -> {
+                    setupGreeting();
+                    setupMenhBanner();
+                });
+            }
+        });
+    }
+
     // ── Greeting ──────────────────────────────────────────────────────────────
 
     private void setupGreeting() {
@@ -116,35 +135,41 @@ public class HomeFragment extends Fragment {
     // ── Menh banner ───────────────────────────────────────────────────────────
 
     private void setupMenhBanner() {
-        String menh   = prefs.getMenh();
-        String zodiac = prefs.getZodiac();
+        UserProfile profile = prefs.getUser();
+        String menh = null;
+        String zodiac = null;
 
-        // Tự tính mệnh từ ngày sinh trong profile nếu chưa có
-        if (menh == null || menh.isEmpty()) {
-            UserProfile profile = prefs.getUser();
-            if (profile != null && profile.getBirthDate() != null
-                    && profile.getBirthDate().length() >= 10) {
-                try {
-                    int year  = Integer.parseInt(profile.getBirthDate().substring(0, 4));
-                    int month = Integer.parseInt(profile.getBirthDate().substring(5, 7));
-                    int day   = Integer.parseInt(profile.getBirthDate().substring(8, 10));
+        if (profile != null && profile.getBirthDate() != null && profile.getBirthDate().length() >= 10) {
+            try {
+                int year = Integer.parseInt(profile.getBirthDate().substring(0, 4));
+                int month = Integer.parseInt(profile.getBirthDate().substring(5, 7));
+                int day = Integer.parseInt(profile.getBirthDate().substring(8, 10));
 
-                    menh   = MenhCalculator.tinhMenh(year);
-                    zodiac = MenhCalculator.tinhCungHoangDao(month, day);
-                    String animal = MenhCalculator.tinhConGiap(year);
+                // LUÔN TÍNH LẠI ĐỂ ĐẢM BẢO CHÍNH XÁC THEO CÔNG THỨC MỚI
+                menh = MenhCalculator.tinhMenh(year);
+                zodiac = MenhCalculator.tinhCungHoangDao(month, day);
+                String animal = MenhCalculator.tinhConGiap(year);
 
+                // Cập nhật lại cache và Cloud nếu có sự thay đổi (Self-Healing)
+                if (!menh.equals(prefs.getMenh()) || !zodiac.equals(prefs.getZodiac())) {
                     prefs.setMenh(menh);
                     prefs.setZodiac(zodiac);
-
-                    UserProfile updated = prefs.getUser();
-                    if (updated != null) {
-                        updated.setMenh(menh);
-                        updated.setZodiac(zodiac);
-                        updated.setAnimal(animal);
-                        prefs.saveUser(updated);
-                    }
-                } catch (NumberFormatException ignored) { }
+                    
+                    profile.setMenh(menh);
+                    profile.setZodiac(zodiac);
+                    profile.setAnimal(animal);
+                    prefs.saveUser(profile);
+                    
+                    // Đồng bộ ngay lên Cloud để các máy khác cũng nhận dữ liệu đúng
+                    authRepository.syncUserProfileToFirestore(profile);
+                }
+            } catch (Exception ignored) {
+                menh = prefs.getMenh();
+                zodiac = prefs.getZodiac();
             }
+        } else {
+            menh = prefs.getMenh();
+            zodiac = prefs.getZodiac();
         }
 
         if (menh == null || menh.isEmpty()) {
@@ -288,7 +313,9 @@ public class HomeFragment extends Fragment {
                 openProductDetail(product.getId());
             }
             @Override
-            public void onSaveToggle(Product product, boolean saved) { /* handle wishlist */ }
+            public void onSaveToggle(Product product, boolean saved) {
+                favoritesRepository.syncFavoritesToCloud();
+            }
 
             @Override
             public void onAddToCartClick(Product product) {
@@ -314,7 +341,9 @@ public class HomeFragment extends Fragment {
                 openProductDetail(product.getId());
             }
             @Override
-            public void onSaveToggle(Product product, boolean saved) { /* handle wishlist */ }
+            public void onSaveToggle(Product product, boolean saved) {
+                favoritesRepository.syncFavoritesToCloud();
+            }
 
             @Override
             public void onAddToCartClick(Product product) {

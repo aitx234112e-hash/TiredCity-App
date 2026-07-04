@@ -76,16 +76,22 @@ public class AiStylingActivity extends BaseActivity {
         });
     }
 
-    /** Mệnh đã lưu → tính từ năm sinh trong hồ sơ cache → mặc định "Kim". */
+    /** Ưu tiên tính từ năm sinh thực tế để đảm bảo chính xác theo công thức mới. */
     private String resolveMenh() {
-        String saved = preferenceManager.getMenh();
-        if (saved != null) return saved;
-
         UserProfile cached = preferenceManager.getUser();
         if (cached != null && cached.getBirthYear() > 0) {
-            return MenhCalculator.tinhMenh(cached.getBirthYear());
+            String menh = MenhCalculator.tinhMenh(cached.getBirthYear());
+            // Tự sửa lại cache nếu đang lưu sai
+            if (!menh.equals(preferenceManager.getMenh())) {
+                preferenceManager.setMenh(menh);
+                cached.setMenh(menh);
+                preferenceManager.saveUser(cached);
+            }
+            return menh;
         }
-        return "Kim";
+        
+        String saved = preferenceManager.getMenh();
+        return (saved != null) ? saved : "Kim";
     }
 
     private void setupMenhUI(String menh) {

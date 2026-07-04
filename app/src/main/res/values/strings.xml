@@ -637,6 +637,28 @@
     <string name="label_sales_policy">Chính sách bán hàng</string>
     <string name="label_general_settings">Cài đặt chung</string>
     <string name="label_terms_conditions">Điều khoản &amp; Điều kiện</string>
+    <string name="terms_title">Điều khoản sử dụng</string>
+    <string name="terms_content" translatable="false">
+        <![CDATA[
+        <h3>1. Chấp nhận điều khoản</h3>
+        <p>Bằng cách sử dụng ứng dụng TiredCity, bạn đồng ý tuân thủ các điều khoản và điều kiện này.</p>
+
+        <h3>2. Quyền sở hữu trí tuệ</h3>
+        <p>Tất cả nội dung, hình ảnh, thiết kế trên ứng dụng đều thuộc bản quyền của TiredCity hoặc các đối tác nghệ sĩ của chúng tôi. Việc sao chép mà không có sự đồng ý là vi phạm pháp luật.</p>
+
+        <h3>3. Tài khoản người dùng</h3>
+        <p>Bạn có trách nhiệm bảo mật mật khẩu và thông tin tài khoản của mình. Mọi hoạt động dưới tài khoản của bạn sẽ do bạn chịu trách nhiệm.</p>
+
+        <h3>4. Chính sách bán hàng</h3>
+        <p>Giá cả và tình trạng hàng hóa có thể thay đổi mà không báo trước. Chúng tôi có quyền từ chối đơn hàng nếu có sai sót về giá hoặc thông tin sản phẩm.</p>
+
+        <h3>5. Giới hạn trách nhiệm</h3>
+        <p>TiredCity không chịu trách nhiệm cho bất kỳ thiệt hại gián tiếp nào phát sinh từ việc sử dụng ứng dụng.</p>
+
+        <h3>6. Thay đổi điều khoản</h3>
+        <p>Chúng tôi có thể cập nhật các điều khoản này theo thời gian. Việc tiếp tục sử dụng ứng dụng đồng nghĩa với việc bạn chấp nhận các thay đổi đó.</p>
+        ]]>
+    </string>
     <!-- Quick actions -->
     <string name="label_styling_ai">Phối đồ AI</string>
     <string name="label_orders_short">Đơn hàng</string>
@@ -735,99 +757,99 @@
     <string name="store_5_details">Address: 8 P. Lương Ngọc Quyến, Hàng Buồm, Hoàn Kiếm, Hà Nội. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
 
     <!-- Policies Detail Content -->
-    <string name="policy_subtitle">Learn about TiredCity\'s policies and terms to ensure a safe and meaningful shopping experience.</string>
+    <string name="policy_subtitle">Tìm hiểu về các chính sách và điều khoản của TiredCity để đảm bảo trải nghiệm mua sắm an toàn và ý nghĩa.</string>
 
-    <string name="policy_purchase_title">Purchase Policy</string>
+    <string name="policy_purchase_title">Chính sách mua hàng</string>
     <string name="policy_purchase_content"><![CDATA[
-        <b>Order Confirmation Time</b><br/>
-        After a customer successfully places an order, we will contact you for confirmation within 24 business hours.<br/><br/>
-        <b>Order Conditions</b><br/>
-        • Customers must provide complete delivery information.<br/>
-        • Phone number and address information must be accurate.<br/>
-        • Orders must be confirmed before delivery proceeds.<br/><br/>
-        <b>Purchase Process</b><br/>
-        1. Select the desired product.<br/>
-        2. Add the product to the cart.<br/>
-        3. Fill in the delivery information.<br/>
-        4. Choose a payment method.<br/>
-        5. Confirm the order.<br/>
-        6. Receive a confirmation notice from the store.<br/><br/>
-        <b>Note</b><br/>
-        The store reserves the right to refuse orders with signs of fraud or inaccurate information.
+        <b>Thời gian xác nhận đơn hàng</b><br/>
+        Sau khi quý khách đặt hàng thành công, chúng tôi sẽ liên hệ để xác nhận trong vòng 24 giờ làm việc.<br/><br/>
+        <b>Điều kiện đặt hàng</b><br/>
+        • Khách hàng cần cung cấp đầy đủ thông tin giao hàng.<br/>
+        • Thông tin số điện thoại và địa chỉ phải chính xác.<br/>
+        • Đơn hàng cần được xác nhận trước khi tiến hành giao hàng.<br/><br/>
+        <b>Quy trình mua hàng</b><br/>
+        1. Chọn sản phẩm mong muốn.<br/>
+        2. Thêm sản phẩm vào giỏ hàng.<br/>
+        3. Điền thông tin giao hàng.<br/>
+        4. Chọn phương thức thanh toán.<br/>
+        5. Xác nhận đơn hàng.<br/>
+        6. Nhận thông báo xác nhận từ cửa hàng.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Cửa hàng có quyền từ chối các đơn hàng có dấu hiệu gian lận hoặc thông tin không chính xác.
     ]]></string>
 
-    <string name="policy_payment_title">Payment Policy</string>
+    <string name="policy_payment_title">Chính sách thanh toán</string>
     <string name="policy_payment_content"><![CDATA[
-        <b>Payment Methods</b><br/>
-        • Cash on Delivery (COD).<br/>
-        • Bank transfer.<br/>
-        • E-wallets (MoMo, ZaloPay, VNPay…).<br/>
-        • Credit/Debit cards.<br/><br/>
-        <b>Payment Security</b><br/>
-        • All online transactions are encrypted and secured.<br/>
-        • Customer payment information is not stored without authorization.<br/>
-        • Used payment gateways all meet safety standards.<br/><br/>
-        <b>Refund Policy</b><br/>
-        • Refunds will be processed after the return request is confirmed.<br/>
-        • Refund processing time is from 05 – 07 business days.<br/><br/>
-        <b>Note</b><br/>
-        Customers should keep transaction information for verification if needed.
+        <b>Phương thức thanh toán</b><br/>
+        • Thanh toán khi nhận hàng (COD).<br/>
+        • Chuyển khoản ngân hàng.<br/>
+        • Ví điện tử (MoMo, ZaloPay, VNPay…).<br/>
+        • Thẻ tín dụng/Ghi nợ.<br/><br/>
+        <b>Bảo mật thanh toán</b><br/>
+        • Mọi giao dịch trực tuyến đều được mã hóa và bảo mật.<br/>
+        • Thông tin thanh toán của khách hàng không được lưu trữ khi chưa có sự đồng ý.<br/>
+        • Các cổng thanh toán sử dụng đều đạt tiêu chuẩn an toàn.<br/><br/>
+        <b>Chính sách hoàn tiền</b><br/>
+        • Tiền sẽ được hoàn sau khi yêu cầu đổi trả được xác nhận.<br/>
+        • Thời gian xử lý hoàn tiền từ 05 – 07 ngày làm việc.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Khách hàng nên giữ lại thông tin giao dịch để đối chiếu khi cần thiết.
     ]]></string>
 
-    <string name="policy_shipping_title">Shipping Policy</string>
+    <string name="policy_shipping_title">Chính sách vận chuyển</string>
     <string name="policy_shipping_content"><![CDATA[
-        <b>Delivery Time</b><br/>
-        • Inner City: 01 – 03 business days.<br/>
-        • Suburbs and other provinces: 03 – 07 business days.<br/><br/>
-        <b>Shipping Range</b><br/>
-        We support nationwide delivery through reputable shipping units.<br/><br/>
-        <b>Shipping Process</b><br/>
-        1. Order is confirmed.<br/>
-        2. Products are packaged and handed over to the shipping unit.<br/>
-        3. Customer receives order tracking information.<br/>
-        4. Delivery to the registered address.<br/><br/>
-        <b>Note</b><br/>
-        Delivery time may vary due to weather, holidays, or other objective factors.
+        <b>Thời gian giao hàng</b><br/>
+        • Nội thành: 01 – 03 ngày làm việc.<br/>
+        • Ngoại thành và các tỉnh khác: 03 – 07 ngày làm việc.<br/><br/>
+        <b>Phạm vi vận chuyển</b><br/>
+        Chúng tôi hỗ trợ giao hàng toàn quốc thông qua các đơn vị vận chuyển uy tín.<br/><br/>
+        <b>Quy trình giao hàng</b><br/>
+        1. Đơn hàng được xác nhận.<br/>
+        2. Sản phẩm được đóng gói và bàn giao cho đơn vị vận chuyển.<br/>
+        3. Khách hàng nhận thông tin theo dõi đơn hàng.<br/>
+        4. Giao hàng đến địa chỉ đã đăng ký.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Thời gian giao hàng có thể thay đổi do thời tiết, lễ tết hoặc các yếu tố khách quan khác.
     ]]></string>
 
-    <string name="policy_return_title">Return And Refund Policy</string>
+    <string name="policy_return_title">Chính sách đổi trả &amp; hoàn tiền</string>
     <string name="policy_return_content"><![CDATA[
-        <b>Return Period</b><br/>
-        We accept returns within 07 days from the date the customer receives the product.<br/><br/>
-        <b>Product Return Conditions</b><br/>
-        • Product is in original condition with tags attached.<br/>
-        • Unused and unwashed.<br/>
-        • Not damaged by the customer.<br/>
-        • Have an invoice or proof of purchase.<br/><br/>
-        <b>Return Process</b><br/>
-        1. Contact the customer care department.<br/>
-        2. Provide images or videos of the product.<br/>
-        3. Pack and send the product to the store.<br/>
-        4. Receive a new product or a refund as regulated.<br/><br/>
-        <b>Note</b><br/>
-        Shipping costs incurred during the return process will be handled on a case-by-case basis.
+        <b>Thời hạn đổi trả</b><br/>
+        Chúng tôi chấp nhận đổi trả trong vòng 07 ngày kể từ ngày khách hàng nhận được sản phẩm.<br/><br/>
+        <b>Điều kiện đổi trả sản phẩm</b><br/>
+        • Sản phẩm còn nguyên vẹn, đầy đủ tem mác.<br/>
+        • Chưa qua sử dụng và chưa qua giặt là.<br/>
+        • Không bị hư hỏng do lỗi từ phía khách hàng.<br/>
+        • Có hóa đơn hoặc chứng từ mua hàng.<br/><br/>
+        <b>Quy trình đổi trả</b><br/>
+        1. Liên hệ với bộ phận chăm sóc khách hàng.<br/>
+        2. Cung cấp hình ảnh hoặc video về sản phẩm.<br/>
+        3. Đóng gói và gửi sản phẩm về cửa hàng.<br/>
+        4. Nhận sản phẩm mới hoặc hoàn tiền theo quy định.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Các chi phí phát sinh trong quá trình đổi trả sẽ được xử lý tùy theo từng trường hợp cụ thể.
     ]]></string>
 
-    <string name="policy_privacy_title">Privacy Policy</string>
+    <string name="policy_privacy_title">Chính sách bảo mật</string>
     <string name="policy_privacy_content"><![CDATA[
-        <b>Purpose of Information Collection</b><br/>
-        • Process orders.<br/>
-        • Support customer care.<br/>
-        • Improve service quality.<br/>
-        • Send promotional information (if the customer agrees).<br/><br/>
-        <b>Scope of Information Use</b><br/>
-        • Used only for activities related to providing products and services.<br/>
-        • Do not share with third parties without customer consent, except as required by law.<br/><br/>
-        <b>Data Security</b><br/>
-        • Personal information is stored on a secure system.<br/>
-        • Apply technical measures to prevent unauthorized access.<br/>
-        • Regularly check and upgrade the security system.<br/><br/>
-        <b>Customer Rights</b><br/>
-        • Request correction or update of personal information.<br/>
-        • Request to stop receiving advertising information.<br/>
-        • Request deletion of personal data according to current regulations.
+        <b>Mục đích thu thập thông tin</b><br/>
+        • Xử lý đơn hàng.<br/>
+        • Hỗ trợ chăm sóc khách hàng.<br/>
+        • Nâng cao chất lượng dịch vụ.<br/>
+        • Gửi thông tin khuyến mãi (nếu khách hàng đồng ý).<br/><br/>
+        <b>Phạm vi sử dụng thông tin</b><br/>
+        • Chỉ sử dụng cho các hoạt động liên quan đến cung cấp sản phẩm và dịch vụ.<br/>
+        • Không chia sẻ với bên thứ ba khi chưa có sự đồng ý của khách hàng, trừ trường hợp pháp luật quy định.<br/><br/>
+        <b>An toàn dữ liệu</b><br/>
+        • Thông tin cá nhân được lưu trữ trên hệ thống bảo mật.<br/>
+        • Áp dụng các biện pháp kỹ thuật để ngăn chặn truy cập trái phép.<br/>
+        • Thường xuyên kiểm tra và nâng cấp hệ thống bảo mật.<br/><br/>
+        <b>Quyền lợi khách hàng</b><br/>
+        • Yêu cầu chỉnh sửa hoặc cập nhật thông tin cá nhân.<br/>
+        • Yêu cầu dừng nhận thông tin quảng cáo.<br/>
+        • Yêu cầu xóa dữ liệu cá nhân theo quy định hiện hành.
     ]]></string>
-    <string name="str_policy_term">POLICY &amp; TERMS</string>
+    <string name="str_policy_term">CHÍNH SÁCH &amp; ĐIỀU KHOẢN</string>
 
     <!-- ─── Shop Explore screen ──────────────────────────────────── -->
     <!-- Horizontal section tabs -->

@@ -49,8 +49,17 @@ public class AuthRepository {
         data.put("email", fUser.getEmail());
         data.put("name", profile.getName());
         data.put("phone", profile.getPhone());
+        data.put("birthDate", profile.getBirthDate());
         data.put("address", profile.getAddress());
+        data.put("province", profile.getProvince());
+        data.put("district", profile.getDistrict());
+        data.put("ward", profile.getWard());
+        data.put("street", profile.getStreet());
+        data.put("menh", profile.getMenh());
+        data.put("zodiac", profile.getZodiac());
+        data.put("animal", profile.getAnimal());
         data.put("role", "user");
+        data.put("updatedAt", com.google.firebase.Timestamp.now());
 
         db.collection("users").document(fUser.getUid()).set(data, SetOptions.merge());
     }
@@ -78,7 +87,16 @@ public class AuthRepository {
         Map<String, Object> data = new HashMap<>();
         data.put("uid", fUser.getUid());
         data.put("email", fUser.getEmail());
-        data.put("name", profile != null ? profile.getName() : fUser.getDisplayName());
+        if (profile != null) {
+            data.put("name", profile.getName());
+            data.put("phone", profile.getPhone());
+            data.put("birthDate", profile.getBirthDate());
+            data.put("menh", profile.getMenh());
+            data.put("zodiac", profile.getZodiac());
+            data.put("animal", profile.getAnimal());
+        } else {
+            data.put("name", fUser.getDisplayName());
+        }
         data.put("role", "user");
         data.put("createdAt", com.google.firebase.Timestamp.now());
 

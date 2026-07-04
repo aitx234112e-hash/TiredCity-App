@@ -398,30 +398,35 @@ public class LoginActivity extends BaseActivity {
                     binding.btnLogin.setEnabled(true);
                     if (task.isSuccessful()) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        String uid = user != null ? user.getUid() : email;
-                        
-                        preferenceManager.saveToken("firebase-token-local");
-                        preferenceManager.saveUserId(uid);
-                        
-                        UserProfile profile = preferenceManager.getUser();
-                        if (profile == null) profile = new UserProfile();
-                        boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
-                        if (!hasRealName) {
-                            profile.setEmail(email);
-                            String raw = email.contains("@") ? email.substring(0, email.indexOf('@')) : email;
-                            profile.setName(prettifyName(raw));
-                            preferenceManager.saveUser(profile);
-                        }
+                        if (user != null) {
+                            user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                                String token = tokenTask.isSuccessful() ? tokenTask.getResult().getToken() : "firebase-token-local";
+                                String uid = user.getUid();
 
-                        // ĐỒNG BỘ NGAY LÊN CLOUD
-                        if (authRepository == null) {
-                            authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
+                                preferenceManager.saveToken(token);
+                                preferenceManager.saveUserId(uid);
+
+                                UserProfile profile = preferenceManager.getUser();
+                                if (profile == null) profile = new UserProfile();
+                                boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
+                                if (!hasRealName) {
+                                    profile.setEmail(email);
+                                    String raw = email.contains("@") ? email.substring(0, email.indexOf('@')) : email;
+                                    profile.setName(prettifyName(raw));
+                                    preferenceManager.saveUser(profile);
+                                }
+
+                                // ĐỒNG BỘ NGAY LÊN CLOUD
+                                if (authRepository == null) {
+                                    authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
+                                }
+                                authRepository.syncUserProfileToFirestore(profile);
+
+                                ApiClient.reset();
+                                startActivity(new Intent(LoginActivity.this, OnboardingActivity.class));
+                                finishAffinity();
+                            });
                         }
-                        authRepository.syncUserProfileToFirestore(profile);
-                        
-                        ApiClient.reset();
-                        startActivity(new Intent(LoginActivity.this, OnboardingActivity.class));
-                        finishAffinity();
                     } else {
                         Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: " + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT).show();
@@ -442,36 +447,51 @@ public class LoginActivity extends BaseActivity {
      * (vd Google account); nếu null sẽ suy ra từ email hoặc dùng "{provider} User".
      */
     private void completeSocialLogin(String provider, String email, String displayName) {
-        preferenceManager.saveToken(DEMO_TOKEN);
-        preferenceManager.saveUserId(TextUtils.isEmpty(email) ? provider : email);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                String token = tokenTask.isSuccessful() ? tokenTask.getResult().getToken() : DEMO_TOKEN;
+                preferenceManager.saveToken(token);
+                preferenceManager.saveUserId(user.getUid());
 
-        UserProfile profile = preferenceManager.getUser();
-        if (profile == null) profile = new UserProfile();
-        boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
-        if (!hasRealName) {
-            profile.setEmail(email);
-            String name;
-            if (!TextUtils.isEmpty(displayName)) {
-                name = displayName;
-            } else if (email != null && email.contains("@")) {
-                name = prettifyName(email.substring(0, email.indexOf('@')));
-            } else {
-                name = provider + " User";
-            }
-            profile.setName(name);
-        }
-        preferenceManager.saveUser(profile);
+                UserProfile profile = preferenceManager.getUser();
+                if (profile == null) profile = new UserProfile();
+                boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
+                if (!hasRealName) {
+                    profile.setEmail(email);
+                    String name;
+                    if (!TextUtils.isEmpty(displayName)) {
+                        name = displayName;
+                    } else if (email != null && email.contains("@")) {
+                        name = prettifyName(email.substring(0, email.indexOf('@')));
+                    } else {
+                        name = provider + " User";
+                    }
+                    profile.setName(name);
+                }
+                preferenceManager.saveUser(profile);
 
-        ApiClient.reset();
-        Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
+                // ĐỒNG BỘ TỪ CLOUD VỀ TRƯỚC
+                if (authRepository == null) {
+                    authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
+                }
 
-        // Đăng nhập mạng xã hội (Google/Facebook/Apple) KHÔNG trả về ngày sinh/SĐT/địa chỉ,
-        // và avatar vẫn giữ logo con gà TiredCity mặc định (không lấy ảnh từ tài khoản Google).
-        // → Nếu hồ sơ chưa có ngày sinh, mở lịch nhập ngày sinh để tính Ngũ Hành mệnh NGAY.
-        if (TextUtils.isEmpty(profile.getBirthDate())) {
-            promptBirthDateForMenh();
-        } else {
-            goToOnboarding();
+                authRepository.syncAccount(profile, cloudProfile -> {
+                    // Sau khi đã tải dữ liệu từ Cloud (Firestore) về máy thành công:
+                    runOnUiThread(() -> {
+                        ApiClient.reset();
+                        Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
+
+                        if (cloudProfile != null && !TextUtils.isEmpty(cloudProfile.getBirthDate())) {
+                            // Đã có ngày sinh trên Cloud -> Vào thẳng app
+                            goToOnboarding();
+                        } else {
+                            // Chưa có ngày sinh -> Mới hiện bảng chọn
+                            promptBirthDateForMenh();
+                        }
+                    });
+                });
+            });
         }
     }
 

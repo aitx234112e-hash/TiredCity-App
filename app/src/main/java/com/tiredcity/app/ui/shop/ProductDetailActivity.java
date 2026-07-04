@@ -33,6 +33,7 @@ import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.Review;
 import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.FavoritesRepository;
 import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.ActivityProductDetailBinding;
 import com.tiredcity.app.databinding.ItemRatingBarRowBinding;
@@ -58,6 +59,7 @@ public class ProductDetailActivity extends BaseActivity {
     private ProductDetailViewModel viewModel;
     private CartLocalStore cartStore;
     private FavoritesLocalStore favoritesStore;
+    private FavoritesRepository favoritesRepository;
 
     private Product currentProduct;
     private String selectedSize = "";
@@ -87,6 +89,7 @@ public class ProductDetailActivity extends BaseActivity {
         ProductRepository repository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
         cartStore = new CartLocalStore(this);
         favoritesStore = new FavoritesLocalStore(this);
+        favoritesRepository = new FavoritesRepository(favoritesStore);
 
         // Sử dụng Factory chuyên biệt để khởi tạo ViewModel
         ProductDetailViewModelFactory factory = new ProductDetailViewModelFactory(repository);
@@ -345,6 +348,7 @@ public class ProductDetailActivity extends BaseActivity {
         binding.ibSave.setOnClickListener(v -> {
             boolean nowSaved = favoritesStore.toggleFavorite(p);
             binding.ibSave.setSaved(nowSaved, true);
+            favoritesRepository.syncFavoritesToCloud(); // Đồng bộ lên Cloud ngay khi tim/bỏ tim
         });
     }
 
