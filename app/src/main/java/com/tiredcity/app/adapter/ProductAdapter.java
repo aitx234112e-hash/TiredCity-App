@@ -125,6 +125,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             if (!imageUrl.isEmpty()) {
                 Glide.with(b.ivProductImage.getContext())
                         .load(imageUrl)
+                        // Ảnh sản phẩm có thể nặng (PNG vài MB) → nới timeout để không bị
+                        // huỷ tải giữa chừng (mặc định Glide chỉ 2500ms).
+                        .timeout(30000)
                         .centerCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .placeholder(R.color.bg_subtle)

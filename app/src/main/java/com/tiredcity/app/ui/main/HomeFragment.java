@@ -19,6 +19,7 @@ import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.PromoStripAdapter;
 import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.Product;
+import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.databinding.FragmentHomeBinding;
 import com.tiredcity.app.ui.styling.AiStylingActivity;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
     private PromoStripAdapter   promoAdapter;
     private ProductAdapter      recommendedAdapter;
     private ProductAdapter      hotProductsAdapter;
+    private FirestoreProductRepository firestoreRepository;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -65,6 +67,7 @@ public class HomeFragment extends Fragment {
         setupPromoStrip();
         setupRecommendedProducts();
         setupHotProducts();
+        loadFirestoreHighlights();
         setupLanguageButton();
         setupClickListeners();
     }
@@ -313,6 +316,36 @@ public class HomeFragment extends Fragment {
         binding.rvHotProducts.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.rvHotProducts.setAdapter(hotProductsAdapter);
+    }
+
+    /**
+     * Thay dữ liệu mẫu (không ảnh) bằng sản phẩm thật từ Firestore — cùng nguồn với admin,
+     * có ảnh. "Gợi ý cho bạn" = sản phẩm đánh giá cao; "Đang thịnh hành" = đang giảm giá.
+     * Nếu Firestore lỗi/rỗng thì giữ nguyên dữ liệu mẫu đã hiển thị.
+     */
+    private void loadFirestoreHighlights() {
+        if (firestoreRepository == null) firestoreRepository = new FirestoreProductRepository();
+        firestoreRepository.getProducts(all -> {
+            if (binding == null || all == null || all.isEmpty()) return;
+
+            // "Sản phẩm nổi bật" ưu tiên hàng đang giảm giá; "Gợi ý cho bạn" ưu tiên đánh giá cao.
+            // Chia thành HAI nhóm KHÔNG trùng sản phẩm: xếp theo độ ưu tiên rồi phân xen kẽ.
+            List<Product> sorted = new ArrayList<>(all);
+            java.util.Collections.sort(sorted, (a, b) -> {
+                if (a.getDiscount() != b.getDiscount()) return b.getDiscount() - a.getDiscount();
+                return Double.compare(b.getRating(), a.getRating());
+            });
+
+            List<Product> hot = new ArrayList<>();          // ưu tiên giảm giá
+            List<Product> recommended = new ArrayList<>();   // phần còn lại
+            for (int i = 0; i < sorted.size(); i++) {
+                if (i % 2 == 0) hot.add(sorted.get(i));
+                else recommended.add(sorted.get(i));
+            }
+
+            if (recommendedAdapter != null) recommendedAdapter.updateData(recommended);
+            if (hotProductsAdapter != null) hotProductsAdapter.updateData(hot);
+        });
     }
 
     // ── Language button ───────────────────────────────────────────────────────

@@ -15,6 +15,7 @@ import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.ActivityCategoryBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
@@ -36,6 +37,7 @@ public class CategoryActivity extends BaseActivity {
 
     private ActivityCategoryBinding binding;
     private ProductRepository productRepository;
+    private FirestoreProductRepository firestoreRepository;
     private ProductAdapter productAdapter;
     private GridLayoutManager gridManager;
     private String categoryId;
@@ -154,29 +156,28 @@ public class CategoryActivity extends BaseActivity {
 
     private void loadProducts() {
         binding.swipeRefresh.setRefreshing(true);
-        productRepository = productRepository != null ? productRepository
-                : new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
-        productRepository.getProducts(1, 40, categoryId, null)
-            .enqueue(new Callback<ApiListResponse<Product>>() {
-                @Override
-                public void onResponse(Call<ApiListResponse<Product>> call, Response<ApiListResponse<Product>> response) {
-                    binding.swipeRefresh.setRefreshing(false);
-                    List<Product> products = null;
-                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        products = response.body().getData();
-                    }
-                    List<Product> source = (products != null && !products.isEmpty())
-                            ? products : MockProductCatalog.getProducts(CategoryActivity.this, categoryId);
-                    productAdapter.updateData(applyTagFilter(source));
-                }
+        if (firestoreRepository == null) firestoreRepository = new FirestoreProductRepository();
+        // Nguồn chính: Firestore (cùng dữ liệu + ảnh với admin). REST backend
+        // (tiredcity.vn/api) hiện chưa hoạt động nên không dùng nữa; nếu Firestore
+        // không có sản phẩm cho danh mục này thì mới hiển thị dữ liệu mẫu offline.
+        firestoreRepository.getProducts(all -> {
+            binding.swipeRefresh.setRefreshing(false);
+            List<Product> inCategory = filterByCategory(all);
+            List<Product> source = (inCategory != null && !inCategory.isEmpty())
+                    ? inCategory : MockProductCatalog.getProducts(CategoryActivity.this, categoryId);
+            productAdapter.updateData(applyTagFilter(source));
+        });
+    }
 
-                @Override
-                public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
-                    binding.swipeRefresh.setRefreshing(false);
-                    // Không có mạng/backend → hiển thị dữ liệu mẫu để xem trước lưới.
-                    productAdapter.updateData(applyTagFilter(MockProductCatalog.getProducts(CategoryActivity.this, categoryId)));
-                }
-            });
+    /** Giữ lại các sản phẩm thuộc đúng danh mục đang mở (so theo nhãn danh mục đã ánh xạ). */
+    private List<Product> filterByCategory(List<Product> all) {
+        if (all == null) return null;
+        if (categoryId == null) return all;
+        List<Product> out = new ArrayList<>();
+        for (Product p : all) {
+            if (categoryId.equals(p.getCategory())) out.add(p);
+        }
+        return out;
     }
 
     /**

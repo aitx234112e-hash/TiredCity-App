@@ -155,7 +155,9 @@
       "Bash(curl -s \"https://firestore.googleapis.com/v1/projects/tiredcity-daf1e/databases/\\(default\\)/documents/products?pageSize=300&key=AIzaSyAFKXern20RnlEdF_qbgp8n18q7KD2c4gc\")",
       "Read(//tmp/**)",
       "Bash(node -e ' *)",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' logcat *)",
+      "Bash(curl -s 'https://firestore.googleapis.com/v1/projects/tiredcity-daf1e/databases/\\(default\\)/documents/products?pageSize=300&key=AIzaSyAFKXern20RnlEdF_qbgp8n18q7KD2c4gc' -o 'C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--TiredCity-App-main-TiredCity-App-main\\\\4e373340-d79b-4716-835c-d106e1cba41c\\\\scratchpad\\\\tc_products3.json')"
     ]
   }
 }

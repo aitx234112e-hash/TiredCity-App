@@ -25,6 +25,7 @@ import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.Review;
 import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.ActivityProductDetailBinding;
 import com.tiredcity.app.databinding.ItemRatingBarRowBinding;
@@ -51,6 +52,7 @@ public class ProductDetailActivity extends BaseActivity {
 
     private ActivityProductDetailBinding binding;
     private ProductRepository productRepository;
+    private FirestoreProductRepository firestoreRepository;
     private CartLocalStore cartLocalStore;
     private FavoritesLocalStore favoritesStore;
     private Product currentProduct;
@@ -117,6 +119,20 @@ public class ProductDetailActivity extends BaseActivity {
     }
 
     private void fallbackToMockOrFinish(String productId) {
+        // Backend REST không nhận id → thử Firestore (cùng nguồn với admin, có ảnh)
+        // trước, chỉ dùng dữ liệu mẫu khi Firestore cũng không có.
+        if (firestoreRepository == null) firestoreRepository = new FirestoreProductRepository();
+        firestoreRepository.getProductById(productId, product -> {
+            if (product != null) {
+                currentProduct = product;
+                bindProduct(product);
+            } else {
+                fallbackToMock(productId);
+            }
+        });
+    }
+
+    private void fallbackToMock(String productId) {
         Product mock = MockProductCatalog.findById(this, productId);
         if (mock != null) {
             currentProduct = mock;
@@ -254,8 +270,8 @@ public class ProductDetailActivity extends BaseActivity {
     // ── Hero images ──────────────────────────────────────────────────────────
 
     private void bindImages(Product product) {
-        String imageUrl = product.getFirstImage();
-        boolean hasImage = imageUrl != null && !imageUrl.isEmpty();
+        final List<String> images = product.getImages();
+        final boolean hasImage = images != null && !images.isEmpty();
 
         binding.vpProductImages.setAdapter(new androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
             @androidx.annotation.NonNull
@@ -276,8 +292,10 @@ public class ProductDetailActivity extends BaseActivity {
             public void onBindViewHolder(@androidx.annotation.NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder holder, int position) {
                 android.widget.ImageView iv = (android.widget.ImageView) holder.itemView;
                 if (hasImage) {
+                    // Load ĐÚNG ảnh theo vị trí (trước đây luôn load ảnh đầu → các trang bị lặp).
                     Glide.with(iv.getContext())
-                        .load(imageUrl)
+                        .load(images.get(position))
+                        .timeout(30000)
                         .centerCrop()
                         .placeholder(R.color.tc_red_deep)
                         .into(iv);
@@ -293,7 +311,7 @@ public class ProductDetailActivity extends BaseActivity {
 
             @Override
             public int getItemCount() {
-                return hasImage && product.getImages() != null ? product.getImages().size() : 1;
+                return hasImage ? images.size() : 1;
             }
         });
     }
