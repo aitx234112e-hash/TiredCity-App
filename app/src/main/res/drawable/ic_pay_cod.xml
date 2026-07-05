@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- COD "Thanh toán khi nhận hàng": huy hiệu bo góc cam + tờ tiền trắng có con dấu. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#F0632B"
+        android:pathData="M13,2.5 H35 A10.5,10.5 0 0 1 45.5,13 V35 A10.5,10.5 0 0 1 35,45.5 H13 A10.5,10.5 0 0 1 2.5,35 V13 A10.5,10.5 0 0 1 13,2.5 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,16 H36 A3,3 0 0 1 39,19 V29 A3,3 0 0 1 36,32 H12 A3,3 0 0 1 9,29 V19 A3,3 0 0 1 12,16 Z" />
+    <path
+        android:fillColor="#F0632B"
+        android:pathData="M19.6,24 a4.4,4.4 0 1,0 8.8,0 a4.4,4.4 0 1,0 -8.8,0 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22.1,24 a1.9,1.9 0 1,0 3.8,0 a1.9,1.9 0 1,0 -3.8,0 Z" />
+    <path
+        android:fillColor="#F0632B"
+        android:pathData="M13.3,21.6 h2.1 v4.8 h-2.1 z M32.6,21.6 h2.1 v4.8 h-2.1 z" />
+</vector>

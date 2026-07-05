@@ -173,6 +173,13 @@
     <color name="tc_category_border">#D9C9AC</color>
     <color name="tc_category_bg_selected">#A80D15</color>
 
+    <!-- ─── Thanh toán — dải xám ngăn cách các mục full-width (Shopee style) ─ -->
+    <color name="tc_section_gap">#ECECEC</color>
+
+    <!-- ─── Vận chuyển — freeship xanh ngọc (Shopee style) ──────────── -->
+    <color name="tc_ship_green">#26AA99</color>       <!-- xanh ngọc Shopee: viền + "Miễn Phí" + pill -->
+    <color name="tc_ship_green_pale">#F0FAF7</color>  <!-- nền ô đang chọn (rất nhạt) -->
+
     <!-- ─── Status colors ───────────────────────────────────────────── -->
     <color name="tc_success">#4A6B3A</color>
     <color name="tc_warning">#D4A04B</color>
@@ -180,7 +187,7 @@
     <color name="tc_info">#3B5A7A</color>
 
     <!-- ─── Favorite star (nút yêu thích) ───────────────────────────── -->
-    <color name="tc_star_outline">#ABABAB</color>
+    <color name="tc_star_outline">#A80D15</color>
 
     <!-- ─── Product color swatches (danh mục Áo Dài theo màu) ─────────── -->
     <color name="tc_swatch_do">#A80D15</color>

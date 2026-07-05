@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền 1 dòng phương thức thanh toán (danh sách hàng ngang): tô đỏ nhạt bo góc khi đang chọn
+     (state_selected), trong suốt khi chưa chọn. Dấu tích ic_check_circle bên phải báo lựa chọn. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/tc_red_pale" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+</selector>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền 1 gói vận chuyển: viền xanh ngọc + nền rất nhạt khi đang chọn (state_selected),
+     viền xám nhạt khi chưa chọn. Tách riêng khỏi bg_payment_option (đỏ) để lưới thanh
+     toán vẫn giữ tông đỏ son. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/tc_ship_green_pale" />
+            <corners android:radius="12dp" />
+            <stroke android:width="1.5dp" android:color="@color/tc_ship_green" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/bg_surface" />
+            <corners android:radius="12dp" />
+            <stroke android:width="1dp" android:color="@color/bg_subtle" />
+        </shape>
+    </item>
+</selector>

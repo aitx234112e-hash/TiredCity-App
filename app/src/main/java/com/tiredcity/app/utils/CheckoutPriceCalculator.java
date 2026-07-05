@@ -29,6 +29,8 @@ public class CheckoutPriceCalculator {
 
     private double subtotal;
     private double shippingFee;
+    /** Ngưỡng freeship do admin cấu hình (shipping_settings/general). 0 = không áp dụng. */
+    private double freeshipThreshold;
     private String appliedVoucherCode;
     private VoucherRule appliedRule;
 
@@ -38,6 +40,15 @@ public class CheckoutPriceCalculator {
 
     public void setShippingFee(double shippingFee) {
         this.shippingFee = shippingFee;
+    }
+
+    public void setFreeshipThreshold(double freeshipThreshold) {
+        this.freeshipThreshold = freeshipThreshold;
+    }
+
+    /** Đơn đạt ngưỡng freeship của admin → miễn phí vận chuyển mọi gói. */
+    public boolean isFreeshipByThreshold() {
+        return freeshipThreshold > 0 && subtotal >= freeshipThreshold;
     }
 
     /** @return true nếu mã hợp lệ và đã được áp dụng. */
@@ -63,9 +74,9 @@ public class CheckoutPriceCalculator {
         return subtotal;
     }
 
-    /** Phí ship sau khi trừ voucher miễn phí ship (nếu có). */
+    /** Phí ship sau khi trừ voucher miễn phí ship hoặc đạt ngưỡng freeship. */
     public double getEffectiveShippingFee() {
-        return isFreeShipVoucher() ? 0 : shippingFee;
+        return (isFreeShipVoucher() || isFreeshipByThreshold()) ? 0 : shippingFee;
     }
 
     /** Số tiền được giảm — hiển thị ở dòng "Giảm giá". */

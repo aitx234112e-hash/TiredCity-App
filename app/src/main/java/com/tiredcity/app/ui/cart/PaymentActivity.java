@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,10 +52,17 @@ public class PaymentActivity extends BaseActivity {
 
     private String shippingMethodName = "";
     private final List<ShippingOption> activeShippingOptions = new ArrayList<>();
+    /** Các gói THỰC SỰ hiển thị sau khi lọc theo địa chỉ (Hỏa Tốc chỉ giao nội thành Hà Nội). */
+    private final List<ShippingOption> displayedShippingOptions = new ArrayList<>();
     private ShippingOption selectedShippingOption;
+    /** Card vận chuyển đang mở rộng (hiện mọi gói) hay thu gọn (chỉ gói đang chọn). */
+    private boolean shippingExpanded = true;
 
-    /** Phương thức thanh toán đang chọn — mặc định MoMo (đã bỏ COD). */
+    /** Phương thức thanh toán đang chọn — mặc định MoMo. */
     private String selectedPaymentMethod = "MOMO";
+
+    /** Adapter danh sách sản phẩm — giữ tham chiếu để bật/tắt "Xem tất cả". */
+    private CheckoutItemAdapter checkoutItemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +88,7 @@ public class PaymentActivity extends BaseActivity {
         binding.rowVoucher.setOnClickListener(v -> showVoucherDialog());
         binding.tvChangeAddress.setOnClickListener(v -> showEditRecipientDialog());
         binding.rowAddress.setOnClickListener(v -> showEditRecipientDialog());
-        binding.rowShippingMethod.setOnClickListener(v -> showShippingMethodSheet());
+        binding.boxAddressAlert.setOnClickListener(v -> showEditRecipientDialog());
 
         binding.btnPlaceOrder.setOnClickListener(v -> {
             UserProfile user = preferenceManager.getUser();
@@ -99,26 +107,50 @@ public class PaymentActivity extends BaseActivity {
         refreshTotals();
     }
 
-    /** Đổ thông tin người nhận + địa chỉ đầy đủ vào card; hiện trạng thái trống nếu chưa có địa chỉ. */
+    /**
+     * Đổ thông tin người nhận + địa chỉ đầy đủ vào card.
+     * Chưa có địa chỉ → hiện hộp cảnh báo đỏ nhạt, ẩn card người nhận và ngược lại.
+     */
     private void bindRecipientCard() {
         UserProfile user = preferenceManager.getUser();
         String name = user != null ? user.getName() : "";
         String phone = user != null ? user.getPhone() : "";
         String fullAddress = user != null ? user.getFullAddress() : "";
 
+        boolean hasAddress = !TextUtils.isEmpty(fullAddress);
+        binding.boxAddressAlert.setVisibility(hasAddress ? View.GONE : View.VISIBLE);
+        binding.cardAddress.setVisibility(hasAddress ? View.VISIBLE : View.GONE);
+
         binding.tvRecipientName.setText(name);
         binding.tvRecipientPhone.setText(phone);
-
-        boolean hasAddress = !TextUtils.isEmpty(fullAddress);
-        binding.tvRecipientAddress.setVisibility(hasAddress ? View.VISIBLE : View.GONE);
-        binding.tvAddressEmpty.setVisibility(hasAddress ? View.GONE : View.VISIBLE);
         if (hasAddress) binding.tvRecipientAddress.setText(fullAddress);
     }
 
     private void setupOrderItems() {
         List<CartItem> items = selectedItems();
+        checkoutItemAdapter = new CheckoutItemAdapter(items);
         binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(this));
-        binding.rvOrderItems.setAdapter(new CheckoutItemAdapter(items));
+        binding.rvOrderItems.setAdapter(checkoutItemAdapter);
+
+        boolean collapsible = checkoutItemAdapter.isCollapsible();
+        binding.tvSeeAll.setVisibility(collapsible ? View.VISIBLE : View.GONE);
+        if (collapsible) {
+            updateSeeAllLabel();
+            binding.tvSeeAll.setOnClickListener(v -> {
+                checkoutItemAdapter.setCollapsed(!checkoutItemAdapter.isCollapsed());
+                updateSeeAllLabel();
+            });
+        }
+    }
+
+    /** Nhãn nút toggle: "Xem tất cả (n)" khi đang thu gọn, "Thu gọn" khi đã mở. */
+    private void updateSeeAllLabel() {
+        if (checkoutItemAdapter.isCollapsed()) {
+            binding.tvSeeAll.setText(getString(
+                    com.tiredcity.app.R.string.pay_see_all, checkoutItemAdapter.getTotalCount()));
+        } else {
+            binding.tvSeeAll.setText(com.tiredcity.app.R.string.pay_collapse);
+        }
     }
 
     /** Chỉ những sản phẩm được tick chọn ở màn Giỏ hàng mới được đưa vào thanh toán. */
@@ -154,8 +186,24 @@ public class PaymentActivity extends BaseActivity {
         binding.tvTotal.setText(PriceUtils.format(priceCalculator.getTotal()));
     }
 
-    /** Đọc 3 gói SPX Express (collection "shipping_configs") đang isActive=true và cho khách chọn. */
+    /**
+     * Tải cấu hình vận chuyển: đọc ngưỡng freeship (shipping_settings/general) trước,
+     * sau đó mới tải các gói để giá hiển thị đúng trạng thái "Miễn Phí".
+     */
     private void loadShippingMethods() {
+        FirebaseFirestore.getInstance()
+                .collection("shipping_settings").document("general")
+                .get()
+                .addOnSuccessListener(d -> {
+                    Double threshold = d != null ? d.getDouble("freeshipThreshold") : null;
+                    priceCalculator.setFreeshipThreshold(threshold != null ? threshold : 0);
+                    loadShippingConfigs();
+                })
+                .addOnFailureListener(e -> loadShippingConfigs());
+    }
+
+    /** Đọc 3 gói vận chuyển (collection "shipping_configs") đang isActive=true và cho khách chọn. */
+    private void loadShippingConfigs() {
         FirebaseFirestore.getInstance()
                 .collection(SHIPPING_COLLECTION)
                 .get()
@@ -170,8 +218,10 @@ public class PaymentActivity extends BaseActivity {
                         String name = d.getString("name");
                         String estimate = d.getString("estimate");
                         Double price = d.getDouble("price");
+                        Double original = d.getDouble("originalPrice");
                         activeShippingOptions.add(new ShippingOption(
                                 id, name != null ? name : "", price != null ? price : 0,
+                                original != null ? original : 0,
                                 estimate != null ? estimate : ""));
                     }
 
@@ -180,81 +230,233 @@ public class PaymentActivity extends BaseActivity {
                         return;
                     }
 
-                    binding.tvShippingLoading.setVisibility(View.GONE);
-                    binding.tvSpxPackage.setVisibility(View.VISIBLE);
-
-                    ShippingOption initial = findShippingOptionById(DEFAULT_SHIPPING_ID);
-                    if (initial == null) initial = activeShippingOptions.get(0);
-                    selectShippingOption(initial);
+                    applyShippingForAddress();
                 })
                 .addOnFailureListener(e -> applyFallbackShipping());
     }
 
-    /** Không tải được cấu hình từ Firestore → dùng gói "SPX Cơ bản" mặc định. */
+    /**
+     * Chưa cấu hình gói trong Firestore (shipping_configs rỗng / mất mạng) → dùng bộ gói
+     * mặc định kiểu Shopee: "Nhanh" MIỄN PHÍ (gạch giá gốc 16.500đ) + "Hỏa Tốc" 92.100đ (pill xanh).
+     * Admin cấu hình shipping_configs sẽ ghi đè bộ này.
+     */
     private void applyFallbackShipping() {
         activeShippingOptions.clear();
-        ShippingOption fallback = new ShippingOption(DEFAULT_SHIPPING_ID, "SPX Cơ bản", DEFAULT_SHIPPING_FEE, "");
-        activeShippingOptions.add(fallback);
-        binding.tvShippingLoading.setVisibility(View.GONE);
-        binding.tvSpxPackage.setVisibility(View.VISIBLE);
-        selectShippingOption(fallback);
+        activeShippingOptions.add(new ShippingOption("standard", "", 0, 16_500, "1-2 ngày"));
+        activeShippingOptions.add(new ShippingOption("express", "", 92_100, 0, "2 giờ"));
+        applyShippingForAddress();
     }
 
+    /**
+     * Lọc & hiển thị gói vận chuyển theo địa chỉ khách:
+     * - Chưa có địa chỉ → hiện lời nhắc, ẩn danh sách gói (chưa biết giao ở đâu).
+     * - Hà Nội → đủ gói (gồm Hỏa Tốc). Tỉnh/thành khác → bỏ Hỏa Tốc, chỉ có Nhanh.
+     * Gọi lại mỗi khi khách cập nhật địa chỉ (không cần tải lại Firestore).
+     */
+    private void applyShippingForAddress() {
+        if (!hasShippingAddress()) {
+            binding.tvShippingLoading.setVisibility(View.VISIBLE);
+            binding.tvShippingLoading.setText(com.tiredcity.app.R.string.pay_shipping_need_address);
+            binding.containerShippingOptions.setVisibility(View.GONE);
+            binding.tvShippingInspection.setVisibility(View.GONE);
+            binding.tvShippingSeeAll.setVisibility(View.GONE);
+            selectedShippingOption = null;
+            priceCalculator.setShippingFee(0);
+            refreshTotals();
+            return;
+        }
+
+        boolean hanoi = isHanoiProvince();
+        displayedShippingOptions.clear();
+        for (ShippingOption o : activeShippingOptions) {
+            if ("express".equals(o.id) && !hanoi) continue;   // Hỏa Tốc chỉ giao nội thành Hà Nội
+            displayedShippingOptions.add(o);
+        }
+
+        binding.containerShippingOptions.setVisibility(View.VISIBLE);
+        renderShippingOptions();
+
+        ShippingOption initial = findShippingOptionById(DEFAULT_SHIPPING_ID);
+        if (initial == null && !displayedShippingOptions.isEmpty()) initial = displayedShippingOptions.get(0);
+        if (initial != null) selectShippingOption(initial);
+    }
+
+    private boolean hasShippingAddress() {
+        UserProfile user = preferenceManager.getUser();
+        return user != null && !TextUtils.isEmpty(user.getFullAddress());
+    }
+
+    /** Địa chỉ khách thuộc Hà Nội? Chuẩn hoá bỏ dấu để khớp "Hà Nội", "TP. Hà Nội"... */
+    private boolean isHanoiProvince() {
+        UserProfile user = preferenceManager.getUser();
+        String province = user != null ? user.getProvince() : "";
+        return noAccent(province).contains("ha noi");
+    }
+
+    /** Tìm gói theo id TRONG danh sách đang hiển thị (đã lọc theo địa chỉ). */
     private ShippingOption findShippingOptionById(String id) {
-        for (ShippingOption o : activeShippingOptions) if (o.id.equals(id)) return o;
+        for (ShippingOption o : displayedShippingOptions) if (o.id.equals(id)) return o;
         return null;
+    }
+
+    /** Bỏ dấu tiếng Việt + thường hoá để so khớp tên tỉnh/thành. */
+    private static String noAccent(String s) {
+        if (s == null) return "";
+        String n = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .replace('đ', 'd').replace('Đ', 'D');
+        return n.toLowerCase(Locale.ROOT).trim();
+    }
+
+    /**
+     * Tên gói hiển thị cho khách: chỉ nói tốc độ (Tiết kiệm / Nhanh / Hỏa Tốc),
+     * không lộ đơn vị vận chuyển. Gói lạ thì dùng tên admin đặt, bỏ tiền tố "SPX".
+     */
+    private String shippingDisplayName(ShippingOption option) {
+        switch (option.id) {
+            case "economy":  return getString(com.tiredcity.app.R.string.pay_ship_economy);
+            case "express":  return getString(com.tiredcity.app.R.string.pay_ship_express);
+            case "standard": return getString(com.tiredcity.app.R.string.pay_ship_standard);
+            default:
+                return option.name != null ? option.name.replaceFirst("(?i)^SPX\\s*", "") : "";
+        }
+    }
+
+    /** Vẽ các gói vận chuyển inline trong card — bấm ô nào chọn ô đó, không cần bottom sheet. */
+    private void renderShippingOptions() {
+        binding.tvShippingLoading.setVisibility(View.GONE);
+        binding.containerShippingOptions.removeAllViews();
+        boolean freeByThreshold = priceCalculator.isFreeshipByThreshold();
+
+        for (ShippingOption option : displayedShippingOptions) {
+            View root = getLayoutInflater().inflate(com.tiredcity.app.R.layout.item_shipping_option,
+                    binding.containerShippingOptions, false);
+
+            TextView tvName = root.findViewById(com.tiredcity.app.R.id.tv_option_name);
+            TextView tvPrice = root.findViewById(com.tiredcity.app.R.id.tv_option_price);
+            TextView tvOriginal = root.findViewById(com.tiredcity.app.R.id.tv_option_price_original);
+            View ivVoucher = root.findViewById(com.tiredcity.app.R.id.iv_freeship_voucher);
+            TextView tvEta = root.findViewById(com.tiredcity.app.R.id.tv_option_eta);
+            View badge = root.findViewById(com.tiredcity.app.R.id.badge_eta);
+            TextView tvBadge = root.findViewById(com.tiredcity.app.R.id.tv_option_eta_badge);
+
+            tvName.setText(shippingDisplayName(option));
+
+            // Giá: gói miễn phí (giá 0 hoặc đạt ngưỡng freeship) → gạch giá gốc + "Miễn Phí"
+            // xanh ngọc + tem voucher. Giá gốc lấy từ ngưỡng freeship hoặc field originalPrice.
+            if (option.price <= 0 || freeByThreshold) {
+                tvPrice.setText(com.tiredcity.app.R.string.pay_ship_free);
+                tvPrice.setTextColor(androidx.core.content.ContextCompat.getColor(
+                        this, com.tiredcity.app.R.color.tc_ship_green));
+                ivVoucher.setVisibility(View.VISIBLE);
+                double original = freeByThreshold && option.price > 0 ? option.price : option.originalPrice;
+                if (original > 0) {
+                    tvOriginal.setVisibility(View.VISIBLE);
+                    tvOriginal.setText(PriceUtils.format(original));
+                    tvOriginal.setPaintFlags(
+                            tvOriginal.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+            } else {
+                tvPrice.setText(PriceUtils.format(option.price));
+                tvPrice.setTextColor(androidx.core.content.ContextCompat.getColor(
+                        this, com.tiredcity.app.R.color.text_primary));
+                ivVoucher.setVisibility(View.GONE);
+            }
+
+            // Thời gian nhận: theo ngày → "Nhận từ 7 Th07 - 8 Th07"; theo giờ → badge xanh
+            String estimate = option.estimate != null ? option.estimate : "";
+            if (estimate.isEmpty()) {
+                tvEta.setVisibility(View.GONE);
+            } else {
+                String range = etaRangeText(estimate);
+                if (range == null) {
+                    tvEta.setText(com.tiredcity.app.R.string.pay_ship_eta_in);
+                    badge.setVisibility(View.VISIBLE);
+                    tvBadge.setText(estimate);
+                } else {
+                    tvEta.setText(range);
+                }
+            }
+
+            root.setTag(option.id);
+            root.findViewById(com.tiredcity.app.R.id.row_shipping_option)
+                    .setOnClickListener(v -> selectShippingOption(option));
+            binding.containerShippingOptions.addView(root);
+        }
+
+        binding.tvShippingInspection.setVisibility(View.VISIBLE);
+        binding.tvShippingSeeAll.setVisibility(
+                displayedShippingOptions.size() > 1 ? View.VISIBLE : View.GONE);
+        binding.tvShippingSeeAll.setOnClickListener(v -> {
+            shippingExpanded = !shippingExpanded;
+            applyShippingCollapse();
+        });
+    }
+
+    /** Tô trạng thái chọn: viền đỏ + ribbon tích góc cho ô đang chọn, các ô khác về mặc định. */
+    private void updateShippingSelectionUi() {
+        String selectedId = selectedShippingOption != null ? selectedShippingOption.id : null;
+        for (int i = 0; i < binding.containerShippingOptions.getChildCount(); i++) {
+            View root = binding.containerShippingOptions.getChildAt(i);
+            boolean selected = root.getTag() != null && root.getTag().equals(selectedId);
+            root.findViewById(com.tiredcity.app.R.id.row_shipping_option).setSelected(selected);
+            root.findViewById(com.tiredcity.app.R.id.iv_option_ribbon)
+                    .setVisibility(selected ? View.VISIBLE : View.GONE);
+        }
+        applyShippingCollapse();
+    }
+
+    /** Thu gọn: chỉ hiện gói đang chọn (kiểu Shopee); "Xem tất cả" mở toàn bộ để đổi gói. */
+    private void applyShippingCollapse() {
+        String selectedId = selectedShippingOption != null ? selectedShippingOption.id : null;
+        for (int i = 0; i < binding.containerShippingOptions.getChildCount(); i++) {
+            View root = binding.containerShippingOptions.getChildAt(i);
+            boolean selected = root.getTag() != null && root.getTag().equals(selectedId);
+            root.setVisibility(shippingExpanded || selected ? View.VISIBLE : View.GONE);
+        }
+        // Giữ nhãn "Xem tất cả >" cố định như thiết kế (mặc định đã mở đủ các gói).
+        binding.tvShippingSeeAll.setText(com.tiredcity.app.R.string.pay_ship_see_all);
     }
 
     private void selectShippingOption(ShippingOption option) {
         selectedShippingOption = option;
-        shippingMethodName = option.name;
+        shippingMethodName = shippingDisplayName(option);
         priceCalculator.setShippingFee(option.price);
-
-        String priceText = option.price <= 0
-                ? getString(com.tiredcity.app.R.string.pay_shipping_free) : PriceUtils.format(option.price);
-        binding.tvSpxPackage.setText(option.name + "  •  " + priceText);
-
-        if (option.estimate != null && !option.estimate.isEmpty()) {
-            binding.tvShippingEta.setVisibility(View.VISIBLE);
-            binding.tvShippingEta.setText(
-                    getString(com.tiredcity.app.R.string.pay_shipping_eta, deliveryEtaText(option.estimate)));
-        } else {
-            binding.tvShippingEta.setVisibility(View.GONE);
-        }
+        updateShippingSelectionUi();
         refreshTotals();
     }
 
     /**
-     * Chuyển "estimate" của gói thành ngày dự kiến nhận hàng.
-     * Nếu tính theo ngày (vd "3-5 ngày") thì cộng số ngày lớn nhất vào hôm nay và trả về dd/MM/yyyy;
-     * nếu theo giờ (vd "2 giờ") thì hiển thị "hôm nay". Không đọc được thì giữ nguyên chuỗi gốc.
+     * Chuyển "estimate" của gói thành khoảng ngày nhận kiểu Shopee.
+     * "1-2 ngày" → "Nhận từ 6 Th07 - 7 Th07"; "3 ngày" → "Nhận vào 8 Th07".
+     * Theo giờ (vd "2 giờ") → trả null để hiển thị badge xanh thay vì text.
+     * Không đọc được thì giữ nguyên chuỗi gốc.
      */
-    private String deliveryEtaText(String estimate) {
+    private String etaRangeText(String estimate) {
         String lower = estimate.toLowerCase(Locale.ROOT);
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)").matcher(lower);
-        int lastNumber = -1;
-        while (m.find()) {
-            try { lastNumber = Integer.parseInt(m.group(1)); } catch (NumberFormatException ignored) {}
-        }
-        if (lower.contains("giờ") || lower.contains("gio")) {
-            return "hôm nay (" + estimate + ")";
-        }
-        if (lastNumber >= 0 && (lower.contains("ngày") || lower.contains("ngay"))) {
-            java.util.Calendar cal = java.util.Calendar.getInstance();
-            cal.add(java.util.Calendar.DAY_OF_YEAR, lastNumber);
-            return new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(cal.getTime());
-        }
-        return estimate;
-    }
+        if (lower.contains("giờ") || lower.contains("gio")) return null;
 
-    /** Mở bottom sheet cho khách chọn lại 1 trong các gói SPX Express đang bật. */
-    private void showShippingMethodSheet() {
-        if (activeShippingOptions.isEmpty()) return;
-        String selectedId = selectedShippingOption != null ? selectedShippingOption.id : DEFAULT_SHIPPING_ID;
-        ShippingMethodBottomSheet sheet = ShippingMethodBottomSheet.newInstance(
-                new ArrayList<>(activeShippingOptions), selectedId);
-        sheet.setOnShippingSelectedListener(this::selectShippingOption);
-        sheet.show(getSupportFragmentManager(), "shipping_method");
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)").matcher(lower);
+        int min = -1, max = -1;
+        while (m.find()) {
+            try {
+                int n = Integer.parseInt(m.group(1));
+                if (min < 0) min = n;
+                max = n;
+            } catch (NumberFormatException ignored) {}
+        }
+        if (min < 0 || !(lower.contains("ngày") || lower.contains("ngay"))) return estimate;
+
+        SimpleDateFormat fmt = new SimpleDateFormat("d 'Th'MM", Locale.US);
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.add(java.util.Calendar.DAY_OF_YEAR, min);
+        String from = fmt.format(cal.getTime());
+        if (max == min) {
+            return getString(com.tiredcity.app.R.string.pay_ship_eta_on, from);
+        }
+        cal = java.util.Calendar.getInstance();
+        cal.add(java.util.Calendar.DAY_OF_YEAR, max);
+        return getString(com.tiredcity.app.R.string.pay_ship_eta_range, from, fmt.format(cal.getTime()));
     }
 
     /** Hiện Slider Captcha (kéo mảnh ghép); chỉ khi khớp mới cho đặt hàng. */
@@ -264,20 +466,26 @@ public class PaymentActivity extends BaseActivity {
         sheet.show(getSupportFragmentManager(), "slide_captcha");
     }
 
-    /** Hai lựa chọn thanh toán dạng card có hiệu ứng viền + dấu tick khi được chọn. */
+    /** Lưới 2 cột 4 phương thức: ô được chọn có viền đỏ son + dấu tích ở góc. */
     private void setupPaymentSelector() {
-        binding.optMomo.setOnClickListener(v -> setPaymentMethod("MOMO"));
+        binding.optCod.setOnClickListener(v -> setPaymentMethod("COD"));
         binding.optBank.setOnClickListener(v -> setPaymentMethod("BANK_TRANSFER"));
+        binding.optMomo.setOnClickListener(v -> setPaymentMethod("MOMO"));
+        binding.optCard.setOnClickListener(v -> setPaymentMethod("CARD"));
         setPaymentMethod(selectedPaymentMethod);
     }
 
     private void setPaymentMethod(String method) {
         selectedPaymentMethod = method;
-        boolean momo = "MOMO".equals(method);
-        binding.optMomo.setSelected(momo);
-        binding.optBank.setSelected(!momo);
-        binding.checkMomo.setVisibility(momo ? View.VISIBLE : View.INVISIBLE);
-        binding.checkBank.setVisibility(momo ? View.INVISIBLE : View.VISIBLE);
+        applyPaymentCellState(binding.optCod, binding.checkCod, "COD".equals(method));
+        applyPaymentCellState(binding.optBank, binding.checkBank, "BANK_TRANSFER".equals(method));
+        applyPaymentCellState(binding.optMomo, binding.checkMomo, "MOMO".equals(method));
+        applyPaymentCellState(binding.optCard, binding.checkCard, "CARD".equals(method));
+    }
+
+    private void applyPaymentCellState(View cell, View check, boolean selected) {
+        cell.setSelected(selected);
+        check.setVisibility(selected ? View.VISIBLE : View.GONE);
     }
 
     private void updateVoucherStatusLabel() {
@@ -376,6 +584,7 @@ public class PaymentActivity extends BaseActivity {
                     p.setAddress(p.getFullAddress());
                     preferenceManager.saveUser(p);
                     bindRecipientCard();
+                    applyShippingForAddress();   // địa chỉ đổi → lọc lại gói (Hỏa Tốc theo Hà Nội)
                 })
                 .setNegativeButton(com.tiredcity.app.R.string.btn_cancel, null)
                 .show();

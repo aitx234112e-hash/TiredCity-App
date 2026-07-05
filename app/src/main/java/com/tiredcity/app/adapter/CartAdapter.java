@@ -78,7 +78,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView  ivImage;
-        final TextView   tvName, tvVariant, tvQuantity, tvSubtotal;
+        final TextView   tvName, tvVariant, tvQuantity, tvSubtotal, tvStock;
         final TextView   btnDecrease, btnIncrease;
         final ImageButton btnRemove;
         final CheckBox   cbSelect;
@@ -90,6 +90,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             tvVariant   = itemView.findViewById(R.id.tv_product_variant);
             tvQuantity  = itemView.findViewById(R.id.tv_quantity);
             tvSubtotal  = itemView.findViewById(R.id.tv_subtotal);
+            tvStock     = itemView.findViewById(R.id.tv_stock);
             btnDecrease = itemView.findViewById(R.id.btn_decrease);
             btnIncrease = itemView.findViewById(R.id.btn_increase);
             btnRemove   = itemView.findViewById(R.id.btn_remove);
@@ -118,6 +119,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             tvVariant.setText(variant);
             tvQuantity.setText(String.valueOf(item.getQuantity()));
             tvSubtotal.setText(PriceUtils.format(item.getSubtotal()));
+
+            // Trạng thái tồn kho: còn hàng (xanh) / hết hàng (đỏ)
+            if (tvStock != null) {
+                boolean inStock = item.getProduct().getStock() > 0;
+                tvStock.setText(inStock ? R.string.status_in_stock : R.string.status_out_of_stock);
+                tvStock.setTextColor(tvStock.getContext().getColor(
+                        inStock ? R.color.tc_success : R.color.tc_red));
+            }
 
             // Load image
             String imageUrl = item.getProduct().getFirstImage();

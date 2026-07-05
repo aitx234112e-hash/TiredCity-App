@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MoMo: huy hiệu bo góc hồng magenta + chữ "momo" trắng (mô phỏng logo MoMo).
+     Muốn logo raster chính thức: thay file này bằng ic_pay_momo.png cùng tên. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#A50064"
+        android:pathData="M13,2.5 H35 A10.5,10.5 0 0 1 45.5,13 V35 A10.5,10.5 0 0 1 35,45.5 H13 A10.5,10.5 0 0 1 2.5,35 V13 A10.5,10.5 0 0 1 13,2.5 Z" />
+    <!-- wordmark "momo" -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M8,30 V21 Q8,19 9.75,19 Q11.5,19 11.5,21 V30 M11.5,21 Q11.5,19 13.25,19 Q15,19 15,21 V30 M16.8,25 a4.2,4.2 0 1,0 8.4,0 a4.2,4.2 0 1,0 -8.4,0 M26,30 V21 Q26,19 27.75,19 Q29.5,19 29.5,21 V30 M29.5,21 Q29.5,19 31.25,19 Q33,19 33,21 V30 M34.8,25 a4.2,4.2 0 1,0 8.4,0 a4.2,4.2 0 1,0 -8.4,0" />
+</vector>

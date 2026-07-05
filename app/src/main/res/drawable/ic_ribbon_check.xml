@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ribbon tam giác đỏ son + tích trắng, đặt ở góc trên-trái ô vận chuyển đang chọn. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="26dp"
+    android:height="26dp"
+    android:viewportWidth="26"
+    android:viewportHeight="26">
+    <path
+        android:pathData="M0,11 A11,11 0 0 1 11,0 L26,0 L0,26 Z"
+        android:fillColor="@color/tc_red" />
+    <path
+        android:pathData="M4.5,7.5 L7.5,10.5 L13.5,4"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>

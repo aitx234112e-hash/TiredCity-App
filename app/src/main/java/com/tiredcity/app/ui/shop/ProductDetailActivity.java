@@ -18,6 +18,7 @@ import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.ReviewAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.local.FavoritesLocalStore;
+import com.tiredcity.app.data.local.RecentlyViewedStore;
 import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.ApiResponse;
@@ -55,6 +56,7 @@ public class ProductDetailActivity extends BaseActivity {
     private FirestoreProductRepository firestoreRepository;
     private CartLocalStore cartLocalStore;
     private FavoritesLocalStore favoritesStore;
+    private RecentlyViewedStore recentlyViewedStore;
     private Product currentProduct;
 
     private String selectedColor;
@@ -82,6 +84,7 @@ public class ProductDetailActivity extends BaseActivity {
         productRepository = new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
         cartLocalStore     = new CartLocalStore(this);
         favoritesStore     = new FavoritesLocalStore(this);
+        recentlyViewedStore = new RecentlyViewedStore(this);
 
         binding.btnAddToCart.setOnClickListener(v -> addToCart());
         binding.btnBuyNow.setOnClickListener(v -> {
@@ -144,6 +147,9 @@ public class ProductDetailActivity extends BaseActivity {
     }
 
     private void bindProduct(Product product) {
+        // Ghi nhận đây là sản phẩm khách thật sự đã xem → hiển thị lại ở "Đã xem gần đây".
+        if (recentlyViewedStore != null) recentlyViewedStore.addProduct(product);
+
         binding.tvProductName.setText(product.getName());
         binding.tvPrice.setText(PriceUtils.format(product.getEffectivePrice()));
         binding.tvMaterial.setText(product.getMaterial() != null ? product.getMaterial() : "");

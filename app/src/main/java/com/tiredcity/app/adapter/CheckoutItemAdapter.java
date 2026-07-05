@@ -16,10 +16,35 @@ import java.util.List;
 /** Danh sách rút gọn sản phẩm trong đơn hàng ở màn Thanh toán — chỉ hiển thị, không cho sửa. */
 public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapter.ViewHolder> {
 
+    /** Khi thu gọn, chỉ hiện tối đa 2 sản phẩm; phần còn lại ẩn sau nút "Xem tất cả". */
+    private static final int COLLAPSED_LIMIT = 2;
+
     private final List<CartItem> items;
+    private boolean collapsed = true;
 
     public CheckoutItemAdapter(List<CartItem> items) {
         this.items = items;
+    }
+
+    /** Tổng số sản phẩm thật (bỏ qua trạng thái thu gọn) — dùng cho nhãn "Xem tất cả (n)". */
+    public int getTotalCount() {
+        return items != null ? items.size() : 0;
+    }
+
+    /** Có nhiều hơn ngưỡng thu gọn hay không → quyết định hiện nút toggle. */
+    public boolean isCollapsible() {
+        return getTotalCount() > COLLAPSED_LIMIT;
+    }
+
+    public boolean isCollapsed() {
+        return collapsed;
+    }
+
+    /** Bật/tắt thu gọn danh sách và cập nhật lại RecyclerView. */
+    public void setCollapsed(boolean collapsed) {
+        if (this.collapsed == collapsed) return;
+        this.collapsed = collapsed;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -37,7 +62,8 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
 
     @Override
     public int getItemCount() {
-        return items != null ? items.size() : 0;
+        int total = getTotalCount();
+        return collapsed ? Math.min(total, COLLAPSED_LIMIT) : total;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

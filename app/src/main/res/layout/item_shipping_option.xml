@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 1 gói vận chuyển (Shopee style): tên to đậm + giá phải (gạch giá gốc khi freeship
+     rồi "Miễn Phí" xanh + tem voucher), dòng dưới "Nhận từ ..." hoặc badge xanh cho hỏa tốc.
+     Ô đang chọn: viền xanh ngọc (bg_shipping_option) + ribbon tích ở góc trên-trái. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
+
+    <LinearLayout
+        android:id="@+id/row_shipping_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
+        android:background="@drawable/bg_shipping_option"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_option_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Nhanh" />
+
+            <TextView
+                android:id="@+id/tv_option_price_original"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/text_hint"
+                android:textSize="13sp"
+                android:visibility="gone"
+                tools:text="16.500đ"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_option_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Miễn Phí" />
+
+            <ImageView
+                android:id="@+id/iv_freeship_voucher"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_freeship_voucher"
+                android:visibility="gone"
+                android:contentDescription="@string/pay_ship_free"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_option_eta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                tools:text="Nhận từ 7 Th07 - 8 Th07" />
+
+            <LinearLayout
+                android:id="@+id/badge_eta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="6dp"
+                android:paddingHorizontal="7dp"
+                android:paddingVertical="3dp"
+                android:background="@drawable/bg_eta_badge"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_truck_white"
+                    android:contentDescription="@string/pay_shipping_method_title" />
+
+                <TextView
+                    android:id="@+id/tv_option_eta_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:text="2 giờ" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_option_ribbon"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_gravity="top|start"
+        android:src="@drawable/ic_ribbon_check_green"
+        android:visibility="gone"
+        android:contentDescription="@string/captcha_verified"
+        tools:visibility="visible" />
+</FrameLayout>

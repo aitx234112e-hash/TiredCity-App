@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chuyển khoản ngân hàng: huy hiệu bo góc xanh + toà nhà ngân hàng trắng. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#2E6FD6"
+        android:pathData="M13,2.5 H35 A10.5,10.5 0 0 1 45.5,13 V35 A10.5,10.5 0 0 1 35,45.5 H13 A10.5,10.5 0 0 1 2.5,35 V13 A10.5,10.5 0 0 1 13,2.5 Z" />
+    <!-- mái -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,12 L40,21 A1,1 0 0 1 39.5,23 H8.5 A1,1 0 0 1 8,21 Z" />
+    <!-- cột -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11.5,25 h3.4 v9 h-3.4 z M18.6,25 h3.4 v9 h-3.4 z M25.7,25 h3.4 v9 h-3.4 z M32.8,25 h3.4 v9 h-3.4 z" />
+    <!-- bệ -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,35.5 H40 A1.5,1.5 0 0 1 41.5,37 V38.5 H6.5 V37 A1.5,1.5 0 0 1 8,35.5 Z" />
+</vector>

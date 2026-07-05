@@ -12,14 +12,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.SearchAdapter;
+import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.search.EventItem;
 import com.tiredcity.app.data.model.search.ProductItem;
 import com.tiredcity.app.data.model.search.PromotionItem;
 import com.tiredcity.app.data.model.search.SearchItem;
+import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.databinding.FragmentShopBinding;
 import com.tiredcity.app.ui.reward.VoucherDetailActivity;
+import com.tiredcity.app.ui.shop.ProductDetailActivity;
 import com.tiredcity.app.ui.shop.SearchActivity;
-import java.util.Arrays;
+import com.tiredcity.app.utils.Constants;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,12 +33,16 @@ import java.util.List;
 public class ShopFragment extends Fragment {
 
     private FragmentShopBinding binding;
+    private SearchAdapter suggestionAdapter;
+
+    /** Số sản phẩm thật hiển thị trong "Gợi ý cho bạn". */
+    private static final int SUGGESTION_PRODUCT_COUNT = 4;
 
     // Localized tags shown under "Được tìm kiếm nhiều nhất".
     private static final int[] POPULAR_TAGS = {
-        R.string.tag_ao_thun,
-        R.string.tag_ao_croptop,
-        R.string.tag_chan_vay
+        R.string.tag_ao_dai,
+        R.string.tag_nhat_binh,
+        R.string.tag_phu_kien
     };
 
     @Nullable
@@ -52,6 +60,7 @@ public class ShopFragment extends Fragment {
         setupSearchBar();
         setupPopularTags();
         setupSuggestions();
+        loadSuggestedProducts();
     }
 
     @Override
@@ -80,32 +89,44 @@ public class ShopFragment extends Fragment {
 
     // ─── "Gợi ý cho bạn" — mixed-type discovery list ───────────────────
     private void setupSuggestions() {
-        List<SearchItem> suggestions = Arrays.asList(
-            new PromotionItem(R.string.search_promo_birthday,
-                              R.drawable.banner_1,
-                              R.string.reward_voucher_birthday_title,
-                              R.string.reward_voucher_birthday_subtitle),
-            new EventItem(R.string.search_event_coach_title,
-                          R.string.search_event_coach_time, 0),
-            new ProductItem(R.string.search_brand_kangol,
-                            R.string.search_product_skirt_pocket, 1_200_000, 0),
-            new ProductItem(R.string.search_brand_kangol,
-                            R.string.search_product_skirt_slit, 1_000_000, 0)
-        );
-
-        SearchAdapter adapter = new SearchAdapter(suggestions);
-        adapter.setOnItemClickListener(item -> {
+        suggestionAdapter = new SearchAdapter(buildStaticSuggestions());
+        suggestionAdapter.setOnItemClickListener(item -> {
             if (item instanceof PromotionItem) {
                 openVoucherDetail((PromotionItem) item);
             } else if (item instanceof ProductItem) {
-                openSearch(getString(((ProductItem) item).getBrandResId()));
+                openProductDetail(((ProductItem) item).getProduct());
             } else {
                 openSearch(null);
             }
         });
         binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvSuggestions.setNestedScrollingEnabled(false);
-        binding.rvSuggestions.setAdapter(adapter);
+        binding.rvSuggestions.setAdapter(suggestionAdapter);
+    }
+
+    /** Ưu đãi + sự kiện (nội dung tĩnh) — luôn đứng đầu danh sách gợi ý. */
+    private List<SearchItem> buildStaticSuggestions() {
+        List<SearchItem> items = new ArrayList<>();
+        items.add(new PromotionItem(R.string.search_promo_birthday,
+                                    R.drawable.banner_1,
+                                    R.string.reward_voucher_birthday_title,
+                                    R.string.reward_voucher_birthday_subtitle));
+        items.add(new EventItem(R.string.search_event_coach_title,
+                                R.string.search_event_coach_time, 0));
+        return items;
+    }
+
+    /** Tải vài sản phẩm thật từ Firestore rồi bơm vào cuối danh sách gợi ý. */
+    private void loadSuggestedProducts() {
+        new FirestoreProductRepository().getProducts(products -> {
+            if (binding == null || products == null) return;   // fragment đã bị huỷ
+            List<SearchItem> combined = buildStaticSuggestions();
+            int count = Math.min(SUGGESTION_PRODUCT_COUNT, products.size());
+            for (int i = 0; i < count; i++) {
+                combined.add(new ProductItem(products.get(i)));
+            }
+            suggestionAdapter.updateItems(combined);
+        });
     }
 
     /** Mở trang chi tiết voucher của ưu đãi được bấm. */
@@ -115,6 +136,13 @@ public class ShopFragment extends Fragment {
         intent.putExtra(VoucherDetailActivity.EXTRA_SUBTITLE, getString(item.getVoucherSubtitleResId()));
         intent.putExtra(VoucherDetailActivity.EXTRA_BANNER, item.getBannerRes());
         intent.putExtra(VoucherDetailActivity.EXTRA_CODE, getString(R.string.barcode_code));
+        startActivity(intent);
+    }
+
+    private void openProductDetail(Product product) {
+        if (product == null || product.getId() == null) return;
+        Intent intent = new Intent(requireContext(), ProductDetailActivity.class);
+        intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
         startActivity(intent);
     }
 

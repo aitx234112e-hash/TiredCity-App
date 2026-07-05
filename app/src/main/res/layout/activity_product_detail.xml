@@ -20,7 +20,7 @@
             <!-- Hero image -->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="320dp">
+                android:layout_height="480dp">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/vp_product_images"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ tín dụng/ghi nợ: huy hiệu bo góc tím + thẻ trắng có dải từ, chip vàng, dòng số. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#5B51C9"
+        android:pathData="M13,2.5 H35 A10.5,10.5 0 0 1 45.5,13 V35 A10.5,10.5 0 0 1 35,45.5 H13 A10.5,10.5 0 0 1 2.5,35 V13 A10.5,10.5 0 0 1 13,2.5 Z" />
+    <!-- thẻ -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11,15 H37 A3,3 0 0 1 40,18 V30 A3,3 0 0 1 37,33 H11 A3,3 0 0 1 8,30 V18 A3,3 0 0 1 11,15 Z" />
+    <!-- dải từ -->
+    <path
+        android:fillColor="#5B51C9"
+        android:pathData="M8,19.5 H40 V23 H8 Z" />
+    <!-- chip vàng -->
+    <path
+        android:fillColor="#E6B54A"
+        android:pathData="M12.5,26 H18 A1,1 0 0 1 19,27 V29.5 A1,1 0 0 1 18,30.5 H12.5 A1,1 0 0 1 11.5,29.5 V27 A1,1 0 0 1 12.5,26 Z" />
+    <!-- dòng số -->
+    <path
+        android:fillColor="#5B51C9"
+        android:pathData="M22.5,27.4 H36 V29.6 H22.5 Z" />
+</vector>

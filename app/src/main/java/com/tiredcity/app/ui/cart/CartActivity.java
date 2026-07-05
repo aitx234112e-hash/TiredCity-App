@@ -6,10 +6,15 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.adapter.CartAdapter;
+import com.tiredcity.app.adapter.RecentlyViewedAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
+import com.tiredcity.app.data.local.RecentlyViewedStore;
 import com.tiredcity.app.data.model.CartItem;
+import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.databinding.ActivityCartBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.shop.ProductDetailActivity;
+import com.tiredcity.app.utils.Constants;
 import com.tiredcity.app.utils.PriceUtils;
 import java.util.List;
 
@@ -17,6 +22,7 @@ public class CartActivity extends BaseActivity {
 
     private ActivityCartBinding binding;
     private CartLocalStore cartLocalStore;
+    private RecentlyViewedStore recentlyViewedStore;
     private CartAdapter cartAdapter;
     private List<CartItem> cartItems;
 
@@ -34,8 +40,11 @@ public class CartActivity extends BaseActivity {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
         cartLocalStore = new CartLocalStore(this);
+        recentlyViewedStore = new RecentlyViewedStore(this);
 
         binding.rvCartItems.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvRecentlyViewed.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.btnCheckout.setOnClickListener(v -> proceedToPayment());
 
         loadCart();
@@ -45,6 +54,22 @@ public class CartActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         loadCart(); // Refresh when returning from product detail
+        loadRecentlyViewed();
+    }
+
+    /** Dải "Đã xem gần đây" — chỉ hiện khi khách thật sự đã mở xem sản phẩm nào đó. */
+    private void loadRecentlyViewed() {
+        List<Product> recent = recentlyViewedStore.getRecentlyViewed();
+        if (recent.isEmpty()) {
+            binding.llRecentlyViewed.setVisibility(View.GONE);
+            return;
+        }
+        binding.llRecentlyViewed.setVisibility(View.VISIBLE);
+        binding.rvRecentlyViewed.setAdapter(new RecentlyViewedAdapter(recent, product -> {
+            Intent intent = new Intent(this, ProductDetailActivity.class);
+            intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
+            startActivity(intent);
+        }));
     }
 
     private void loadCart() {

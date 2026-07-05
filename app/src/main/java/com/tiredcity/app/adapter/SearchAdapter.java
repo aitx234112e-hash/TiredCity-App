@@ -6,13 +6,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.tiredcity.app.R;
+import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.search.EventItem;
 import com.tiredcity.app.data.model.search.ProductItem;
 import com.tiredcity.app.data.model.search.PromotionItem;
 import com.tiredcity.app.data.model.search.SearchItem;
 import com.tiredcity.app.utils.PriceUtils;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,11 +33,18 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private OnItemClickListener listener;
 
     public SearchAdapter(List<SearchItem> items) {
-        this.items = items;
+        this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
     }
 
     public void setOnItemClickListener(OnItemClickListener l) {
         this.listener = l;
+    }
+
+    /** Thay toàn bộ danh sách gợi ý (ví dụ sau khi tải sản phẩm thật từ Firestore). */
+    public void updateItems(List<SearchItem> newItems) {
+        items.clear();
+        if (newItems != null) items.addAll(newItems);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -138,12 +149,24 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             tvPrice = v.findViewById(R.id.tv_product_price);
         }
         void bind(ProductItem item) {
-            tvBrand.setText(item.getBrandResId());
-            tvName.setText(item.getNameResId());
-            tvPrice.setText(PriceUtils.formatVnd(item.getPrice()));
-            if (item.getImageRes() != 0) {
-                ivImage.setImageResource(item.getImageRes());
+            Product p = item.getProduct();
+            // Dòng đậm phía trên: dùng nhãn danh mục (ÁO DÀI, PHỤ KIỆN…) làm "thương hiệu".
+            tvBrand.setText(p.getCategory() != null ? p.getCategory() : "");
+            tvName.setText(p.getName() != null ? p.getName() : "");
+            tvPrice.setText(PriceUtils.formatVnd(p.getEffectivePrice()));
+
+            String imageUrl = p.getFirstImage();
+            if (!imageUrl.isEmpty()) {
+                Glide.with(ivImage.getContext())
+                        .load(imageUrl)
+                        .timeout(30000)
+                        .centerCrop()
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .placeholder(R.color.bg_subtle)
+                        .error(R.color.bg_subtle)
+                        .into(ivImage);
             } else {
+                ivImage.setBackgroundColor(ivImage.getContext().getColor(R.color.bg_subtle));
                 ivImage.setImageDrawable(null);
             }
         }
