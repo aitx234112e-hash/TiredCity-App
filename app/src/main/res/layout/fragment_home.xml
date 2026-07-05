@@ -9,157 +9,336 @@
     android:fillViewport="true"
     android:scrollbars="none">
 
+    <!-- blocksDescendants: chặn NestedScrollView tự cuộn tới view focusable (VideoView,
+         RecyclerView…) khi mở trang, khiến trang bật ra ở giữa thay vì từ đầu. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:descendantFocusability="blocksDescendants"
         android:paddingBottom="56dp">
 
-        <!-- ═══════════ HEADER: lời chào + tên + ngôn ngữ ═══════════ -->
+        <!-- ═══════════ KHỐI MỞ MÀN — ĐỎ FULL-BLEED (phong cách hero fragment_about) ═══════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:background="@color/tc_red"
             android:paddingHorizontal="20dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="16dp">
+            android:paddingTop="24dp">
 
+            <!-- Hàng chào + tiện ích -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_greeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/tc_on_red_secondary"
+                        android:textSize="13sp"
+                        tools:text="Chào buổi sáng ☀️" />
+
+                    <TextView
+                        android:id="@+id/tv_user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/tc_on_red"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        tools:text="Nguyễn Thị Lan" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_greeting"
+                    android:id="@+id/btn_language"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_secondary"
+                    android:layout_height="42dp"
+                    android:background="@drawable/tc_bg_lang_pill"
+                    android:drawableStart="@drawable/ic_flag_switch"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:text="@string/switch_to_other_lang"
+                    android:textColor="@color/tc_red"
                     android:textSize="13sp"
-                    tools:text="Chào buổi sáng ☀️" />
-
-                <TextView
-                    android:id="@+id/tv_user_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textColor="@color/text_primary"
-                    android:textSize="22sp"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium"
-                    tools:text="Nguyễn Thị Lan" />
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <!-- Giỏ hàng -->
+                <FrameLayout
+                    android:id="@+id/btn_cart"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_cart"
+                        app:tint="@color/tc_on_red"
+                        android:contentDescription="@string/cd_cart" />
+
+                    <TextView
+                        android:id="@+id/tv_cart_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:minWidth="17dp"
+                        android:minHeight="17dp"
+                        android:paddingHorizontal="4dp"
+                        android:gravity="center"
+                        android:background="@drawable/tc_badge_count"
+                        android:textColor="@color/white"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="3"
+                        tools:visibility="visible" />
+                </FrameLayout>
+
+                <!-- Thông báo -->
+                <FrameLayout
+                    android:id="@+id/btn_notification"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_bell"
+                        app:tint="@color/tc_on_red"
+                        android:contentDescription="@string/cd_notifications" />
+
+                    <TextView
+                        android:id="@+id/tv_notif_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:minWidth="17dp"
+                        android:minHeight="17dp"
+                        android:paddingHorizontal="4dp"
+                        android:gravity="center"
+                        android:background="@drawable/tc_badge_count"
+                        android:textColor="@color/white"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="2"
+                        tools:visibility="visible" />
+                </FrameLayout>
             </LinearLayout>
 
+            <!-- Eyebrow + câu dẫn thương hiệu -->
             <TextView
-                android:id="@+id/btn_language"
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:background="@drawable/tc_bg_lang_pill"
-                android:drawableStart="@drawable/ic_flag_switch"
-                android:drawablePadding="8dp"
-                android:gravity="center"
-                android:paddingHorizontal="16dp"
-                android:text="@string/switch_to_other_lang"
-                android:textColor="@color/tc_red"
-                android:textSize="13sp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="@string/home_hero_eyebrow"
+                android:textColor="@color/tc_gold_bright"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
-                android:clickable="true"
-                android:focusable="true" />
+                android:letterSpacing="0.18" />
 
-            <!-- Giỏ hàng -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="18dp"
+                android:text="@string/home_hero_caption"
+                android:textColor="@color/tc_on_red"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+
+        <!-- ═══════════ CAROUSEL 1 — gif main8 + video main1 + video main2, full-bleed 16:9,
+             nền đen liền mạch với khối "Từ xưởng sáng tạo" bên dưới ═══════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black"
+            android:paddingBottom="14dp">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_banner"
+                android:layout_width="match_parent"
+                android:layout_height="210dp" />
+
+            <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                android:id="@+id/dots_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                app:dotsColor="@color/tc_sand_light"
+                app:selectedDotColor="@color/tc_red"
+                app:dotsSize="8dp"
+                app:dotsSpacing="5dp" />
+        </LinearLayout>
+
+        <!-- ═══════════ WELCOME TO TIREDCITY — KHỐI ĐỎ, CHỮ BE:
+             logo + wordmark → chữ giới thiệu → video phóng to từ nhỏ ra full màn hình ═══════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="@color/tc_red"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="40dp">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/ic_tc_logo"
+                app:tint="@color/tc_cream"
+                android:contentDescription="@string/app_name" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/home_welcome_title"
+                android:textColor="@color/tc_cream"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center" />
+
+            <!-- Khung cố định bằng kích thước cuối (full-bleed 16:9); video hiện scale nhỏ rồi
+                 phóng to lấp đầy khi cuộn tới (xem HomeFragment.VideoSection growEffect=true) —
+                 không đổi layout, chỉ scale trực quan nên không gây giật khi cuộn. -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:text="@string/home_welcome_intro"
+                android:textColor="@color/tc_cream"
+                android:textSize="14sp" />
+
             <FrameLayout
-                android:id="@+id/btn_cart"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_marginStart="10dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true">
+                android:id="@+id/section_video_welcome"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginHorizontal="-20dp"
+                android:background="@color/tc_red_deep">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_cart"
-                    app:tint="@color/tc_red"
-                    android:contentDescription="@string/cd_cart" />
-
-                <TextView
-                    android:id="@+id/tv_cart_badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|end"
-                    android:minWidth="17dp"
-                    android:minHeight="17dp"
-                    android:paddingHorizontal="4dp"
-                    android:gravity="center"
-                    android:background="@drawable/tc_badge_count"
-                    android:textColor="@color/white"
-                    android:textSize="9sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="3"
-                    tools:visibility="visible" />
-            </FrameLayout>
-
-            <!-- Thông báo -->
-            <FrameLayout
-                android:id="@+id/btn_notification"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_marginStart="10dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_bell"
-                    app:tint="@color/tc_red"
-                    android:contentDescription="@string/cd_notifications" />
-
-                <TextView
-                    android:id="@+id/tv_notif_badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|end"
-                    android:minWidth="17dp"
-                    android:minHeight="17dp"
-                    android:paddingHorizontal="4dp"
-                    android:gravity="center"
-                    android:background="@drawable/tc_badge_count"
-                    android:textColor="@color/white"
-                    android:textSize="9sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="2"
-                    tools:visibility="visible" />
+                <VideoView
+                    android:id="@+id/video_welcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:contentDescription="@string/home_welcome_title" />
             </FrameLayout>
         </LinearLayout>
 
-        <!-- ═══════════ HERO BANNER ═══════════ -->
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp_banner"
+        <!-- ═══════════ TỪ XƯỞNG SÁNG TẠO — KHỐI ĐEN + VIDEO main5 ═══════════ -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="380dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="4dp" />
-
-        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-            android:id="@+id/dots_indicator"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="14dp"
-            app:dotsColor="@color/tc_sand_light"
-            app:selectedDotColor="@color/tc_red"
-            app:dotsSize="8dp"
-            app:dotsSpacing="5dp" />
+            android:orientation="vertical"
+            android:background="@color/black">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="28dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_craft_eyebrow"
+                    android:textColor="@color/tc_gold_bright"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.16" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/home_craft_title"
+                    android:textColor="@color/tc_on_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+
+            <!-- Khung tự co về đúng tỷ lệ video (HomeFragment.VideoSection) -->
+            <FrameLayout
+                android:id="@+id/section_video_craft"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="18dp"
+                android:background="@color/black">
+
+                <VideoView
+                    android:id="@+id/video_craft"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:contentDescription="@string/home_craft_title" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- ═══════════ CAROUSEL 2 — main11 + main12 + main15, full-bleed 16:9,
+             nền đen liền mạch với khối "Chất phố" bên dưới ═══════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black"
+            android:paddingBottom="14dp">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_banner2"
+                android:layout_width="match_parent"
+                android:layout_height="210dp" />
+
+            <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                android:id="@+id/dots_indicator2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                app:dotsColor="@color/tc_sand_light"
+                app:selectedDotColor="@color/tc_red"
+                app:dotsSize="8dp"
+                app:dotsSpacing="5dp" />
+        </LinearLayout>
 
         <!-- ═══════════ CUNG MỆNH ═══════════ -->
         <!-- Trạng thái 1: Chưa tính — hiện lời mời -->
@@ -168,7 +347,7 @@
             android:layout_width="match_parent"
             android:layout_height="140dp"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
             android:clipChildren="true"
             android:clipToPadding="true"
             android:clickable="true"
@@ -243,7 +422,7 @@
             android:layout_width="match_parent"
             android:layout_height="140dp"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
             android:clipChildren="true"
             android:clipToPadding="true"
             android:clickable="true"
@@ -356,187 +535,491 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- ═══════════ DANH MỤC SẢN PHẨM ═══════════ -->
+        <!-- ═══════════ DANH MỤC — KHỐI ĐEN FULL-BLEED ═══════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:background="@color/black"
             android:layout_marginTop="36dp"
-            android:paddingHorizontal="20dp">
+            android:paddingTop="28dp"
+            android:paddingBottom="28dp">
 
-            <TextView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/section_categories"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium" />
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:paddingHorizontal="20dp">
 
-            <TextView
-                android:id="@+id/tv_categories_see_all"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_eyebrow_categories"
+                        android:textColor="@color/tc_gold_bright"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.16" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/section_categories"
+                        android:textColor="@color/tc_on_dark"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_categories_see_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all"
+                    android:textColor="@color/tc_gold_bright"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingVertical="4dp" />
+            </LinearLayout>
+
+            <!-- 6 thẻ khớp đúng 6 tab của trang Danh mục:
+                 ÁO DÀI · NHẬT BÌNH · ÁO TẤC / GIAO LĨNH · YẾM ĐÀO · PHỤ KIỆN.
+                 Mỗi thẻ là khung vuông thường (SquareFrameLayout tự đo width=height) chứa ảnh
+                 bìa (front) + ảnh thứ hai (back); tự động lật qua lại (xem
+                 HomeFragment.CategoryFlipCard). -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/see_all"
-                android:textColor="@color/tc_red"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"
-                android:paddingVertical="4dp" />
+                android:layout_marginTop="14dp"
+                android:paddingHorizontal="20dp"
+                android:orientation="horizontal">
+
+                <!-- Áo Dài -->
+                <com.tiredcity.app.ui.widget.SquareFrameLayout
+                    android:id="@+id/card_cat_ao_dai"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/img_cat_ao_dai_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/category_ao_dai" />
+
+                    <!-- Mặt sau: ảnh thứ hai (đặt lại nguồn ảnh sau) + lớp phủ tối +
+                         tên danh mục + logo TiredCity thay cho nhãn "Artwork". -->
+                    <FrameLayout
+                        android:id="@+id/layout_cat_ao_dai_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_cat_ao_dai_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/tc_bg_cat_6"
+                            android:contentDescription="@string/category_ao_dai" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:padding="8dp"
+                            android:maxLines="3"
+                            android:text="@string/cat_tab_ao_dai"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
+                            android:lineSpacingExtra="1dp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_tc_logo"
+                            app:tint="@color/white"
+                            android:contentDescription="@string/app_name" />
+                    </FrameLayout>
+                </com.tiredcity.app.ui.widget.SquareFrameLayout>
+
+                <!-- Nhật Bình -->
+                <com.tiredcity.app.ui.widget.SquareFrameLayout
+                    android:id="@+id/card_cat_nhat_binh"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/img_cat_nhat_binh_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/category_nhat_binh" />
+
+                    <FrameLayout
+                        android:id="@+id/layout_cat_nhat_binh_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_cat_nhat_binh_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/tc_bg_cat_6"
+                            android:contentDescription="@string/category_nhat_binh" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:padding="8dp"
+                            android:maxLines="3"
+                            android:text="@string/cat_tab_nhat_binh"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
+                            android:lineSpacingExtra="1dp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_tc_logo"
+                            app:tint="@color/white"
+                            android:contentDescription="@string/app_name" />
+                    </FrameLayout>
+                </com.tiredcity.app.ui.widget.SquareFrameLayout>
+
+                <!-- Áo Tấc -->
+                <com.tiredcity.app.ui.widget.SquareFrameLayout
+                    android:id="@+id/card_cat_ao_tac"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/img_cat_ao_tac_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/category_ao_tac" />
+
+                    <FrameLayout
+                        android:id="@+id/layout_cat_ao_tac_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_cat_ao_tac_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/tc_bg_cat_6"
+                            android:contentDescription="@string/category_ao_tac" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:padding="8dp"
+                            android:maxLines="3"
+                            android:text="@string/cat_tab_ao_tac"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
+                            android:lineSpacingExtra="1dp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_tc_logo"
+                            app:tint="@color/white"
+                            android:contentDescription="@string/app_name" />
+                    </FrameLayout>
+                </com.tiredcity.app.ui.widget.SquareFrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="20dp"
+                android:orientation="horizontal">
+
+                <!-- Giao Lĩnh -->
+                <com.tiredcity.app.ui.widget.SquareFrameLayout
+                    android:id="@+id/card_cat_giao_linh"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/img_cat_giao_linh_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/category_giao_linh" />
+
+                    <FrameLayout
+                        android:id="@+id/layout_cat_giao_linh_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_cat_giao_linh_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/tc_bg_cat_6"
+                            android:contentDescription="@string/category_giao_linh" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:padding="8dp"
+                            android:maxLines="3"
+                            android:text="@string/cat_tab_giao_linh"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
+                            android:lineSpacingExtra="1dp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_tc_logo"
+                            app:tint="@color/white"
+                            android:contentDescription="@string/app_name" />
+                    </FrameLayout>
+                </com.tiredcity.app.ui.widget.SquareFrameLayout>
+
+                <!-- Yếm Đào -->
+                <com.tiredcity.app.ui.widget.SquareFrameLayout
+                    android:id="@+id/card_cat_yem_dao"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/img_cat_yem_dao_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/category_yem_dao" />
+
+                    <FrameLayout
+                        android:id="@+id/layout_cat_yem_dao_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_cat_yem_dao_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/tc_bg_cat_6"
+                            android:contentDescription="@string/category_yem_dao" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:padding="8dp"
+                            android:maxLines="3"
+                            android:text="@string/cat_tab_yem_dao"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
+                            android:lineSpacingExtra="1dp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_tc_logo"
+                            app:tint="@color/white"
+                            android:contentDescription="@string/app_name" />
+                    </FrameLayout>
+                </com.tiredcity.app.ui.widget.SquareFrameLayout>
+
+                <!-- Phụ Kiện -->
+                <com.tiredcity.app.ui.widget.SquareFrameLayout
+                    android:id="@+id/card_cat_accessories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/img_cat_accessories_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/category_accessories" />
+
+                    <FrameLayout
+                        android:id="@+id/layout_cat_accessories_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_cat_accessories_back"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/tc_bg_cat_6"
+                            android:contentDescription="@string/category_accessories" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:padding="8dp"
+                            android:maxLines="3"
+                            android:text="@string/cat_tab_phu_kien"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
+                            android:lineSpacingExtra="1dp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/ic_tc_logo"
+                            app:tint="@color/white"
+                            android:contentDescription="@string/app_name" />
+                    </FrameLayout>
+                </com.tiredcity.app.ui.widget.SquareFrameLayout>
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- ═══════════ SẢN PHẨM NỔI BẬT — CAROUSEL 3 THẺ, THẺ GIỮA TO HƠN (nền đen,
+             ngay sau Danh mục) ═══════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:paddingHorizontal="20dp"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:background="@color/black"
+            android:paddingTop="36dp"
+            android:paddingBottom="32dp">
 
-            <!-- Áo Dài -->
-            <FrameLayout
-                android:id="@+id/card_cat_ao_dai"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:paddingHorizontal="20dp">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/tc_bg_cat_1" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/category_ao_dai"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
-            </FrameLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_eyebrow_hot"
+                        android:textColor="@color/tc_gold_bright"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.16" />
 
-            <!-- Áo Tấc -->
-            <FrameLayout
-                android:id="@+id/card_cat_ao_tac"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/tc_bg_cat_2" />
+                    <TextView
+                        android:id="@+id/tv_section_hot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/section_hot"
+                        android:textColor="@color/tc_on_dark"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/category_ao_tac"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all"
+                    android:textColor="@color/tc_gold_bright"
+                    android:textSize="13sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
-            </FrameLayout>
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingVertical="4dp" />
+            </LinearLayout>
 
-            <!-- Nhật Bình -->
-            <FrameLayout
-                android:id="@+id/card_cat_nhat_binh"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/tc_bg_cat_3" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/category_nhat_binh"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
-            </FrameLayout>
+            <!-- 3 thẻ hiện cùng lúc (padding ngang để 2 thẻ bên lộ ra), thẻ giữa phóng to —
+                 xem HomeFragment.CenterScalePageTransformer + tự động chuyển trang. -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_hot_products"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_marginTop="18dp"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:paddingHorizontal="64dp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingHorizontal="20dp"
-            android:orientation="horizontal">
-
-            <!-- Phụ Kiện -->
-            <FrameLayout
-                android:id="@+id/card_cat_accessories"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/tc_bg_cat_4" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/category_accessories"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
-            </FrameLayout>
-
-            <!-- Bộ Trọn -->
-            <FrameLayout
-                android:id="@+id/card_cat_set"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/tc_bg_cat_5" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/category_set"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
-            </FrameLayout>
-        </LinearLayout>
-
-        <!-- ═══════════ GỢI Ý CHO BẠN ═══════════ -->
+        <!-- ═══════════ GỢI Ý CHO BẠN (nền kem) ═══════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -585,82 +1068,253 @@
                 android:paddingVertical="4dp" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_recommended"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:paddingHorizontal="12dp"
-            android:clipToPadding="false"
-            tools:listitem="@layout/item_product" />
-
-        <!-- ═══════════ DIVIDER VÀNG ═══════════ -->
-        <View
-            android:layout_width="100dp"
-            android:layout_height="2dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/tc_divider_gold" />
-
-        <!-- ═══════════ XU HƯỚNG ═══════════ -->
+        <!-- 4 thẻ xen kẽ 2 cột lệch tầng (cột phải hạ xuống); cứ 1 giây thẻ đang "sáng" mờ đi,
+             thẻ kế tiếp sáng rõ lên — xoay vòng qua 4 thẻ (HomeFragment.RecommendedSpotlight). -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:gravity="bottom"
-            android:layout_marginTop="36dp"
-            android:paddingHorizontal="20dp">
+            android:layout_marginTop="18dp"
+            android:paddingHorizontal="20dp"
+            android:orientation="horizontal">
 
+            <!-- Cột trái -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginEnd="8dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_eyebrow_hot"
-                    android:textColor="@color/tc_gold_deep"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.16" />
+                <FrameLayout
+                    android:id="@+id/card_recommended_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                <TextView
-                    android:id="@+id/tv_section_hot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="@string/section_hot"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_recommended_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@color/bg_subtle"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
+                        android:contentDescription="@null" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/tc_gradient_bottom_scrim" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_recommended_1_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
+                            tools:text="Lam Ngọc Cổ Trấn" />
+
+                        <TextView
+                            android:id="@+id/tv_recommended_1_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/tc_gold_bright"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="2.490.000 đ" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/card_recommended_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_recommended_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@color/bg_subtle"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
+                        android:contentDescription="@null" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/tc_gradient_bottom_scrim" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_recommended_2_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
+                            tools:text="Lam Ngọc Cổ Trấn" />
+
+                        <TextView
+                            android:id="@+id/tv_recommended_2_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/tc_gold_bright"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="2.490.000 đ" />
+                    </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Cột phải — lệch xuống để tạo thế xen kẽ -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/see_all"
-                android:textColor="@color/tc_red"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"
-                android:paddingVertical="4dp" />
+                android:layout_weight="1"
+                android:layout_marginTop="44dp"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/card_recommended_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_recommended_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@color/bg_subtle"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
+                        android:contentDescription="@null" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/tc_gradient_bottom_scrim" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_recommended_3_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
+                            tools:text="Lam Ngọc Cổ Trấn" />
+
+                        <TextView
+                            android:id="@+id/tv_recommended_3_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/tc_gold_bright"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="2.490.000 đ" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/card_recommended_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_recommended_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@color/bg_subtle"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
+                        android:contentDescription="@null" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/tc_gradient_bottom_scrim" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_recommended_4_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
+                            tools:text="Lam Ngọc Cổ Trấn" />
+
+                        <TextView
+                            android:id="@+id/tv_recommended_4_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/tc_gold_bright"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="2.490.000 đ" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_hot_products"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:paddingHorizontal="12dp"
-            android:clipToPadding="false"
-            tools:listitem="@layout/item_product" />
-
-        <!-- ═══════════ AI STRIP ═══════════ -->
+        <!-- ═══════════ TRỢ LÝ THỜI TRANG (AI STRIP) — nền ảnh bộ thẻ nghệ sĩ ═══════════ -->
         <FrameLayout
             android:id="@+id/cv_ai_strip"
             android:layout_width="match_parent"
@@ -680,7 +1334,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/h_2"
+                android:src="@drawable/main11"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
 
             <!-- Scrim tối -->
@@ -734,7 +1388,7 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- ═══════════ SỰ KIỆN ═══════════ -->
+        <!-- ═══════════ SỰ KIỆN — nền ảnh Local Art Guide ═══════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -783,7 +1437,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/h_1"
+                android:src="@drawable/main15"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
 
             <View
@@ -835,26 +1489,7 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- ═══════════ PROMO STRIP (mini banner quảng cáo) ═══════════ -->
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp_promo_strip"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="24dp" />
-
-        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-            android:id="@+id/dots_promo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
-            app:dotsColor="@color/tc_sand_light"
-            app:selectedDotColor="@color/tc_red"
-            app:dotsSize="6dp"
-            app:dotsSpacing="4dp" />
-
-        <!-- ═══════════ TIN TỨC ═══════════ -->
+        <!-- ═══════════ TIN TỨC — nền ảnh brand board ═══════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -903,7 +1538,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/h_2"
+                android:src="@drawable/main13"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
 
             <View
@@ -955,20 +1590,49 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- ═══════════ FOOTER THƯƠNG HIỆU ═══════════ -->
+        <!-- ═══════════ ƯU ĐÃI (PROMO STRIP) ═══════════ -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_promo_strip"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="28dp" />
+
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/dots_promo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            app:dotsColor="@color/tc_sand_light"
+            app:selectedDotColor="@color/tc_red"
+            app:dotsSize="6dp"
+            app:dotsSpacing="4dp" />
+
+        <!-- ═══════════ FOOTER THƯƠNG HIỆU — ĐỎ FULL-BLEED + GIF (giữ nguyên) ═══════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:paddingTop="56dp"
-            android:paddingBottom="24dp">
+            android:background="@color/tc_red"
+            android:layout_marginTop="48dp"
+            android:paddingBottom="28dp">
+
+            <!-- Gif thương hiệu — full-bleed, 16:9 set bằng code -->
+            <ImageView
+                android:id="@+id/iv_gif_footer"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null" />
 
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_marginTop="24dp"
                 android:src="@drawable/ic_tc_logo"
-                android:alpha="0.9"
+                app:tint="@color/tc_on_red"
                 android:contentDescription="@null" />
 
             <TextView
@@ -976,7 +1640,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/brand_name_caps"
-                android:textColor="@color/tc_red"
+                android:textColor="@color/tc_on_red"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-black"
@@ -987,7 +1651,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:text="@string/footer_tagline"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/tc_on_red_secondary"
                 android:textSize="12sp" />
 
             <TextView
@@ -995,7 +1659,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:text="@string/footer_cities"
-                android:textColor="@color/tc_sand"
+                android:textColor="@color/tc_gold_bright"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.15" />

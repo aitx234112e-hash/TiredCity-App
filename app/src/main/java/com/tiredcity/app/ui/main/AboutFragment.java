@@ -84,6 +84,11 @@ public class AboutFragment extends Fragment {
         applyAspectRatio(binding.sectionVideoBehance, 16f / 9f);
         applyAspectRatio(binding.sectionVideoMission, 16f / 9f);
 
+        // VideoView tự ép focusable=true và requestFocus() trong constructor (ghi đè XML),
+        // khiến NestedScrollView cuộn tới video khi mở trang — tắt hẳn focus tại đây.
+        killVideoFocus(binding.videoBehance);
+        killVideoFocus(binding.videoLogoTransform);
+
         Glide.with(this)
                 .load(R.drawable.about_gif_logo_transform)
                 .override(1024, 576)
@@ -104,16 +109,23 @@ public class AboutFragment extends Fragment {
     /** Đưa nội dung về đầu trang; gọi mỗi lần tab/màn hình chứa fragment này được vào lại,
      * vì NestedScrollView giữ nguyên vị trí cuộn khi ẩn/hiện qua lại giữa các tab. */
     public void scrollToTop() {
-        if (binding != null) {
-            android.util.Log.d("TC_DEBUG", "AboutFragment.scrollToTop: scrollY(before)="
-                    + binding.getRoot().getScrollY()
-                    + " heroHeight=" + binding.sectionHero.getHeight()
-                    + " heroWidth=" + binding.sectionHero.getWidth()
-                    + " heroVisibility=" + binding.sectionHero.getVisibility()
-                    + " rootHeight=" + binding.getRoot().getHeight());
+        if (binding == null) return;
+        binding.getRoot().scrollTo(0, 0);
+        // NestedScrollView chỉ áp cuộn (do focus/khôi phục trạng thái) trong lượt layout
+        // kế tiếp, nên phải đặt lại lần nữa SAU layout — nếu không sẽ bị đè về giữa trang.
+        binding.getRoot().post(() -> {
+            if (binding == null) return;
             binding.getRoot().scrollTo(0, 0);
             checkVisibility();
-        }
+        });
+        checkVisibility();
+    }
+
+    /** Tắt triệt để focus của VideoView (constructor của nó luôn bật lại bất chấp XML). */
+    private static void killVideoFocus(View videoView) {
+        videoView.setFocusable(false);
+        videoView.setFocusableInTouchMode(false);
+        videoView.clearFocus();
     }
 
     private void checkVisibility() {
@@ -187,6 +199,8 @@ public class AboutFragment extends Fragment {
                 section.resumeForLifecycle();
             }
         }
+        // Tự đảm bảo mở từ đầu trang mỗi lần quay lại, không phụ thuộc fragment cha gọi hộ.
+        scrollToTop();
     }
 
     @Override

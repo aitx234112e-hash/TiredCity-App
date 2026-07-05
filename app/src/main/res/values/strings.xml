@@ -52,6 +52,8 @@
     <string name="category_nhat_binh">Nhật Bình</string>
     <string name="category_accessories">Phụ Kiện</string>
     <string name="category_set">Bộ Trọn</string>
+    <string name="category_giao_linh">Giao Lĩnh</string>
+    <string name="category_yem_dao">Yếm Đào</string>
 
     <!-- AI strip -->
     <string name="ai_strip_title">✨ Tư vấn phong cách AI</string>
@@ -120,6 +122,15 @@
     <string name="home_news_eyebrow">TIN TỨC &amp; CẢM HỨNG</string>
     <string name="home_news_title">Câu chuyện Việt phục</string>
     <string name="home_news_cta">ĐỌC THÊM ✦</string>
+
+    <!-- Home — khối media thương hiệu (video/gif Behance) -->
+    <string name="home_hero_eyebrow">TIREDCITY × NGHỆ SĨ VIỆT</string>
+    <string name="home_hero_caption">Nghệ thuật Việt kể chuyện đương đại</string>
+    <string name="home_craft_eyebrow">TỪ XƯỞNG SÁNG TẠO</string>
+    <string name="home_craft_title">Đằng sau mỗi thiết kế</string>
+    <!-- Home — khối Welcome to TiredCity (đỏ, chữ be) -->
+    <string name="home_welcome_title">TiredCity xin chào</string>
+    <string name="home_welcome_intro">Từ những ngày đầu chập chững, TiredCity lớn lên cùng di sản Việt — nơi câu chuyện văn hoá được kể lại bằng ngôn ngữ thời trang đương đại.</string>
 
     <!-- Banners (mock titles) -->
     <string name="banner_title_1">Bộ sưu tập Thu – Đông 2025</string>

@@ -53,6 +53,8 @@
     <string name="category_nhat_binh">Nhật Bình</string>
     <string name="category_accessories">Accessories</string>
     <string name="category_set">Full Sets</string>
+    <string name="category_giao_linh">Giao Lĩnh</string>
+    <string name="category_yem_dao">Yếm Đào</string>
 
     <!-- AI strip -->
     <string name="ai_strip_title">✨ AI Style Advisor</string>
@@ -121,6 +123,15 @@
     <string name="home_news_eyebrow">NEWS &amp; INSPIRATION</string>
     <string name="home_news_title">Vietnamese fashion stories</string>
     <string name="home_news_cta">READ MORE ✦</string>
+
+    <!-- Home — brand media blocks (Behance videos/gifs) -->
+    <string name="home_hero_eyebrow">TIREDCITY × LOCAL ARTISTS</string>
+    <string name="home_hero_caption">Vietnamese art, told for today</string>
+    <string name="home_craft_eyebrow">FROM THE STUDIO</string>
+    <string name="home_craft_title">Behind every design</string>
+    <!-- Home — Welcome to TiredCity block (red, cream text) -->
+    <string name="home_welcome_title">Welcome to TiredCity</string>
+    <string name="home_welcome_intro">From humble beginnings, TiredCity has grown alongside Vietnamese heritage — telling cultural stories through the language of contemporary fashion.</string>
 
     <!-- Banners (mock titles) -->
     <string name="banner_title_1">Autumn – Winter Collection 2025</string>

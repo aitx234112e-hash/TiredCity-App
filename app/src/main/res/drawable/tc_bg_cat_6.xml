@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền mặt sau thẻ danh mục (sau khi lật) — đỏ thương hiệu, chữ trắng đè lên trên. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_red" />
+</shape>

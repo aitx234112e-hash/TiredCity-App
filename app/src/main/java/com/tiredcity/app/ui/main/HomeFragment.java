@@ -1,21 +1,33 @@
 package com.tiredcity.app.ui.main;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.widget.VideoView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager2.widget.ViewPager2;
+import com.bumptech.glide.Glide;
 import com.tiredcity.app.R;
-import com.tiredcity.app.adapter.BannerAdapter;
-import com.tiredcity.app.adapter.ProductAdapter;
+import com.tiredcity.app.adapter.HotProductCarouselAdapter;
+import com.tiredcity.app.adapter.MediaBannerAdapter;
 import com.tiredcity.app.adapter.PromoStripAdapter;
 import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.Product;
@@ -37,13 +49,32 @@ public class HomeFragment extends Fragment {
     private PreferenceManager   prefs;
     private Handler             autoScrollHandler;
     private Runnable            autoScrollRunnable;
-    private BannerAdapter       bannerAdapter;
+    private MediaBannerAdapter  bannerAdapter;
+    private Handler             banner2ScrollHandler;
+    private Runnable            banner2ScrollRunnable;
+    private MediaBannerAdapter  banner2Adapter;
     private Handler             promoScrollHandler;
     private Runnable            promoScrollRunnable;
     private PromoStripAdapter   promoAdapter;
-    private ProductAdapter      recommendedAdapter;
-    private ProductAdapter      hotProductsAdapter;
+    private List<View>          recommendedCards;
+    private Handler             recommendedSpotlightHandler;
+    private Runnable            recommendedSpotlightRunnable;
+    private int                 recommendedSpotlightIndex = 0;
+    private HotProductCarouselAdapter hotProductsAdapter;
+    private Handler             hotScrollHandler;
+    private Runnable            hotScrollRunnable;
     private FirestoreProductRepository firestoreRepository;
+    private List<VideoSection>  videoSections;
+    private List<CategoryFlipCard> categoryFlipCards;
+    private Handler             categoryFlipHandler;
+    private Runnable            categoryFlipRunnable;
+
+    // Video chỉ phát khi khung của nó lộ ra ít nhất chừng này (giống AboutFragment)
+    private static final float VIDEO_VISIBLE_THRESHOLD = 0.12f;
+    // Khoảng nghỉ giữa 2 lần lật thẻ danh mục
+    private static final long CATEGORY_FLIP_INTERVAL = 3500L;
+    // Khoảng nghỉ giữa 2 lần tự động chuyển trang carousel "Sản phẩm nổi bật"
+    private static final long HOT_PRODUCTS_INTERVAL = 2800L;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -64,12 +95,33 @@ public class HomeFragment extends Fragment {
         setupGreeting();
         setupMenhBanner();
         setupBanner();
+        setupBanner2();
         setupPromoStrip();
         setupRecommendedProducts();
         setupHotProducts();
         loadFirestoreHighlights();
         setupLanguageButton();
         setupClickListeners();
+        setupBrandMedia();
+        setupCategoryImages();
+
+        // VideoView tự ép focusable=true và requestFocus() trong constructor (ghi đè XML),
+        // khiến NestedScrollView cuộn tới video khi mở trang — tắt hẳn focus tại đây.
+        killVideoFocus(binding.videoWelcome);
+        killVideoFocus(binding.videoCraft);
+
+        // Luôn mở trang từ đầu: đặt lại scroll SAU lượt layout đầu tiên, vì NestedScrollView
+        // chỉ áp cuộn (do focus/khôi phục trạng thái) trong onLayout — đặt sớm hơn sẽ bị đè.
+        binding.getRoot().post(() -> {
+            if (binding != null) binding.getRoot().scrollTo(0, 0);
+        });
+    }
+
+    /** Tắt triệt để focus của VideoView (constructor của nó luôn bật lại bất chấp XML). */
+    private static void killVideoFocus(View videoView) {
+        videoView.setFocusable(false);
+        videoView.setFocusableInTouchMode(false);
+        videoView.clearFocus();
     }
 
     @Override
@@ -77,10 +129,17 @@ public class HomeFragment extends Fragment {
         super.onResume();
         startAutoScroll();
         startPromoScroll();
+        startCategoryFlip();
+        startHotProductsScroll();
+        startRecommendedSpotlight();
         updateBadges();
         // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
-        if (recommendedAdapter != null) recommendedAdapter.notifyDataSetChanged();
         if (hotProductsAdapter != null) hotProductsAdapter.notifyDataSetChanged();
+        if (videoSections != null) {
+            for (VideoSection section : videoSections) section.resumeForLifecycle();
+        }
+        if (bannerAdapter != null) bannerAdapter.resumeForLifecycle();
+        if (banner2Adapter != null) banner2Adapter.resumeForLifecycle();
     }
 
     @Override
@@ -88,6 +147,14 @@ public class HomeFragment extends Fragment {
         super.onPause();
         stopAutoScroll();
         stopPromoScroll();
+        stopCategoryFlip();
+        stopHotProductsScroll();
+        stopRecommendedSpotlight();
+        if (videoSections != null) {
+            for (VideoSection section : videoSections) section.pauseForLifecycle();
+        }
+        if (bannerAdapter != null) bannerAdapter.pauseForLifecycle();
+        if (banner2Adapter != null) banner2Adapter.pauseForLifecycle();
     }
 
     @Override
@@ -95,9 +162,187 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         stopAutoScroll();
         stopPromoScroll();
+        stopCategoryFlip();
+        stopHotProductsScroll();
+        stopRecommendedSpotlight();
+        if (videoSections != null) {
+            for (VideoSection section : videoSections) section.release();
+            videoSections = null;
+        }
+        categoryFlipCards = null;
+        recommendedCards = null;
         binding = null;
-        recommendedAdapter = null;
+        bannerAdapter = null;
+        banner2Adapter = null;
         hotProductsAdapter = null;
+    }
+
+    // ── Media thương hiệu (video Behance + gif) ───────────────────────────────
+
+    /** Gắn 2 video khối màu (welcome, xưởng sáng tạo main5) và các gif Behance. */
+    private void setupBrandMedia() {
+        String packageName = requireContext().getPackageName();
+        // Khung mỗi video tự co theo tỷ lệ THẬT của video (đọc từ MediaPlayer khi prepared)
+        // nên không còn dải đen thừa hay bị cắt hình.
+        // Video "welcome" có growEffect=true: hiện scale nhỏ rồi phóng to lấp đầy khi cuộn tới.
+        videoSections = java.util.Arrays.asList(
+                new VideoSection(binding.sectionVideoWelcome, binding.videoWelcome,
+                        Uri.parse("android.resource://" + packageName + "/" + R.raw.welcome_chicken),
+                        true, true),
+                new VideoSection(binding.sectionVideoCraft, binding.videoCraft,
+                        Uri.parse("android.resource://" + packageName + "/" + R.raw.main5), true));
+        for (VideoSection section : videoSections) {
+            section.setup();
+        }
+
+        // Dải gif khối màu footer (main12) — giữ nguyên, 16:9 nên ép khung đúng tỷ lệ.
+        applyAspectRatio(binding.ivGifFooter, 16f / 9f);
+        Glide.with(this).load(R.drawable.main12)
+                .override(1024, 576).centerCrop().into(binding.ivGifFooter);
+
+        NestedScrollView scrollView = binding.getRoot();
+        scrollView.setOnScrollChangeListener(
+                (NestedScrollView.OnScrollChangeListener) (v, sx, sy, osx, osy) -> checkVideoVisibility());
+        scrollView.post(this::checkVideoVisibility);
+    }
+
+    private void checkVideoVisibility() {
+        if (videoSections == null) return;
+        for (VideoSection section : videoSections) {
+            section.update(isVisibleEnough(section.container));
+        }
+    }
+
+    /**
+     * Ép container về đúng tỷ lệ rộng/cao theo bề rộng đo được thực tế — VideoView bỏ qua
+     * chiều cao cố định và tự đo lại theo tỷ lệ video (gây viền đen), giống AboutFragment.
+     */
+    private static void applyAspectRatio(View container, float widthToHeightRatio) {
+        container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = container.getWidth();
+                if (width <= 0) return;
+                int desiredHeight = Math.round(width / widthToHeightRatio);
+                ViewGroup.LayoutParams params = container.getLayoutParams();
+                if (params.height != desiredHeight) {
+                    params.height = desiredHeight;
+                    container.setLayoutParams(params);
+                }
+            }
+        });
+    }
+
+    private static boolean isVisibleEnough(View container) {
+        int height = container.getHeight();
+        if (height == 0) return false;
+        Rect rect = new Rect();
+        boolean any = container.getLocalVisibleRect(rect);
+        return any && (rect.height() / (float) height) >= VIDEO_VISIBLE_THRESHOLD;
+    }
+
+    /** Video local: lặp vô hạn, chỉ phát khi khối của nó đang cuộn vào tầm nhìn;
+     *  khung chứa tự co về đúng tỷ lệ video để không lộ nền đen thừa. */
+    private static class VideoSection {
+        private static final float GROW_INITIAL_SCALE = 0.55f;
+        private static final long GROW_DURATION = 550L;
+
+        final View container;
+        private final VideoView videoView;
+        private final Uri uri;
+        private final boolean muted;
+        private final boolean growEffect;
+        private boolean visible = false;
+        private boolean pausedForLifecycle = false;
+
+        VideoSection(View container, VideoView videoView, Uri uri, boolean muted) {
+            this(container, videoView, uri, muted, false);
+        }
+
+        /** growEffect=true: khung hiện ở scale nhỏ, phóng to (kèm nảy nhẹ) khi cuộn vào tầm nhìn,
+         *  thu nhỏ lại khi cuộn ra — thuần render transform nên không làm layout xung quanh giật. */
+        VideoSection(View container, VideoView videoView, Uri uri, boolean muted, boolean growEffect) {
+            this.container = container;
+            this.videoView = videoView;
+            this.uri = uri;
+            this.muted = muted;
+            this.growEffect = growEffect;
+            if (growEffect) {
+                container.setScaleX(GROW_INITIAL_SCALE);
+                container.setScaleY(GROW_INITIAL_SCALE);
+            }
+        }
+
+        void setup() {
+            videoView.setVideoURI(uri);
+            // Không giữ tham chiếu MediaPlayer — VideoView tự release khi mất Surface;
+            // onPrepared có thể chạy lại mỗi lần Surface tạo lại nên áp lại loop/mute ở đây.
+            videoView.setOnPreparedListener(mp -> {
+                mp.setLooping(true);
+                if (muted) {
+                    mp.setVolume(0f, 0f);
+                } else {
+                    mp.setVolume(1f, 1f);
+                }
+                resizeContainerToVideo(mp.getVideoWidth(), mp.getVideoHeight());
+                if (visible && !pausedForLifecycle) {
+                    videoView.start();
+                } else {
+                    videoView.pause();
+                }
+            });
+        }
+
+        /** Co chiều cao khung về đúng tỷ lệ khung hình thật của video (theo bề rộng hiện có). */
+        private void resizeContainerToVideo(int videoWidth, int videoHeight) {
+            if (videoWidth <= 0 || videoHeight <= 0) return;
+            container.post(() -> {
+                int width = container.getWidth();
+                if (width <= 0) return;
+                int desiredHeight = Math.round(width * videoHeight / (float) videoWidth);
+                ViewGroup.LayoutParams params = container.getLayoutParams();
+                if (params.height != desiredHeight) {
+                    params.height = desiredHeight;
+                    container.setLayoutParams(params);
+                }
+            });
+        }
+
+        void update(boolean nowVisible) {
+            if (nowVisible == visible) return;
+            visible = nowVisible;
+            if (growEffect) {
+                container.animate()
+                        .scaleX(visible ? 1f : GROW_INITIAL_SCALE)
+                        .scaleY(visible ? 1f : GROW_INITIAL_SCALE)
+                        .setDuration(GROW_DURATION)
+                        .setInterpolator(visible ? new OvershootInterpolator(0.8f)
+                                : new DecelerateInterpolator())
+                        .start();
+            }
+            if (pausedForLifecycle) return;
+            if (visible) {
+                videoView.start();
+            } else {
+                videoView.pause();
+            }
+        }
+
+        void pauseForLifecycle() {
+            pausedForLifecycle = true;
+            videoView.pause();
+        }
+
+        void resumeForLifecycle() {
+            pausedForLifecycle = false;
+            if (visible) {
+                videoView.start();
+            }
+        }
+
+        void release() {
+            videoView.stopPlayback();
+        }
     }
 
     // ── Greeting ──────────────────────────────────────────────────────────────
@@ -205,33 +450,70 @@ public class HomeFragment extends Fragment {
     // ── Banner ViewPager2 ─────────────────────────────────────────────────────
 
     private void setupBanner() {
-        List<BannerAdapter.BannerItem> items = new ArrayList<>();
-        items.add(new BannerAdapter.BannerItem(R.drawable.banner_1, getString(R.string.banner_title_1)));
-        items.add(new BannerAdapter.BannerItem(R.drawable.banner_2, getString(R.string.banner_title_2)));
-        items.add(new BannerAdapter.BannerItem(R.drawable.banner_3, getString(R.string.banner_title_3)));
+        // Carousel mở màn: gif main8 → video main1 → video main2 (đều 16:9, full-bleed).
+        // Video tắt tiếng, lặp, chỉ phát ở trang đang hiển thị.
+        List<MediaBannerAdapter.MediaItem> items = new ArrayList<>();
+        items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main8));
+        items.add(MediaBannerAdapter.MediaItem.video(R.raw.main1));
+        items.add(MediaBannerAdapter.MediaItem.video(R.raw.main2));
 
-        bannerAdapter = new BannerAdapter(items);
+        bannerAdapter = new MediaBannerAdapter(items);
         binding.vpBanner.setAdapter(bannerAdapter);
         binding.dotsIndicator.attachTo(binding.vpBanner);
+        binding.vpBanner.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                bannerAdapter.setActivePosition(position);
+            }
+        });
+        applyAspectRatio(binding.vpBanner, 16f / 9f);
 
+        // 8s mỗi trang — đủ để video kịp "khoe" trước khi chuyển
         autoScrollHandler  = new Handler(Looper.getMainLooper());
         autoScrollRunnable = () -> {
             if (bannerAdapter.getItemCount() == 0) return;
             int next = (binding.vpBanner.getCurrentItem() + 1) % bannerAdapter.getItemCount();
             binding.vpBanner.setCurrentItem(next, true);
-            autoScrollHandler.postDelayed(autoScrollRunnable, 4000L);
+            autoScrollHandler.postDelayed(autoScrollRunnable, 8000L);
+        };
+    }
+
+    private void setupBanner2() {
+        // Carousel thứ hai (dưới "Đằng sau mỗi thiết kế"): main11 → main12 (gif) → main15
+        List<MediaBannerAdapter.MediaItem> items = new ArrayList<>();
+        items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main11));
+        items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main12));
+        items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main15));
+
+        banner2Adapter = new MediaBannerAdapter(items);
+        binding.vpBanner2.setAdapter(banner2Adapter);
+        binding.dotsIndicator2.attachTo(binding.vpBanner2);
+        applyAspectRatio(binding.vpBanner2, 16f / 9f);
+
+        banner2ScrollHandler  = new Handler(Looper.getMainLooper());
+        banner2ScrollRunnable = () -> {
+            if (banner2Adapter.getItemCount() == 0) return;
+            int next = (binding.vpBanner2.getCurrentItem() + 1) % banner2Adapter.getItemCount();
+            binding.vpBanner2.setCurrentItem(next, true);
+            banner2ScrollHandler.postDelayed(banner2ScrollRunnable, 4000L);
         };
     }
 
     private void startAutoScroll() {
         if (autoScrollHandler != null && autoScrollRunnable != null) {
-            autoScrollHandler.postDelayed(autoScrollRunnable, 4000L);
+            autoScrollHandler.postDelayed(autoScrollRunnable, 8000L);
+        }
+        if (banner2ScrollHandler != null && banner2ScrollRunnable != null) {
+            banner2ScrollHandler.postDelayed(banner2ScrollRunnable, 4000L);
         }
     }
 
     private void stopAutoScroll() {
         if (autoScrollHandler != null && autoScrollRunnable != null) {
             autoScrollHandler.removeCallbacks(autoScrollRunnable);
+        }
+        if (banner2ScrollHandler != null && banner2ScrollRunnable != null) {
+            banner2ScrollHandler.removeCallbacks(banner2ScrollRunnable);
         }
     }
 
@@ -280,42 +562,151 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // ── Recommended products ──────────────────────────────────────────────────
+    // ── Recommended products (4 thẻ xen kẽ, spotlight xoay vòng) ──────────────
 
+    private static final float RECOMMENDED_DIM_ALPHA = 0.42f;
+    private static final float RECOMMENDED_DIM_SCALE = 0.94f;
+    private static final long RECOMMENDED_SPOTLIGHT_INTERVAL = 1000L;
+
+    /** Nạp 4 sản phẩm đầu vào 4 thẻ xen kẽ, rồi bật hiệu ứng "đèn sân khấu": mỗi giây một thẻ
+     *  sáng rõ lên, 3 thẻ còn lại mờ đi — xoay vòng liên tục qua cả 4 thẻ. */
     private void setupRecommendedProducts() {
         List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), true);
-        recommendedAdapter = new ProductAdapter(products);
-        recommendedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Product product) {
-                openProductDetail(product.getId());
-            }
-            @Override
-            public void onSaveToggle(Product product, boolean saved) { /* handle wishlist */ }
-        });
+        bindRecommendedCards(products);
 
-        binding.rvRecommended.setLayoutManager(
-                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.rvRecommended.setAdapter(recommendedAdapter);
+        recommendedCards = java.util.Arrays.asList(
+                binding.cardRecommended1, binding.cardRecommended2,
+                binding.cardRecommended3, binding.cardRecommended4);
+        for (int i = 0; i < recommendedCards.size(); i++) {
+            setRecommendedSpotlight(recommendedCards.get(i), i == 0);
+        }
+        recommendedSpotlightIndex = 0;
+
+        recommendedSpotlightHandler  = new Handler(Looper.getMainLooper());
+        recommendedSpotlightRunnable = () -> {
+            setRecommendedSpotlight(recommendedCards.get(recommendedSpotlightIndex), false);
+            recommendedSpotlightIndex = (recommendedSpotlightIndex + 1) % recommendedCards.size();
+            setRecommendedSpotlight(recommendedCards.get(recommendedSpotlightIndex), true);
+            recommendedSpotlightHandler.postDelayed(recommendedSpotlightRunnable,
+                    RECOMMENDED_SPOTLIGHT_INTERVAL);
+        };
+    }
+
+    private static void setRecommendedSpotlight(View card, boolean bright) {
+        card.animate()
+                .alpha(bright ? 1f : RECOMMENDED_DIM_ALPHA)
+                .scaleX(bright ? 1f : RECOMMENDED_DIM_SCALE)
+                .scaleY(bright ? 1f : RECOMMENDED_DIM_SCALE)
+                .setDuration(350L)
+                .start();
+    }
+
+    private void startRecommendedSpotlight() {
+        if (recommendedSpotlightHandler != null && recommendedSpotlightRunnable != null) {
+            recommendedSpotlightHandler.postDelayed(recommendedSpotlightRunnable,
+                    RECOMMENDED_SPOTLIGHT_INTERVAL);
+        }
+    }
+
+    private void stopRecommendedSpotlight() {
+        if (recommendedSpotlightHandler != null && recommendedSpotlightRunnable != null) {
+            recommendedSpotlightHandler.removeCallbacks(recommendedSpotlightRunnable);
+        }
+    }
+
+    private void bindRecommendedCards(List<Product> products) {
+        bindRecommendedCard(binding.cardRecommended1, binding.ivRecommended1,
+                binding.tvRecommended1Name, binding.tvRecommended1Price, products, 0);
+        bindRecommendedCard(binding.cardRecommended2, binding.ivRecommended2,
+                binding.tvRecommended2Name, binding.tvRecommended2Price, products, 1);
+        bindRecommendedCard(binding.cardRecommended3, binding.ivRecommended3,
+                binding.tvRecommended3Name, binding.tvRecommended3Price, products, 2);
+        bindRecommendedCard(binding.cardRecommended4, binding.ivRecommended4,
+                binding.tvRecommended4Name, binding.tvRecommended4Price, products, 3);
+    }
+
+    private void bindRecommendedCard(View card,
+                                      com.google.android.material.imageview.ShapeableImageView image,
+                                      android.widget.TextView name, android.widget.TextView price,
+                                      List<Product> products, int index) {
+        if (products == null || index >= products.size()) {
+            card.setVisibility(View.INVISIBLE);
+            return;
+        }
+        card.setVisibility(View.VISIBLE);
+        Product product = products.get(index);
+        name.setText(product.getName());
+        price.setText(com.tiredcity.app.utils.PriceUtils.formatVnd(product.getEffectivePrice()));
+
+        String imageUrl = product.getFirstImage();
+        if (!imageUrl.isEmpty()) {
+            Glide.with(this).load(imageUrl)
+                    .timeout(30000)
+                    .centerCrop()
+                    .placeholder(R.color.bg_subtle)
+                    .error(R.color.bg_subtle)
+                    .into(image);
+        } else {
+            image.setImageDrawable(null);
+            image.setBackgroundColor(requireContext().getColor(R.color.bg_subtle));
+        }
+
+        card.setOnClickListener(v -> openProductDetail(product.getId()));
     }
 
     // ── Hot products ──────────────────────────────────────────────────────────
 
+    /** Carousel 3 thẻ (ViewPager2 + padding ngang để 2 thẻ bên lộ ra); thẻ đang ở giữa được
+     *  CenterScalePageTransformer phóng to, tự động chuyển sang thẻ kế tiếp mỗi
+     *  {@link #HOT_PRODUCTS_INTERVAL}ms — thẻ đang to co lại đúng lúc thẻ mới phóng to lên. */
     private void setupHotProducts() {
         List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), false);
-        hotProductsAdapter = new ProductAdapter(products);
-        hotProductsAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Product product) {
-                openProductDetail(product.getId());
-            }
-            @Override
-            public void onSaveToggle(Product product, boolean saved) { /* handle wishlist */ }
-        });
+        hotProductsAdapter = new HotProductCarouselAdapter(products);
+        hotProductsAdapter.setOnProductClickListener(product -> openProductDetail(product.getId()));
 
-        binding.rvHotProducts.setLayoutManager(
-                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.rvHotProducts.setAdapter(hotProductsAdapter);
+        ViewPager2 pager = binding.vpHotProducts;
+        pager.setAdapter(hotProductsAdapter);
+        pager.setOffscreenPageLimit(3);
+        pager.setPageTransformer(new CenterScalePageTransformer());
+
+        int peekPx = (int) (56 * getResources().getDisplayMetrics().density);
+        pager.setPadding(peekPx, 0, peekPx, 0);
+
+        hotScrollHandler  = new Handler(Looper.getMainLooper());
+        hotScrollRunnable = () -> {
+            if (hotProductsAdapter.getItemCount() == 0) return;
+            int next = (pager.getCurrentItem() + 1) % hotProductsAdapter.getItemCount();
+            pager.setCurrentItem(next, true);
+            hotScrollHandler.postDelayed(hotScrollRunnable, HOT_PRODUCTS_INTERVAL);
+        };
+    }
+
+    private void startHotProductsScroll() {
+        if (hotScrollHandler != null && hotScrollRunnable != null) {
+            hotScrollHandler.postDelayed(hotScrollRunnable, HOT_PRODUCTS_INTERVAL);
+        }
+    }
+
+    private void stopHotProductsScroll() {
+        if (hotScrollHandler != null && hotScrollRunnable != null) {
+            hotScrollHandler.removeCallbacks(hotScrollRunnable);
+        }
+    }
+
+    /** Thu nhỏ + làm mờ nhẹ các trang lệch khỏi tâm, giữ trang đang ở giữa ở kích thước đầy đủ —
+     *  tạo hiệu ứng "phồng lên ở giữa" cho carousel Sản phẩm nổi bật. */
+    private static class CenterScalePageTransformer implements ViewPager2.PageTransformer {
+        private static final float MIN_SCALE = 0.78f;
+        private static final float MIN_ALPHA = 0.6f;
+
+        @Override
+        public void transformPage(@NonNull View page, float position) {
+            float distance = Math.min(Math.abs(position), 1f);
+            float scale = MIN_SCALE + (1f - MIN_SCALE) * (1f - distance);
+            page.setScaleX(scale);
+            page.setScaleY(scale);
+            page.setAlpha(MIN_ALPHA + (1f - MIN_ALPHA) * (1f - distance));
+        }
     }
 
     /**
@@ -343,7 +734,7 @@ public class HomeFragment extends Fragment {
                 else recommended.add(sorted.get(i));
             }
 
-            if (recommendedAdapter != null) recommendedAdapter.updateData(recommended);
+            bindRecommendedCards(recommended);
             if (hotProductsAdapter != null) hotProductsAdapter.updateData(hot);
         });
     }
@@ -378,16 +769,16 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(requireContext(),
                         com.tiredcity.app.ui.notification.NotificationActivity.class)));
 
-        // "Xem tất cả" và "Bộ Trọn" (không có tab riêng ở trang Danh mục) → ShopFragment
-        View.OnClickListener catClick = v ->
-                Navigation.findNavController(requireView()).navigate(R.id.shopFragment);
-        binding.tvCategoriesSeeAll.setOnClickListener(catClick);
-        binding.cardCatSet.setOnClickListener(catClick);
+        // "Xem tất cả" → trang chính của Danh mục (tab móc áo, không chọn sẵn nhóm nào)
+        binding.tvCategoriesSeeAll.setOnClickListener(v ->
+                Navigation.findNavController(requireView()).navigate(R.id.stylingFragment));
 
-        // 4 thẻ còn lại → mở đúng tab tương ứng ở trang Danh mục (tab biểu tượng móc áo)
+        // 6 thẻ danh mục → mở đúng tab tương ứng ở trang Danh mục (khớp TAB_CATEGORY_IDS)
         binding.cardCatAoDai.setOnClickListener(v -> openStylingCategory("ÁO DÀI"));
-        binding.cardCatAoTac.setOnClickListener(v -> openStylingCategory("ÁO TẤC"));
         binding.cardCatNhatBinh.setOnClickListener(v -> openStylingCategory("NHẬT BÌNH"));
+        binding.cardCatAoTac.setOnClickListener(v -> openStylingCategory("ÁO TẤC"));
+        binding.cardCatGiaoLinh.setOnClickListener(v -> openStylingCategory("GIAO LĨNH"));
+        binding.cardCatYemDao.setOnClickListener(v -> openStylingCategory("YẾM ĐÀO"));
         binding.cardCatAccessories.setOnClickListener(v -> openStylingCategory("PHỤ KIỆN"));
 
         // Sự kiện → trang Sự kiện riêng (EventActivity)
@@ -403,6 +794,92 @@ public class HomeFragment extends Fragment {
                         com.tiredcity.app.ui.explore.ArticleActivity.class));
         binding.cardNews.setOnClickListener(newsClick);
         binding.tvNewsSeeAll.setOnClickListener(newsClick);
+    }
+
+    /** Ảnh bìa (front) của mỗi danh mục. Mặt sau (layout_cat_*_back trong XML) đã có sẵn tên
+     *  danh mục + logo TiredCity; ảnh nền của mặt sau (img_cat_*_back) tạm lấy gradient
+     *  tc_bg_cat_6, sẽ được thay bằng ảnh thật sau. 6 thẻ tự động lật qua lại. */
+    private void setupCategoryImages() {
+        // Ảnh nguồn khá lớn (1254×1254) so với thẻ vuông nhỏ ~100dp — nạp qua Glide với
+        // override để không giải mã 6 bitmap full-size cùng lúc (tốn ~6MB RAM/ảnh nếu nạp thẳng).
+        loadCategoryImage(binding.imgCatAoDaiFront, R.drawable.cate_ao_dai);
+        loadCategoryImage(binding.imgCatNhatBinhFront, R.drawable.cate_nhat_binh);
+        loadCategoryImage(binding.imgCatAoTacFront, R.drawable.cate_ao_tac);
+        loadCategoryImage(binding.imgCatGiaoLinhFront, R.drawable.cate_giao_linh);
+        loadCategoryImage(binding.imgCatYemDaoFront, R.drawable.cate_yem_dao);
+        loadCategoryImage(binding.imgCatAccessoriesFront, R.drawable.cate_phu_kien);
+
+        categoryFlipCards = java.util.Arrays.asList(
+                new CategoryFlipCard(binding.imgCatAoDaiFront, binding.layoutCatAoDaiBack),
+                new CategoryFlipCard(binding.imgCatNhatBinhFront, binding.layoutCatNhatBinhBack),
+                new CategoryFlipCard(binding.imgCatAoTacFront, binding.layoutCatAoTacBack),
+                new CategoryFlipCard(binding.imgCatGiaoLinhFront, binding.layoutCatGiaoLinhBack),
+                new CategoryFlipCard(binding.imgCatYemDaoFront, binding.layoutCatYemDaoBack),
+                new CategoryFlipCard(binding.imgCatAccessoriesFront, binding.layoutCatAccessoriesBack));
+
+        categoryFlipHandler  = new Handler(Looper.getMainLooper());
+        categoryFlipRunnable = () -> {
+            for (CategoryFlipCard card : categoryFlipCards) card.flip();
+            categoryFlipHandler.postDelayed(categoryFlipRunnable, CATEGORY_FLIP_INTERVAL);
+        };
+    }
+
+    private void loadCategoryImage(android.widget.ImageView target, int drawableRes) {
+        Glide.with(this).load(drawableRes).override(400, 400).centerCrop().into(target);
+    }
+
+    private void startCategoryFlip() {
+        if (categoryFlipHandler != null && categoryFlipRunnable != null) {
+            categoryFlipHandler.postDelayed(categoryFlipRunnable, CATEGORY_FLIP_INTERVAL);
+        }
+    }
+
+    private void stopCategoryFlip() {
+        if (categoryFlipHandler != null && categoryFlipRunnable != null) {
+            categoryFlipHandler.removeCallbacks(categoryFlipRunnable);
+        }
+    }
+
+    /** Lật 3D quanh trục Y giữa ảnh bìa (front) và mặt sau (back — ảnh thứ hai + tên danh mục
+     *  + logo TiredCity) của một thẻ danh mục. Mặt sau là một View bất kỳ (không chỉ ImageView)
+     *  vì nó gồm nhiều lớp chồng (ảnh, lớp phủ tối, chữ, logo). */
+    private static class CategoryFlipCard {
+        private static final long FLIP_HALF_DURATION = 380L;
+
+        private final View front;
+        private final View back;
+        private boolean showingFront = true;
+
+        CategoryFlipCard(View front, View back) {
+            this.front = front;
+            this.back = back;
+            float cameraDistance = 8000 * front.getResources().getDisplayMetrics().density;
+            front.setCameraDistance(cameraDistance);
+            back.setCameraDistance(cameraDistance);
+        }
+
+        void flip() {
+            View outView = showingFront ? front : back;
+            View inView = showingFront ? back : front;
+            showingFront = !showingFront;
+
+            ObjectAnimator out = ObjectAnimator.ofFloat(outView, View.ROTATION_Y, 0f, 90f);
+            out.setDuration(FLIP_HALF_DURATION);
+            out.setInterpolator(new AccelerateInterpolator());
+            out.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    outView.setVisibility(View.GONE);
+                    inView.setRotationY(-90f);
+                    inView.setVisibility(View.VISIBLE);
+                    ObjectAnimator in = ObjectAnimator.ofFloat(inView, View.ROTATION_Y, -90f, 0f);
+                    in.setDuration(FLIP_HALF_DURATION);
+                    in.setInterpolator(new DecelerateInterpolator());
+                    in.start();
+                }
+            });
+            out.start();
+        }
     }
 
     /** Mở trang Danh mục (tab móc áo) và chọn sẵn đúng nhóm trang phục đã bấm ở Trang chủ. */

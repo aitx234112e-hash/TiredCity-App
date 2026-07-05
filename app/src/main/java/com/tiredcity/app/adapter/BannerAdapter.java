@@ -61,7 +61,12 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BannerItem item = items.get(position);
-        holder.tvTitle.setText(item.title);
+
+        // Banner không có tiêu đề (vd gif thương hiệu): ẩn scrim + chữ để lộ trọn hình động
+        boolean hasTitle = item.title != null && !item.title.isEmpty();
+        holder.tvTitle.setText(hasTitle ? item.title : "");
+        holder.scrim.setVisibility(hasTitle ? View.VISIBLE : View.GONE);
+        holder.content.setVisibility(hasTitle ? View.VISIBLE : View.GONE);
 
         if (item.imageRes != 0) {
             Glide.with(holder.ivBanner.getContext())
@@ -90,11 +95,15 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.ViewHolder
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView ivBanner;
         final TextView  tvTitle;
+        final View      scrim;
+        final View      content;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivBanner = itemView.findViewById(R.id.iv_banner);
             tvTitle  = itemView.findViewById(R.id.tv_banner_title);
+            scrim    = itemView.findViewById(R.id.v_banner_scrim);
+            content  = itemView.findViewById(R.id.layout_banner_content);
         }
     }
 }

@@ -16,12 +16,14 @@
 
     <!-- Lớp tối ở đáy cho dễ đọc chữ (đã bo góc khớp ảnh) -->
     <View
+        android:id="@+id/v_banner_scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/tc_banner_scrim" />
 
     <!-- Nội dung editorial -->
     <LinearLayout
+        android:id="@+id/layout_banner_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
