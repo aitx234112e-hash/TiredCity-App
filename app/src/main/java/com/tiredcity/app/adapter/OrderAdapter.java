@@ -63,8 +63,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         }
 
         void bind(Order order, OnOrderClickListener listener) {
-            if (tvOrderId != null)
-                tvOrderId.setText("#" + order.getId());
+            if (tvOrderId != null) {
+                String displayId = order.getOrderCode() != null ? order.getOrderCode() : "#" + order.getId();
+                tvOrderId.setText(displayId);
+            }
             if (tvOrderDate != null)
                 tvOrderDate.setText(DateUtils.formatDisplay(order.getCreatedAt()));
             if (tvOrderTotal != null)

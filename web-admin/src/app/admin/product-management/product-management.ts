@@ -54,6 +54,7 @@ export class ProductManagement implements OnInit {
   showForm = false;
   successMsg = '';
   errorMsg = '';
+  isSyncing = false;
 
   @ViewChild('formSection') formSection!: ElementRef;
 
@@ -171,16 +172,17 @@ export class ProductManagement implements OnInit {
       data.sizes = [];
       data.stock = Number(formVal.stock) || 0;
     } else {
-      // clothing: build sizes array
+      // clothing: build sizes array and auto-calculate total stock
       this.sizesInput = [
-        { size: 'S', quantity: formVal.quantityS },
-        { size: 'M', quantity: formVal.quantityM },
-        { size: 'L', quantity: formVal.quantityL },
-        { size: 'XL', quantity: formVal.quantityXL }
+        { size: 'S', quantity: Number(formVal.quantityS) || 0 },
+        { size: 'M', quantity: Number(formVal.quantityM) || 0 },
+        { size: 'L', quantity: Number(formVal.quantityL) || 0 },
+        { size: 'XL', quantity: Number(formVal.quantityXL) || 0 }
       ];
-      const sizes = this.sizesInput.filter(s => typeof s.quantity === 'number' && s.quantity > 0);
+      const sizes = this.sizesInput.filter(s => typeof s.quantity === 'number' && s.quantity >= 0);
       data.sizes = sizes;
-      data.stock = 0;
+      // Backend Fix: Total stock is the sum of size quantities
+      data.stock = sizes.reduce((acc, s) => acc + s.quantity, 0);
     }
     this.productService.addProduct(data).subscribe({
       next: (res: any) => {
@@ -257,13 +259,14 @@ export class ProductManagement implements OnInit {
       data.sizes = [];
       data.stock = Number(formVal.stock) || 0;
     } else {
-      const sizes = this.sizesInput.filter(s => typeof s.quantity === 'number' && s.quantity > 0);
+      const sizes = this.sizesInput.filter(s => typeof s.quantity === 'number' && s.quantity >= 0);
       if (sizes.length === 0) {
         this.showError('Vui lòng nhập số lượng cho ít nhất 1 size.');
         return;
       }
       data.sizes = sizes;
-      data.stock = 0;
+      // Backend Fix: Total stock is the sum of size quantities
+      data.stock = sizes.reduce((acc, s) => acc + s.quantity, 0);
     }
     this.productService.updateProduct(this.editingProductId, data).subscribe({
       next: (res: any) => {
@@ -375,6 +378,60 @@ export class ProductManagement implements OnInit {
         this.uploadingImageAt = null;
         this.showError(`❌ ${msg}`);
       }
+    });
+  }
+
+  // =====================
+  // BẢO TRÌ DỮ LIỆU
+  // =====================
+  fixInconsistentStock() {
+    if (this.isSyncing) return;
+    if (!confirm('Hệ thống sẽ quét toàn bộ sản phẩm và tự động tính lại Tổng tồn kho (Stock) dựa trên số lượng các Size. Tiếp tục?')) return;
+
+    this.isSyncing = true;
+    this.successMsg = 'Đang kiểm tra và sửa lỗi tồn kho...';
+
+    let fixedCount = 0;
+    const updatePromises = this.products.map(p => {
+      let calculatedStock = 0;
+      let hasSizes = false;
+
+      // 1. Kiểm tra mảng sizes chuẩn
+      if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+        calculatedStock = p.sizes.reduce((acc: number, s: any) => acc + (Number(s.quantity) || 0), 0);
+        hasSizes = true;
+      }
+      // 2. Kiểm tra các trường index 0, 1, 2... (như trong ảnh Firestore)
+      else {
+        const pAny = p as any;
+        for (let i = 0; i <= 20; i++) {
+          const sizeInfo = pAny[String(i)];
+          if (sizeInfo && typeof sizeInfo === 'object' && 'quantity' in sizeInfo) {
+            calculatedStock += (Number(sizeInfo.quantity) || 0);
+            hasSizes = true;
+          }
+        }
+      }
+
+      // Nếu có thông tin size và stock hiện tại khác stock tính toán -> Cập nhật
+      if (hasSizes && Number(p.stock) !== calculatedStock) {
+        fixedCount++;
+        return this.productService.updateProduct(p._id, { stock: calculatedStock }).toPromise();
+      }
+      return Promise.resolve();
+    });
+
+    Promise.all(updatePromises).then(() => {
+      this.isSyncing = false;
+      if (fixedCount > 0) {
+        this.showSuccess(`✅ Đã sửa thành công ${fixedCount} sản phẩm bị lệch tồn kho!`);
+        this.loadProducts(); // Tải lại danh sách
+      } else {
+        this.showSuccess('✅ Tất cả sản phẩm đã khớp tồn kho. Không có lỗi nào được tìm thấy.');
+      }
+    }).catch(err => {
+      this.isSyncing = false;
+      this.showError('❌ Lỗi khi sửa tồn kho hàng loạt: ' + err.message);
     });
   }
 

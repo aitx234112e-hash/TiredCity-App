@@ -75,11 +75,19 @@ public class OrderTrackingActivity extends BaseActivity {
     }
 
     private void bindOrder(Order order) {
-        binding.tvOrderId.setText("#" + order.getId());
+        String displayId = order.getOrderCode() != null ? order.getOrderCode() : "#" + order.getId();
+        binding.tvOrderId.setText(displayId);
         binding.tvOrderDate.setText(DateUtils.formatDisplay(order.getCreatedAt()));
         binding.tvOrderTotal.setText(PriceUtils.format(order.getTotalPrice()));
         binding.tvShippingAddress.setText(order.getShippingAddress());
-        updateTrackingSteps(order.getStatus());
+        
+        if (Constants.ORDER_CANCELLED.equals(order.getStatus())) {
+            binding.stepDelivered.tvStepTitle.setText("ĐÃ HỦY");
+            binding.stepDelivered.tvStepTitle.setTextColor(getResources().getColor(android.R.color.holo_red_dark, getTheme()));
+            binding.stepDelivered.vStepDot.setBackgroundResource(R.drawable.tc_bg_circle_red);
+        } else {
+            updateTrackingSteps(order.getStatus());
+        }
     }
 
     private void updateTrackingSteps(String status) {

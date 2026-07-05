@@ -18,8 +18,12 @@ public class OrderSuccessActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         orderId = getIntent().getStringExtra("order_id");
-        if (orderId != null) {
-            binding.tvOrderId.setText(getString(com.tiredcity.app.R.string.order_code_prefix) + orderId);
+        String orderCode = getIntent().getStringExtra("order_code");
+        
+        if (orderCode != null) {
+            binding.tvOrderId.setText(orderCode);
+        } else if (orderId != null) {
+            binding.tvOrderId.setText("#" + orderId);
         }
 
         // Start Lottie animation if available

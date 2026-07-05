@@ -95,11 +95,11 @@ public class ShopFragment extends Fragment {
 
             @Override
             public void onAddToCartClick(Product product) {
-                com.tiredcity.app.data.local.CartLocalStore cartStore = new com.tiredcity.app.data.local.CartLocalStore(requireContext());
-                cartStore.addItem(new com.tiredcity.app.data.model.CartItem(product, 1));
-                Toast.makeText(requireContext(), getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(requireContext(), com.tiredcity.app.ui.cart.CartActivity.class);
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(requireContext(), com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
                 startSmoothActivity(intent);
+                Toast.makeText(requireContext(), "Vui lòng chọn Size trước khi mua", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -107,20 +107,18 @@ public class ShopFragment extends Fragment {
         binding.rvSuggestions.setHasFixedSize(true);
         binding.rvSuggestions.setAdapter(productAdapter);
 
-        // Nạp dữ liệu Realtime từ Firestore
+        // CHỈ DÙNG DỮ LIỆU TỪ FIREBASE THẬT
         productRepository.getProductsFromFirestore(new ProductRepository.OnProductsLoadedListener() {
             @Override
             public void onSuccess(List<Product> products) {
-                if (products != null && !products.isEmpty()) {
+                if (isAdded() && products != null) {
                     productAdapter.updateData(products);
-                } else {
-                    productAdapter.updateData(buildMockProducts());
                 }
             }
 
             @Override
             public void onError(String message) {
-                productAdapter.updateData(buildMockProducts());
+                android.util.Log.e("ShopFragment", "Firebase Error: " + message);
             }
         });
     }

@@ -13,10 +13,10 @@ public class CartItem {
     @SerializedName("quantity")
     private int quantity;
 
-    @SerializedName("selected_size")
+    @SerializedName(value = "selected_size", alternate = {"size"})
     private String selectedSize;
 
-    @SerializedName("selected_color")
+    @SerializedName(value = "selected_color", alternate = {"color"})
     private String selectedColor;
 
     /** Người dùng có chọn sản phẩm này để thanh toán hay không. Mặc định chọn sẵn. */

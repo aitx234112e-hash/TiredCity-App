@@ -26,14 +26,15 @@ public class ProductRepository {
      */
     public void getProductsFromFirestore(OnProductsLoadedListener listener) {
         db.collection("products")
-            .orderBy("_id", Query.Direction.ASCENDING)
             .addSnapshotListener((value, error) -> {
                 if (error != null) {
+                    android.util.Log.e("ProductRepository", "Firestore Error: " + error.getMessage());
                     listener.onError(error.getMessage());
                     return;
                 }
                 if (value != null) {
                     List<Product> list = value.toObjects(Product.class);
+                    android.util.Log.d("ProductRepository", "Loaded " + list.size() + " products");
                     listener.onSuccess(list);
                 }
             });
@@ -86,6 +87,27 @@ public class ProductRepository {
 
     public Call<ApiListResponse<Product>> getFeaturedProducts() {
         return apiService.getFeaturedProducts();
+    }
+
+    public void getProductReviewsFromFirestore(String productId, OnReviewsLoadedListener listener) {
+        db.collection("reviews")
+            .whereEqualTo("productId", productId)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .addSnapshotListener((value, error) -> {
+                if (error != null) {
+                    listener.onError(error.getMessage());
+                    return;
+                }
+                if (value != null) {
+                    List<Review> list = value.toObjects(Review.class);
+                    listener.onSuccess(list);
+                }
+            });
+    }
+
+    public interface OnReviewsLoadedListener {
+        void onSuccess(List<Review> reviews);
+        void onError(String message);
     }
 
     public Call<ApiListResponse<Review>> getProductReviews(String productId) {

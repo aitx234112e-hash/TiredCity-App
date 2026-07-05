@@ -8,6 +8,7 @@
     android:background="@color/tc_red">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="72dp">
@@ -177,6 +178,7 @@
                         android:layout_marginBottom="10dp" />
 
                     <LinearLayout
+                        android:id="@+id/ll_sizes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"

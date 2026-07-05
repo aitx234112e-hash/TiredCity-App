@@ -19,15 +19,22 @@ public class OrderRepository {
 
     /** Lấy đơn hàng từ Firestore thay vì API để đồng bộ với PaymentActivity. */
     public void getOrdersFromFirestore(String userId, OnOrdersLoadedListener listener) {
-        db.collection("orders")
-            .whereEqualTo("userId", userId)
-            .orderBy("createdAt", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                List<Order> orders = queryDocumentSnapshots.toObjects(Order.class);
-                listener.onSuccess(orders);
-            })
-            .addOnFailureListener(e -> listener.onError(e.getMessage()));
+        // Query by either 'userId' or 'user' field to cover both old and new data
+        com.google.firebase.firestore.Query query1 = db.collection("orders").whereEqualTo("userId", userId);
+        com.google.firebase.firestore.Query query2 = db.collection("orders").whereEqualTo("user", userId);
+
+        query1.get().addOnSuccessListener(snap1 -> {
+            List<Order> orders = snap1.toObjects(Order.class);
+            query2.get().addOnSuccessListener(snap2 -> {
+                List<Order> orders2 = snap2.toObjects(Order.class);
+                // Merge and deduplicate by ID
+                java.util.Map<String, Order> merged = new java.util.HashMap<>();
+                for (Order o : orders) if (o.getId() != null) merged.put(o.getId(), o);
+                for (Order o : orders2) if (o.getId() != null) merged.put(o.getId(), o);
+                
+                listener.onSuccess(new java.util.ArrayList<>(merged.values()));
+            }).addOnFailureListener(e -> listener.onSuccess(orders)); // Fallback to first query if second fails
+        }).addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
     public void getOrderByIdFromFirestore(String orderId, OnOrderLoadedListener listener) {

@@ -91,8 +91,11 @@ public class CategoryActivity extends BaseActivity {
 
             @Override
             public void onAddToCartClick(Product product) {
-                new CartLocalStore(CategoryActivity.this).addItem(new CartItem(product, 1));
-                Toast.makeText(CategoryActivity.this, R.string.success_add_cart, Toast.LENGTH_SHORT).show();
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(CategoryActivity.this, ProductDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+                Toast.makeText(CategoryActivity.this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -162,27 +165,53 @@ public class CategoryActivity extends BaseActivity {
         binding.swipeRefresh.setRefreshing(true);
         productRepository = productRepository != null ? productRepository
                 : new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
-        productRepository.getProducts(1, 40, categoryId, null)
-            .enqueue(new Callback<ApiListResponse<Product>>() {
-                @Override
-                public void onResponse(Call<ApiListResponse<Product>> call, Response<ApiListResponse<Product>> response) {
-                    binding.swipeRefresh.setRefreshing(false);
-                    List<Product> products = null;
-                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        products = response.body().getData();
+        
+        // CHUYỂN HẲN SANG DÙNG FIREBASE REALTIME
+        productRepository.getProductsFromFirestore(new com.tiredcity.app.data.repository.ProductRepository.OnProductsLoadedListener() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                binding.swipeRefresh.setRefreshing(false);
+                if (products != null) {
+                    // Log for debugging
+                    android.util.Log.d("CategoryActivity", "Total products: " + products.size());
+                    
+                    List<Product> filteredByCategory = new ArrayList<>();
+                    if (categoryId == null || categoryId.isEmpty() || 
+                        "Tất cả".equalsIgnoreCase(categoryId) || 
+                        "ALL".equalsIgnoreCase(categoryId)) {
+                        filteredByCategory = products;
+                    } else {
+                        for (Product p : products) {
+                            String pCat = p.getCategory();
+                            if (pCat == null) continue;
+                            
+                            // Map user-friendly category names to possible Firestore values
+                            boolean match = categoryId.equalsIgnoreCase(pCat);
+                            if (!match) {
+                                if (categoryId.equalsIgnoreCase("Áo Dài")) match = pCat.contains("ao-dai") || pCat.equalsIgnoreCase("AO DAI");
+                                else if (categoryId.equalsIgnoreCase("Nhật Bình")) match = pCat.contains("nhat-binh") || pCat.equalsIgnoreCase("NHAT BINH");
+                                else if (categoryId.equalsIgnoreCase("Áo Tấc")) match = pCat.contains("ao-tac") || pCat.equalsIgnoreCase("AO TAC");
+                                else if (categoryId.equalsIgnoreCase("Phụ Kiện")) match = pCat.contains("phu-kien") || pCat.equalsIgnoreCase("PHU KIEN");
+                            }
+                            
+                            if (match) {
+                                filteredByCategory.add(p);
+                            }
+                        }
                     }
-                    List<Product> source = (products != null && !products.isEmpty())
-                            ? products : MockProductCatalog.getProducts(CategoryActivity.this, categoryId);
-                    productAdapter.updateData(applyTagFilter(source));
+                    
+                    List<Product> finalResult = applyTagFilter(filteredByCategory);
+                    android.util.Log.d("CategoryActivity", "After filtering: " + finalResult.size());
+                    productAdapter.updateData(finalResult);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
-                    binding.swipeRefresh.setRefreshing(false);
-                    // Không có mạng/backend → hiển thị dữ liệu mẫu để xem trước lưới.
-                    productAdapter.updateData(applyTagFilter(MockProductCatalog.getProducts(CategoryActivity.this, categoryId)));
-                }
-            });
+            @Override
+            public void onError(String message) {
+                binding.swipeRefresh.setRefreshing(false);
+                android.util.Log.e("CategoryActivity", "Firebase Error: " + message);
+            }
+        });
     }
 
     /**

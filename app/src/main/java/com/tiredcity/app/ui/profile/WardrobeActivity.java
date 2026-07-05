@@ -60,8 +60,11 @@ public class WardrobeActivity extends BaseActivity {
 
             @Override
             public void onAddToCartClick(Product product) {
-                new CartLocalStore(WardrobeActivity.this).addItem(new CartItem(product, 1));
-                Toast.makeText(WardrobeActivity.this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(WardrobeActivity.this, ProductDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+                Toast.makeText(WardrobeActivity.this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
             }
         });
 

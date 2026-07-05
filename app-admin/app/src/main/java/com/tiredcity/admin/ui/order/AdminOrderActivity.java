@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.tiredcity.admin.databinding.ActivityAdminOrderBinding;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.tiredcity.admin.R;
@@ -58,47 +60,115 @@ public class AdminOrderActivity extends AppCompatActivity {
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
                 Map<String, Object> o = orders.get(position);
                 
                 String orderCode = o.get("orderCode") != null ? String.valueOf(o.get("orderCode")) : "N/A";
+                String customer = o.get("userName") != null ? String.valueOf(o.get("userName")) : "Khách vãng lai";
                 String statusKey = o.get("status") != null ? String.valueOf(o.get("status")) : "PENDING";
-                String total = o.get("total") != null ? String.valueOf(o.get("total")) : "0";
+                String total = o.get("totalPrice") != null ? String.valueOf(o.get("totalPrice")) : 
+                              (o.get("total") != null ? String.valueOf(o.get("total")) : "0");
                 
-                String statusLabel = getStatusLabel(statusKey);
+                holder.binding.tvTitle.setText(customer);
+                holder.binding.tvSubtitle.setText(String.format("%s - %,.0f đ", orderCode, Double.parseDouble(total)));
+                holder.binding.tvBadge.setText(getStatusLabel(statusKey));
                 
-                holder.binding.tvTitle.setText(getString(R.string.order_item_title_fmt, getString(R.string.order_code), orderCode));
-                holder.binding.tvSubtitle.setText(getString(R.string.order_item_subtitle_fmt, getString(R.string.order_total), total));
-                holder.binding.tvBadge.setText(statusLabel);
-                
-                holder.itemView.setOnClickListener(v -> {
-                    String next;
-                    switch (statusKey) {
-                        case "PENDING": next = "CONFIRMED"; break;
-                        case "CONFIRMED": next = "SHIPPING"; break;
-                        case "SHIPPING": next = "DELIVERED"; break;
-                        default: next = "PENDING"; break;
-                    }
-                    
-                    String docId = (String) o.get("docId");
-                    if (docId != null) {
-                        final String finalNext = next;
-                        db.collection("orders").document(docId).update("status", finalNext)
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(AdminOrderActivity.this, 
-                                    getString(R.string.status_updated) + ": " + getStatusLabel(finalNext), 
-                                    Toast.LENGTH_SHORT).show();
-                                loadOrders();
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(AdminOrderActivity.this, 
-                                    getString(R.string.update_error, e.getMessage()), 
-                                    Toast.LENGTH_SHORT).show());
-                    }
-                });
+                // Set color for badge
+                int badgeColor = getResources().getColor(android.R.color.darker_gray);
+                if ("PENDING".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_orange_dark);
+                else if ("SHIPPING".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_blue_dark);
+                else if ("DELIVERED".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_green_dark);
+                else if ("CANCELLED".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_red_dark);
+                holder.binding.tvBadge.setTextColor(badgeColor);
+
+                holder.itemView.setOnClickListener(v -> showStatusUpdateDialog(o));
             }
 
             @Override
             public int getItemCount() { return orders.size(); }
+        });
+    }
+
+    private void showStatusUpdateDialog(Map<String, Object> order) {
+        String currentStatus = (String) order.get("status");
+        String docId = (String) order.get("docId");
+        
+        String[] options = {"Xác nhận đơn (CONFIRMED)", "Giao hàng (SHIPPING)", "Hoàn tất (DELIVERED)", "Hủy đơn (CANCELLED)"};
+        String[] keys = {"CONFIRMED", "SHIPPING", "DELIVERED", "CANCELLED"};
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Cập nhật trạng thái đơn hàng")
+            .setItems(options, (dialog, which) -> {
+                updateOrderWithTransaction(docId, keys[which]);
+            })
+            .show();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void updateOrderWithTransaction(String docId, String newStatus) {
+        db.runTransaction(transaction -> {
+            com.google.firebase.firestore.DocumentReference orderRef = db.collection("orders").document(docId);
+            DocumentSnapshot orderSnap = transaction.get(orderRef);
+            
+            if (!orderSnap.exists()) return null;
+            
+            String oldStatus = orderSnap.getString("status");
+            if (newStatus.equals(oldStatus)) return null;
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("status", newStatus);
+            updates.put("updatedAt", new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US).format(new java.util.Date()));
+
+            // 1. Logic hoàn tồn kho nếu Hủy
+            if ("CANCELLED".equals(newStatus) && !"CANCELLED".equals(oldStatus)) {
+                List<Map<String, Object>> items = (List<Map<String, Object>>) orderSnap.get("orderItems");
+                if (items == null) items = (List<Map<String, Object>>) orderSnap.get("items");
+                
+                if (items != null) {
+                    for (Map<String, Object> item : items) {
+                        String pId = (String) item.get("productId");
+                        if (pId != null) {
+                            com.google.firebase.firestore.DocumentReference pRef = db.collection("products").document(pId);
+                            DocumentSnapshot pSnap = transaction.get(pRef);
+                            if (pSnap.exists()) {
+                                long currentStock = pSnap.getLong("stock") != null ? pSnap.getLong("stock") : 0;
+                                long qty = 0;
+                                Object qObj = item.get("quantity");
+                                if (qObj instanceof Long) qty = (Long) qObj;
+                                else if (qObj instanceof Double) qty = ((Double) qObj).longValue();
+                                
+                                transaction.update(pRef, "stock", currentStock + qty);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Logic thanh toán nếu Giao xong
+            if ("DELIVERED".equals(newStatus)) {
+                updates.put("isPaid", true);
+                updates.put("paidAt", new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US).format(new java.util.Date()));
+            }
+
+            // 3. Ghi log lịch sử
+            List<Map<String, Object>> history = (List<Map<String, Object>>) orderSnap.get("history");
+            if (history == null) history = new ArrayList<>();
+            
+            Map<String, Object> log = new HashMap<>();
+            log.put("status", newStatus);
+            log.put("time", updates.get("updatedAt"));
+            log.put("note", "Cập nhật từ Android Admin");
+            history.add(log);
+            updates.put("history", history);
+
+            transaction.update(orderRef, updates);
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Toast.makeText(this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+            loadOrders();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
         });
     }
 
@@ -112,10 +182,13 @@ public class AdminOrderActivity extends AppCompatActivity {
 
     private String getStatusLabel(String status) {
         if (status == null) return "N/A";
-        switch (status) {
+        String s = status.toUpperCase();
+        switch (s) {
             case "PENDING": return getString(R.string.status_pending);
-            case "CONFIRMED": return getString(R.string.status_confirmed);
-            case "SHIPPING": return getString(R.string.status_shipped);
+            case "CONFIRMED": 
+            case "PROCESSING": return getString(R.string.status_confirmed);
+            case "SHIPPING": 
+            case "SHIPPED": return getString(R.string.status_shipped);
             case "DELIVERED": return getString(R.string.status_delivered);
             case "CANCELLED": return getString(R.string.status_cancelled);
             default: return status;

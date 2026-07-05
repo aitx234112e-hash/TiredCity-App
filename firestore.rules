@@ -1,0 +1,64 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- HELPER FUNCTIONS ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email.endsWith('@tiredcity.com')
+      );
+    }
+
+    function isOwner(data) {
+      return isSignedIn() && (request.auth.uid == data.userId || request.auth.uid == data.user);
+    }
+
+    // --- COLLECTION RULES ---
+
+    // Products: Ai cũng có thể đọc, chỉ admin mới được sửa
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders:
+    // - Khách hàng chỉ được xem đơn của mình (kiểm tra cả userId và user field)
+    // - Khách hàng được tạo đơn (với status mặc định là PENDING)
+    // - Chỉ Admin mới được sửa trạng thái (status)
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && (isOwner(resource.data) || isAdmin());
+
+      allow create: if isSignedIn()
+        && (request.resource.data.userId == request.auth.uid || request.resource.data.user == request.auth.uid)
+        && request.resource.data.status == 'PENDING';
+
+      allow update: if isAdmin()
+        || (isOwner(resource.data) && resource.data.status == 'PENDING' && request.resource.data.status == 'CANCELLED');
+
+      allow delete: if isAdmin();
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // Shipping Configs
+    match /shipping_configs/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Default
+    match /{path=**} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

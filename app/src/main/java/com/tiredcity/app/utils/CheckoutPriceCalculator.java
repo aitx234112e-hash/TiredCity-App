@@ -41,6 +41,21 @@ public class CheckoutPriceCalculator {
     }
 
     /** @return true nếu mã hợp lệ và đã được áp dụng. */
+    public boolean applyVoucher(String code, String typeStr, double value) {
+        if (code == null || typeStr == null) return false;
+        
+        VoucherType type;
+        try {
+            type = VoucherType.valueOf(typeStr.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        
+        appliedRule = new VoucherRule(type, value);
+        appliedVoucherCode = code.trim().toUpperCase(Locale.ROOT);
+        return true;
+    }
+
     public boolean applyVoucher(String code) {
         if (code == null) return false;
         VoucherRule rule = DEMO_VOUCHERS.get(code.trim().toUpperCase(Locale.ROOT));
@@ -63,9 +78,12 @@ public class CheckoutPriceCalculator {
         return subtotal;
     }
 
-    /** Phí ship sau khi trừ voucher miễn phí ship (nếu có). */
+    /** Phí ship sau khi trừ voucher (nếu có). */
     public double getEffectiveShippingFee() {
-        return isFreeShipVoucher() ? 0 : shippingFee;
+        if (isFreeShipVoucher()) {
+            return 0;
+        }
+        return shippingFee;
     }
 
     /** Số tiền được giảm — hiển thị ở dòng "Giảm giá". */

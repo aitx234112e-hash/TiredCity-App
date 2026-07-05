@@ -151,6 +151,7 @@ public class RegisterActivity extends BaseActivity {
                                 preferenceManager.setZodiac(sign);
 
                                 UserProfile profile = new UserProfile();
+                                profile.setId(uid); // Đảm bảo ID được gán đúng với Firebase UID
                                 profile.setName(fullName);
                                 profile.setEmail(email);
                                 profile.setPhone(phone);

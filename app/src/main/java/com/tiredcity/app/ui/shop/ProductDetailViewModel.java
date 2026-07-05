@@ -93,14 +93,25 @@ public class ProductDetailViewModel extends ViewModel {
     }
 
     private void loadReviews(String productId) {
-        repository.getProductReviews(productId).enqueue(new Callback<ApiListResponse<Review>>() {
+        repository.getProductReviewsFromFirestore(productId, new ProductRepository.OnReviewsLoadedListener() {
             @Override
-            public void onResponse(Call<ApiListResponse<Review>> call, Response<ApiListResponse<Review>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    reviews.setValue(response.body().getData());
-                }
+            public void onSuccess(List<Review> list) {
+                reviews.setValue(list);
             }
-            @Override public void onFailure(Call<ApiListResponse<Review>> call, Throwable t) {}
+
+            @Override
+            public void onError(String message) {
+                // Fallback to API
+                repository.getProductReviews(productId).enqueue(new Callback<ApiListResponse<Review>>() {
+                    @Override
+                    public void onResponse(Call<ApiListResponse<Review>> call, Response<ApiListResponse<Review>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            reviews.setValue(response.body().getData());
+                        }
+                    }
+                    @Override public void onFailure(Call<ApiListResponse<Review>> call, Throwable t) {}
+                });
+            }
         });
     }
 

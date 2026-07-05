@@ -135,6 +135,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 Glide.with(b.ivProductImage.getContext())
                         .load(loadTarget)
                         .centerCrop()
+                        .override(400, 500) // Optimize size for grid
+                        .thumbnail(0.1f)    // Load small thumbnail first
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .placeholder(R.color.bg_subtle)
                         .error(R.color.bg_subtle)

@@ -78,6 +78,12 @@
             </svg>
             Xoá ({{ selectedProducts.length }})
           </button>
+          <button class="btn btn-secondary" (click)="fixInconsistentStock()" [disabled]="isSyncing" title="Sửa lỗi lệch tồn kho giữa các Size và Tổng stock">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 10l4.64 4.36A9 9 0 0020.49 15"/>
+            </svg>
+            {{ isSyncing ? 'Đang sửa...' : 'Đồng bộ tồn kho' }}
+          </button>
           <button class="btn btn-primary" (click)="toggleForm()" *ngIf="canEdit">
             <svg *ngIf="!showForm && !isEditing" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>

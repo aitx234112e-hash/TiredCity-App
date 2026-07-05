@@ -14,6 +14,7 @@ import { Shipping } from './shipping/shipping';
 import { AuditLogs } from './audit-logs/audit-logs';
 import { Reports } from './reports/reports';
 import { Chatbot } from './chatbot/chatbot';
+import { ReviewManagement } from './review-management/review-management';
 import { authGuard } from '../guards/auth-guard';
 
 const routes: Routes = [
@@ -28,6 +29,7 @@ const routes: Routes = [
       { path: 'products', component: ProductManagement },
       { path: 'blogs', component: BlogManagement },
       { path: 'feedbacks', component: FeedbackManagement },
+      { path: 'reviews', component: ReviewManagement },
       { path: 'revenue', component: Revenue },
       { path: 'events', component: Events },
       { path: 'vouchers', component: Vouchers },

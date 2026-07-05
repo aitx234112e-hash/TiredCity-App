@@ -102,18 +102,26 @@ public class ProductDetailActivity extends BaseActivity {
 
         // Add to cart actions
         binding.btnAddToCart.setOnClickListener(v -> addToCart());
-        binding.btnBuyNow.setOnClickListener(v -> {
-            addToCart();
-            startSmoothActivity(new Intent(this, CartActivity.class));
-        });
+        binding.btnBuyNow.setOnClickListener(v -> addToCartAndBuyNow());
 
         // Setup static UI components
         setupSizeSelector();
         setupAccordions();
+        setupPolicyIcons();
         setupPolicyCards();
         
         // Setup Related Products RecyclerView
         binding.rvRelated.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    private void setupPolicyIcons() {
+        binding.ivShippingIcon.setImageResource(R.drawable.ic_policy_shipping);
+        binding.ivReturnsIcon.setImageResource(R.drawable.ic_policy_return);
+        binding.ivPaymentIcon.setImageResource(R.drawable.ic_policy_payment);
+        
+        binding.tvShippingText.setText(R.string.label_free_shipping);
+        binding.tvReturnsText.setText(R.string.label_easy_returns);
+        binding.tvPaymentText.setText(R.string.label_secure_payment);
     }
 
     private void observeData() {
@@ -130,16 +138,28 @@ public class ProductDetailActivity extends BaseActivity {
             // Hiển thị Shimmer hoặc Progress nếu cần
         });
 
-        // Lắng nghe lỗi
+        // Lắng nghe lỗi - Thêm fallback cho dữ liệu mẫu offline
         viewModel.getErrorMessage().observe(this, (String error) -> {
             if (error != null && !error.isEmpty()) {
-                Toast.makeText(ProductDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+                String productId = getIntent().getStringExtra(Constants.EXTRA_PRODUCT_ID);
+                com.tiredcity.app.data.model.Product mock = com.tiredcity.app.data.mock.MockProductCatalog.findById(this, productId);
+                if (mock != null) {
+                    currentProduct = mock;
+                    bindProductToUI(mock);
+                } else {
+                    Toast.makeText(ProductDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         // Lắng nghe đánh giá
         viewModel.getReviews().observe(this, reviews -> {
-            if (reviews != null) bindReviews(reviews);
+            if (reviews != null && !reviews.isEmpty()) {
+                bindReviews(reviews);
+            } else {
+                // Fallback: Nếu Firestore chưa có đánh giá cho mã này, hiện đánh giá mẫu
+                bindReviews(buildMockReviews());
+            }
         });
 
         // Lắng nghe sản phẩm liên quan
@@ -154,8 +174,11 @@ public class ProductDetailActivity extends BaseActivity {
                     }
                     @Override public void onSaveToggle(Product p, boolean saved) {}
                     @Override public void onAddToCartClick(Product p) {
-                        cartStore.addItem(new CartItem(p, 1));
-                        Toast.makeText(ProductDetailActivity.this, R.string.success_add_cart, Toast.LENGTH_SHORT).show();
+                        // Bắt buộc chọn size -> Mở màn hình chi tiết cho sản phẩm liên quan đó
+                        Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
+                        intent.putExtra(Constants.EXTRA_PRODUCT_ID, p.getId());
+                        startSmoothActivity(intent);
+                        Toast.makeText(ProductDetailActivity.this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
                     }
                 });
                 binding.rvRelated.setAdapter(adapter);
@@ -255,7 +278,8 @@ public class ProductDetailActivity extends BaseActivity {
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.OVAL);
             shape.setColor(ContextCompat.getColor(this, getColorResForBucket(bucket)));
-            shape.setStroke(dp(1), ContextCompat.getColor(this, R.color.tc_stroke));
+            // Dùng màu Espresso đậm để làm viền cho rõ nét
+            shape.setStroke(dp(1), ContextCompat.getColor(this, R.color.tc_espresso));
             dot.setBackground(shape);
 
             frame.addView(dot);
@@ -353,6 +377,7 @@ public class ProductDetailActivity extends BaseActivity {
     }
 
     private void bindReviews(List<Review> list) {
+        if (list == null) return;
         int total = list.size();
         binding.tvReviewsTitle.setText(getString(R.string.reviews_count_format, total));
         binding.tvRatingCount.setText(getString(R.string.reviews_count_short, total));
@@ -392,16 +417,47 @@ public class ProductDetailActivity extends BaseActivity {
 
     // ── Interaction Logic ───────────────────────────────────────────────────
 
+    private boolean isSizeRequired() {
+        return currentProduct != null && currentProduct.getSizes() != null && !currentProduct.getSizes().isEmpty();
+    }
+
     private void addToCart() {
         if (currentProduct == null) return;
+        
+        if (isSizeRequired() && (selectedSize == null || selectedSize.isEmpty())) {
+            Toast.makeText(this, "BẮT BUỘC CHỌN SIZE!", Toast.LENGTH_SHORT).show();
+            // Scroll to size selector if needed
+            binding.nsvRoot.scrollTo(0, binding.llSizes.getTop());
+            // Highlight sizes
+            binding.llSizes.setBackgroundColor(ContextCompat.getColor(this, R.color.tc_red_pale));
+            binding.llSizes.postDelayed(() -> binding.llSizes.setBackgroundColor(0), 1000);
+            return;
+        }
+        
         cartStore.addItem(new CartItem(currentProduct, quantity, selectedSize, selectedColor));
         Toast.makeText(this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+    }
+
+    private void addToCartAndBuyNow() {
+        if (currentProduct == null) return;
+
+        if (isSizeRequired() && (selectedSize == null || selectedSize.isEmpty())) {
+            Toast.makeText(this, "Vui lòng chọn Size để mua ngay!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        CartItem item = new CartItem(currentProduct, quantity, selectedSize, selectedColor);
+        item.setSelected(true); // Auto select for checkout
+        cartStore.addItem(item);
+        startSmoothActivity(new Intent(this, CartActivity.class));
     }
 
     private void setupSizeSelector() {
         TextView[] views = {binding.tvSizeS, binding.tvSizeM, binding.tvSizeL, binding.tvSizeXl};
         String[] labels = {getString(R.string.size_label_s), getString(R.string.size_label_m), getString(R.string.size_label_l), getString(R.string.size_label_xl)};
-        selectedSize = labels[0];
+        
+        selectedSize = ""; // Bắt buộc chọn, không mặc định S nữa
+        
         for (int i = 0; i < views.length; i++) {
             final int idx = i;
             views[i].setOnClickListener(v -> {
@@ -412,6 +468,10 @@ public class ProductDetailActivity extends BaseActivity {
                     tv.setTextColor(ContextCompat.getColor(this, isSel ? R.color.white : R.color.text_primary));
                 }
             });
+            
+            // Reset background for all at start
+            views[i].setBackgroundResource(R.drawable.tc_bg_variant);
+            views[i].setTextColor(ContextCompat.getColor(this, R.color.text_primary));
         }
     }
 
@@ -437,6 +497,24 @@ public class ProductDetailActivity extends BaseActivity {
         binding.rowPayment.setOnClickListener(v -> startSmoothActivity(new Intent(v.getContext(), PolicyActivity.class)));
     }
 
+    private List<Review> buildMockReviews() {
+        List<Review> list = new ArrayList<>();
+        Review r1 = new Review();
+        r1.setUserName("Nguyễn Minh Anh");
+        r1.setComment("Sản phẩm rất đẹp, vải lụa mặc rất mát và sang trọng. Giao hàng nhanh!");
+        r1.setRating(5);
+        r1.setCreatedAt(new java.util.Date());
+        
+        Review r2 = new Review();
+        r2.setUserName("Trần Thu Hà");
+        r2.setComment("Đóng gói cẩn thận, form áo chuẩn như hình. Rất hài lòng.");
+        r2.setRating(4);
+        r2.setCreatedAt(new java.util.Date());
+        
+        list.add(r1); list.add(r2);
+        return list;
+    }
+
     private int dp(int val) { return (int) (val * getResources().getDisplayMetrics().density); }
 
     // ── Inner Adapter for ViewPager2 ────────────────────────────────────────
@@ -451,7 +529,20 @@ public class ProductDetailActivity extends BaseActivity {
             return new ViewHolder(iv);
         }
         @Override public void onBindViewHolder(@NonNull ViewHolder h, int pos) {
-            Glide.with(ProductDetailActivity.this).load(list.get(pos)).placeholder(R.color.tc_red_pale).into((ImageView) h.itemView);
+            String imageUrl = list.get(pos);
+            Object loadTarget = imageUrl;
+            
+            // Hỗ trợ nạp ảnh từ drawable resource (mẫu offline)
+            if (imageUrl != null && !imageUrl.startsWith("http") && !imageUrl.startsWith("content")) {
+                int resId = getResources().getIdentifier(imageUrl, "drawable", getPackageName());
+                if (resId != 0) loadTarget = resId;
+            }
+
+            Glide.with(ProductDetailActivity.this)
+                    .load(loadTarget)
+                    .placeholder(R.color.tc_red_pale)
+                    .error(R.color.tc_red_pale)
+                    .into((ImageView) h.itemView);
         }
         @Override public int getItemCount() { return list.size(); }
         class ViewHolder extends RecyclerView.ViewHolder { ViewHolder(View v) { super(v); } }

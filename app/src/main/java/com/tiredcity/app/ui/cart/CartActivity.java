@@ -42,9 +42,6 @@ public class CartActivity extends BaseActivity {
         binding.rvCartItems.setLayoutManager(new LinearLayoutManager(this));
         binding.btnCheckout.setOnClickListener(v -> proceedToPayment());
 
-        // Đồng bộ từ Cloud về trước khi hiện
-        cartRepository.fetchCartFromCloud(items -> runOnUiThread(this::loadCart));
-
         loadCart();
     }
 

@@ -45,6 +45,7 @@ public class HomeFragment extends Fragment {
     private Handler             promoScrollHandler;
     private Runnable            promoScrollRunnable;
     private PromoStripAdapter   promoAdapter;
+    private com.tiredcity.app.data.repository.ProductRepository productRepository;
     private ProductAdapter      recommendedAdapter;
     private ProductAdapter      hotProductsAdapter;
 
@@ -63,6 +64,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         prefs = new PreferenceManager(requireContext());
+        productRepository = new com.tiredcity.app.data.repository.ProductRepository(ApiClient.getApiService(null));
         authRepository = new AuthRepository(ApiClient.getApiService(null), prefs);
         favoritesRepository = new FavoritesRepository(new com.tiredcity.app.data.local.FavoritesLocalStore(requireContext()));
 
@@ -305,37 +307,59 @@ public class HomeFragment extends Fragment {
     // ── Recommended products ──────────────────────────────────────────────────
 
     private void setupRecommendedProducts() {
-        List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), true);
-        recommendedAdapter = new ProductAdapter(products);
-        recommendedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Product product) {
-                openProductDetail(product.getId());
-            }
-            @Override
-            public void onSaveToggle(Product product, boolean saved) {
-                favoritesRepository.syncFavoritesToCloud();
-            }
-
-            @Override
-            public void onAddToCartClick(Product product) {
-                new com.tiredcity.app.data.local.CartLocalStore(requireContext())
-                        .addItem(new com.tiredcity.app.data.model.CartItem(product, 1));
-                android.widget.Toast.makeText(requireContext(), R.string.success_add_cart, android.widget.Toast.LENGTH_SHORT).show();
-            }
-        });
-
         binding.rvRecommended.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.rvRecommended.setAdapter(recommendedAdapter);
+        
+        // CHUYỂN SANG DÙNG FIREBASE THẬT
+        productRepository.getProductsFromFirestore(new com.tiredcity.app.data.repository.ProductRepository.OnProductsLoadedListener() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                if (!isAdded() || products == null) return;
+                
+                // Lọc lấy 5 sản phẩm đầu tiên làm gợi ý
+                List<Product> recommended = products.size() > 5 ? products.subList(0, 5) : products;
+                recommendedAdapter = new ProductAdapter(recommended);
+                setupAdapterListeners(recommendedAdapter);
+                binding.rvRecommended.setAdapter(recommendedAdapter);
+            }
+
+            @Override
+            public void onError(String message) {
+                // Fallback chỉ khi mất mạng
+                recommendedAdapter = new ProductAdapter(MockProductCatalog.getHomeHighlights(requireContext(), true));
+                setupAdapterListeners(recommendedAdapter);
+                binding.rvRecommended.setAdapter(recommendedAdapter);
+            }
+        });
     }
 
-    // ── Hot products ──────────────────────────────────────────────────────────
-
     private void setupHotProducts() {
-        List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), false);
-        hotProductsAdapter = new ProductAdapter(products);
-        hotProductsAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+        binding.rvHotProducts.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        productRepository.getProductsFromFirestore(new com.tiredcity.app.data.repository.ProductRepository.OnProductsLoadedListener() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                if (!isAdded() || products == null) return;
+                
+                // Lấy các sản phẩm tiếp theo làm sản phẩm nổi bật
+                List<Product> hot = products.size() > 10 ? products.subList(5, 10) : products;
+                hotProductsAdapter = new ProductAdapter(hot);
+                setupAdapterListeners(hotProductsAdapter);
+                binding.rvHotProducts.setAdapter(hotProductsAdapter);
+            }
+
+            @Override
+            public void onError(String message) {
+                hotProductsAdapter = new ProductAdapter(MockProductCatalog.getHomeHighlights(requireContext(), false));
+                setupAdapterListeners(hotProductsAdapter);
+                binding.rvHotProducts.setAdapter(hotProductsAdapter);
+            }
+        });
+    }
+
+    private void setupAdapterListeners(ProductAdapter adapter) {
+        adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Product product) {
                 openProductDetail(product.getId());
@@ -344,18 +368,12 @@ public class HomeFragment extends Fragment {
             public void onSaveToggle(Product product, boolean saved) {
                 favoritesRepository.syncFavoritesToCloud();
             }
-
             @Override
             public void onAddToCartClick(Product product) {
-                new com.tiredcity.app.data.local.CartLocalStore(requireContext())
-                        .addItem(new com.tiredcity.app.data.model.CartItem(product, 1));
-                android.widget.Toast.makeText(requireContext(), R.string.success_add_cart, android.widget.Toast.LENGTH_SHORT).show();
+                openProductDetail(product.getId());
+                android.widget.Toast.makeText(requireContext(), "Vui lòng chọn Size trước khi thêm vào giỏ", android.widget.Toast.LENGTH_SHORT).show();
             }
         });
-
-        binding.rvHotProducts.setLayoutManager(
-                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.rvHotProducts.setAdapter(hotProductsAdapter);
     }
 
     // ── Language button ───────────────────────────────────────────────────────

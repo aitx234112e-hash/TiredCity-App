@@ -62,8 +62,11 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void onAddToCartClick(Product product) {
-                new CartLocalStore(SearchActivity.this).addItem(new CartItem(product, 1));
-                Toast.makeText(SearchActivity.this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(SearchActivity.this, ProductDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+                Toast.makeText(SearchActivity.this, "Vui lòng chọn Size trước khi mua", Toast.LENGTH_SHORT).show();
             }
         });
         binding.rvResults.setLayoutManager(new GridLayoutManager(this, 2));
@@ -175,26 +178,50 @@ public class SearchActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call<ApiListResponse<Product>> call, Response<ApiListResponse<Product>> response) {
                     binding.swipeRefresh.setRefreshing(false);
+                    List<Product> results = null;
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        List<Product> results = response.body().getData();
-                        if (results == null || results.isEmpty()) {
-                            showEmptyState(keyword);
-                        } else {
-                            binding.tvResultCount.setText(getString(
-                                    R.string.search_result_count, results.size()));
-                            productAdapter.updateData(results);
-                        }
-                    } else {
+                        results = response.body().getData();
+                    }
+                    
+                    // FALLBACK: Search in Mock Catalog if API returns nothing
+                    if (results == null || results.isEmpty()) {
+                        results = searchInMockCatalog(keyword);
+                    }
+
+                    if (results == null || results.isEmpty()) {
                         showEmptyState(keyword);
+                    } else {
+                        binding.tvResultCount.setText(getString(
+                                R.string.search_result_count, results.size()));
+                        productAdapter.updateData(results);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
                     binding.swipeRefresh.setRefreshing(false);
-                    showEmptyState(keyword);
+                    List<Product> results = searchInMockCatalog(keyword);
+                    if (results.isEmpty()) {
+                        showEmptyState(keyword);
+                    } else {
+                        productAdapter.updateData(results);
+                    }
                 }
             });
+    }
+
+    private List<Product> searchInMockCatalog(String keyword) {
+        List<Product> allMock = com.tiredcity.app.data.mock.MockProductCatalog.getProducts(this, "ALL");
+        List<Product> filtered = new java.util.ArrayList<>();
+        String query = keyword.toLowerCase().trim();
+        for (Product p : allMock) {
+            if (p.getName().toLowerCase().contains(query) || 
+                (p.getCategory() != null && p.getCategory().toLowerCase().contains(query)) ||
+                (p.getId() != null && p.getId().toLowerCase().contains(query))) {
+                filtered.add(p);
+            }
+        }
+        return filtered;
     }
 
     private void showRecentState() {

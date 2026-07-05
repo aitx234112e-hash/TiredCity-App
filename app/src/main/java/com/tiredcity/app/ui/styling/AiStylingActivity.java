@@ -1,8 +1,10 @@
 package com.tiredcity.app.ui.styling;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
@@ -38,6 +40,26 @@ public class AiStylingActivity extends BaseActivity {
         apiService = ApiClient.getApiService(preferenceManager.getToken());
 
         recommendedAdapter = new ProductAdapter(null);
+        recommendedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+            @Override
+            public void onProductClick(Product product) {
+                Intent intent = new Intent(AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onSaveToggle(Product product, boolean saved) {}
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+                Toast.makeText(AiStylingActivity.this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
+            }
+        });
         binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
         binding.rvSuggestions.setAdapter(recommendedAdapter);
 

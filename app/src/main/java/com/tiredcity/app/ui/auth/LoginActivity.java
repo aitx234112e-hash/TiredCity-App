@@ -408,6 +408,8 @@ public class LoginActivity extends BaseActivity {
 
                                 UserProfile profile = preferenceManager.getUser();
                                 if (profile == null) profile = new UserProfile();
+                                profile.setId(uid); // Đảm bảo ID được gán đúng với Firebase UID
+
                                 boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
                                 if (!hasRealName) {
                                     profile.setEmail(email);
@@ -456,6 +458,8 @@ public class LoginActivity extends BaseActivity {
 
                 UserProfile profile = preferenceManager.getUser();
                 if (profile == null) profile = new UserProfile();
+                profile.setId(user.getUid()); // Đảm bảo ID mạng xã hội cũng được gán
+
                 boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
                 if (!hasRealName) {
                     profile.setEmail(email);
