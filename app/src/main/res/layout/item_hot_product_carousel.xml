@@ -1,77 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Một trang của carousel "Sản phẩm nổi bật": ảnh poster full-bleed + tên/giá đè lớp phủ dưới đáy.
+     Root là MaterialCardView (không phải FrameLayout thường) để clip TOÀN BỘ nội dung — ảnh, lớp
+     phủ gradient, badge, chữ — theo đúng góc bo, tránh cạnh vuông lộ ra ở đáy thẻ.
      ViewPager2.PageTransformer (HomeFragment.CenterScalePageTransformer) phóng to trang này khi nó
      ở giữa và thu nhỏ khi nó lệch sang hai bên. -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="@dimen/tc_radius_lg"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/bg_subtle"
+    app:contentPadding="0dp">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_hot_product_image"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:background="@color/bg_subtle"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
-        tools:src="@android:drawable/ic_menu_gallery"
-        android:contentDescription="@null" />
+        android:layout_height="match_parent">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="96dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/tc_gradient_bottom_scrim" />
-
-    <TextView
-        android:id="@+id/tv_hot_product_discount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_margin="10dp"
-        android:background="@drawable/tc_bg_discount"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="3dp"
-        android:textColor="@color/white"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-medium"
-        android:visibility="gone"
-        tools:text="-15%"
-        tools:visibility="visible" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:padding="14dp">
-
-        <TextView
-            android:id="@+id/tv_hot_product_name"
+        <ImageView
+            android:id="@+id/iv_hot_product_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
-            tools:text="Áo Dài Cổ Truyền" />
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@android:drawable/ic_menu_gallery"
+            android:contentDescription="@null" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/tc_gradient_bottom_scrim" />
 
         <TextView
-            android:id="@+id/tv_hot_product_price"
+            android:id="@+id/tv_hot_product_discount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/tc_gold_bright"
-            android:textSize="14sp"
+            android:layout_gravity="top|end"
+            android:layout_margin="10dp"
+            android:background="@drawable/tc_bg_discount"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textColor="@color/white"
+            android:textSize="11sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            tools:text="850.000 ₫" />
-    </LinearLayout>
-</FrameLayout>
+            android:visibility="gone"
+            tools:text="-15%"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <TextView
+                android:id="@+id/tv_hot_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                tools:text="Áo Dài Cổ Truyền" />
+
+            <TextView
+                android:id="@+id/tv_hot_product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/tc_gold_bright"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                tools:text="850.000 ₫" />
+        </LinearLayout>
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>

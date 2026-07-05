@@ -79,11 +79,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- Portrait image frame -->
+                    <!-- Ảnh vuông (img_store1 gốc 1:1) — centerCrop trên khung cùng tỷ lệ 1:1
+                         nên hiện FULL ảnh, không xén; center_vertical để không dính đỉnh khi
+                         cột thông tin bên phải cao hơn. -->
                     <ImageView
                         android:id="@+id/imgStore1"
-                        android:layout_width="110dp"
-                        android:layout_height="190dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center_vertical"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_store1"
                         android:contentDescription="@null" />
@@ -91,7 +94,7 @@
                     <!-- Store details -->
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:padding="14dp">
@@ -207,11 +210,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- Portrait image frame -->
+                    <!-- Ảnh vuông (img_store2 gốc 1:1) — centerCrop trên khung cùng tỷ lệ 1:1
+                         nên hiện FULL ảnh, không xén; center_vertical để không dính đỉnh khi
+                         cột thông tin bên phải cao hơn. -->
                     <ImageView
                         android:id="@+id/imgStore2"
-                        android:layout_width="110dp"
-                        android:layout_height="190dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center_vertical"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_store2"
                         android:contentDescription="@null" />
@@ -219,7 +225,7 @@
                     <!-- Store details -->
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:padding="14dp">

@@ -4,10 +4,10 @@
     <!--
       ╔══════════════════════════════════════════════════════════════════╗
       ║  THEME.TIREDCITY — Editorial Quiet Luxury                          ║
-      ║  Material3 Light. Status bar = espresso (dark), light icons.       ║
+      ║  Material3 DayNight — màu nền/chữ chuyển theo values-night/colors.xml. ║
       ╚══════════════════════════════════════════════════════════════════╝
     -->
-    <style name="Base.Theme.TiredCity" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Base.Theme.TiredCity" parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- System bars -->
         <item name="android:statusBarColor">@color/tc_red</item>
@@ -76,7 +76,7 @@
       ║  SPLASH — espresso background, gold icon                           ║
       ╚══════════════════════════════════════════════════════════════════╝
     -->
-    <style name="Theme.TiredCity.Splash" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.TiredCity.Splash" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:colorBackground">@color/tc_red</item>
         <item name="android:statusBarColor">@color/tc_red</item>
         <item name="android:navigationBarColor">@color/tc_red</item>

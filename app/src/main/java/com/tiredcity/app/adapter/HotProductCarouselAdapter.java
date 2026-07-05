@@ -3,12 +3,12 @@ package com.tiredcity.app.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.utils.PriceUtils;
@@ -61,7 +61,7 @@ public class HotProductCarouselAdapter
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final ShapeableImageView ivImage;
+        final ImageView ivImage;
         final TextView tvName;
         final TextView tvPrice;
         final TextView tvDiscount;

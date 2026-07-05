@@ -69,10 +69,11 @@
 
     <!-- Menh CTA (not calculated yet) -->
     <string name="menh_cta_eyebrow">FIVE ELEMENTS · ZODIAC</string>
-    <string name="menh_cta_title">Discover your element</string>
+    <string name="menh_cta_title">Discover your style by element</string>
     <string name="menh_cta_desc">Enter your birthdate to find your element, lucky colours and personalised outfit suggestions.</string>
-    <string name="menh_cta_button">FIND MY ELEMENT ✦</string>
+    <string name="menh_cta_button">EXPLORE ✦</string>
     <string name="menh_colors_label">YOUR LUCKY COLOURS</string>
+    <string name="menh_result_header_title">Your destiny element</string>
 
     <!-- Five elements (element name) -->
     <string name="menh_name_kim">Metal</string>
@@ -125,10 +126,10 @@
     <string name="home_news_cta">READ MORE ✦</string>
 
     <!-- Home — brand media blocks (Behance videos/gifs) -->
-    <string name="home_hero_eyebrow">TIREDCITY × LOCAL ARTISTS</string>
-    <string name="home_hero_caption">Vietnamese art, told for today</string>
-    <string name="home_craft_eyebrow">FROM THE STUDIO</string>
-    <string name="home_craft_title">Behind every design</string>
+    <string name="home_hero_eyebrow">VIỆT PHỤC × VIETNAMESE IDENTITY</string>
+    <string name="home_hero_caption">Touching the Vietnamese soul, one fold of fabric at a time.</string>
+    <string name="home_craft_eyebrow">VIỆT PHỤC GIFT WRAP</string>
+    <string name="home_craft_title">Included with every product</string>
     <!-- Home — Welcome to TiredCity block (red, cream text) -->
     <string name="home_welcome_title">Welcome to TiredCity</string>
     <string name="home_welcome_intro">From humble beginnings, TiredCity has grown alongside Vietnamese heritage — telling cultural stories through the language of contemporary fashion.</string>
@@ -140,15 +141,7 @@
 
     <!-- Promo strip (mini banner between Events and News) -->
     <string name="promo_strip_eyebrow">SPECIAL OFFER</string>
-    <string name="promo_strip_1_title">30% off all silk áo dài</string>
-    <string name="promo_strip_1_sub">Valid until end of this month</string>
-    <string name="promo_strip_2_eyebrow">TẾT 2025 COLLECTION</string>
-    <string name="promo_strip_2_title">Nhật Bình &amp; Áo Tấc Imperial</string>
-    <string name="promo_strip_2_sub">Pre-order now – free gift included</string>
-    <string name="promo_strip_3_eyebrow">FREE SHIPPING</string>
-    <string name="promo_strip_3_title">On orders from 500,000đ</string>
-    <string name="promo_strip_3_sub">Nationwide – delivered in 2 days</string>
-    <string name="promo_strip_cta">SHOP NOW ✦</string>
+    <string name="home_promo_title">Offers picked for you</string>
 
     <!-- Language toggle -->
     <string name="language_toggle">Change language</string>
@@ -757,6 +750,7 @@
     <!-- Header buttons (content descriptions) -->
     <string name="cd_cart">Cart</string>
     <string name="cd_notifications">Notifications</string>
+    <string name="cd_theme_toggle">Toggle light/dark theme</string>
 
     <!-- Notifications -->
     <string name="notification_title">Notifications</string>

@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,19 +11,14 @@ import com.bumptech.glide.Glide;
 import com.tiredcity.app.R;
 import java.util.List;
 
+/** Carousel ưu đãi — mỗi trang là 1 ảnh voucher đã có sẵn chữ/thiết kế, không đè thêm text. */
 public class PromoStripAdapter extends RecyclerView.Adapter<PromoStripAdapter.VH> {
 
     public static class PromoItem {
         public final @DrawableRes int imageRes;
-        public final String eyebrow;
-        public final String title;
-        public final String subtitle;
 
-        public PromoItem(@DrawableRes int imageRes, String eyebrow, String title, String subtitle) {
+        public PromoItem(@DrawableRes int imageRes) {
             this.imageRes = imageRes;
-            this.eyebrow  = eyebrow;
-            this.title    = title;
-            this.subtitle = subtitle;
         }
     }
 
@@ -54,12 +48,9 @@ public class PromoStripAdapter extends RecyclerView.Adapter<PromoStripAdapter.VH
     @Override
     public void onBindViewHolder(@NonNull VH h, int position) {
         PromoItem item = items.get(position);
-        h.eyebrow.setText(item.eyebrow);
-        h.title.setText(item.title);
-        h.subtitle.setText(item.subtitle);
         Glide.with(h.bg.getContext())
                 .load(item.imageRes)
-                .centerCrop()
+                .fitCenter()
                 .into(h.bg);
         h.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onPromoClick(h.getAdapterPosition());
@@ -73,14 +64,10 @@ public class PromoStripAdapter extends RecyclerView.Adapter<PromoStripAdapter.VH
 
     static class VH extends RecyclerView.ViewHolder {
         final ImageView bg;
-        final TextView eyebrow, title, subtitle;
 
         VH(@NonNull View v) {
             super(v);
-            bg       = v.findViewById(R.id.iv_promo_bg);
-            eyebrow  = v.findViewById(R.id.tv_promo_eyebrow);
-            title    = v.findViewById(R.id.tv_promo_title);
-            subtitle = v.findViewById(R.id.tv_promo_sub);
+            bg = v.findViewById(R.id.iv_promo_bg);
         }
     }
 }

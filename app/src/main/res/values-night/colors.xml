@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  DARK MODE — chỉ đổi các token NỀN/CHỮ trung tính (surface/text).  ║
+      ║  Màu thương hiệu (tc_red*, tc_gold*, tc_cream, tc_espresso, các    ║
+      ║  màu "on_dark"/"on_red", swatch sản phẩm…) CỐ Ý giữ nguyên vì      ║
+      ║  chúng gắn với khối màu đỏ/nền cố định (header, nút, thẻ lật danh  ║
+      ║  mục…), không phụ thuộc sáng/tối. Việc này cho phép toàn app đổi   ║
+      ║  theme mà không cần sửa từng layout — mọi nơi tham chiếu các tên   ║
+      ║  màu bên dưới sẽ tự động nhận giá trị tối này khi bật dark mode.   ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+
+    <!-- ─── Backgrounds (legacy alias) ──────────────────────────────── -->
+    <color name="bg_primary">#000000</color>
+    <color name="bg_surface">#000000</color>
+    <color name="bg_subtle">#121212</color>
+
+    <!-- ─── Text (legacy alias) ─────────────────────────────────────── -->
+    <color name="text_primary">#F3E9D8</color>
+    <color name="text_secondary">#C2AF90</color>
+    <color name="text_hint">#9C8E76</color>
+
+    <!-- ─── Chip states ─────────────────────────────────────────────── -->
+    <color name="chip_bg_default">#121212</color>
+    <color name="chip_text_default">#C2AF90</color>
+
+    <!-- ─── Backgrounds (tc_* semantic) ─────────────────────────────── -->
+    <color name="tc_bg_main">#000000</color>
+    <color name="tc_bg_subtle">#121212</color>
+    <color name="tc_bg_card">#000000</color>
+
+    <!-- ─── Text (tc_* semantic) ────────────────────────────────────── -->
+    <color name="tc_text_primary">#F3E9D8</color>
+    <color name="tc_text_secondary">#C2AF90</color>
+    <color name="tc_text_tertiary">#A2937A</color>
+    <color name="tc_text_placeholder">#9C8E76</color>
+
+    <!-- ─── Input ───────────────────────────────────────────────────── -->
+    <color name="tc_input_text">#F3E9D8</color>
+    <color name="tc_input_hint">#9C8E76</color>
+    <color name="tc_input_stroke">#3A3222</color>
+    <color name="tc_input_box_bg">#000000</color>
+
+    <!-- ─── Strokes / Dividers ──────────────────────────────────────── -->
+    <color name="tc_divider">#1FFFFFFF</color>
+    <color name="tc_stroke">#3A3222</color>
+
+    <!-- ─── Search box / Category pill / Auth card ───────────────────── -->
+    <color name="tc_search_box_bg">#000000</color>
+    <color name="tc_category_bg">#000000</color>
+    <color name="tc_category_border">#3A3222</color>
+    <color name="tc_auth_card_bg">#000000</color>
+
+    <!-- ─── Neutrals dùng làm accent trung tính (dots, viền nhẹ…) ────── -->
+    <color name="tc_sand">#B9A98C</color>
+    <color name="tc_sand_light">#A89880</color>
+</resources>

@@ -68,6 +68,12 @@ public class HomeFragment extends Fragment {
     private List<CategoryFlipCard> categoryFlipCards;
     private Handler             categoryFlipHandler;
     private Runnable            categoryFlipRunnable;
+    private List<ShimmerSweep>  shimmerSweeps;
+    private List<ObjectAnimator> ctaPulseAnimators;
+    private List<View>          parallaxBanners;
+    private float               parallaxMaxOffsetPx;
+    private List<ArrowReveal>   arrowReveals;
+    private List<ScrollReveal>  scrollReveals;
 
     // Video chỉ phát khi khung của nó lộ ra ít nhất chừng này (giống AboutFragment)
     private static final float VIDEO_VISIBLE_THRESHOLD = 0.12f;
@@ -75,6 +81,10 @@ public class HomeFragment extends Fragment {
     private static final long CATEGORY_FLIP_INTERVAL = 3500L;
     // Khoảng nghỉ giữa 2 lần tự động chuyển trang carousel "Sản phẩm nổi bật"
     private static final long HOT_PRODUCTS_INTERVAL = 2800L;
+    // Tỷ lệ rộng/cao thật của ảnh voucher (2061×763) — dùng để khung ưu đãi hiện FULL ảnh
+    private static final float PROMO_IMAGE_RATIO = 2061f / 763f;
+    // Tỷ lệ rộng/cao thật của ảnh banner ngũ hành (1774×887) — dùng để khung không xén ảnh
+    private static final float MENH_BANNER_RATIO = 1774f / 887f;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -101,9 +111,11 @@ public class HomeFragment extends Fragment {
         setupHotProducts();
         loadFirestoreHighlights();
         setupLanguageButton();
+        setupThemeToggle();
         setupClickListeners();
         setupBrandMedia();
         setupCategoryImages();
+        setupDiscoverEffects();
 
         // VideoView tự ép focusable=true và requestFocus() trong constructor (ghi đè XML),
         // khiến NestedScrollView cuộn tới video khi mở trang — tắt hẳn focus tại đây.
@@ -132,6 +144,7 @@ public class HomeFragment extends Fragment {
         startCategoryFlip();
         startHotProductsScroll();
         startRecommendedSpotlight();
+        startDiscoverEffects();
         updateBadges();
         // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
         if (hotProductsAdapter != null) hotProductsAdapter.notifyDataSetChanged();
@@ -150,6 +163,7 @@ public class HomeFragment extends Fragment {
         stopCategoryFlip();
         stopHotProductsScroll();
         stopRecommendedSpotlight();
+        stopDiscoverEffects();
         if (videoSections != null) {
             for (VideoSection section : videoSections) section.pauseForLifecycle();
         }
@@ -165,12 +179,18 @@ public class HomeFragment extends Fragment {
         stopCategoryFlip();
         stopHotProductsScroll();
         stopRecommendedSpotlight();
+        stopDiscoverEffects();
         if (videoSections != null) {
             for (VideoSection section : videoSections) section.release();
             videoSections = null;
         }
         categoryFlipCards = null;
         recommendedCards = null;
+        shimmerSweeps = null;
+        ctaPulseAnimators = null;
+        parallaxBanners = null;
+        arrowReveals = null;
+        scrollReveals = null;
         binding = null;
         bannerAdapter = null;
         banner2Adapter = null;
@@ -195,15 +215,29 @@ public class HomeFragment extends Fragment {
             section.setup();
         }
 
-        // Dải gif khối màu footer (main12) — giữ nguyên, 16:9 nên ép khung đúng tỷ lệ.
-        applyAspectRatio(binding.ivGifFooter, 16f / 9f);
-        Glide.with(this).load(R.drawable.main12)
-                .override(1024, 576).centerCrop().into(binding.ivGifFooter);
-
         NestedScrollView scrollView = binding.getRoot();
         scrollView.setOnScrollChangeListener(
-                (NestedScrollView.OnScrollChangeListener) (v, sx, sy, osx, osy) -> checkVideoVisibility());
-        scrollView.post(this::checkVideoVisibility);
+                (NestedScrollView.OnScrollChangeListener) (v, sx, sy, osx, osy) -> onHomeScrollChanged());
+        scrollView.post(this::onHomeScrollChanged);
+    }
+
+    /** Gọi lại mỗi lần NestedScrollView cuộn — gộp mọi hiệu ứng phụ thuộc vị trí cuộn vào 1 chỗ
+     *  vì NestedScrollView chỉ nhận 1 OnScrollChangeListener duy nhất. */
+    private void onHomeScrollChanged() {
+        checkVideoVisibility();
+        updateBannerParallax();
+        updateArrowReveals();
+        updateScrollReveals();
+    }
+
+    private void updateArrowReveals() {
+        if (arrowReveals == null) return;
+        for (ArrowReveal reveal : arrowReveals) reveal.update();
+    }
+
+    private void updateScrollReveals() {
+        if (scrollReveals == null) return;
+        for (ScrollReveal reveal : scrollReveals) reveal.update();
     }
 
     private void checkVideoVisibility() {
@@ -364,6 +398,11 @@ public class HomeFragment extends Fragment {
     // ── Menh banner ───────────────────────────────────────────────────────────
 
     private void setupMenhBanner() {
+        // Khung tự co đúng tỷ lệ ảnh banner ngũ hành gốc → hiện FULL ảnh, không xén (áp cho cả
+        // 2 trạng thái vì cái nào đang GONE cũng sẽ được đo lại đúng lúc chuyển sang VISIBLE).
+        applyAspectRatio(binding.cardMenhCta, MENH_BANNER_RATIO);
+        applyAspectRatio(binding.cvMenhBanner, MENH_BANNER_RATIO);
+
         String menh   = prefs.getMenh();
         String zodiac = prefs.getZodiac();
 
@@ -396,14 +435,18 @@ public class HomeFragment extends Fragment {
         }
 
         if (menh == null || menh.isEmpty()) {
+            binding.layoutMenhHeaderResult.setVisibility(View.GONE);
             binding.cvMenhBanner.setVisibility(View.GONE);
+            binding.layoutMenhHeaderCta.setVisibility(View.VISIBLE);
             binding.cardMenhCta.setVisibility(View.VISIBLE);
             binding.cardMenhCta.setOnClickListener(v ->
                     startActivity(new Intent(requireContext(), AiStylingActivity.class)));
             return;
         }
 
+        binding.layoutMenhHeaderCta.setVisibility(View.GONE);
         binding.cardMenhCta.setVisibility(View.GONE);
+        binding.layoutMenhHeaderResult.setVisibility(View.VISIBLE);
         binding.cvMenhBanner.setVisibility(View.VISIBLE);
         binding.tvMenhEmoji.setText(MenhCalculator.getEmojiMenh(menh));
         binding.tvMenhElement.setText(getString(R.string.menh_label,
@@ -450,12 +493,12 @@ public class HomeFragment extends Fragment {
     // ── Banner ViewPager2 ─────────────────────────────────────────────────────
 
     private void setupBanner() {
-        // Carousel mở màn: gif main8 → video main1 → video main2 (đều 16:9, full-bleed).
+        // Carousel mở màn: gif main8 → video main1 → video main3 (đều 16:9, full-bleed).
         // Video tắt tiếng, lặp, chỉ phát ở trang đang hiển thị.
         List<MediaBannerAdapter.MediaItem> items = new ArrayList<>();
         items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main8));
         items.add(MediaBannerAdapter.MediaItem.video(R.raw.main1));
-        items.add(MediaBannerAdapter.MediaItem.video(R.raw.main2));
+        items.add(MediaBannerAdapter.MediaItem.video(R.raw.main3));
 
         bannerAdapter = new MediaBannerAdapter(items);
         binding.vpBanner.setAdapter(bannerAdapter);
@@ -521,25 +564,17 @@ public class HomeFragment extends Fragment {
 
     private void setupPromoStrip() {
         List<PromoStripAdapter.PromoItem> items = new ArrayList<>();
-        items.add(new PromoStripAdapter.PromoItem(
-                R.drawable.banner_1,
-                getString(R.string.promo_strip_eyebrow),
-                getString(R.string.promo_strip_1_title),
-                getString(R.string.promo_strip_1_sub)));
-        items.add(new PromoStripAdapter.PromoItem(
-                R.drawable.banner_2,
-                getString(R.string.promo_strip_2_eyebrow),
-                getString(R.string.promo_strip_2_title),
-                getString(R.string.promo_strip_2_sub)));
-        items.add(new PromoStripAdapter.PromoItem(
-                R.drawable.banner_3,
-                getString(R.string.promo_strip_3_eyebrow),
-                getString(R.string.promo_strip_3_title),
-                getString(R.string.promo_strip_3_sub)));
+        items.add(new PromoStripAdapter.PromoItem(R.drawable.voucher_1));
+        items.add(new PromoStripAdapter.PromoItem(R.drawable.voucher_2));
+        items.add(new PromoStripAdapter.PromoItem(R.drawable.voucher_3));
 
         promoAdapter = new PromoStripAdapter(items);
         binding.vpPromoStrip.setAdapter(promoAdapter);
         binding.dotsPromo.attachTo(binding.vpPromoStrip);
+        // Khung tự co đúng tỷ lệ ảnh voucher gốc (2061×763) → hiện FULL ảnh, không cắt.
+        applyAspectRatio(binding.vpPromoStrip, PROMO_IMAGE_RATIO);
+        // Carousel nghiêng nhẹ theo chiều cuộn — điểm nhấn riêng cho khối Ưu đãi.
+        binding.vpPromoStrip.setPageTransformer(new TiltCardPageTransformer());
 
         promoScrollHandler  = new Handler(Looper.getMainLooper());
         promoScrollRunnable = () -> {
@@ -625,8 +660,7 @@ public class HomeFragment extends Fragment {
                 binding.tvRecommended4Name, binding.tvRecommended4Price, products, 3);
     }
 
-    private void bindRecommendedCard(View card,
-                                      com.google.android.material.imageview.ShapeableImageView image,
+    private void bindRecommendedCard(View card, android.widget.ImageView image,
                                       android.widget.TextView name, android.widget.TextView price,
                                       List<Product> products, int index) {
         if (products == null || index >= products.size()) {
@@ -752,6 +786,21 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    // ── Theme toggle (sáng/tối) ───────────────────────────────────────────────
+
+    private void setupThemeToggle() {
+        binding.ivThemeToggle.setImageResource(
+                com.tiredcity.app.utils.ThemeManager.isDarkMode(requireContext())
+                        ? R.drawable.ic_theme_light : R.drawable.ic_theme_dark);
+
+        binding.btnThemeToggle.setOnClickListener(v -> {
+            boolean nowDark = com.tiredcity.app.utils.ThemeManager.toggleTheme(requireContext());
+            binding.ivThemeToggle.setImageResource(
+                    nowDark ? R.drawable.ic_theme_light : R.drawable.ic_theme_dark);
+            requireActivity().recreate();
+        });
+    }
+
     // ── Click listeners ───────────────────────────────────────────────────────
 
     private void setupClickListeners() {
@@ -796,9 +845,9 @@ public class HomeFragment extends Fragment {
         binding.tvNewsSeeAll.setOnClickListener(newsClick);
     }
 
-    /** Ảnh bìa (front) của mỗi danh mục. Mặt sau (layout_cat_*_back trong XML) đã có sẵn tên
-     *  danh mục + logo TiredCity; ảnh nền của mặt sau (img_cat_*_back) tạm lấy gradient
-     *  tc_bg_cat_6, sẽ được thay bằng ảnh thật sau. 6 thẻ tự động lật qua lại. */
+    /** Ảnh bìa dạng tem (front, drawable/cate_*) của mỗi danh mục; mặt sau (layout_cat_*_back
+     *  trong XML) là ảnh sản phẩm thật (drawable/costume_*) kèm tên danh mục + logo TiredCity
+     *  đè lên trên (có lớp phủ tối để chữ luôn rõ). 6 thẻ tự động lật qua lại. */
     private void setupCategoryImages() {
         // Ảnh nguồn khá lớn (1254×1254) so với thẻ vuông nhỏ ~100dp — nạp qua Glide với
         // override để không giải mã 6 bitmap full-size cùng lúc (tốn ~6MB RAM/ảnh nếu nạp thẳng).
@@ -808,6 +857,15 @@ public class HomeFragment extends Fragment {
         loadCategoryImage(binding.imgCatGiaoLinhFront, R.drawable.cate_giao_linh);
         loadCategoryImage(binding.imgCatYemDaoFront, R.drawable.cate_yem_dao);
         loadCategoryImage(binding.imgCatAccessoriesFront, R.drawable.cate_phu_kien);
+
+        // Mặt sau tạm dùng lại chính ảnh danh mục đó (phủ lớp đỏ mờ ở XML) — thay vì để trống
+        // đỏ trơn — cho đến khi có ảnh sản phẩm riêng cho mặt sau.
+        loadCategoryImage(binding.imgCatAoDaiBack, R.drawable.costume_ao_dai);
+        loadCategoryImage(binding.imgCatNhatBinhBack, R.drawable.costume_nhat_binh);
+        loadCategoryImage(binding.imgCatAoTacBack, R.drawable.costume_ao_tac);
+        loadCategoryImage(binding.imgCatGiaoLinhBack, R.drawable.costume_giao_linh);
+        loadCategoryImage(binding.imgCatYemDaoBack, R.drawable.costume_yem_dao);
+        loadCategoryImage(binding.imgCatAccessoriesBack, R.drawable.costume_phu_kien);
 
         categoryFlipCards = java.util.Arrays.asList(
                 new CategoryFlipCard(binding.imgCatAoDaiFront, binding.layoutCatAoDaiBack),
@@ -825,7 +883,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadCategoryImage(android.widget.ImageView target, int drawableRes) {
-        Glide.with(this).load(drawableRes).override(400, 400).centerCrop().into(target);
+        // DiskCacheStrategy.NONE: ảnh local trong drawable/ đổi tên file nhưng GIỮ NGUYÊN id
+        // (thay ảnh khi cập nhật app) — cache đĩa của Glide khoá theo resource id nên vẫn phục vụ
+        // bitmap cũ nếu không tắt cache đĩa ở đây. Vẫn giữ cache RAM cho hiệu năng trong phiên.
+        Glide.with(this).load(drawableRes)
+                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
+                .override(400, 400).centerCrop().into(target);
     }
 
     private void startCategoryFlip() {
@@ -879,6 +942,246 @@ public class HomeFragment extends Fragment {
                 }
             });
             out.start();
+        }
+    }
+
+    // ── Hiệu ứng khối gộp Sự kiện/Tin tức/Ưu đãi/Ngũ hành ─────────────────────
+
+    private static final long SHIMMER_SWEEP_DURATION = 1100L;
+    private static final long SHIMMER_SWEEP_INTERVAL = 3400L;
+    private static final long CTA_PULSE_DURATION = 1500L;
+    private static final float PARALLAX_MAX_OFFSET_DP = 16f;
+    private static final long SCROLL_REVEAL_DURATION = 520L;
+    private static final long SCROLL_REVEAL_BANNER_DELAY = 140L;
+
+    /** Vệt sáng chéo lướt qua từng banner + nút CTA tự "thở" — điểm nhấn cho cả 5 banner cùng
+     *  họ (AI Strip + Sự kiện/Tin tức/Ưu đãi/Ngũ hành) vừa bỏ chữ quảng cáo khỏi ảnh (chỉ còn
+     *  1 nút hành động), giúp banner không bị "trơ". */
+    private void setupDiscoverEffects() {
+        shimmerSweeps = java.util.Arrays.asList(
+                new ShimmerSweep(binding.shimmerAiStrip, binding.cvAiStrip),
+                new ShimmerSweep(binding.shimmerEvents, binding.cardEvents),
+                new ShimmerSweep(binding.shimmerNews, binding.cardNews),
+                new ShimmerSweep(binding.shimmerMenhCta, binding.cardMenhCta),
+                new ShimmerSweep(binding.shimmerMenhResult, binding.cvMenhBanner));
+
+        ctaPulseAnimators = java.util.Arrays.asList(
+                createCtaPulse(binding.btnAiStripCta),
+                createCtaPulse(binding.btnEventsCta),
+                createCtaPulse(binding.btnNewsCta),
+                createCtaPulse(binding.btnMenhCta));
+
+        // Mũi tên trước mỗi nút (hoặc mũi tên riêng của Ngũ hành) chỉ hiện ra 1 lần khi banner
+        // cuộn vào tầm nhìn — gợi ý "có thể chạm", lấy cảm hứng từ hiệu ứng hover trên IKEA.
+        arrowReveals = java.util.Arrays.asList(
+                new ArrowReveal(binding.cvAiStrip, binding.arrowAiStripCta),
+                new ArrowReveal(binding.cardEvents, binding.arrowEventsCta),
+                new ArrowReveal(binding.cardNews, binding.arrowNewsCta),
+                new ArrowReveal(binding.cardMenhCta, binding.arrowMenhCta),
+                new ArrowReveal(binding.cvMenhBanner, binding.ivMenhArrow));
+
+        // Cả 5 banner "trôi" nhẹ theo hướng cuộn (parallax) — xem updateBannerParallax().
+        parallaxBanners = java.util.Arrays.asList(
+                binding.cvAiStrip, binding.cardEvents, binding.cardNews, binding.vpPromoStrip,
+                binding.cardMenhCta, binding.cvMenhBanner);
+        parallaxMaxOffsetPx = PARALLAX_MAX_OFFSET_DP * getResources().getDisplayMetrics().density;
+
+        // "Scroll Trigger Animation": tiêu đề trượt lên + mờ dần hiện ra, banner phóng to nhẹ +
+        // mờ dần hiện ra ngay sau đó — đúng 1 LẦN khi cuộn tới, xem updateScrollReveals().
+        scrollReveals = java.util.Arrays.asList(
+                new ScrollReveal(binding.cvAiStrip, binding.layoutAiStripHeader, 0L),
+                new ScrollReveal(binding.cvAiStrip, binding.cvAiStrip, SCROLL_REVEAL_BANNER_DELAY),
+                new ScrollReveal(binding.cardEvents, binding.layoutEventsHeader, 0L),
+                new ScrollReveal(binding.cardEvents, binding.cardEvents, SCROLL_REVEAL_BANNER_DELAY),
+                new ScrollReveal(binding.cardNews, binding.layoutNewsHeader, 0L),
+                new ScrollReveal(binding.cardNews, binding.cardNews, SCROLL_REVEAL_BANNER_DELAY),
+                new ScrollReveal(binding.vpPromoStrip, binding.layoutPromoHeader, 0L),
+                new ScrollReveal(binding.vpPromoStrip, binding.vpPromoStrip, SCROLL_REVEAL_BANNER_DELAY),
+                new ScrollReveal(binding.cardMenhCta, binding.layoutMenhHeaderCta, 0L),
+                new ScrollReveal(binding.cardMenhCta, binding.cardMenhCta, SCROLL_REVEAL_BANNER_DELAY),
+                new ScrollReveal(binding.cvMenhBanner, binding.layoutMenhHeaderResult, 0L),
+                new ScrollReveal(binding.cvMenhBanner, binding.cvMenhBanner, SCROLL_REVEAL_BANNER_DELAY));
+    }
+
+    /** Banner càng lệch xa tâm khung nhìn thì càng bị đẩy theo hướng cuộn (dịch translationY),
+     *  tạo cảm giác các khối trôi theo tay cuộn thay vì đứng cứng — chỉ đổi vị trí vẽ, không
+     *  ảnh hưởng layout xung quanh nên không giật các khối khác. */
+    private void updateBannerParallax() {
+        if (parallaxBanners == null || binding == null) return;
+        NestedScrollView scrollView = binding.getRoot();
+        int viewportHeight = scrollView.getHeight();
+        if (viewportHeight <= 0) return;
+        int scrollY = scrollView.getScrollY();
+
+        for (View banner : parallaxBanners) {
+            if (banner.getHeight() == 0) continue;
+            float top = getRelativeTop(banner, scrollView);
+            float centerInViewport = top + banner.getHeight() / 2f - scrollY;
+            float normalized = (centerInViewport - viewportHeight / 2f) / (viewportHeight / 2f);
+            normalized = Math.max(-1f, Math.min(1f, normalized));
+            banner.setTranslationY(-normalized * parallaxMaxOffsetPx);
+        }
+    }
+
+    /** Khoảng cách theo trục Y từ đỉnh của {@code descendant} tới đỉnh của {@code ancestor}. */
+    private static float getRelativeTop(View descendant, View ancestor) {
+        float top = 0f;
+        View v = descendant;
+        while (v != null && v != ancestor) {
+            top += v.getTop();
+            Object parent = v.getParent();
+            if (!(parent instanceof View)) break;
+            v = (View) parent;
+        }
+        return top;
+    }
+
+    private static ObjectAnimator createCtaPulse(View target) {
+        ObjectAnimator pulse = ObjectAnimator.ofPropertyValuesHolder(target,
+                android.animation.PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.08f, 1f),
+                android.animation.PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.08f, 1f));
+        pulse.setDuration(CTA_PULSE_DURATION);
+        pulse.setRepeatCount(ObjectAnimator.INFINITE);
+        return pulse;
+    }
+
+    private void startDiscoverEffects() {
+        if (shimmerSweeps != null) {
+            long stagger = 0L;
+            for (ShimmerSweep sweep : shimmerSweeps) {
+                sweep.start(stagger);
+                stagger += 600L;
+            }
+        }
+        if (ctaPulseAnimators != null) {
+            for (ObjectAnimator anim : ctaPulseAnimators) {
+                if (anim.isStarted()) anim.resume();
+                else anim.start();
+            }
+        }
+    }
+
+    private void stopDiscoverEffects() {
+        if (shimmerSweeps != null) {
+            for (ShimmerSweep sweep : shimmerSweeps) sweep.stop();
+        }
+        if (ctaPulseAnimators != null) {
+            for (ObjectAnimator anim : ctaPulseAnimators) anim.pause();
+        }
+    }
+
+    /** Vệt sáng bán trong suốt (tc_shimmer_gradient) lướt chéo qua 1 banner theo chu kỳ — banner
+     *  đã tự clip (clipChildren/clipToPadding=true) nên vệt sáng luôn gọn trong khung bo góc. */
+    private static class ShimmerSweep {
+        private final View shimmer;
+        private final View container;
+        private Handler handler;
+        private Runnable runnable;
+
+        ShimmerSweep(View shimmer, View container) {
+            this.shimmer = shimmer;
+            this.container = container;
+        }
+
+        void start(long initialDelay) {
+            handler = new Handler(Looper.getMainLooper());
+            runnable = () -> {
+                sweepOnce();
+                handler.postDelayed(runnable, SHIMMER_SWEEP_INTERVAL);
+            };
+            handler.postDelayed(runnable, initialDelay);
+        }
+
+        private void sweepOnce() {
+            int width = container.getWidth();
+            if (width <= 0) return;
+            float startX = -width * 0.6f;
+            float endX = width * 1.3f;
+            shimmer.setTranslationX(startX);
+            shimmer.animate().translationX(endX).setDuration(SHIMMER_SWEEP_DURATION)
+                    .setInterpolator(new android.view.animation.LinearInterpolator())
+                    .start();
+        }
+
+        void stop() {
+            if (handler != null && runnable != null) handler.removeCallbacks(runnable);
+            shimmer.animate().cancel();
+        }
+    }
+
+    /** Mũi tên trước nút CTA (hoặc mũi tên riêng của banner Ngũ hành đã tính) chỉ "bật" (mờ →
+     *  rõ + phóng to nhẹ) đúng 1 LẦN khi banner chứa nó cuộn vào tầm nhìn — gợi ý "có thể chạm",
+     *  lấy cảm hứng từ mũi tên hiện ra khi rê chuột trên card của trang IKEA. */
+    private static class ArrowReveal {
+        private final View container;
+        private final View arrow;
+        private boolean revealed = false;
+
+        ArrowReveal(View container, View arrow) {
+            this.container = container;
+            this.arrow = arrow;
+        }
+
+        void update() {
+            if (revealed || container.getVisibility() != View.VISIBLE) return;
+            if (!isVisibleEnough(container)) return;
+            revealed = true;
+            arrow.animate()
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setStartDelay(150L)
+                    .setDuration(380L)
+                    .setInterpolator(new OvershootInterpolator(1.6f))
+                    .start();
+        }
+    }
+
+    /** "Scroll Trigger Animation": phần tử bắt đầu ẩn/lệch sẵn (alpha=0 + translationY hoặc
+     *  scale nhỏ, đặt trong XML), chỉ hiện ra đúng 1 LẦN khi {@code trigger} cuộn vào tầm nhìn —
+     *  tiêu đề trượt lên + mờ dần hiện ra trước, banner phóng to nhẹ + mờ dần hiện ra ngay sau
+     *  (delay) — cùng khái niệm ScrollTrigger phổ biến trên web, áp cho cả 5 banner cùng họ. */
+    private static class ScrollReveal {
+        private final View trigger;
+        private final View target;
+        private final long delay;
+        private boolean revealed = false;
+
+        ScrollReveal(View trigger, View target, long delay) {
+            this.trigger = trigger;
+            this.target = target;
+            this.delay = delay;
+        }
+
+        void update() {
+            if (revealed || trigger.getVisibility() != View.VISIBLE) return;
+            if (!isVisibleEnough(trigger)) return;
+            revealed = true;
+            android.view.ViewPropertyAnimator anim = target.animate()
+                    .alpha(1f)
+                    .setStartDelay(delay)
+                    .setDuration(SCROLL_REVEAL_DURATION)
+                    .setInterpolator(new DecelerateInterpolator(1.4f));
+            if (target == trigger) {
+                anim.scaleX(1f).scaleY(1f);
+            } else {
+                anim.translationY(0f);
+            }
+            anim.start();
+        }
+    }
+
+    /** Nghiêng nhẹ theo trục Y (kiểu lật thẻ) khi cuộn qua từng trang — dùng riêng cho carousel
+     *  Ưu đãi để phân biệt với hiệu ứng phóng to ở giữa của "Sản phẩm nổi bật". */
+    private static class TiltCardPageTransformer implements ViewPager2.PageTransformer {
+        private static final float MAX_ROTATION_Y = 16f;
+
+        @Override
+        public void transformPage(@NonNull View page, float position) {
+            page.setPivotX(position < 0 ? 0f : page.getWidth());
+            page.setPivotY(page.getHeight() * 0.5f);
+            page.setRotationY(MAX_ROTATION_Y * -position);
+            page.setAlpha(1f - Math.min(Math.abs(position), 1f) * 0.35f);
         }
     }
 

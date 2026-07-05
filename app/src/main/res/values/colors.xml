@@ -21,7 +21,7 @@
 
     <!-- ─── Backgrounds ─────────────────────────────────────────────── -->
     <color name="bg_primary">#F5EDE3</color>     <!-- Kem editorial -->
-    <color name="bg_surface">#FFFFFF</color>     <!-- Card surface -->
+    <color name="bg_surface">#F5EDE3</color>     <!-- Card surface (kem, đồng bộ với bg_primary) -->
     <color name="bg_subtle">#EDE2D0</color>      <!-- Linen nhạt -->
 
     <!-- ─── Text ────────────────────────────────────────────────────── -->
@@ -101,7 +101,7 @@
     <!-- ─── Backgrounds ─────────────────────────────────────────────── -->
     <color name="tc_bg_main">#F5EDE3</color>
     <color name="tc_bg_subtle">#EDE2D0</color>
-    <color name="tc_bg_card">#FFFFFF</color>
+    <color name="tc_bg_card">#F5EDE3</color>
     <color name="tc_bg_dark">#1A1208</color>
     <color name="tc_bg_red">#A80D15</color>
 
@@ -138,7 +138,7 @@
 
     <!-- ─── Auth (nền đỏ son) ───────────────────────────────────────── -->
     <color name="tc_auth_bg">#A80D15</color>
-    <color name="tc_auth_card_bg">#FFFFFF</color>
+    <color name="tc_auth_card_bg">#F5EDE3</color>
     <color name="tc_auth_card_title">#A80D15</color>
     <color name="tc_auth_card_subtitle">#5A4A38</color>
 
@@ -151,7 +151,7 @@
     <color name="tc_input_text">#1A1208</color>
     <color name="tc_input_hint">#8E7B62</color>
     <color name="tc_input_stroke">#D9C9AC</color>
-    <color name="tc_input_box_bg">#FFFFFF</color>
+    <color name="tc_input_box_bg">#F5EDE3</color>
 
     <!-- ─── Strokes / Dividers ──────────────────────────────────────── -->
     <color name="tc_divider">#1F1A1208</color>
@@ -162,14 +162,14 @@
     <color name="tc_translucent_light">#40FFFFFF</color>
 
     <!-- ─── Search box ──────────────────────────────────────────────── -->
-    <color name="tc_search_box_bg">#FFFFFF</color>
+    <color name="tc_search_box_bg">#F5EDE3</color>
 
     <!-- ─── Bottom nav icons (thanh nổi, tông đỏ) ───────────────────── -->
     <color name="tc_nav_icon_inactive">#80A80D15</color>
     <color name="tc_nav_icon_active">@color/tc_red</color>
 
     <!-- ─── Category / Filter pill ──────────────────────────────────── -->
-    <color name="tc_category_bg">#FFFFFF</color>
+    <color name="tc_category_bg">#F5EDE3</color>
     <color name="tc_category_border">#D9C9AC</color>
     <color name="tc_category_bg_selected">#A80D15</color>
 

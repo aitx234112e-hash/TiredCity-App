@@ -4,83 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Ảnh nền bo góc -->
+    <!-- Ảnh voucher đã có sẵn chữ/thiết kế, không đè thêm text/scrim. fitCenter + khung được
+         HomeFragment đo đúng theo tỷ lệ ảnh gốc (applyAspectRatio) → hiện FULL ảnh, không cắt. -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_promo_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:background="@color/tc_bg_card"
+        android:scaleType="fitCenter"
         android:contentDescription="@null"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
-
-    <!-- Scrim gradient nửa trái để chữ dễ đọc -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/tc_scrim_menh" />
-
-    <!-- Nội dung: eyebrow + tiêu đề + phụ đề | nút bên phải -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="18dp"
-        android:paddingVertical="14dp">
-
-        <!-- Text block -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_promo_eyebrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/tc_gold_bright"
-                android:textSize="9sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.18" />
-
-            <TextView
-                android:id="@+id/tv_promo_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"
-                android:maxLines="2"
-                android:ellipsize="end" />
-
-            <TextView
-                android:id="@+id/tv_promo_sub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:textColor="@color/tc_on_red_secondary"
-                android:textSize="11sp"
-                android:maxLines="1"
-                android:ellipsize="end" />
-        </LinearLayout>
-
-        <!-- CTA pill -->
-        <TextView
-            android:id="@+id/tv_promo_cta"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/tc_bg_rounded_gold_pill"
-            android:gravity="center"
-            android:paddingHorizontal="14dp"
-            android:text="@string/promo_strip_cta"
-            android:textColor="@color/tc_espresso"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium" />
-    </LinearLayout>
 </FrameLayout>
