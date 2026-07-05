@@ -176,7 +176,10 @@
     <string name="saved_ok">Đã lưu thành công</string>
     <string name="field_required">Bắt buộc</string>
     <string name="form_fill_required">Vui lòng điền đầy đủ các trường bắt buộc</string>
+    <string name="error_date_range">Thời điểm kết thúc phải sau thời điểm bắt đầu</string>
+    <string name="error_time_range">Giờ kết thúc phải sau giờ bắt đầu khi chọn cùng ngày</string>
     <string name="hint_pick_date">Chọn ngày…</string>
+    <string name="hint_pick_time">Chọn giờ…</string>
     <string name="record_not_found">Không tìm thấy bản ghi</string>
 
     <!-- Chatbot / Tro ly AI -->

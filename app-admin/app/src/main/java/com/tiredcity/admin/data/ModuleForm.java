@@ -68,7 +68,7 @@ public final class ModuleForm {
                         new String[]{"Áo dài", "Việt phục", "Áo tấc", "Yếm đào", "Phụ kiện"},
                         new String[]{"ao-dai", "viet-phuc", "ao-tac", "yem-dao", "phu-kien"})
                         .value(s(d, "product_dept")));
-                f.add(new FormField("unit_price", "Giá bán (₫)", FormField.Type.NUMBER, true)
+                f.add(new FormField("unit_price", "Giá bán (₫)", FormField.Type.MONEY, true)
                         .value(n(d, "unit_price")));
                 f.add(new FormField("discount", "Giảm giá (%)", FormField.Type.NUMBER, false)
                         .value(n(d, "discount")));
@@ -93,24 +93,74 @@ public final class ModuleForm {
                         .value(firstImage(d)).hint("Dán URL ảnh sản phẩm"));
                 break;
 
-            case VOUCHERS:
+            case VOUCHERS: {
+                boolean isEdit = d != null;
+                
+                // Sau khi tao, chi cho phep sua dung 1 lan.
+                long editCount = isEdit ? (long) DocUtils.num(d, "editCount") : 0;
+                boolean alreadyEdited = editCount >= 1;
+
                 f.add(new FormField("code", "Mã voucher", FormField.Type.TEXT, true)
                         .value(s(d, "code")).hint("VD: TIREDCITY10"));
+                f.get(f.size() - 1).enabled = !isEdit; // Cho phep nhap khi tao moi, khoa khi sua
+
+                f.add(new FormField("isActive", "Đang hoạt động", FormField.Type.SWITCH, false)
+                        .value(d != null && Boolean.FALSE.equals(d.getBoolean("isActive")) ? "false" : "true"));
+                f.get(f.size() - 1).enabled = !isEdit;
+
+                f.add(new FormField("target", "Đối tượng áp dụng", FormField.Type.SELECT, true,
+                        new String[]{"Tất cả khách hàng", "Người mới tải app", "Khách hàng thân thiết", "Khác (Tự nhập)..."},
+                        new String[]{"all", "new_user", "loyal", "custom"})
+                        .value(s(d, "target").isEmpty() ? "all" : s(d, "target")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("type", "Loại giảm", FormField.Type.SELECT, true,
                         new String[]{"Giảm theo %", "Giảm tiền (VND)"},
                         new String[]{"percent", "fixed"})
                         .value(s(d, "type").isEmpty() ? "percent" : s(d, "type")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("value", "Giá trị giảm", FormField.Type.NUMBER, true)
                         .value(n(d, "value")));
-                f.add(new FormField("minOrder", "Đơn tối thiểu (₫)", FormField.Type.NUMBER, false)
+                f.get(f.size() - 1).enabled = !isEdit;
+
+                f.add(new FormField("minOrder", "Đơn tối thiểu (₫)", FormField.Type.MONEY, false)
                         .value(n(d, "minOrder")));
-                f.add(new FormField("expiry", "Hạn sử dụng", FormField.Type.DATE, false)
+                f.get(f.size() - 1).enabled = !isEdit;
+                
+                f.add(new FormField("startDate", "Ngày bắt đầu", FormField.Type.DATE, false)
+                        .value(isoDate(d, "startDate")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("startTime", "Giờ bắt đầu", FormField.Type.TIME, false)
+                        .value(s(d, "startTime")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("expiry", "Ngày kết thúc", FormField.Type.DATE, false)
                         .value(isoDate(d, "expiry")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("endTime", "Giờ kết thúc", FormField.Type.TIME, false)
+                        .value(s(d, "endTime")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("usageLimit", "Tổng lượt dùng tối đa", FormField.Type.NUMBER, false)
+                        .value(n(d, "usageLimit")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
+                f.add(new FormField("limitPerUser", "Lượt dùng/người", FormField.Type.NUMBER, false)
+                        .value(n(d, "limitPerUser")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("description", "Mô tả / điều kiện", FormField.Type.TEXTAREA, false)
                         .value(s(d, "description")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("image", "Link ảnh (URL)", FormField.Type.TEXT, false)
                         .value(s(d, "image")));
+                f.get(f.size() - 1).enabled = !isEdit;
                 break;
+            }
 
             case EVENTS:
                 f.add(new FormField("title", "Tên sự kiện", FormField.Type.TEXT, true)
@@ -128,7 +178,7 @@ public final class ModuleForm {
             case SHIPPING:
                 f.add(new FormField("name", "Tên phương thức / đơn vị", FormField.Type.TEXT, true)
                         .value(s(d, "name")));
-                f.add(new FormField("fee", "Phí vận chuyển (₫)", FormField.Type.NUMBER, false)
+                f.add(new FormField("fee", "Phí vận chuyển (₫)", FormField.Type.MONEY, false)
                         .value(n(d, "fee")).hint("0 = miễn phí"));
                 f.add(new FormField("estimatedTime", "Thời gian dự kiến", FormField.Type.TEXT, false)
                         .value(s(d, "estimatedTime")).hint("VD: 2-3 ngày"));
@@ -224,13 +274,26 @@ public final class ModuleForm {
             }
             case VOUCHERS:
                 p.put("code", val(v, "code").toUpperCase(Locale.ROOT));
+                p.put("isActive", "true".equals(val(v, "isActive")));
+                p.put("target", val(v, "target"));
                 p.put("type", val(v, "type"));
                 p.put("value", toLong(v, "value"));
                 p.put("minOrder", toLong(v, "minOrder"));
+                p.put("startDate", val(v, "startDate"));
+                p.put("startTime", val(v, "startTime"));
                 p.put("expiry", val(v, "expiry"));
+                p.put("endTime", val(v, "endTime"));
+                p.put("usageLimit", toLong(v, "usageLimit"));
+                p.put("limitPerUser", toLong(v, "limitPerUser"));
                 p.put("description", val(v, "description"));
                 p.put("image", val(v, "image"));
-                if (isCreate) p.put("createdAt", nowIso());
+                if (isCreate) {
+                    p.put("usedCount", 0L);
+                    p.put("editCount", 0L);
+                    p.put("createdAt", nowIso());
+                } else {
+                    p.put("editCount", com.google.firebase.firestore.FieldValue.increment(1));
+                }
                 break;
 
             case EVENTS:

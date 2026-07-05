@@ -104,25 +104,60 @@ public final class RowFormatter {
 
     private static Row voucher(Context ctx, DocumentSnapshot d) {
         String code = DocUtils.str(d, "code");
-        String desc = DocUtils.str(d, "description");
         String type = DocUtils.str(d, "type");
         double value = DocUtils.num(d, "value");
         double minOrder = DocUtils.num(d, "minOrder");
         String expiry = DocUtils.str(d, "expiry");
+        String endTime = DocUtils.str(d, "endTime");
+        boolean isActive = !Boolean.FALSE.equals(d.getBoolean("isActive"));
+        long used = (long) DocUtils.num(d, "usedCount");
+        long limit = (long) DocUtils.num(d, "usageLimit");
 
         String discountLabel = "percent".equals(type) ? "-" + (long) value + "%" : "-" + DocUtils.money(value);
-        boolean expired = isExpired(expiry);
-        String subtitle = desc.isEmpty() ? "Đơn tối thiểu " + DocUtils.money(minOrder) : desc;
-        return new Row(code, subtitle, discountLabel, expired ? "Hết hạn" : "Đang áp dụng",
-                expired ? R.color.st_neutral : R.color.st_success);
+        boolean expired = isExpired(expiry, endTime);
+        boolean full = limit > 0 && used >= limit;
+
+        String subtitle = "Đơn tối thiểu " + DocUtils.money(minOrder);
+        if (limit > 0) subtitle += " • Đã dùng: " + used + "/" + limit;
+
+        String status;
+        int color;
+        if (!isActive) {
+            status = "Đã tắt";
+            color = R.color.st_neutral;
+        } else if (expired) {
+            status = "Hết hạn";
+            color = R.color.st_danger;
+        } else if (full) {
+            status = "Hết lượt";
+            color = R.color.st_danger;
+        } else {
+            status = "Hoạt động";
+            color = R.color.st_success;
+        }
+
+        return new Row(code, subtitle, discountLabel, status, color);
     }
 
-    private static boolean isExpired(String expiry) {
-        if (expiry == null || expiry.isEmpty()) return false;
+    private static boolean isExpired(String date, String time) {
+        if (date == null || date.isEmpty()) return false;
         try {
-            String s = expiry.length() >= 10 ? expiry.substring(0, 10) : expiry;
-            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-            return f.parse(s).getTime() < System.currentTimeMillis();
+            String pattern = "yyyy-MM-dd";
+            String input = date;
+            if (time != null && !time.isEmpty()) {
+                pattern = "yyyy-MM-dd HH:mm";
+                input += " " + time;
+            }
+            
+            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat(pattern, java.util.Locale.US);
+            long expiryMillis = f.parse(input).getTime();
+            
+            // Neu chi co ngay (khong co gio), thi mac dinh het han vao cuoi ngay do (23:59:59)
+            if (time == null || time.isEmpty()) {
+                expiryMillis += (24 * 60 * 60 * 1000) - 1;
+            }
+            
+            return expiryMillis < System.currentTimeMillis();
         } catch (Exception e) {
             return false;
         }

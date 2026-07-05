@@ -35,10 +35,27 @@ public final class DetailFormatter {
                 break;
             case VOUCHERS:
                 f.add(new DetailField("Mã voucher", DocUtils.str(d, "code")));
+                f.add(new DetailField("Trạng thái", !Boolean.FALSE.equals(d.getBoolean("isActive")) ? "Đang hoạt động" : "Đã tắt"));
+                String target = DocUtils.str(d, "target");
+                String targetLabel = "Tất cả";
+                if ("new_user".equals(target)) targetLabel = "Người mới tải app";
+                else if ("loyal".equals(target)) targetLabel = "Khách hàng thân thiết";
+                f.add(new DetailField("Đối tượng", targetLabel));
+
                 f.add(new DetailField("Loại giảm", "percent".equals(DocUtils.str(d, "type")) ? "Giảm %" : "Giảm tiền"));
                 f.add(new DetailField("Giá trị", String.valueOf((long) DocUtils.num(d, "value"))));
                 f.add(new DetailField("Đơn tối thiểu", DocUtils.money(DocUtils.num(d, "minOrder"))));
-                f.add(new DetailField("Hạn sử dụng", DocUtils.str(d, "expiry").isEmpty() ? "Không giới hạn" : DocUtils.date(d, "expiry")));
+
+                String start = DocUtils.date(d, "startDate");
+                String startTime = DocUtils.str(d, "startTime");
+                f.add(new DetailField("Bắt đầu", start.isEmpty() ? "Bắt đầu ngay" : start + (startTime.isEmpty() ? "" : " " + startTime)));
+
+                String expiry = DocUtils.date(d, "expiry");
+                String endTime = DocUtils.str(d, "endTime");
+                f.add(new DetailField("Hạn sử dụng", expiry.isEmpty() ? "Không giới hạn" : expiry + (endTime.isEmpty() ? "" : " " + endTime)));
+
+                f.add(new DetailField("Lượt dùng", (long) DocUtils.num(d, "usedCount") + " / " + ((long) DocUtils.num(d, "usageLimit") > 0 ? (long) DocUtils.num(d, "usageLimit") : "∞")));
+                f.add(new DetailField("Lượt dùng/người", (long) DocUtils.num(d, "limitPerUser") > 0 ? String.valueOf((long) DocUtils.num(d, "limitPerUser")) : "Không giới hạn"));
                 f.add(new DetailField("Mô tả", DocUtils.str(d, "description")));
                 break;
             case EVENTS:
