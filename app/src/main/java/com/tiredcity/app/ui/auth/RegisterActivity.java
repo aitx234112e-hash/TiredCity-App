@@ -28,6 +28,8 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -150,7 +152,22 @@ public class RegisterActivity extends BaseActivity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 });
     }
+        binding.btnRegister.setEnabled(false);
 
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    binding.btnRegister.setEnabled(true);
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                                String token = tokenTask.isSuccessful() ? tokenTask.getResult().getToken() : "firebase-token-local";
+                                String uid = user.getUid();
+
+                                // SỬ DỤNG CÔNG THỨC MỚI NHẤT
+                                String menh   = MenhCalculator.tinhMenh(birthYear);
+                                String sign   = MenhCalculator.tinhCungHoangDao(birthMonth, birthDay);
+                                String animal = MenhCalculator.tinhConGiap(birthYear);
     /** Diễn giải lỗi đăng ký Firebase thành thông báo tiếng Việt. */
     private String registerErrorMessage(Exception e) {
         if (e instanceof FirebaseAuthUserCollisionException) {
@@ -175,25 +192,40 @@ public class RegisterActivity extends BaseActivity {
         String sign   = MenhCalculator.tinhCungHoangDao(birthMonth, birthDay);
         String animal = MenhCalculator.tinhConGiap(birthYear);
 
-        preferenceManager.setMenh(menh);
-        preferenceManager.setZodiac(sign);
+                                preferenceManager.setMenh(menh);
+                                preferenceManager.setZodiac(sign);
 
-        UserProfile profile = new UserProfile();
-        profile.setName(fullName);
-        profile.setEmail(email);
-        profile.setPhone(phone);
-        profile.setBirthDate(String.format(Locale.US, "%04d-%02d-%02d", birthYear, birthMonth, birthDay));
-        profile.setMenh(menh);
-        profile.setZodiac(sign);
-        profile.setAnimal(animal);
-        preferenceManager.saveUser(profile);
+                                UserProfile profile = new UserProfile();
+                                profile.setId(uid); // Đảm bảo ID được gán đúng với Firebase UID
+                                profile.setName(fullName);
+                                profile.setEmail(email);
+                                profile.setPhone(phone);
+                                profile.setBirthDate(String.format(Locale.US, "%04d-%02d-%02d", birthYear, birthMonth, birthDay));
+                                profile.setMenh(menh);
+                                profile.setZodiac(sign);
+                                profile.setAnimal(animal);
+                                preferenceManager.saveUser(profile);
 
-        preferenceManager.saveToken("demo-token-local");
-        preferenceManager.saveUserId(email);
-        ApiClient.reset();
-        Toast.makeText(this, "Chào mừng " + fullName + "!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-        finishAffinity();
+                                preferenceManager.saveToken(token);
+                                preferenceManager.saveUserId(uid);
+
+                                // ĐỒNG BỘ LÊN CLOUD NGAY
+                                authRepository.syncUserProfileToFirestore(profile);
+
+                                // Gửi email xác thực
+                                user.sendEmailVerification();
+
+                                ApiClient.reset();
+                                Toast.makeText(this, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực.", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                finishAffinity();
+                            });
+                        }
+                    } else {
+                        Toast.makeText(this, "Đăng ký thất bại: " + task.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /** Đăng ký qua API thật. Hiện chưa dùng vì backend chưa có endpoint auth. */

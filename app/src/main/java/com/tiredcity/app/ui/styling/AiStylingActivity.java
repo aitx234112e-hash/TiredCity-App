@@ -1,9 +1,12 @@
 package com.tiredcity.app.ui.styling;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
+import android.widget.Toast;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductPhotoCardAdapter;
 import com.tiredcity.app.data.model.Product;
@@ -45,6 +48,28 @@ public class AiStylingActivity extends BaseActivity {
 
         recommendedAdapter = new ProductPhotoCardAdapter(null);
         binding.rvSuggestions.setLayoutManager(new GridLayoutManager(this, 2));
+        recommendedAdapter = new ProductAdapter(null);
+        recommendedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+            @Override
+            public void onProductClick(Product product) {
+                Intent intent = new Intent(AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onSaveToggle(Product product, boolean saved) {}
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+                Toast.makeText(AiStylingActivity.this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
+            }
+        });
+        binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
         binding.rvSuggestions.setAdapter(recommendedAdapter);
         binding.rvSuggestions.setNestedScrollingEnabled(false);
         recommendedAdapter.setOnProductClickListener(product -> {
@@ -91,15 +116,27 @@ public class AiStylingActivity extends BaseActivity {
     }
 
     /** Ưu tiên tính lại từ năm sinh (nạp âm đúng, chữa lành cache cũ) → mệnh đã lưu → "Kim". */
+    /** Ưu tiên tính từ năm sinh thực tế để đảm bảo chính xác theo công thức mới. */
     private String resolveMenh() {
         UserProfile cached = preferenceManager.getUser();
         if (cached != null && cached.getBirthYear() > 0) {
             String fresh = MenhCalculator.tinhMenh(cached.getBirthYear());
             preferenceManager.setMenh(fresh);
             return fresh;
+            String menh = MenhCalculator.tinhMenh(cached.getBirthYear());
+            // Tự sửa lại cache nếu đang lưu sai
+            if (!menh.equals(preferenceManager.getMenh())) {
+                preferenceManager.setMenh(menh);
+                cached.setMenh(menh);
+                preferenceManager.saveUser(cached);
+            }
+            return menh;
         }
         String saved = preferenceManager.getMenh();
         return saved != null ? saved : "Kim";
+
+        String saved = preferenceManager.getMenh();
+        return (saved != null) ? saved : "Kim";
     }
 
     private void setupMenhUI(String menh) {

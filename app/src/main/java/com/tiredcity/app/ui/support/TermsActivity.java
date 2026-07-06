@@ -47,15 +47,22 @@ public class TermsActivity extends BaseActivity {
               .append(getString(titles[i]))
               .append("</font></b><br/><br/>")
               .append(getString(contents[i]).trim());
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
 
+        String content = getString(R.string.terms_content);
         setHtmlText(binding.tvContent, sb.toString());
     }
 
     private void setHtmlText(TextView textView, String html) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            binding.tvTermsContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_COMPACT));
             textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
         } else {
+            binding.tvTermsContent.setText(Html.fromHtml(content));
             textView.setText(Html.fromHtml(html));
         }
     }

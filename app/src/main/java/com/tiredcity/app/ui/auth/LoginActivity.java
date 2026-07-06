@@ -55,6 +55,26 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import java.util.Arrays;
+import com.google.firebase.auth.FacebookAuthProvider;
+import android.util.Base64;
+import android.util.Log;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+
 public class LoginActivity extends BaseActivity {
 
     // Dev bypass — chấp nhận đăng nhập offline mà không gọi API.
@@ -81,14 +101,22 @@ public class LoginActivity extends BaseActivity {
 
     private GoogleSignInClient googleSignInClient;
     private ActivityResultLauncher<Intent> googleSignInLauncher;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Đã đăng nhập (bản release) → vào thẳng Main, không hiện form đăng nhập.
-        if (preferenceManager.isLoggedIn()) {
-            startActivity(new Intent(this, MainActivity.class));
+        // Kiểm tra đăng nhập: Kết hợp PreferenceManager và FirebaseAuth
+        boolean isLogged = preferenceManager.isLoggedIn() || FirebaseAuth.getInstance().getCurrentUser() != null;
+
+        if (isLogged) {
+            // Nếu đã qua Onboarding thì vào Home, nếu chưa thì vào Onboarding
+            if (preferenceManager.isOnboardingShown()) {
+                startActivity(new Intent(this, MainActivity.class));
+            } else {
+                startActivity(new Intent(this, OnboardingActivity.class));
+            }
             finish();
             return;
         }
@@ -117,6 +145,11 @@ public class LoginActivity extends BaseActivity {
         restoreSavedCredentials();
         setupRoleToggle();
         setupGoogleSignIn();
+
+        callbackManager = CallbackManager.Factory.create();
+        setupFacebookSignIn();
+
+        logKeyHash();
 
         binding.btnLogin.setOnClickListener(v -> {
             String email    = binding.etEmail.getText().toString().trim();
@@ -159,8 +192,9 @@ public class LoginActivity extends BaseActivity {
 
         // Google: dùng Google Sign-In thật (hiện hộp chọn tài khoản Google của máy).
         binding.btnGoogle.setOnClickListener(v -> launchGoogleSignIn());
-        // Facebook vẫn là demo offline (cần SDK riêng để làm thật).
-        binding.btnFacebook.setOnClickListener(v -> socialLogin("Facebook", "user@facebook.com"));
+        // Facebook
+        binding.btnFacebook.setOnClickListener(v ->
+            LoginManager.getInstance().logInWithReadPermissions(this, callbackManager, Arrays.asList("email", "public_profile")));
 
         setupSplashOverlay();
     }
@@ -242,11 +276,24 @@ public class LoginActivity extends BaseActivity {
         try {
             GoogleSignInAccount account =
                     GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException.class);
-            // idToken có giá trị khi đã cấu hình Web Client ID — gửi sang backend khi sẵn sàng:
-            //   authRepository.googleLogin(account.getIdToken())...
-            String email = account.getEmail();
-            String name  = account.getDisplayName();
-            completeSocialLogin("Google", email != null ? email : "", name);
+            String idToken = account.getIdToken();
+            if (idToken != null) {
+                AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+                FirebaseAuth.getInstance().signInWithCredential(credential)
+                        .addOnCompleteListener(this, task -> {
+                            if (task.isSuccessful()) {
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String email = user != null ? user.getEmail() : account.getEmail();
+                                String name = user != null ? user.getDisplayName() : account.getDisplayName();
+                                completeSocialLogin("Google", email != null ? email : "", name);
+                            } else {
+                                Toast.makeText(this, "Firebase Google Auth failed: " + task.getException().getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                Toast.makeText(this, "Google ID Token is null. Check Web Client ID config.", Toast.LENGTH_SHORT).show();
+            }
         } catch (ApiException e) {
             if (e.getStatusCode() != GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
                 Toast.makeText(this,
@@ -390,29 +437,52 @@ public class LoginActivity extends BaseActivity {
         return e.getLocalizedMessage() != null
                 ? e.getLocalizedMessage() : getString(R.string.error_login_failed);
     }
+        binding.btnLogin.setEnabled(false);
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    binding.btnLogin.setEnabled(true);
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                                String token = tokenTask.isSuccessful() ? tokenTask.getResult().getToken() : "firebase-token-local";
+                                String uid = user.getUid();
 
+                                preferenceManager.saveToken(token);
+                                preferenceManager.saveUserId(uid);
     /** Thiết lập hồ sơ cục bộ sau khi Firebase xác thực thành công rồi vào Onboarding. */
     private void completeLogin(String email) {
         preferenceManager.saveToken(DEMO_TOKEN);
         preferenceManager.saveUserId(TextUtils.isEmpty(email) ? DEMO_USER_ID : email);
 
-        // Hiển thị TÊN khách ở Home:
-        //  - Nếu đã ĐĂNG KÝ (hồ sơ có sẵn tên đầy đủ) → GIỮ NGUYÊN tên đó.
-        //  - Nếu chưa từng đăng ký → tạm lấy phần trước dấu @ làm tên. Không còn "Guest".
-        UserProfile profile = preferenceManager.getUser();
-        boolean hasRealName = profile != null
-                && profile.getName() != null && !profile.getName().trim().isEmpty();
-        if (!hasRealName) {
-            if (profile == null) profile = new UserProfile();
-            profile.setEmail(email);
-            String raw = email.contains("@") ? email.substring(0, email.indexOf('@')) : email;
-            profile.setName(prettifyName(raw));
-            preferenceManager.saveUser(profile);
-        }
+                                UserProfile profile = preferenceManager.getUser();
+                                if (profile == null) profile = new UserProfile();
+                                profile.setId(uid); // Đảm bảo ID được gán đúng với Firebase UID
 
-        ApiClient.reset();
-        startActivity(new Intent(LoginActivity.this, OnboardingActivity.class));
-        finishAffinity();
+                                boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
+                                if (!hasRealName) {
+                                    profile.setEmail(email);
+                                    String raw = email.contains("@") ? email.substring(0, email.indexOf('@')) : email;
+                                    profile.setName(prettifyName(raw));
+                                    preferenceManager.saveUser(profile);
+                                }
+
+                                // ĐỒNG BỘ NGAY LÊN CLOUD
+                                if (authRepository == null) {
+                                    authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
+                                }
+                                authRepository.syncUserProfileToFirestore(profile);
+
+                                ApiClient.reset();
+                                startActivity(new Intent(LoginActivity.this, OnboardingActivity.class));
+                                finishAffinity();
+                            });
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: " + task.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
@@ -428,36 +498,53 @@ public class LoginActivity extends BaseActivity {
      * (vd Google account); nếu null sẽ suy ra từ email hoặc dùng "{provider} User".
      */
     private void completeSocialLogin(String provider, String email, String displayName) {
-        preferenceManager.saveToken(DEMO_TOKEN);
-        preferenceManager.saveUserId(TextUtils.isEmpty(email) ? provider : email);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                String token = tokenTask.isSuccessful() ? tokenTask.getResult().getToken() : DEMO_TOKEN;
+                preferenceManager.saveToken(token);
+                preferenceManager.saveUserId(user.getUid());
 
-        UserProfile profile = preferenceManager.getUser();
-        if (profile == null) profile = new UserProfile();
-        boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
-        if (!hasRealName) {
-            profile.setEmail(email);
-            String name;
-            if (!TextUtils.isEmpty(displayName)) {
-                name = displayName;
-            } else if (email != null && email.contains("@")) {
-                name = prettifyName(email.substring(0, email.indexOf('@')));
-            } else {
-                name = provider + " User";
-            }
-            profile.setName(name);
-        }
-        preferenceManager.saveUser(profile);
+                UserProfile profile = preferenceManager.getUser();
+                if (profile == null) profile = new UserProfile();
+                profile.setId(user.getUid()); // Đảm bảo ID mạng xã hội cũng được gán
 
-        ApiClient.reset();
-        Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
+                boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
+                if (!hasRealName) {
+                    profile.setEmail(email);
+                    String name;
+                    if (!TextUtils.isEmpty(displayName)) {
+                        name = displayName;
+                    } else if (email != null && email.contains("@")) {
+                        name = prettifyName(email.substring(0, email.indexOf('@')));
+                    } else {
+                        name = provider + " User";
+                    }
+                    profile.setName(name);
+                }
+                preferenceManager.saveUser(profile);
 
-        // Đăng nhập mạng xã hội (Google/Facebook/Apple) KHÔNG trả về ngày sinh/SĐT/địa chỉ,
-        // và avatar vẫn giữ logo con gà TiredCity mặc định (không lấy ảnh từ tài khoản Google).
-        // → Nếu hồ sơ chưa có ngày sinh, mở lịch nhập ngày sinh để tính Ngũ Hành mệnh NGAY.
-        if (TextUtils.isEmpty(profile.getBirthDate())) {
-            promptBirthDateForMenh();
-        } else {
-            goToOnboarding();
+                // ĐỒNG BỘ TỪ CLOUD VỀ TRƯỚC
+                if (authRepository == null) {
+                    authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
+                }
+
+                authRepository.syncAccount(profile, cloudProfile -> {
+                    // Sau khi đã tải dữ liệu từ Cloud (Firestore) về máy thành công:
+                    runOnUiThread(() -> {
+                        ApiClient.reset();
+                        Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
+
+                        if (cloudProfile != null && !TextUtils.isEmpty(cloudProfile.getBirthDate())) {
+                            // Đã có ngày sinh trên Cloud -> Vào thẳng app
+                            goToOnboarding();
+                        } else {
+                            // Chưa có ngày sinh -> Mới hiện bảng chọn
+                            promptBirthDateForMenh();
+                        }
+                    });
+                });
+            });
         }
     }
 
@@ -562,6 +649,71 @@ public class LoginActivity extends BaseActivity {
                 Toast.makeText(LoginActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setupFacebookSignIn() {
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d("FacebookLogin", "onSuccess: " + loginResult.getAccessToken().getToken());
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d("FacebookLogin", "onCancel");
+                        Toast.makeText(LoginActivity.this, "Đăng nhập Facebook bị hủy", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Log.e("FacebookLogin", "onError", exception);
+                        Toast.makeText(LoginActivity.this, "Đăng nhập Facebook lỗi: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void logKeyHash() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    getPackageName(),
+                    PackageManager.GET_SIGNATURES);
+            if (info.signatures != null) {
+                for (Signature signature : info.signatures) {
+                    MessageDigest md = MessageDigest.getInstance("SHA");
+                    md.update(signature.toByteArray());
+                    String hash = Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                    Log.d("KeyHash:", hash);
+                }
+            }
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+            Log.e("KeyHash", "Error getting key hash", e);
+        }
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        com.google.firebase.auth.AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        String email = user != null ? user.getEmail() : "";
+                        String name = user != null ? user.getDisplayName() : "Facebook User";
+                        completeSocialLogin("Facebook", email != null ? email : "", name);
+                    } else {
+                        Toast.makeText(this, "Firebase Facebook Auth failed: " + task.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (callbackManager != null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void navigateToRegister() {

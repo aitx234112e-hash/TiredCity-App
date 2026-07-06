@@ -32,12 +32,15 @@ public class GeneralSettingsActivity extends BaseActivity {
         });
 
         binding.rowSecurity.tvLabel.setText(R.string.settings_general_security_title);
+        binding.rowPassword.tvLabel.setText("Đổi mật khẩu");
         binding.rowAppInfo.tvLabel.setText(R.string.settings_general_app_info_title);
         binding.rowRate.tvLabel.setText(R.string.settings_general_rate_title);
         binding.rowDelete.tvLabel.setText(R.string.settings_general_delete_title);
 
         binding.rowSecurity.getRoot().setOnClickListener(v ->
                 startActivity(new Intent(this, SecuritySettingsActivity.class)));
+        binding.rowPassword.getRoot().setOnClickListener(v ->
+                startActivity(new Intent(this, ChangePasswordActivity.class)));
         binding.rowAppInfo.getRoot().setOnClickListener(v ->
                 startActivity(new Intent(this, AppInfoActivity.class)));
         binding.rowRate.getRoot().setOnClickListener(v ->

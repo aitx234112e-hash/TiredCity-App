@@ -618,6 +618,29 @@
   box-shadow: none;
 }
 
+.btn-secondary {
+  background: #374151; /* Dark Slate - chuyên nghiệp hơn */
+  color: #FFFFFF;
+  border: 1px solid #4B5563;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #1F2937;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
 .btn-ghost {
   background: transparent;
   color: var(--text-muted);
@@ -859,6 +882,20 @@
 
 .card-checkbox input[type="checkbox"] {
   display: none;
+}
+
+.card-checkbox input[type="checkbox"]:checked + .checkbox-custom {
+  background: linear-gradient(135deg, var(--tc-red-light), var(--tc-red));
+  border-color: var(--tc-red-light);
+}
+
+.card-checkbox input[type="checkbox"]:checked + .checkbox-custom::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid var(--tc-red-contrast);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
 }
 
 /* Card Badge */

@@ -34,6 +34,7 @@ public final class RowFormatter {
             case EVENTS: return event(ctx, d);
             case SHIPPING: return shipping(ctx, d);
             case FEEDBACK: return feedback(ctx, d);
+            case REVIEWS: return review(ctx, d);
             case BLOGS: return blog(ctx, d);
             case AUDIT: return audit(ctx, d);
             default: return new Row(d.getId(), "", "");
@@ -104,25 +105,60 @@ public final class RowFormatter {
 
     private static Row voucher(Context ctx, DocumentSnapshot d) {
         String code = DocUtils.str(d, "code");
-        String desc = DocUtils.str(d, "description");
         String type = DocUtils.str(d, "type");
         double value = DocUtils.num(d, "value");
         double minOrder = DocUtils.num(d, "minOrder");
         String expiry = DocUtils.str(d, "expiry");
+        String endTime = DocUtils.str(d, "endTime");
+        boolean isActive = !Boolean.FALSE.equals(d.getBoolean("isActive"));
+        long used = (long) DocUtils.num(d, "usedCount");
+        long limit = (long) DocUtils.num(d, "usageLimit");
 
         String discountLabel = "percent".equals(type) ? "-" + (long) value + "%" : "-" + DocUtils.money(value);
-        boolean expired = isExpired(expiry);
-        String subtitle = desc.isEmpty() ? "Đơn tối thiểu " + DocUtils.money(minOrder) : desc;
-        return new Row(code, subtitle, discountLabel, expired ? "Hết hạn" : "Đang áp dụng",
-                expired ? R.color.st_neutral : R.color.st_success);
+        boolean expired = isExpired(expiry, endTime);
+        boolean full = limit > 0 && used >= limit;
+
+        String subtitle = "Đơn tối thiểu " + DocUtils.money(minOrder);
+        if (limit > 0) subtitle += " • Đã dùng: " + used + "/" + limit;
+
+        String status;
+        int color;
+        if (!isActive) {
+            status = "Đã tắt";
+            color = R.color.st_neutral;
+        } else if (expired) {
+            status = "Hết hạn";
+            color = R.color.st_danger;
+        } else if (full) {
+            status = "Hết lượt";
+            color = R.color.st_danger;
+        } else {
+            status = "Hoạt động";
+            color = R.color.st_success;
+        }
+
+        return new Row(code, subtitle, discountLabel, status, color);
     }
 
-    private static boolean isExpired(String expiry) {
-        if (expiry == null || expiry.isEmpty()) return false;
+    private static boolean isExpired(String date, String time) {
+        if (date == null || date.isEmpty()) return false;
         try {
-            String s = expiry.length() >= 10 ? expiry.substring(0, 10) : expiry;
-            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-            return f.parse(s).getTime() < System.currentTimeMillis();
+            String pattern = "yyyy-MM-dd";
+            String input = date;
+            if (time != null && !time.isEmpty()) {
+                pattern = "yyyy-MM-dd HH:mm";
+                input += " " + time;
+            }
+            
+            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat(pattern, java.util.Locale.US);
+            long expiryMillis = f.parse(input).getTime();
+            
+            // Neu chi co ngay (khong co gio), thi mac dinh het han vao cuoi ngay do (23:59:59)
+            if (time == null || time.isEmpty()) {
+                expiryMillis += (24 * 60 * 60 * 1000) - 1;
+            }
+            
+            return expiryMillis < System.currentTimeMillis();
         } catch (Exception e) {
             return false;
         }
@@ -161,6 +197,30 @@ public final class RowFormatter {
         return new Row(name.isEmpty() ? "(Ẩn danh)" : name, message, phone,
                 replied ? ctx.getString(R.string.feedback_replied) : ctx.getString(R.string.feedback_pending),
                 replied ? R.color.st_success : R.color.st_pending);
+    }
+
+    private static Row review(Context ctx, DocumentSnapshot d) {
+        String name = DocUtils.str(d, "userName");
+        String comment = DocUtils.str(d, "comment");
+        String product = DocUtils.str(d, "productId");
+        double rating = DocUtils.num(d, "rating");
+        String status = DocUtils.str(d, "status");
+        if (status.isEmpty()) status = "APPROVED"; // Default
+
+        String title = (name.isEmpty() ? "(Ẩn danh)" : name) + " • " + (long) rating + "★";
+        String subtitle = (product.isEmpty() ? "" : product + " • ") + comment;
+        
+        int color = R.color.st_success;
+        String statusLabel = "Công khai";
+        if ("PENDING".equals(status)) {
+            color = R.color.st_pending;
+            statusLabel = "Chờ duyệt";
+        } else if ("HIDDEN".equals(status)) {
+            color = R.color.st_danger;
+            statusLabel = "Đã ẩn";
+        }
+        
+        return new Row(title, subtitle, "", statusLabel, color);
     }
 
     private static Row blog(Context ctx, DocumentSnapshot d) {

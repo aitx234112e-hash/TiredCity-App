@@ -3,7 +3,12 @@ package com.tiredcity.app.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tiredcity.app.data.model.UserProfile;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PreferenceManager {
 
@@ -147,6 +152,14 @@ public class PreferenceManager {
         prefs.edit().putBoolean(key, value).apply();
     }
 
+    public void setPin(String pin) {
+        prefs.edit().putString(Constants.KEY_PIN_VALUE, pin).apply();
+    }
+
+    public String getPin() {
+        return prefs.getString(Constants.KEY_PIN_VALUE, "");
+    }
+
     /** Notification toggles default to ON; PIN unlock should pass false as default. */
     public boolean getToggle(String key, boolean defaultValue) {
         return prefs.getBoolean(key, defaultValue);
@@ -162,6 +175,29 @@ public class PreferenceManager {
         prefs.edit()
              .remove(Constants.KEY_TOKEN)
              .remove(Constants.KEY_USER_ID)
+             .remove(Constants.KEY_USER_PROFILE)
+             .remove(Constants.KEY_AVATAR)
+             .remove(Constants.KEY_MENH)
+             .remove(Constants.KEY_ZODIAC)
              .apply();
+    }
+
+    // ── Email History ──────────────────────────────────────────────────────────
+
+    public void saveEmailToHistory(String email) {
+        if (email == null || email.isEmpty()) return;
+        List<String> history = getEmailHistory();
+        if (!history.contains(email)) {
+            history.add(0, email);
+            if (history.size() > 5) history = history.subList(0, 5); // Giữ tối đa 5 email
+            prefs.edit().putString("key_email_history", gson.toJson(history)).apply();
+        }
+    }
+
+    public List<String> getEmailHistory() {
+        String json = prefs.getString("key_email_history", null);
+        if (json == null) return new ArrayList<>();
+        Type type = new TypeToken<List<String>>(){}.getType();
+        return gson.fromJson(json, type);
     }
 }

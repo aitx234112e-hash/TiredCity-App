@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "683649996737-0ad06tjn70ll7tnbp7gpkukfd1d1lm7e.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.tiredcity.app",
-            "certificate_hash": "2e446c6eec1cab44368937254e29b079fba159fc"
-          }
-        },
-        {
           "client_id": "683649996737-7vjlpsh6f3av9hnvnuhaaln6se2vbb2k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -20,12 +20,57 @@ service cloud.firestore {
 
     // Sản phẩm: ai cũng đọc, chỉ admin (đã đăng nhập) mới ghi
     match /products/{id} {
+    // --- HELPER FUNCTIONS ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email.endsWith('@tiredcity.com')
+      );
+    }
+
+    function isOwner(data) {
+      return isSignedIn() && (request.auth.uid == data.userId || request.auth.uid == data.user);
+    }
+
+    // --- COLLECTION RULES ---
+
+    // Products: Ai cũng có thể đọc, chỉ admin mới được sửa
+    match /products/{productId} {
       allow read: if true;
       allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
     // Cấu hình vận chuyển: app khách cần đọc để hiện gói ship
     match /shipping_settings/{id} {
+    // Orders:
+    // - Khách hàng chỉ được xem đơn của mình (kiểm tra cả userId và user field)
+    // - Khách hàng được tạo đơn (với status mặc định là PENDING)
+    // - Chỉ Admin mới được sửa trạng thái (status)
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && (isOwner(resource.data) || isAdmin());
+
+      allow create: if isSignedIn()
+        && (request.resource.data.userId == request.auth.uid || request.resource.data.user == request.auth.uid)
+        && request.resource.data.status == 'PENDING';
+
+      allow update: if isAdmin()
+        || (isOwner(resource.data) && resource.data.status == 'PENDING' && request.resource.data.status == 'CANCELLED');
+
+      allow delete: if isAdmin();
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // Shipping Configs
+    match /shipping_configs/{configId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
@@ -41,8 +86,13 @@ service cloud.firestore {
                     && request.resource.data.totalPrice is number
                     && request.resource.data.totalPrice >= 0;
       allow read, update, delete: if request.auth != null;
+      allow write: if isAdmin();
     }
 
+    // Default
+    match /{path=**} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
     // Người dùng & nhật ký kiểm toán: chỉ admin
     match /users/{id} {
       allow read, write: if request.auth != null;

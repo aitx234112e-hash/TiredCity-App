@@ -44,7 +44,9 @@
     <string name="m_shipping">Vận chuyển</string>
     <string name="m_shipping_desc">Phương thức giao hàng</string>
     <string name="m_feedback">Phản hồi</string>
-    <string name="m_feedback_desc">Ý kiến, đánh giá khách hàng</string>
+    <string name="m_feedback_desc">Ý kiến khách hàng</string>
+    <string name="m_reviews">Đánh giá</string>
+    <string name="m_reviews_desc">Đánh giá sản phẩm</string>
     <string name="m_blogs">Blogs</string>
     <string name="m_blogs_desc">Bài viết, tin tức</string>
     <string name="m_audit">Audit logs</string>
@@ -110,10 +112,16 @@
     <string name="update_error">Cập nhật thất bại: %s</string>
 
     <string name="status_pending">Chờ xác nhận</string>
+    <string name="status_confirmed">Đã xác nhận</string>
     <string name="status_processing">Đang chuẩn bị hàng</string>
     <string name="status_shipped">Đang giao hàng</string>
     <string name="status_delivered">Đã giao hàng</string>
     <string name="status_cancelled">Đã hủy</string>
+
+    <string name="order_item_title_fmt">%1$s: #%2$s</string>
+    <string name="order_item_subtitle_fmt">%1$s: %2$s</string>
+    <string name="order_summary_fmt">%1$s: #%2$s\n%3$s: %4$s\n%5$s: %6$s</string>
+    <string name="error_load_orders">Không thể tải danh sách đơn hàng</string>
 
     <string name="btn_confirm_order">Xác nhận đơn</string>
     <string name="btn_ship_order">Gửi hàng</string>
@@ -156,6 +164,14 @@
     <string name="paid_yes">Đã thanh toán</string>
     <string name="paid_no">Chưa thanh toán</string>
     <string name="feedback_marked">Đã đánh dấu phản hồi</string>
+    <string name="btn_reply_review">Phản hồi đánh giá</string>
+    <string name="btn_approve_review">Duyệt đánh giá</string>
+    <string name="btn_hide_review">Ẩn đánh giá</string>
+    <string name="review_status_approved">Công khai</string>
+    <string name="review_status_hidden">Đã ẩn</string>
+    <string name="review_status_pending">Chờ duyệt</string>
+    <string name="hint_admin_reply">Nhập lời phản hồi của cửa hàng…</string>
+    <string name="review_replied_ok">Đã gửi phản hồi</string>
     <string name="revenue_chart_title">Doanh thu 6 tháng gần nhất</string>
     <string name="month_fmt">Th%1$d</string>
     <string name="btn_export_csv">Xuất CSV</string>
@@ -170,7 +186,10 @@
     <string name="saved_ok">Đã lưu thành công</string>
     <string name="field_required">Bắt buộc</string>
     <string name="form_fill_required">Vui lòng điền đầy đủ các trường bắt buộc</string>
+    <string name="error_date_range">Thời điểm kết thúc phải sau thời điểm bắt đầu</string>
+    <string name="error_time_range">Giờ kết thúc phải sau giờ bắt đầu khi chọn cùng ngày</string>
     <string name="hint_pick_date">Chọn ngày…</string>
+    <string name="hint_pick_time">Chọn giờ…</string>
     <string name="record_not_found">Không tìm thấy bản ghi</string>
 
     <!-- Chatbot / Tro ly AI -->

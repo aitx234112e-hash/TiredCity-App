@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
+        <!-- Web Client ID đã có sẵn từ Google Services nên bạn không cần thêm lại -->
+        <!-- Nếu code báo lỗi thiếu R.string.default_web_client_id thì mới thêm dòng dưới: -->
+        <!-- <string name="default_web_client_id">683649996737-70ls6idlls5laql9uiguo2hq80u11mgt.apps.googleusercontent.com</string> -->
+
+        <!-- Cấu hình Facebook (BẮT BUỘC THÊM VÀO ĐÂY) -->
+    <string name="facebook_app_id">2548105325614045</string>
+    <string name="fb_login_protocol_scheme">fb2548105325614045</string>
+    <string name="facebook_client_token">d71672a3a2adebc3fed9df8b87321813</string>
+    <string name="facebook_provider_authority" translatable="false">com.facebook.app.FacebookContentProvider2548105325614045</string>
     <!-- App -->
     <string name="app_name">Tired City</string>
 
@@ -422,6 +432,8 @@
     <string name="label_free_shipping_subtitle">Toàn quốc</string>
     <string name="label_easy_returns">7 ngày đổi trả</string>
     <string name="label_easy_returns_subtitle">Miễn phí</string>
+    <string name="label_free_shipping">Giao hàng nhanh\n(SPX Express)</string>
+    <string name="label_easy_returns">Đổi trả 14 ngày</string>
     <string name="label_secure_payment">Thanh toán an toàn</string>
     <string name="label_secure_payment_subtitle">Bảo mật 100%</string>
     <string name="label_premium_material">Chất liệu cao cấp</string>
@@ -745,6 +757,28 @@
     <string name="label_sales_policy">Chính sách bán hàng</string>
     <string name="label_general_settings">Cài đặt chung</string>
     <string name="label_terms_conditions">Điều khoản &amp; Điều kiện</string>
+    <string name="terms_title">Điều khoản sử dụng</string>
+    <string name="terms_content" translatable="false">
+        <![CDATA[
+        <h3>1. Chấp nhận điều khoản</h3>
+        <p>Bằng cách sử dụng ứng dụng TiredCity, bạn đồng ý tuân thủ các điều khoản và điều kiện này.</p>
+
+        <h3>2. Quyền sở hữu trí tuệ</h3>
+        <p>Tất cả nội dung, hình ảnh, thiết kế trên ứng dụng đều thuộc bản quyền của TiredCity hoặc các đối tác nghệ sĩ của chúng tôi. Việc sao chép mà không có sự đồng ý là vi phạm pháp luật.</p>
+
+        <h3>3. Tài khoản người dùng</h3>
+        <p>Bạn có trách nhiệm bảo mật mật khẩu và thông tin tài khoản của mình. Mọi hoạt động dưới tài khoản của bạn sẽ do bạn chịu trách nhiệm.</p>
+
+        <h3>4. Chính sách bán hàng</h3>
+        <p>Giá cả và tình trạng hàng hóa có thể thay đổi mà không báo trước. Chúng tôi có quyền từ chối đơn hàng nếu có sai sót về giá hoặc thông tin sản phẩm.</p>
+
+        <h3>5. Giới hạn trách nhiệm</h3>
+        <p>TiredCity không chịu trách nhiệm cho bất kỳ thiệt hại gián tiếp nào phát sinh từ việc sử dụng ứng dụng.</p>
+
+        <h3>6. Thay đổi điều khoản</h3>
+        <p>Chúng tôi có thể cập nhật các điều khoản này theo thời gian. Việc tiếp tục sử dụng ứng dụng đồng nghĩa với việc bạn chấp nhận các thay đổi đó.</p>
+        ]]>
+    </string>
     <!-- Quick actions -->
     <string name="label_styling_ai">Phối đồ</string>
     <string name="label_orders_short">Đơn hàng</string>
@@ -844,6 +878,7 @@
 
     <!-- Policies Detail Content -->
     <string name="policy_subtitle">Tìm hiểu các chính sách và điều khoản của TiredCity để có trải nghiệm mua sắm an toàn và ý nghĩa.</string>
+    <string name="policy_subtitle">Tìm hiểu về các chính sách và điều khoản của TiredCity để đảm bảo trải nghiệm mua sắm an toàn và ý nghĩa.</string>
 
     <string name="policy_purchase_title">Chính sách mua hàng</string>
     <string name="policy_purchase_content"><![CDATA[
@@ -862,10 +897,39 @@
         6. Nhận thông báo xác nhận từ cửa hàng.<br/><br/>
         <b>Lưu ý</b><br/>
         Cửa hàng có quyền từ chối các đơn hàng có dấu hiệu gian lận hoặc thông tin không chính xác.
+        <b>Thời gian xác nhận đơn hàng</b><br/>
+        Sau khi quý khách đặt hàng thành công, chúng tôi sẽ liên hệ để xác nhận trong vòng 24 giờ làm việc.<br/><br/>
+        <b>Điều kiện đặt hàng</b><br/>
+        • Khách hàng cần cung cấp đầy đủ thông tin giao hàng.<br/>
+        • Thông tin số điện thoại và địa chỉ phải chính xác.<br/>
+        • Đơn hàng cần được xác nhận trước khi tiến hành giao hàng.<br/><br/>
+        <b>Quy trình mua hàng</b><br/>
+        1. Chọn sản phẩm mong muốn.<br/>
+        2. Thêm sản phẩm vào giỏ hàng.<br/>
+        3. Điền thông tin giao hàng.<br/>
+        4. Chọn phương thức thanh toán.<br/>
+        5. Xác nhận đơn hàng.<br/>
+        6. Nhận thông báo xác nhận từ cửa hàng.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Cửa hàng có quyền từ chối các đơn hàng có dấu hiệu gian lận hoặc thông tin không chính xác.
     ]]></string>
 
     <string name="policy_payment_title">Chính sách thanh toán</string>
     <string name="policy_payment_content"><![CDATA[
+        <b>Phương thức thanh toán</b><br/>
+        • Thanh toán khi nhận hàng (COD).<br/>
+        • Chuyển khoản ngân hàng.<br/>
+        • Ví điện tử (MoMo, ZaloPay, VNPay…).<br/>
+        • Thẻ tín dụng/Ghi nợ.<br/><br/>
+        <b>Bảo mật thanh toán</b><br/>
+        • Mọi giao dịch trực tuyến đều được mã hóa và bảo mật.<br/>
+        • Thông tin thanh toán của khách hàng không được lưu trữ khi chưa có sự đồng ý.<br/>
+        • Các cổng thanh toán sử dụng đều đạt tiêu chuẩn an toàn.<br/><br/>
+        <b>Chính sách hoàn tiền</b><br/>
+        • Tiền sẽ được hoàn sau khi yêu cầu đổi trả được xác nhận.<br/>
+        • Thời gian xử lý hoàn tiền từ 05 – 07 ngày làm việc.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Khách hàng nên giữ lại thông tin giao dịch để đối chiếu khi cần thiết.
         <b>Phương thức thanh toán</b><br/>
         • Thanh toán khi nhận hàng (COD).<br/>
         • Chuyển khoản ngân hàng.<br/>
@@ -882,8 +946,21 @@
         Khách hàng nên lưu lại thông tin giao dịch để đối chiếu khi cần.
     ]]></string>
 
+    <string name="policy_shipping_title">Chính sách vận chuyển</string>
     <string name="policy_shipping_title">Chính sách giao hàng</string>
     <string name="policy_shipping_content"><![CDATA[
+        <b>Thời gian giao hàng</b><br/>
+        • Nội thành: 01 – 03 ngày làm việc.<br/>
+        • Ngoại thành và các tỉnh khác: 03 – 07 ngày làm việc.<br/><br/>
+        <b>Phạm vi vận chuyển</b><br/>
+        Chúng tôi hỗ trợ giao hàng toàn quốc thông qua các đơn vị vận chuyển uy tín.<br/><br/>
+        <b>Quy trình giao hàng</b><br/>
+        1. Đơn hàng được xác nhận.<br/>
+        2. Sản phẩm được đóng gói và bàn giao cho đơn vị vận chuyển.<br/>
+        3. Khách hàng nhận thông tin theo dõi đơn hàng.<br/>
+        4. Giao hàng đến địa chỉ đã đăng ký.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Thời gian giao hàng có thể thay đổi do thời tiết, lễ tết hoặc các yếu tố khách quan khác.
         <b>Thời gian giao hàng</b><br/>
         • Nội thành: 01 – 03 ngày làm việc.<br/>
         • Ngoại thành và các tỉnh khác: 03 – 07 ngày làm việc.<br/><br/>
@@ -914,6 +991,20 @@
         4. Nhận sản phẩm mới hoặc hoàn tiền theo quy định.<br/><br/>
         <b>Lưu ý</b><br/>
         Chi phí vận chuyển phát sinh trong quá trình đổi trả sẽ được xử lý theo từng trường hợp cụ thể.
+        <b>Thời hạn đổi trả</b><br/>
+        Chúng tôi chấp nhận đổi trả trong vòng 07 ngày kể từ ngày khách hàng nhận được sản phẩm.<br/><br/>
+        <b>Điều kiện đổi trả sản phẩm</b><br/>
+        • Sản phẩm còn nguyên vẹn, đầy đủ tem mác.<br/>
+        • Chưa qua sử dụng và chưa qua giặt là.<br/>
+        • Không bị hư hỏng do lỗi từ phía khách hàng.<br/>
+        • Có hóa đơn hoặc chứng từ mua hàng.<br/><br/>
+        <b>Quy trình đổi trả</b><br/>
+        1. Liên hệ với bộ phận chăm sóc khách hàng.<br/>
+        2. Cung cấp hình ảnh hoặc video về sản phẩm.<br/>
+        3. Đóng gói và gửi sản phẩm về cửa hàng.<br/>
+        4. Nhận sản phẩm mới hoặc hoàn tiền theo quy định.<br/><br/>
+        <b>Lưu ý</b><br/>
+        Các chi phí phát sinh trong quá trình đổi trả sẽ được xử lý tùy theo từng trường hợp cụ thể.
     ]]></string>
 
     <string name="policy_privacy_title">Chính sách bảo mật</string>
@@ -968,7 +1059,24 @@
         • Chúng tôi có quyền từ chối hoặc hủy đơn trong trường hợp: hết hàng, sai giá do lỗi hệ thống, hoặc nghi ngờ gian lận.<br/>
         • Thông tin sản phẩm (hình ảnh, màu sắc, mô tả) mang tính minh họa; có thể chênh lệch nhẹ so với thực tế.<br/><br/>
         Sau khi đơn được xác nhận, bạn sẽ nhận thông báo qua ứng dụng, email hoặc số điện thoại đã đăng ký.
+        <b>Mục đích thu thập thông tin</b><br/>
+        • Xử lý đơn hàng.<br/>
+        • Hỗ trợ chăm sóc khách hàng.<br/>
+        • Nâng cao chất lượng dịch vụ.<br/>
+        • Gửi thông tin khuyến mãi (nếu khách hàng đồng ý).<br/><br/>
+        <b>Phạm vi sử dụng thông tin</b><br/>
+        • Chỉ sử dụng cho các hoạt động liên quan đến cung cấp sản phẩm và dịch vụ.<br/>
+        • Không chia sẻ với bên thứ ba khi chưa có sự đồng ý của khách hàng, trừ trường hợp pháp luật quy định.<br/><br/>
+        <b>An toàn dữ liệu</b><br/>
+        • Thông tin cá nhân được lưu trữ trên hệ thống bảo mật.<br/>
+        • Áp dụng các biện pháp kỹ thuật để ngăn chặn truy cập trái phép.<br/>
+        • Thường xuyên kiểm tra và nâng cấp hệ thống bảo mật.<br/><br/>
+        <b>Quyền lợi khách hàng</b><br/>
+        • Yêu cầu chỉnh sửa hoặc cập nhật thông tin cá nhân.<br/>
+        • Yêu cầu dừng nhận thông tin quảng cáo.<br/>
+        • Yêu cầu xóa dữ liệu cá nhân theo quy định hiện hành.
     ]]></string>
+    <string name="str_policy_term">CHÍNH SÁCH &amp; ĐIỀU KHOẢN</string>
 
     <string name="terms_4_title">4. Giá cả &amp; thanh toán</string>
     <string name="terms_4_content"><![CDATA[

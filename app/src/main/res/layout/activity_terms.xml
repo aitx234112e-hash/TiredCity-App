@@ -6,9 +6,11 @@
     android:orientation="vertical"
     android:background="@color/bg_primary"
     android:fitsSystemWindows="true">
+    android:background="@color/bg_primary">
 
     <!-- ── Toolbar tối giản: chỉ nút Back đỏ son. Tiêu đề nằm ở hero bên dưới. ── -->
     <FrameLayout
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -26,6 +28,11 @@
             android:src="@drawable/ic_back"
             app:tint="@color/brand_red" />
     </FrameLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/bg_surface"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/terms_title"
+        app:titleTextColor="@color/text_primary" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -38,6 +45,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
             android:paddingBottom="40dp">
+        android:layout_height="match_parent">
 
             <!-- ── Editorial header căn giữa ── -->
             <LinearLayout
@@ -55,7 +63,19 @@
                     android:text="@string/terms_header_eyebrow"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
+            <TextView
+                android:id="@+id/tv_terms_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -95,6 +115,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <View
             <!-- ── Ảnh minh hoạ chính sách (frame ngang, tràn viền) ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -117,6 +138,7 @@
             <TextView
                 android:id="@+id/tvContent"
                 android:layout_width="match_parent"
+                android:layout_height="100dp" />
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="6dp"
                 android:textColor="#444444"
@@ -135,4 +157,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>

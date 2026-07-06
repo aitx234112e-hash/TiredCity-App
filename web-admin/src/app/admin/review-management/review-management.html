@@ -1,0 +1,87 @@
+<div class="review-admin">
+  <div class="page-header">
+    <div class="page-title">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+      <h2>Quản lý Đánh giá</h2>
+    </div>
+  </div>
+
+  <div class="toolbar-card">
+    <div class="search-box">
+      <input type="text" placeholder="Tìm tên khách, nội dung hoặc mã SP..." [(ngModel)]="searchText" (input)="applyFilter()" />
+    </div>
+    <span class="toolbar-count">{{ filteredReviews.length }} đánh giá</span>
+  </div>
+
+  <div class="table-card">
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <span>Đang tải...</span>
+    </div>
+
+    <table class="review-table" *ngIf="!loading">
+      <thead>
+        <tr>
+          <th>Khách hàng</th>
+          <th>Sản phẩm</th>
+          <th>Đánh giá</th>
+          <th>Nội dung</th>
+          <th>Ngày</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of filteredReviews">
+          <td>
+            <div class="customer-cell">
+              <img [src]="r.userAvatarUrl || 'assets/images/default-avatar.png'" class="avatar-sm" (error)="$event.target.src='assets/images/default-avatar.png'" />
+              <span>{{ r.userName || 'Ẩn danh' }}</span>
+            </div>
+          </td>
+          <td>{{ r.productId }}</td>
+          <td>
+            <div class="rating-stars">
+              <span *ngFor="let s of [1,2,3,4,5]" class="star" [class.filled]="s <= r.rating">★</span>
+            </div>
+          </td>
+          <td class="comment-cell">{{ r.comment }}</td>
+          <td>{{ r.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <div class="action-group">
+              <button class="act-btn act-reply" (click)='openReply(r)' title="Phản hồi">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M3 10h10a5 5 0 015 5v2M3 10l6-6M3 10l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="act-btn act-delete" (click)="deleteReview(r._id)" title="Xóa đánh giá">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M3 6h18M9 6v12M15 6v12M5 6l1 14a2 2 0 002 2h8a2 2 0 002-2l1-14M10 11v6M14 11v6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Phản hồi -->
+  <div class="modal-overlay" *ngIf="showReplyModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Phản hồi đánh giá</h3>
+        <button class="close-btn" (click)="closeReply()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="review-info" *ngIf="selectedReview">
+          <p><strong>Khách hàng:</strong> {{ selectedReview.userName }} ({{ selectedReview.rating }}★)</p>
+          <p><strong>Nội dung:</strong> {{ selectedReview.comment }}</p>
+        </div>
+        <div class="form-group">
+          <label>Lời phản hồi của cửa hàng</label>
+          <textarea [(ngModel)]="replyContent" placeholder="Nhập lời cảm ơn hoặc giải đáp..." rows="4"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeReply()">Hủy</button>
+        <button class="btn-primary" (click)='submitReply()'>Gửi phản hồi</button>
+      </div>
+    </div>
+  </div>
+</div>

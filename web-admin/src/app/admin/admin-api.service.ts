@@ -95,6 +95,10 @@ export class AdminApiService {
     );
   }
 
+  updateVoucher(id: string, data: any): Observable<void> {
+    return this.inCtx(() => updateDoc(doc(this.firestore, 'vouchers', id), data));
+  }
+
   deleteVoucher(id: string): Observable<void> {
     return this.inCtx(() => deleteDoc(doc(this.firestore, 'vouchers', id)));
   }

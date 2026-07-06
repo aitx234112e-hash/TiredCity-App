@@ -54,6 +54,9 @@ android {
 }
 
 dependencies {
+    implementation("androidx.credentials:credentials-play-services-auth:1.6.0")
+    implementation("androidx.credentials:credentials:1.6.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.2.0")
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.24")
 
@@ -71,10 +74,15 @@ dependencies {
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 
+    // Facebook Login
+    implementation("com.facebook.android:facebook-login:17.0.0")
+
     // Firebase (Firestore de dong bo don hang voi web-admin)
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-storage")
 
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment:2.7.7")

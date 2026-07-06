@@ -33,6 +33,9 @@ import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.data.model.UserProfile;
+import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.AuthRepository;
+import com.tiredcity.app.data.repository.FavoritesRepository;
 import com.tiredcity.app.databinding.FragmentHomeBinding;
 import com.tiredcity.app.ui.styling.AiStylingActivity;
 import com.tiredcity.app.ui.styling.ChatBotActivity;
@@ -47,6 +50,8 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private PreferenceManager   prefs;
+    private AuthRepository      authRepository;
+    private FavoritesRepository favoritesRepository;
     private Handler             autoScrollHandler;
     private Runnable            autoScrollRunnable;
     private MediaBannerAdapter  bannerAdapter;
@@ -56,6 +61,9 @@ public class HomeFragment extends Fragment {
     private Handler             promoScrollHandler;
     private Runnable            promoScrollRunnable;
     private PromoStripAdapter   promoAdapter;
+    private com.tiredcity.app.data.repository.ProductRepository productRepository;
+    private ProductAdapter      recommendedAdapter;
+    private ProductAdapter      hotProductsAdapter;
     private List<View>          recommendedCards;
     private Handler             recommendedSpotlightHandler;
     private Runnable            recommendedSpotlightRunnable;
@@ -105,7 +113,11 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         prefs = new PreferenceManager(requireContext());
+        productRepository = new com.tiredcity.app.data.repository.ProductRepository(ApiClient.getApiService(null));
+        authRepository = new AuthRepository(ApiClient.getApiService(null), prefs);
+        favoritesRepository = new FavoritesRepository(new com.tiredcity.app.data.local.FavoritesLocalStore(requireContext()));
 
+        syncUserProfile();
         setupGreeting();
         setupMenhBanner();
         setupBanner();
@@ -198,6 +210,17 @@ public class HomeFragment extends Fragment {
         bannerAdapter = null;
         banner2Adapter = null;
         hotProductsAdapter = null;
+    }
+
+    private void syncUserProfile() {
+        authRepository.syncAccount(prefs.getUser(), cloudProfile -> {
+            if (isAdded() && cloudProfile != null) {
+                requireActivity().runOnUiThread(() -> {
+                    setupGreeting();
+                    setupMenhBanner();
+                });
+            }
+        });
     }
 
     // ── Media thương hiệu (video Behance + gif) ───────────────────────────────
@@ -419,23 +442,41 @@ public class HomeFragment extends Fragment {
                     int year  = Integer.parseInt(profile.getBirthDate().substring(0, 4));
                     int month = Integer.parseInt(profile.getBirthDate().substring(5, 7));
                     int day   = Integer.parseInt(profile.getBirthDate().substring(8, 10));
+        UserProfile profile = prefs.getUser();
+        String menh = null;
+        String zodiac = null;
 
-                    menh   = MenhCalculator.tinhMenh(year);
-                    zodiac = MenhCalculator.tinhCungHoangDao(month, day);
-                    String animal = MenhCalculator.tinhConGiap(year);
+        if (profile != null && profile.getBirthDate() != null && profile.getBirthDate().length() >= 10) {
+            try {
+                int year = Integer.parseInt(profile.getBirthDate().substring(0, 4));
+                int month = Integer.parseInt(profile.getBirthDate().substring(5, 7));
+                int day = Integer.parseInt(profile.getBirthDate().substring(8, 10));
 
+                // LUÔN TÍNH LẠI ĐỂ ĐẢM BẢO CHÍNH XÁC THEO CÔNG THỨC MỚI
+                menh = MenhCalculator.tinhMenh(year);
+                zodiac = MenhCalculator.tinhCungHoangDao(month, day);
+                String animal = MenhCalculator.tinhConGiap(year);
+
+                // Cập nhật lại cache và Cloud nếu có sự thay đổi (Self-Healing)
+                if (!menh.equals(prefs.getMenh()) || !zodiac.equals(prefs.getZodiac())) {
                     prefs.setMenh(menh);
                     prefs.setZodiac(zodiac);
 
-                    UserProfile updated = prefs.getUser();
-                    if (updated != null) {
-                        updated.setMenh(menh);
-                        updated.setZodiac(zodiac);
-                        updated.setAnimal(animal);
-                        prefs.saveUser(updated);
-                    }
-                } catch (NumberFormatException ignored) { }
+                    profile.setMenh(menh);
+                    profile.setZodiac(zodiac);
+                    profile.setAnimal(animal);
+                    prefs.saveUser(profile);
+
+                    // Đồng bộ ngay lên Cloud để các máy khác cũng nhận dữ liệu đúng
+                    authRepository.syncUserProfileToFirestore(profile);
+                }
+            } catch (Exception ignored) {
+                menh = prefs.getMenh();
+                zodiac = prefs.getZodiac();
             }
+        } else {
+            menh = prefs.getMenh();
+            zodiac = prefs.getZodiac();
         }
 
         if (menh == null || menh.isEmpty()) {
@@ -601,6 +642,30 @@ public class HomeFragment extends Fragment {
     /** Nạp 4 sản phẩm đầu vào 4 thẻ xen kẽ, rồi bật hiệu ứng "đèn sân khấu": mỗi giây một thẻ
      *  sáng rõ lên, 3 thẻ còn lại mờ đi — xoay vòng liên tục qua cả 4 thẻ. */
     private void setupRecommendedProducts() {
+        binding.rvRecommended.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        // CHUYỂN SANG DÙNG FIREBASE THẬT
+        productRepository.getProductsFromFirestore(new com.tiredcity.app.data.repository.ProductRepository.OnProductsLoadedListener() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                if (!isAdded() || products == null) return;
+
+                // Lọc lấy 5 sản phẩm đầu tiên làm gợi ý
+                List<Product> recommended = products.size() > 5 ? products.subList(0, 5) : products;
+                recommendedAdapter = new ProductAdapter(recommended);
+                setupAdapterListeners(recommendedAdapter);
+                binding.rvRecommended.setAdapter(recommendedAdapter);
+            }
+
+            @Override
+            public void onError(String message) {
+                // Fallback chỉ khi mất mạng
+                recommendedAdapter = new ProductAdapter(MockProductCatalog.getHomeHighlights(requireContext(), true));
+                setupAdapterListeners(recommendedAdapter);
+                binding.rvRecommended.setAdapter(recommendedAdapter);
+            }
+        });
         List<Product> products = MockProductCatalog.getHomeHighlights(requireContext(), true);
         bindRecommendedCards(products);
 
@@ -683,8 +748,6 @@ public class HomeFragment extends Fragment {
         card.setOnClickListener(v -> openProductDetail(product.getId()));
     }
 
-    // ── Hot products ──────────────────────────────────────────────────────────
-
     /** Carousel 3 thẻ (ViewPager2 + padding ngang để 2 thẻ bên lộ ra); thẻ đang ở giữa được
      *  CenterScalePageTransformer phóng to, tự động chuyển sang thẻ kế tiếp mỗi
      *  {@link #HOT_PRODUCTS_INTERVAL}ms — thẻ đang to co lại đúng lúc thẻ mới phóng to lên. */
@@ -765,6 +828,46 @@ public class HomeFragment extends Fragment {
 
             bindRecommendedCards(recommended);
             if (hotProductsAdapter != null) hotProductsAdapter.updateData(hot);
+        });
+        binding.rvHotProducts.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        productRepository.getProductsFromFirestore(new com.tiredcity.app.data.repository.ProductRepository.OnProductsLoadedListener() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                if (!isAdded() || products == null) return;
+
+                // Lấy các sản phẩm tiếp theo làm sản phẩm nổi bật
+                List<Product> hot = products.size() > 10 ? products.subList(5, 10) : products;
+                hotProductsAdapter = new ProductAdapter(hot);
+                setupAdapterListeners(hotProductsAdapter);
+                binding.rvHotProducts.setAdapter(hotProductsAdapter);
+            }
+
+            @Override
+            public void onError(String message) {
+                hotProductsAdapter = new ProductAdapter(MockProductCatalog.getHomeHighlights(requireContext(), false));
+                setupAdapterListeners(hotProductsAdapter);
+                binding.rvHotProducts.setAdapter(hotProductsAdapter);
+            }
+        });
+    }
+
+    private void setupAdapterListeners(ProductAdapter adapter) {
+        adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+            @Override
+            public void onProductClick(Product product) {
+                openProductDetail(product.getId());
+            }
+            @Override
+            public void onSaveToggle(Product product, boolean saved) {
+                favoritesRepository.syncFavoritesToCloud();
+            }
+            @Override
+            public void onAddToCartClick(Product product) {
+                openProductDetail(product.getId());
+                android.widget.Toast.makeText(requireContext(), "Vui lòng chọn Size trước khi thêm vào giỏ", android.widget.Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

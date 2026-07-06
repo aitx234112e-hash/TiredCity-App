@@ -24,6 +24,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public interface OnProductClickListener {
         void onProductClick(Product product);
         void onSaveToggle(Product product, boolean saved);
+        void onAddToCartClick(Product product);
     }
 
     public ProductAdapter(List<Product> products) {
@@ -123,12 +124,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             // Product image via Glide
             String imageUrl = product.getFirstImage();
             if (!imageUrl.isEmpty()) {
+                Object loadTarget = imageUrl;
+                // Nếu là tên resource (không phải URL), chuyển thành resource ID để Glide nạp offline
+                if (!imageUrl.startsWith("http") && !imageUrl.startsWith("content")) {
+                    int resId = b.ivProductImage.getContext().getResources().getIdentifier(
+                            imageUrl, "drawable", b.ivProductImage.getContext().getPackageName());
+                    if (resId != 0) loadTarget = resId;
+                }
+
                 Glide.with(b.ivProductImage.getContext())
                         .load(imageUrl)
                         // Ảnh sản phẩm có thể nặng (PNG vài MB) → nới timeout để không bị
                         // huỷ tải giữa chừng (mặc định Glide chỉ 2500ms).
                         .timeout(30000)
+                        .load(loadTarget)
                         .centerCrop()
+                        .override(400, 500) // Optimize size for grid
+                        .thumbnail(0.1f)    // Load small thumbnail first
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .placeholder(R.color.bg_subtle)
                         .error(R.color.bg_subtle)
@@ -146,6 +158,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 boolean nowSaved = favoritesStore.toggleFavorite(product);
                 b.ibSave.setSaved(nowSaved, true);
                 if (listener != null) listener.onSaveToggle(product, nowSaved);
+            });
+
+            // Quick add to cart
+            b.btnQuickAdd.setOnClickListener(v -> {
+                if (listener != null) listener.onAddToCartClick(product);
             });
 
             b.getRoot().setOnClickListener(v -> {

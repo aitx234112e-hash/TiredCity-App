@@ -11,8 +11,13 @@ public class Review {
     private float rating;
     private String comment;
     private Date createdAt;
+    private String status; // PENDING, APPROVED, HIDDEN
+    private String adminReply;
+    private Date repliedAt;
 
-    public Review() {}
+    public Review() {
+        this.status = "APPROVED"; // Mặc định hiển thị luôn
+    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -30,4 +35,10 @@ public class Review {
     public void setComment(String comment) { this.comment = comment; }
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getAdminReply() { return adminReply; }
+    public void setAdminReply(String adminReply) { this.adminReply = adminReply; }
+    public Date getRepliedAt() { return repliedAt; }
+    public void setRepliedAt(Date repliedAt) { this.repliedAt = repliedAt; }
 }

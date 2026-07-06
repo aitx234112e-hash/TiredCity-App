@@ -22,10 +22,15 @@ public class CartLocalStore {
     }
 
     public List<CartItem> getCartItems() {
-        String json = prefs.getString(KEY_CART_ITEMS, null);
-        if (json == null) return new ArrayList<>();
-        Type type = new TypeToken<List<CartItem>>() {}.getType();
-        return gson.fromJson(json, type);
+        try {
+            String json = prefs.getString(KEY_CART_ITEMS, null);
+            if (json == null || json.isEmpty()) return new ArrayList<>();
+            Type type = new TypeToken<List<CartItem>>() {}.getType();
+            List<CartItem> items = gson.fromJson(json, type);
+            return items != null ? items : new ArrayList<>();
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
     public void saveCartItems(List<CartItem> items) {

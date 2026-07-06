@@ -4,10 +4,12 @@ import {
   Firestore,
   collection,
   doc,
-  getDocs,
   addDoc,
-  updateDoc,
   deleteDoc,
+  updateDoc,
+  query,
+  orderBy,
+  collectionData,
 } from '@angular/fire/firestore';
 
 @Injectable({
@@ -15,7 +17,7 @@ import {
 })
 export class FeedbackApiService {
   private firestore = inject(Firestore);
-  private col = collection(this.firestore, 'feedback');
+  private col = collection(this.firestore, 'feedbacks');
 
   sendFeedback(data: any): Observable<any> {
     const { _id, ...rest } = data;
@@ -23,19 +25,20 @@ export class FeedbackApiService {
     return from(addDoc(this.col, record)).pipe(map((ref) => ({ _id: ref.id, ...record })));
   }
 
-  getFeedback(): Observable<any> {
-    return from(getDocs(this.col)).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
+  getFeedback(): Observable<any[]> {
+    const q = query(this.col, orderBy('createdAt', 'desc'));
+    return collectionData(q, { idField: '_id' }).pipe(
+      map(list => list || [])
     );
   }
 
   deleteFeedback(id: string): Observable<any> {
-    return from(deleteDoc(doc(this.firestore, 'feedback', id)));
+    return from(deleteDoc(doc(this.firestore, 'feedbacks', id)));
   }
 
   updateFeedback(id: string, data: any): Observable<any> {
     const { _id, ...rest } = data;
-    return from(updateDoc(doc(this.firestore, 'feedback', id), rest)).pipe(
+    return from(updateDoc(doc(this.firestore, 'feedbacks', id), rest)).pipe(
       map(() => ({ _id: id, ...rest }))
     );
   }

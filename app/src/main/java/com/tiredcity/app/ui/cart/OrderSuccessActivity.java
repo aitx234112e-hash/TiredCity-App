@@ -28,6 +28,12 @@ public class OrderSuccessActivity extends BaseActivity {
 
         if (orderId != null) {
             binding.tvOrderId.setText(orderId);
+        String orderCode = getIntent().getStringExtra("order_code");
+
+        if (orderCode != null) {
+            binding.tvOrderId.setText(orderCode);
+        } else if (orderId != null) {
+            binding.tvOrderId.setText("#" + orderId);
         }
         binding.tvOrderTotal.setText(PriceUtils.formatVnd(total));
         binding.tvOrderItems.setText(getString(R.string.order_success_items_value, itemCount));

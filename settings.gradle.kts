@@ -22,4 +22,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "TiredCity"
+
 include(":app")
+
+// Khai báo module App Admin (Trỏ thẳng vào thư mục app bên trong app-admin)
+include(":app-admin")
+project(":app-admin").projectDir = file("app-admin/app")

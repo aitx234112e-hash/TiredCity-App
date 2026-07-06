@@ -90,6 +90,15 @@ public class CategoryActivity extends BaseActivity {
 
             @Override
             public void onSaveToggle(Product product, boolean saved) {}
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(CategoryActivity.this, ProductDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+                Toast.makeText(CategoryActivity.this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
+            }
         });
 
         gridManager = new GridLayoutManager(this, spanCount);
@@ -168,6 +177,48 @@ public class CategoryActivity extends BaseActivity {
             productAdapter.updateData(applyTagFilter(source));
         });
     }
+        productRepository = productRepository != null ? productRepository
+                : new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
+
+        // CHUYỂN HẲN SANG DÙNG FIREBASE REALTIME
+        productRepository.getProductsFromFirestore(new com.tiredcity.app.data.repository.ProductRepository.OnProductsLoadedListener() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                binding.swipeRefresh.setRefreshing(false);
+                if (products != null) {
+                    // Log for debugging
+                    android.util.Log.d("CategoryActivity", "Total products: " + products.size());
+
+                    List<Product> filteredByCategory = new ArrayList<>();
+                    if (categoryId == null || categoryId.isEmpty() ||
+                        "Tất cả".equalsIgnoreCase(categoryId) ||
+                        "ALL".equalsIgnoreCase(categoryId)) {
+                        filteredByCategory = products;
+                    } else {
+                        for (Product p : products) {
+                            String pCat = p.getCategory();
+                            if (pCat == null) continue;
+
+                            // Map user-friendly category names to possible Firestore values
+                            boolean match = categoryId.equalsIgnoreCase(pCat);
+                            if (!match) {
+                                if (categoryId.equalsIgnoreCase("Áo Dài")) match = pCat.contains("ao-dai") || pCat.equalsIgnoreCase("AO DAI");
+                                else if (categoryId.equalsIgnoreCase("Nhật Bình")) match = pCat.contains("nhat-binh") || pCat.equalsIgnoreCase("NHAT BINH");
+                                else if (categoryId.equalsIgnoreCase("Áo Tấc")) match = pCat.contains("ao-tac") || pCat.equalsIgnoreCase("AO TAC");
+                                else if (categoryId.equalsIgnoreCase("Phụ Kiện")) match = pCat.contains("phu-kien") || pCat.equalsIgnoreCase("PHU KIEN");
+                            }
+
+                            if (match) {
+                                filteredByCategory.add(p);
+                            }
+                        }
+                    }
+
+                    List<Product> finalResult = applyTagFilter(filteredByCategory);
+                    android.util.Log.d("CategoryActivity", "After filtering: " + finalResult.size());
+                    productAdapter.updateData(finalResult);
+                }
+            }
 
     /** Giữ lại các sản phẩm thuộc đúng danh mục đang mở (so theo nhãn danh mục đã ánh xạ). */
     private List<Product> filterByCategory(List<Product> all) {
@@ -178,6 +229,12 @@ public class CategoryActivity extends BaseActivity {
             if (categoryId.equals(p.getCategory())) out.add(p);
         }
         return out;
+            @Override
+            public void onError(String message) {
+                binding.swipeRefresh.setRefreshing(false);
+                android.util.Log.e("CategoryActivity", "Firebase Error: " + message);
+            }
+        });
     }
 
     /**

@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- App -->
     <string name="app_name">Tired City</string>
-    <string name="brand_tagline">TRADITIONAL VIETNAMESE ATTIRE</string>
 
     <!-- Greeting -->
-    <string name="greeting_morning">Good morning ☀️</string>
-    <string name="greeting_afternoon">Good afternoon 🌤️</string>
-    <string name="greeting_evening">Good evening 🌙</string>
+    <string name="greeting_morning">Good Morning ☀️</string>
+    <string name="greeting_afternoon">Good Afternoon 🌤️</string>
+    <string name="greeting_evening">Good Evening 🌙</string>
     <string name="greeting_guest">Guest</string>
 
     <!-- Bottom navigation -->
-    <string name="nav_home">HOME</string>
-    <string name="nav_shop">PRODUCTS</string>
-    <string name="nav_styling">STYLING</string>
-    <string name="nav_explore">EXPLORE</string>
-    <string name="nav_about">ABOUT US</string>
-    <string name="nav_collections">COLLECTIONS</string>
-    <string name="nav_policies">POLICIES</string>
-    <string name="nav_contact">CONTACT</string>
-
-    <!-- Bottom nav (short labels) -->
     <string name="nav_short_home">Home</string>
     <string name="nav_short_shop">Shop</string>
     <string name="nav_short_styling">Styling</string>
@@ -28,19 +16,12 @@
     <string name="nav_short_about">About</string>
     <string name="nav_short_profile">Me</string>
 
-    <!-- Birth date / Element -->
-    <string name="hint_birthdate">Date of Birth</string>
-    <string name="hint_birthdate_pick">Select date of birth</string>
-    <string name="error_birthdate">Please select your date of birth</string>
-    <string name="profile_avatar_desc">My profile</string>
-
     <!-- Home sections -->
-    <string name="section_recommended">Recommended for You</string>
-    <string name="section_hot">Featured Products</string>
+    <string name="section_recommended">For You</string>
+    <string name="section_hot">Trending</string>
     <string name="section_categories">Categories</string>
-    <string name="see_all">See all</string>
-    <string name="banner_eyebrow">COLLECTION</string>
-    <string name="home_eyebrow_recommended">JUST FOR YOU</string>
+    <string name="see_all">See All</string>
+    <string name="home_eyebrow_recommended">RECOMMENDED</string>
     <string name="home_eyebrow_hot">TRENDING</string>
     <string name="home_eyebrow_categories">BROWSE</string>
     <string name="footer_tagline">Vietnamese attire for a new generation</string>
@@ -61,8 +42,12 @@
     <string name="ai_strip_eyebrow">AI FASHION ADVISOR</string>
     <string name="ai_strip_title_new">What to wear today?</string>
     <string name="ai_strip_cta">ASK NOW ✦</string>
+    <string name="home_eyebrow_categories">CATEGORIES</string>
 
     <!-- Menh banner -->
+    <string name="menh_label">%s Element</string>
+    <string name="zodiac_label">%s Zodiac</string>
+    <string name="menh_tap_hint">Tap for styling suggestions</string>
     <string name="menh_label">Element: %s</string>
     <string name="zodiac_label">Sign: %s</string>
     <string name="menh_tap_hint">Tap to see outfit recommendations</string>
@@ -156,31 +141,21 @@
     <string name="btn_save">Save</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_confirm">Confirm</string>
-    <string name="btn_get_started">Get Started</string>
-    <string name="btn_login">Log In</string>
+    <string name="btn_login">Login</string>
     <string name="btn_register">Register</string>
-    <string name="btn_logout">Log Out</string>
+    <string name="btn_logout">Logout</string>
     <string name="btn_edit_profile">Edit Profile</string>
-    <string name="btn_view_order">View Order</string>
-    <string name="btn_continue_shopping">Continue Shopping</string>
 
     <!-- Auth -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_fullname">Full Name</string>
     <string name="hint_phone">Phone Number</string>
-    <string name="hint_address">Delivery Address</string>
-    <string name="login_remember_me">Remember me</string>
-    <string name="login_forgot_password">Forgot password?</string>
-    <string name="forgot_pw_title">Forgot Password</string>
-    <string name="forgot_pw_subtitle">Enter your registered email and we\'ll send you a password reset link.</string>
-    <string name="forgot_pw_send">SEND RESET LINK</string>
-    <string name="forgot_pw_back">Back to login</string>
-    <string name="forgot_pw_success_title">Link Sent!</string>
-    <string name="forgot_pw_success_desc">Please check your inbox %1$s and follow the instructions to reset your password.</string>
-    <string name="forgot_pw_error_email">Please enter a valid email</string>
-    <string name="login_subtitle">Log in to continue</string>
-    <string name="login_no_account">Don\'t have an account? </string>
+    <string name="hint_birthdate">Birth Date</string>
+    <string name="login_remember_me">Remember Me</string>
+    <string name="login_forgot_password">Forgot Password?</string>
+    <string name="login_subtitle">Sign in to continue</string>
+    <string name="login_no_account">No account? </string>
     <string name="login_or_with">OR LOGIN WITH</string>
     <string name="role_customer">Customer</string>
     <string name="role_admin">Admin</string>
@@ -476,7 +451,11 @@
     <string name="phukien_oche_desc">Traditional parasols and umbrellas,…</string>
     <string name="phukien_mudoidau_title">Ceremonial Headpiece</string>
     <string name="phukien_mudoidau_desc">Modernized hats and headpieces,…</string>
+    <string name="admin_app_not_installed">Admin app not installed.</string>
+    <string name="google_signin_failed">Google Sign-in failed</string>
+    <string name="brand_tagline">TRADITIONAL VIET ATTIRE</string>
 
+    <!-- Profile -->
     <!-- Category page: garment-type tabs + chrome (tab labels are proper nouns, kept untranslated) -->
     <string name="cat_carousel_swipe_hint">Swipe to see more</string>
     <string name="filter_label">Filters</string>
@@ -612,15 +591,14 @@
     <!-- Profile -->
     <string name="label_my_orders">My Orders</string>
     <string name="label_wardrobe">My Wardrobe</string>
-    <string name="label_settings">Settings</string>
-    <string name="profile_hello">Hello,</string>
-    <string name="label_chat_tiredcity">Share with TiredCity</string>
+    <string name="label_chat_tiredcity">Chat with TiredCity</string>
     <string name="label_contact_tiredcity">Contact TiredCity</string>
-    <string name="label_notification_settings">Notification Settings</string>
+    <string name="label_notification_settings">Notifications</string>
     <string name="label_sales_policy">Sales Policy</string>
     <string name="label_general_settings">General Settings</string>
     <string name="settings_general_dark_mode_title">Dark mode</string>
     <string name="label_terms_conditions">Terms &amp; Conditions</string>
+    <string name="profile_hello">Hello,</string>
     <!-- Quick actions -->
     <string name="label_styling_ai">Styling</string>
     <string name="label_orders_short">Orders</string>
@@ -699,14 +677,8 @@
     <string name="store_2_name">2. TiredCity 97 Hàng Gai</string>
     <string name="store_2_details">Address: 97 Hàng Gai St, Hàng Trống, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
 
-    <string name="store_3_name">3. TiredCity 19 Nhà Thờ</string>
-    <string name="store_3_details">Address: 19 Nhà Thờ St, Hàng Trống, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
-
-    <string name="store_4_name">4. TiredCity 100 Hàng Đào</string>
-    <string name="store_4_details">Address: 100 Hàng Đào St, Hàng Đào, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
-
-    <string name="store_5_name">5. TiredCity 8 Lương Ngọc Quyến</string>
-    <string name="store_5_details">Address: 8 Lương Ngọc Quyến St, Hàng Buồm, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
+    <!-- Language toggle -->
+    <string name="switch_to_other_lang">VI</string>
 
     <!-- Policies Detail Content -->
     <string name="policy_subtitle">Learn about TiredCity\'s policies and terms to ensure a safe and meaningful shopping experience.</string>
@@ -764,7 +736,7 @@
         Delivery time may vary due to weather, holidays, or other objective factors.
     ]]></string>
 
-    <string name="policy_return_title">Return And Refund Policy</string>
+    <string name="policy_return_title">Return &amp; Refund Policy</string>
     <string name="policy_return_content"><![CDATA[
         <b>Return Period</b><br/>
         We accept returns within 07 days from the date the customer receives the product.<br/><br/>
@@ -803,7 +775,35 @@
     ]]></string>
     <string name="str_policy_term">SALES POLICY</string>
 
-    <!-- Header buttons (content descriptions) -->
+    <!-- Terms -->
+    <string name="terms_title">Terms of Use</string>
+    <string name="terms_content" translatable="false">
+        <![CDATA[
+        <h3>1. Acceptance of Terms</h3>
+        <p>By using the TiredCity app, you agree to comply with these terms and conditions.</p>
+
+        <h3>2. Intellectual Property Rights</h3>
+        <p>All content, images, and designs on the app are the copyright of TiredCity or our artist partners. Copying without consent is a violation of the law.</p>
+
+        <h3>3. User Accounts</h3>
+        <p>You are responsible for maintaining the confidentiality of your password and account information. All activities under your account are your responsibility.</p>
+
+        <h3>4. Sales Policy</h3>
+        <p>Prices and availability of goods are subject to change without notice. We reserve the right to refuse orders in case of errors in pricing or product information.</p>
+
+        <h3>5. Limitation of Liability</h3>
+        <p>TiredCity is not responsible for any indirect damages arising from the use of the app.</p>
+
+        <h3>6. Changes to Terms</h3>
+        <p>We may update these terms from time to time. Continued use of the app implies acceptance of those changes.</p>
+        ]]>
+    </string>
+
+    <!-- Store Locator -->
+    <string name="title_store_locator">STORE LOCATOR</string>
+    <string name="link_view_map">View map</string>
+
+    <!-- Header buttons -->
     <string name="cd_cart">Cart</string>
     <string name="cd_notifications">Notifications</string>
     <string name="cd_theme_toggle">Toggle light/dark theme</string>
@@ -812,13 +812,11 @@
     <string name="notification_title">Notifications</string>
     <string name="notification_empty_title">No notifications yet</string>
     <string name="notification_empty_desc">Updates about your orders and offers\nwill appear here.</string>
-    <string name="notif_order_title">Your order is on the way</string>
-    <string name="notif_order_message">Order #DH2024001 is out for delivery.</string>
-    <string name="notif_promo_title">Summer offer 🎉</string>
-    <string name="notif_promo_message">Up to 30% off the new Áo Dài collection. Don\'t miss out!</string>
-    <string name="notif_system_title">Welcome to Tired City</string>
-    <string name="notif_system_message">Explore the world of traditional Vietnamese attire with us.</string>
-    <string name="notif_time_recent">2 hours ago</string>
-    <string name="notif_time_today">Today</string>
-    <string name="notif_time_yesterday">Yesterday</string>
+
+    <!-- Settings -->
+    <string name="settings_general_title">GENERAL</string>
+    <string name="settings_general_security_title">Security</string>
+    <string name="settings_general_app_info_title">App Info</string>
+    <string name="settings_general_rate_title">Rate App</string>
+    <string name="settings_general_delete_title">Request Account Deletion</string>
 </resources>

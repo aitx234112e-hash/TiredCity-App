@@ -29,7 +29,50 @@ public class MenhCalculator {
      * <p>Lưu ý: dùng năm âm lịch. App chỉ có năm sinh dương lịch nên người sinh vào
      * tháng 1 / đầu tháng 2 (trước Tết) về lý thuộc năm can-chi trước đó — đây là giản
      * lược chấp nhận được khi không có ngày sinh đầy đủ.
+     * Tính Mệnh Ngũ Hành chính xác theo công thức dân gian: Can + Chi = Mệnh.
+     * Giá trị Can: Giáp, Ất=1; Bính, Đinh=2; Mậu, Kỷ=3; Canh, Tân=4; Nhâm, Quý=5.
+     * Giá trị Chi: Tý, Sửu, Ngọ, Mùi=0; Dần, Mão, Thân, Dậu=1; Thìn, Tỵ, Tuất, Hợi=2.
+     * Giá trị Mệnh: Kim=1, Thủy=2, Hỏa=3, Thổ=4, Mộc=5. (Nếu > 5 thì trừ 5).
      */
+    public static String tinhMenh(int year) {
+        // 1. Xác định Thiên Can (Can)
+        // Năm Giáp gần nhất là 2004, 1994, 1984... -> (year - 4) % 10
+        int offsetCan = (year - 4) % 10;
+        if (offsetCan < 0) offsetCan += 10;
+
+        int valueCan;
+        switch (offsetCan) {
+            case 0: case 1: valueCan = 1; break; // Giáp, Ất
+            case 2: case 3: valueCan = 2; break; // Bính, Đinh
+            case 4: case 5: valueCan = 3; break; // Mậu, Kỷ
+            case 6: case 7: valueCan = 4; break; // Canh, Tân
+            default:        valueCan = 5;        // Nhâm, Quý
+        }
+
+        // 2. Xác định Địa Chi (Chi)
+        // Dựa trên mảng con giáp chuẩn: 0:Thân, 1:Dậu, 2:Tuất, 3:Hợi, 4:Tý, 5:Sửu, 6:Dần, 7:Mão, 8:Thìn, 9:Tỵ, 10:Ngọ, 11:Mùi
+        int offsetChi = year % 12;
+
+        int valueChi;
+        if (offsetChi == 4 || offsetChi == 5 || offsetChi == 10 || offsetChi == 11) {
+            valueChi = 0; // Tý, Sửu, Ngọ, Mùi
+        } else if (offsetChi == 6 || offsetChi == 7 || offsetChi == 0 || offsetChi == 1) {
+            valueChi = 1; // Dần, Mão, Thân, Dậu
+        } else {
+            valueChi = 2; // Thìn, Tỵ, Tuất, Hợi
+        }
+
+        // 3. Tính Mệnh
+        int result = valueCan + valueChi;
+        if (result > 5) result -= 5;
+
+        switch (result) {
+            case 1:  return Constants.MENH_KIM;
+            case 2:  return Constants.MENH_THUY;
+            case 3:  return Constants.MENH_HOA;
+            case 4:  return Constants.MENH_THO;
+            case 5:  return Constants.MENH_MOC;
+            default: return Constants.MENH_KIM;
     public static String tinhMenh(int namSinh) {
         // Can theo năm % 10: bắt đầu từ Canh (0) … Kỷ (9).
         int[] canValue = {4, 4, 5, 5, 1, 1, 2, 2, 3, 3};

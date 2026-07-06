@@ -503,6 +503,47 @@ public class PaymentActivity extends BaseActivity {
         sheet.setOnVoucherAppliedListener(code -> {
             if (code == null || code.trim().isEmpty()) {
                 boolean had = priceCalculator.getAppliedVoucherCode() != null;
+    private void showVoucherDialog() {
+        DialogVoucherCodeBinding dialogBinding = DialogVoucherCodeBinding.inflate(getLayoutInflater());
+        String currentCode = priceCalculator.getAppliedVoucherCode();
+        if (currentCode != null) dialogBinding.etVoucherCode.setText(currentCode);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(com.tiredcity.app.R.string.pay_voucher_dialog_title)
+                .setView(dialogBinding.getRoot())
+                .setPositiveButton(com.tiredcity.app.R.string.btn_save, (dialog, which) -> {
+                    String code = dialogBinding.etVoucherCode.getText().toString().trim().toUpperCase();
+                    if (code.isEmpty()) {
+                        priceCalculator.clearVoucher();
+                        updateVoucherStatusLabel();
+                        refreshTotals();
+                    } else {
+                        // Liên kết thật với Firebase Vouchers
+                        FirebaseFirestore.getInstance().collection("vouchers").document(code).get()
+                            .addOnSuccessListener(doc -> {
+                                if (doc.exists() && Boolean.TRUE.equals(doc.getBoolean("isActive"))) {
+                                    String type = doc.getString("type"); // PERCENT, FLAT, FREE_SHIP
+                                    double value = doc.getDouble("value") != null ? doc.getDouble("value") : 0;
+
+                                    // Áp dụng vào PriceCalculator
+                                    if (priceCalculator.applyVoucher(code, type, value)) {
+                                        Toast.makeText(this, "Áp dụng mã thành công!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(this, "Mã không hợp lệ cho đơn hàng này", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(this, "Mã giảm giá không tồn tại hoặc đã hết hạn", Toast.LENGTH_SHORT).show();
+                                    priceCalculator.clearVoucher();
+                                }
+                                updateVoucherStatusLabel();
+                                refreshTotals();
+                            });
+                    }
+                })
+                .setNegativeButton(com.tiredcity.app.R.string.btn_cancel, null);
+
+        if (currentCode != null) {
+            builder.setNeutralButton(com.tiredcity.app.R.string.btn_remove_short, (dialog, which) -> {
                 priceCalculator.clearVoucher();
                 if (had) Toast.makeText(this,
                         com.tiredcity.app.R.string.pay_voucher_removed, Toast.LENGTH_SHORT).show();
@@ -606,7 +647,14 @@ public class PaymentActivity extends BaseActivity {
             return;
         }
 
-        // Dung item + subtotal
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // 1. Generate Human-readable Order ID
+        String datePrefix = new SimpleDateFormat("yyMMdd", Locale.US).format(new Date());
+        String randomSuffix = String.format("%04d", (int)(Math.random() * 10000));
+        String orderCode = "TC-" + datePrefix + "-" + randomSuffix;
+
+        // 2. Prepare Items & Subtotal
         double subtotal = 0;
         List<Map<String, Object>> itemList = new ArrayList<>();
         for (CartItem item : items) {
@@ -625,15 +673,51 @@ public class PaymentActivity extends BaseActivity {
             m.put("lineTotal", lineTotal);
             itemList.add(m);
         }
+
         double shippingFee = priceCalculator.getEffectiveShippingFee();
         double discount = priceCalculator.getDiscountAmount();
         double total = priceCalculator.getTotal();
 
+        String currentUid = preferenceManager.getUserId();
+        if (currentUid == null || currentUid.isEmpty()) {
+            // Thử lấy từ Firebase Auth trực tiếp
+            com.google.firebase.auth.FirebaseUser fUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (fUser != null) {
+                currentUid = fUser.getUid();
+                preferenceManager.saveUserId(currentUid);
+            }
+        }
+
+        if (currentUid == null || currentUid.isEmpty()) {
+            binding.btnPlaceOrder.setEnabled(true);
+            Toast.makeText(this, "Vui lòng đăng nhập để đặt hàng!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         UserProfile user = preferenceManager.getUser();
 
-        // Thoi gian tao dang ISO-8601 (UTC) cho khop web
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
+        // 3. Final Order Object
+        Map<String, Object> orderData = new HashMap<>();
+        orderData.put("orderCode", orderCode);
+        orderData.put("userId", currentUid);
+        orderData.put("user", currentUid);
+        orderData.put("userName", user != null ? user.getName() : "");
+        orderData.put("userEmail", user != null ? user.getEmail() : "");
+        orderData.put("phone", user != null ? user.getPhone() : "");
+        orderData.put("items", itemList);
+        orderData.put("orderItems", itemList);
+        orderData.put("subTotal", subtotal);
+        orderData.put("shippingFee", shippingFee);
+        orderData.put("shippingMethod", shippingMethodName);
+        orderData.put("discountAmount", discount);
+        orderData.put("voucherCode", priceCalculator.getAppliedVoucherCode());
+        orderData.put("totalPrice", total);
+        orderData.put("status", "PENDING");
+        orderData.put("paymentMethod", paymentMethod);
+        orderData.put("shippingAddress", address);
+        orderData.put("isPaid", false);
+        orderData.put("createdAt", com.google.firebase.Timestamp.now());
+        orderData.put("updatedAt", com.google.firebase.Timestamp.now());
 
         Map<String, Object> order = new HashMap<>();
         order.put("userId", user != null ? user.getId() : null);
@@ -676,5 +760,136 @@ public class PaymentActivity extends BaseActivity {
                             getString(com.tiredcity.app.R.string.error_order_failed) + ": " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 });
+        // 4. Use Transaction to decrement stock
+        db.runTransaction(transaction -> {
+            // Gom nhóm updates theo từng sản phẩm để tránh ghi đè
+            Map<String, Map<String, Object>> productUpdates = new HashMap<>();
+
+            for (CartItem item : items) {
+                if (item.getProduct() != null) {
+                    String rawId = item.getProduct().getId();
+                    if (rawId == null || rawId.isEmpty()) {
+                        throw new RuntimeException("Sản phẩm " + item.getProduct().getName() + " bị thiếu mã định danh!");
+                    }
+
+                    // 1. NORMALIZE ID: "ad1" -> "AD01", "at2" -> "AT02"
+                    String pId = rawId.trim().toUpperCase();
+                    if (pId.matches("^[A-Z]{2}\\d$")) {
+                        pId = pId.substring(0, 2) + "0" + pId.substring(2);
+                    }
+
+                    // FALLBACK: If normalization to AD01 didn't find it, maybe the database uses AD1
+                    com.google.firebase.firestore.DocumentReference pRef = db.collection("products").document(pId);
+                    DocumentSnapshot pSnap = transaction.get(pRef);
+
+                    if (!pSnap.exists()) {
+                        // Thử lại với mã gốc viết hoa (AD1)
+                        pId = rawId.trim().toUpperCase();
+                        pRef = db.collection("products").document(pId);
+                        pSnap = transaction.get(pRef);
+                    }
+
+                    if (pSnap.exists()) {
+                        Map<String, Object> currentProductUpdates = productUpdates.get(pId);
+                        if (currentProductUpdates == null) {
+                            currentProductUpdates = new HashMap<>();
+                            productUpdates.put(pId, currentProductUpdates);
+                        }
+
+                        // A. Tính toán stock tổng mới
+                        long currentTotalStock = pSnap.getLong("stock") != null ? pSnap.getLong("stock") : 0;
+                        // Nếu sản phẩm này đã được trừ ở item trước trong cùng đơn hàng
+                        if (currentProductUpdates.containsKey("stock")) {
+                            currentTotalStock = (long) currentProductUpdates.get("stock");
+                        }
+
+                        if (currentTotalStock < item.getQuantity()) {
+                            throw new RuntimeException("Sản phẩm " + item.getProduct().getName() + " không đủ hàng!");
+                        }
+                        currentProductUpdates.put("stock", currentTotalStock - item.getQuantity());
+
+                        // B. Tìm và trừ đúng Size
+                        boolean sizeFound = false;
+                        for (int i = 0; i <= 20; i++) {
+                            String fieldName = String.valueOf(i);
+                            Object obj = pSnap.get(fieldName);
+                            if (obj instanceof Map) {
+                                Map<String, Object> sizeInfo = new HashMap<>((Map<String, Object>) obj);
+                                String sName = (String) sizeInfo.get("size");
+
+                                if (item.getSelectedSize() != null && item.getSelectedSize().equalsIgnoreCase(sName)) {
+                                    long sQty = 0;
+                                    Object qObj = sizeInfo.get("quantity");
+                                    if (qObj instanceof Number) sQty = ((Number) qObj).longValue();
+
+                                    if (sQty < item.getQuantity()) {
+                                        throw new RuntimeException("Size " + sName + " của sản phẩm " + item.getProduct().getName() + " đã hết!");
+                                    }
+
+                                    sizeInfo.put("quantity", sQty - item.getQuantity());
+                                    currentProductUpdates.put(fieldName, sizeInfo);
+                                    sizeFound = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!sizeFound) {
+                            // Fallback cho mảng "sizes"
+                            List<Map<String, Object>> sizes = (List<Map<String, Object>>) pSnap.get("sizes");
+                            if (sizes != null) {
+                                List<Map<String, Object>> newSizes = new ArrayList<>();
+                                for (Map<String, Object> s : sizes) {
+                                    Map<String, Object> sNew = new HashMap<>(s);
+                                    String sName = (String) sNew.get("size");
+                                    if (item.getSelectedSize() != null && item.getSelectedSize().equalsIgnoreCase(sName)) {
+                                        long sQty = ((Number) sNew.get("quantity")).longValue();
+                                        sNew.put("quantity", sQty - item.getQuantity());
+                                        sizeFound = true;
+                                    }
+                                    newSizes.add(sNew);
+                                }
+                                if (sizeFound) currentProductUpdates.put("sizes", newSizes);
+                            }
+                        }
+
+                        if (!sizeFound) {
+                            throw new RuntimeException("Không tìm thấy Size " + item.getSelectedSize() + " cho sản phẩm " + item.getProduct().getName());
+                        }
+                    } else {
+                        throw new RuntimeException("Sản phẩm mã " + pId + " không tồn tại trên hệ thống!");
+                    }
+                }
+            }
+
+            // Thực thi toàn bộ updates cho sản phẩm
+            for (Map.Entry<String, Map<String, Object>> entry : productUpdates.entrySet()) {
+                transaction.update(db.collection("products").document(entry.getKey()), entry.getValue());
+            }
+
+            // Ghi đơn hàng
+            com.google.firebase.firestore.DocumentReference orderRef = db.collection("orders").document();
+            transaction.set(orderRef, orderData);
+            return orderRef.getId();
+
+        }).addOnSuccessListener(docId -> {
+            for (CartItem item : items) {
+                if (item.getProduct() != null) cartLocalStore.removeItem(item.getProduct().getId());
+            }
+            Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
+            intent.putExtra("order_id", docId);
+            intent.putExtra("order_code", orderCode);
+            startActivity(intent);
+            finish();
+
+        }).addOnFailureListener(e -> {
+            binding.btnPlaceOrder.setEnabled(true);
+            String msg = e.getMessage();
+            if (msg != null && (msg.contains("tồn kho") || msg.contains("hàng") || msg.contains("hết"))) {
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Đặt hàng thất bại: " + msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

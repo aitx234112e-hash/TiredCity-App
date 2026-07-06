@@ -6,11 +6,15 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.SearchAdapter;
+import com.tiredcity.app.data.local.CartLocalStore;
+import com.tiredcity.app.data.model.ApiListResponse;
+import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.search.EventItem;
 import com.tiredcity.app.data.model.search.ProductItem;
@@ -27,7 +31,6 @@ import java.util.Locale;
 
 public class SearchActivity extends BaseActivity {
 
-    /** Optional pre-filled query, e.g. from a tapped tag on the Shop tab. */
     public static final String EXTRA_QUERY = "extra_query";
 
     /** Số sản phẩm thật hiển thị trong "Gợi ý cho bạn". */
@@ -49,7 +52,6 @@ public class SearchActivity extends BaseActivity {
 
         firestoreRepository = new FirestoreProductRepository();
 
-        // Setup results RecyclerView
         productAdapter = new ProductAdapter(null);
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -59,6 +61,15 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void onSaveToggle(Product product, boolean saved) {}
+
+            @Override
+            public void onAddToCartClick(Product product) {
+                // Bắt buộc chọn size -> Mở màn hình chi tiết
+                Intent intent = new Intent(SearchActivity.this, ProductDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
+                Toast.makeText(SearchActivity.this, "Vui lòng chọn Size trước khi mua", Toast.LENGTH_SHORT).show();
+            }
         });
         binding.rvResults.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvResults.setAdapter(productAdapter);
@@ -138,11 +149,11 @@ public class SearchActivity extends BaseActivity {
         suggestionAdapter = new SearchAdapter(buildStaticSuggestions());
         suggestionAdapter.setOnItemClickListener(item -> {
             if (item instanceof PromotionItem) {
-                // Ưu đãi → mở trang chi tiết voucher tương ứng.
                 openVoucherDetail((PromotionItem) item);
             } else if (item instanceof ProductItem) {
                 // Sản phẩm → mở trang chi tiết sản phẩm thật.
                 openProductDetail(((ProductItem) item).getProduct());
+                performSearch(getString(((ProductItem) item).getBrandResId()));
             }
         });
         binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
@@ -172,7 +183,6 @@ public class SearchActivity extends BaseActivity {
         suggestionAdapter.updateItems(combined);
     }
 
-    /** Mở trang chi tiết voucher của ưu đãi được bấm. */
     private void openVoucherDetail(PromotionItem item) {
         Intent intent = new Intent(this, VoucherDetailActivity.class);
         intent.putExtra(VoucherDetailActivity.EXTRA_TITLE, getString(item.getVoucherTitleResId()));
@@ -195,6 +205,32 @@ public class SearchActivity extends BaseActivity {
         if (keyword.isEmpty()) { showRecentState(); return; }
 
         showResultsState();
+        binding.swipeRefresh.setRefreshing(true);
+        binding.tvResultCount.setText(getString(R.string.search_searching));
+
+        productRepository.getProducts(1, 40, null, keyword)
+            .enqueue(new Callback<ApiListResponse<Product>>() {
+                @Override
+                public void onResponse(Call<ApiListResponse<Product>> call, Response<ApiListResponse<Product>> response) {
+                    binding.swipeRefresh.setRefreshing(false);
+                    List<Product> results = null;
+                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                        results = response.body().getData();
+                    }
+
+                    // FALLBACK: Search in Mock Catalog if API returns nothing
+                    if (results == null || results.isEmpty()) {
+                        results = searchInMockCatalog(keyword);
+                    }
+
+                    if (results == null || results.isEmpty()) {
+                        showEmptyState(keyword);
+                    } else {
+                        binding.tvResultCount.setText(getString(
+                                R.string.search_result_count, results.size()));
+                        productAdapter.updateData(results);
+                    }
+                }
         binding.tvResultCount.setText(getString(R.string.search_searching));
 
         // Nếu chưa tải xong danh sách sản phẩm thì tải rồi lọc; ngược lại lọc ngay.
@@ -236,12 +272,37 @@ public class SearchActivity extends BaseActivity {
         return value != null && value.toLowerCase(Locale.getDefault()).contains(lowerQuery);
     }
 
+                @Override
+                public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
+                    binding.swipeRefresh.setRefreshing(false);
+                    List<Product> results = searchInMockCatalog(keyword);
+                    if (results.isEmpty()) {
+                        showEmptyState(keyword);
+                    } else {
+                        productAdapter.updateData(results);
+                    }
+                }
+            });
     private static boolean colorsContain(Product p, String lowerQuery) {
         if (p.getColors() == null) return false;
         for (String c : p.getColors()) {
             if (contains(c, lowerQuery)) return true;
         }
         return false;
+    }
+
+    private List<Product> searchInMockCatalog(String keyword) {
+        List<Product> allMock = com.tiredcity.app.data.mock.MockProductCatalog.getProducts(this, "ALL");
+        List<Product> filtered = new java.util.ArrayList<>();
+        String query = keyword.toLowerCase().trim();
+        for (Product p : allMock) {
+            if (p.getName().toLowerCase().contains(query) ||
+                (p.getCategory() != null && p.getCategory().toLowerCase().contains(query)) ||
+                (p.getId() != null && p.getId().toLowerCase().contains(query))) {
+                filtered.add(p);
+            }
+        }
+        return filtered;
     }
 
     // ── Trạng thái hiển thị ─────────────────────────────────────────────────────
