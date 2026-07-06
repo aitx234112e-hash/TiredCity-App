@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Biến thể huy hiệu số lượng (tc_badge_count) dùng khi nằm trên nền tròn ĐỎ (vd nút giỏ hàng ở
+     trang Danh mục) — badge đỏ gốc sẽ lẫn vào nền đỏ nên đổi sang vàng kim + viền đỏ. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/tc_gold_bright" />
+    <stroke
+        android:width="1.5dp"
+        android:color="@color/tc_red" />
+</shape>

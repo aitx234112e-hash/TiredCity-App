@@ -121,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/card_white"
+            android:background="@color/black"
             android:paddingHorizontal="@dimen/tc_space_xl"
             android:paddingVertical="@dimen/tc_space_3xl">
 
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_vision_title"
-                android:textColor="@color/tc_text_primary"
+                android:textColor="@color/tc_on_dark"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
@@ -152,7 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/about_vision_desc"
-                android:textColor="@color/tc_text_secondary"
+                android:textColor="@color/tc_on_dark_secondary"
                 android:textSize="13sp"
                 android:lineSpacingExtra="4dp" />
         </LinearLayout>
@@ -165,7 +165,7 @@
             android:id="@+id/section_video_mission"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@color/card_white">
+            android:background="@color/black">
 
             <VideoView
                 android:id="@+id/video_logo_transform"
@@ -176,14 +176,14 @@
                 android:contentDescription="@string/about_mission_title" />
         </FrameLayout>
 
-        <!-- Nền sáng giống Tầm nhìn (không dùng đỏ) vì about_mission_desc có các đoạn
-             <font color="tc_red"> lồng sẵn — trên nền sáng, chữ nhấn mạnh vẫn nổi rõ. -->
+        <!-- Nền đen giống Tầm nhìn; about_mission_desc có các đoạn <font color="tc_red">
+             lồng sẵn nên chữ nhấn mạnh vẫn nổi rõ trên nền tối. -->
         <LinearLayout
             android:id="@+id/section_mission"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/card_white"
+            android:background="@color/black"
             android:paddingHorizontal="@dimen/tc_space_xl"
             android:paddingVertical="@dimen/tc_space_3xl">
 
@@ -191,7 +191,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_mission_title"
-                android:textColor="@color/tc_text_primary"
+                android:textColor="@color/tc_on_dark"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
@@ -201,7 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/about_mission_desc"
-                android:textColor="@color/tc_text_secondary"
+                android:textColor="@color/tc_on_dark_secondary"
                 android:textSize="13sp"
                 android:lineSpacingExtra="4dp" />
         </LinearLayout>
@@ -278,7 +278,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Sáng tạo — nền sáng -->
+                <!-- Sáng tạo — nền đen -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -286,7 +286,7 @@
                     android:layout_margin="@dimen/tc_space_xs"
                     app:cardCornerRadius="@dimen/tc_radius_md"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/card_white">
+                    app:cardBackgroundColor="@color/black">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -308,7 +308,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/tc_space_md"
                             android:text="@string/about_value2_title"
-                            android:textColor="@color/tc_text_primary"
+                            android:textColor="@color/tc_on_dark"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             android:fontFamily="sans-serif-medium"
@@ -319,7 +319,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/tc_space_micro"
                             android:text="@string/about_value2_desc"
-                            android:textColor="@color/tc_text_secondary"
+                            android:textColor="@color/tc_on_dark_secondary"
                             android:textSize="11sp"
                             android:gravity="center"
                             android:lineSpacingExtra="2dp" />
@@ -332,7 +332,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <!-- Công nghệ — nền sáng -->
+                <!-- Công nghệ — nền đen -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -340,7 +340,7 @@
                     android:layout_margin="@dimen/tc_space_xs"
                     app:cardCornerRadius="@dimen/tc_radius_md"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/card_white">
+                    app:cardBackgroundColor="@color/black">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -362,7 +362,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/tc_space_md"
                             android:text="@string/about_value3_title"
-                            android:textColor="@color/tc_text_primary"
+                            android:textColor="@color/tc_on_dark"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             android:fontFamily="sans-serif-medium"
@@ -373,7 +373,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/tc_space_micro"
                             android:text="@string/about_value3_desc"
-                            android:textColor="@color/tc_text_secondary"
+                            android:textColor="@color/tc_on_dark_secondary"
                             android:textSize="11sp"
                             android:gravity="center"
                             android:lineSpacingExtra="2dp" />

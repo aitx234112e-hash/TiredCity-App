@@ -382,15 +382,15 @@
     <string name="cart_badge_overflow">9+</string>
 
     <!-- Color bucket display labels (ColorTaxonomy) — kept separate from the Vietnamese match keys used for data filtering -->
-    <string name="color_bucket_do">Red</string>
-    <string name="color_bucket_xanh">Blue</string>
-    <string name="color_bucket_vang">Yellow</string>
-    <string name="color_bucket_trang">White</string>
-    <string name="color_bucket_den">Black</string>
-    <string name="color_bucket_hong">Pink</string>
-    <string name="color_bucket_tim">Purple</string>
-    <string name="color_bucket_xanh_la">Green</string>
-    <string name="color_bucket_cam">Orange</string>
+    <string name="color_bucket_do">Carnelian Red</string>
+    <string name="color_bucket_xanh">Sapphire Blue</string>
+    <string name="color_bucket_vang">Amber Gold</string>
+    <string name="color_bucket_trang">Alabaster White</string>
+    <string name="color_bucket_den">Mystic Black</string>
+    <string name="color_bucket_hong">Rose Quartz</string>
+    <string name="color_bucket_tim">Royal Purple</string>
+    <string name="color_bucket_xanh_la">Emerald Green</string>
+    <string name="color_bucket_cam">Amber Orange</string>
 
     <!-- Styling: category preview descriptions — product names, proper nouns kept untranslated -->
     <string name="desc_ao_dai_trang">Khói Trắng Kết Duyên, Phấn Hoa Cổ Điển,…</string>
@@ -415,13 +415,13 @@
     <string name="desc_yem_dao_hong">Dạ Kim Mẫu Đơn,…</string>
 
     <!-- Styling: Accessories — name + description per type -->
-    <string name="phukien_khan_title">Headscarf</string>
+    <string name="phukien_khan_title">Head Wrap</string>
     <string name="phukien_khan_desc">Traditional wrap scarves and headscarves,…</string>
-    <string name="phukien_quat_title">Fan</string>
+    <string name="phukien_quat_title">Silk Fan</string>
     <string name="phukien_quat_desc">Folding fans, silk hand fans,…</string>
-    <string name="phukien_oche_title">Parasol</string>
+    <string name="phukien_oche_title">Ceremonial Parasol</string>
     <string name="phukien_oche_desc">Traditional parasols and umbrellas,…</string>
-    <string name="phukien_mudoidau_title">Headwear</string>
+    <string name="phukien_mudoidau_title">Ceremonial Headpiece</string>
     <string name="phukien_mudoidau_desc">Modernized hats and headpieces,…</string>
 
     <!-- Category page: garment-type tabs + chrome (tab labels are proper nouns, kept untranslated) -->
