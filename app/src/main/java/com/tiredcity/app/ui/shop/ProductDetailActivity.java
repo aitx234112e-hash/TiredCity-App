@@ -3,8 +3,6 @@ package com.tiredcity.app.ui.shop;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -93,8 +91,8 @@ public class ProductDetailActivity extends BaseActivity {
         });
 
         setupSizeSelector();
-        setupAccordions();
         setupInfoRows();
+        setupCardStackScroll();
 
         loadProduct(productId);
     }
@@ -254,23 +252,48 @@ public class ProductDetailActivity extends BaseActivity {
         return row;
     }
 
-    // ── Care instructions (Bảo quản) ─────────────────────────────────────────
+    // ── Care instructions (Bảo quản) — hàng ngang icon + chú thích, nền trắng (thẻ 05) ─────
+
+    private static final int[] CARE_ICONS = {
+            R.drawable.ic_care_handwash, R.drawable.ic_care_nobleach,
+            R.drawable.ic_care_dryshade, R.drawable.ic_care_iron
+    };
 
     private void bindCareInstructions(Product product) {
         binding.contentCare.removeAllViews();
         List<String> care = product.getCareInstructions();
         if (care == null) return;
-        for (String instruction : care) {
-            TextView tv = new TextView(this);
-            tv.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            tv.setText("• " + instruction);
-            tv.setTextColor(getColor(R.color.text_secondary));
-            tv.setTextSize(13);
-            tv.setLineSpacing(dp(2), 1f);
-            tv.setPadding(0, 0, 0, dp(6));
-            binding.contentCare.addView(tv);
+        for (int i = 0; i < care.size(); i++) {
+            binding.contentCare.addView(buildCareItem(CARE_ICONS[i % CARE_ICONS.length], care.get(i)));
         }
+    }
+
+    private LinearLayout buildCareItem(int iconRes, String caption) {
+        LinearLayout col = new LinearLayout(this);
+        LinearLayout.LayoutParams colParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        colParams.setMarginEnd(dp(6));
+        col.setLayoutParams(colParams);
+        col.setOrientation(LinearLayout.VERTICAL);
+        col.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+
+        ImageView icon = new ImageView(this);
+        icon.setLayoutParams(new LinearLayout.LayoutParams(dp(28), dp(28)));
+        icon.setImageResource(iconRes);
+
+        TextView tv = new TextView(this);
+        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        tvParams.topMargin = dp(6);
+        tv.setLayoutParams(tvParams);
+        tv.setText(caption);
+        tv.setTextColor(getColor(R.color.text_secondary));
+        tv.setTextSize(10.5f);
+        tv.setGravity(android.view.Gravity.CENTER);
+        tv.setLineSpacing(dp(1), 1f);
+
+        col.addView(icon);
+        col.addView(tv);
+        return col;
     }
 
     // ── Hero images ──────────────────────────────────────────────────────────
@@ -453,28 +476,75 @@ public class ProductDetailActivity extends BaseActivity {
         });
     }
 
-    // ── Description / Details / Size guide accordions ───────────────────────
+    // ── Vertical Card Stack scroll animation ────────────────────────────────
 
-    private void setupAccordions() {
-        binding.headerDescription.setOnClickListener(v ->
-            toggleAccordion(binding.dividerDescription, binding.contentDescription, binding.ivExpandDescription));
-        binding.headerStory.setOnClickListener(v ->
-            toggleAccordion(binding.dividerStory, binding.contentStory, binding.ivExpandStory));
-        binding.headerDetails.setOnClickListener(v ->
-            toggleAccordion(binding.dividerDetails, binding.contentDetails, binding.ivExpandDetails));
-        binding.headerSizeGuide.setOnClickListener(v ->
-            toggleAccordion(binding.dividerSizeGuide, binding.contentSizeGuide, binding.ivExpandSizeGuide));
-        binding.headerCare.setOnClickListener(v ->
-            toggleAccordion(binding.dividerCare, binding.contentCare, binding.ivExpandCare));
+    /** 6 thẻ số thứ tự (01..06) "ghim" lại đúng đỉnh khung nhìn khi cuộn tới, rồi thu nhỏ + mờ
+     *  dần khi thẻ kế tiếp trượt trùm lên — hiệu ứng "xếp chồng" kiểu trang sản phẩm Apple.
+     *  Toạ độ gốc của mỗi thẻ chỉ đo được sau khi layout xong nên chờ 1 lượt post(). */
+    private void setupCardStackScroll() {
+        View[] cards = {
+                binding.cardSection1, binding.cardSection2, binding.cardSection3,
+                binding.cardSection4, binding.cardSection5, binding.cardSection6
+        };
+        View scrollContent = binding.cardSection1;
+        scrollContent.post(() -> {
+            int[] naturalTop = new int[cards.length];
+            for (int i = 0; i < cards.length; i++) {
+                naturalTop[i] = cards[i].getTop();
+            }
+            binding.scrollProductDetail.setOnScrollChangeListener(
+                    (androidx.core.widget.NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldX, oldY) ->
+                            applyStackTransforms(cards, naturalTop, scrollY));
+            applyStackTransforms(cards, naturalTop, binding.scrollProductDetail.getScrollY());
+        });
     }
 
-    /** Gạch chân chỉ hiện khi accordion đang đóng — mất đi ngay khi người dùng sổ nội dung ra. */
-    private void toggleAccordion(View divider, View content, View chevron) {
-        boolean expanded = content.getVisibility() == View.VISIBLE;
-        TransitionManager.beginDelayedTransition(binding.llCardContent, new AutoTransition());
-        content.setVisibility(expanded ? View.GONE : View.VISIBLE);
-        divider.setVisibility(expanded ? View.VISIBLE : View.GONE);
-        chevron.animate().rotation(expanded ? 0 : 180).setDuration(250).start();
+    private static final float STACK_SHRINK_MIN_SCALE = 0.94f;
+    private static final float STACK_FADE_MIN_ALPHA = 0.55f;
+    private static final int STACK_SHRINK_WINDOW_DP = 140;
+
+    private void applyStackTransforms(View[] cards, int[] naturalTop, int scrollY) {
+        int shrinkWindow = dp(STACK_SHRINK_WINDOW_DP);
+        // Thẻ CUỐI (06) không ghim — không có thẻ nào trượt trùm lên nó, nên cứ để nó cuộn qua
+        // bình thường như nội dung phẳng, không giữ lại ở đỉnh khung nhìn khi qua đến "Có thể
+        // bạn cũng thích"/"Cam kết dịch vụ" phía dưới.
+        int pinnableCount = cards.length - 1;
+        for (int i = 0; i < cards.length; i++) {
+            View card = cards[i];
+
+            if (i >= pinnableCount) {
+                card.setTranslationY(0f);
+                card.setScaleX(1f);
+                card.setScaleY(1f);
+                card.setAlpha(1f);
+                continue;
+            }
+
+            int localScroll = scrollY - naturalTop[i];
+
+            // Chưa tới điểm ghim: cuộn bình thường, không biến đổi.
+            if (localScroll <= 0) {
+                card.setTranslationY(0f);
+                card.setScaleX(1f);
+                card.setScaleY(1f);
+                card.setAlpha(1f);
+                continue;
+            }
+
+            // Ghim thẻ tại đỉnh khung nhìn cho tới khi thẻ kế tiếp cuộn trùm hẳn lên.
+            card.setTranslationY(localScroll);
+
+            // Thẻ kế tiếp càng gần điểm ghim của nó thì thẻ này càng thu nhỏ + mờ dần — bắt đầu
+            // co lại từ trước SHRINK_WINDOW dp, co xong (progress=1) đúng lúc thẻ sau ghim.
+            int distanceToNext = naturalTop[i + 1] - scrollY;
+            float progress = 1f - Math.max(0f, Math.min(1f, (float) distanceToNext / shrinkWindow));
+            float scale = 1f - (1f - STACK_SHRINK_MIN_SCALE) * progress;
+            card.setPivotX(card.getWidth() / 2f);
+            card.setPivotY(0f);
+            card.setScaleX(scale);
+            card.setScaleY(scale);
+            card.setAlpha(1f - (1f - STACK_FADE_MIN_ALPHA) * progress);
+        }
     }
 
     // ── Reviews summary ──────────────────────────────────────────────────────

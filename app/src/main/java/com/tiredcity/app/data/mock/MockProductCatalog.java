@@ -5,6 +5,7 @@ import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.Product;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,20 +25,43 @@ public final class MockProductCatalog {
             "ÁO DÀI", "NHẬT BÌNH", "ÁO TẤC", "GIAO LĨNH", "YẾM ĐÀO", "PHỤ KIỆN"
     };
 
+    // Ảnh trang phục THẬT (trích từ thư mục TRANG PHỤC, xem StylingFragment.CAROUSEL_IMAGES) —
+    // gán xoay vòng cho sản phẩm mẫu theo đúng danh mục để "Có thể bạn cũng thích" không còn ô
+    // ảnh trống (dữ liệu mẫu trước đây không có images[] nên ProductAdapter không có gì để tải).
+    private static final String[] IMAGES_AO_DAI    = {"carousel_aodai_1", "carousel_aodai_2", "carousel_aodai_3", "carousel_aodai_4", "carousel_aodai_5"};
+    private static final String[] IMAGES_NHAT_BINH = {"carousel_nhatbinh_1", "carousel_nhatbinh_2", "carousel_nhatbinh_3", "carousel_nhatbinh_4", "carousel_nhatbinh_5"};
+    private static final String[] IMAGES_AO_TAC    = {"carousel_aotac_1", "carousel_aotac_2", "carousel_aotac_3", "carousel_aotac_4", "carousel_aotac_5"};
+    private static final String[] IMAGES_GIAO_LINH = {"carousel_giaolinh_1", "carousel_giaolinh_2", "carousel_giaolinh_3", "carousel_giaolinh_4", "carousel_giaolinh_5"};
+    private static final String[] IMAGES_YEM_DAO   = {"carousel_yemdao_1", "carousel_yemdao_2", "carousel_yemdao_3", "carousel_yemdao_4", "carousel_yemdao_5"};
+    private static final String[] IMAGES_PHU_KIEN  = {"carousel_phukien_1", "carousel_phukien_2", "carousel_phukien_3", "carousel_phukien_4", "carousel_phukien_5"};
+
     private MockProductCatalog() {}
 
     public static List<Product> getProducts(Context context, String categoryId) {
         List<Product> list;
-        if ("ÁO DÀI".equals(categoryId))         list = buildAoDai(context);
-        else if ("NHẬT BÌNH".equals(categoryId)) list = buildNhatBinh(context);
-        else if ("ÁO TẤC".equals(categoryId))    list = buildAoTac(context);
-        else if ("GIAO LĨNH".equals(categoryId)) list = buildGiaoLinh(context);
-        else if ("YẾM ĐÀO".equals(categoryId))   list = buildYemDao(context);
-        else if ("PHỤ KIỆN".equals(categoryId))  list = buildPhuKien(context);
-        else                                      list = buildGeneric(context);
+        String[] imagePool;
+        if ("ÁO DÀI".equals(categoryId))         { list = buildAoDai(context);    imagePool = IMAGES_AO_DAI; }
+        else if ("NHẬT BÌNH".equals(categoryId)) { list = buildNhatBinh(context); imagePool = IMAGES_NHAT_BINH; }
+        else if ("ÁO TẤC".equals(categoryId))    { list = buildAoTac(context);    imagePool = IMAGES_AO_TAC; }
+        else if ("GIAO LĨNH".equals(categoryId)) { list = buildGiaoLinh(context); imagePool = IMAGES_GIAO_LINH; }
+        else if ("YẾM ĐÀO".equals(categoryId))   { list = buildYemDao(context);   imagePool = IMAGES_YEM_DAO; }
+        else if ("PHỤ KIỆN".equals(categoryId))  { list = buildPhuKien(context);  imagePool = IMAGES_PHU_KIEN; }
+        else                                      { list = buildGeneric(context); imagePool = IMAGES_AO_DAI; }
 
-        for (Product p : list) applyGenericDetail(context, p);
+        for (int i = 0; i < list.size(); i++) {
+            Product p = list.get(i);
+            applyGenericDetail(context, p);
+            if (p.getImages() == null || p.getImages().isEmpty()) {
+                setLocalImage(context, p, imagePool[i % imagePool.length]);
+            }
+        }
         return list;
+    }
+
+    /** Gán 1 ảnh trang phục THẬT (drawable local) cho sản phẩm mẫu qua URI "android.resource://"
+     *  — Glide tải được thẳng từ chuỗi này giống hệt tải ảnh mạng, không cần đổi ProductAdapter. */
+    private static void setLocalImage(Context ctx, Product p, String drawableName) {
+        p.setImages(Collections.singletonList("android.resource://" + ctx.getPackageName() + "/drawable/" + drawableName));
     }
 
     /** Tìm một sản phẩm mẫu theo id, quét qua toàn bộ danh mục. Trả về null nếu không có. */
@@ -75,7 +99,14 @@ public final class MockProductCatalog {
             {"5", R.string.mock_home5_name, R.string.material_lua_cao_cap, 2500000.0, 20, 5.0},
         };
 
+        // Trộn ảnh từ nhiều danh mục cho khối nổi bật ở Trang chủ (không riêng 1 loại trang phục).
+        String[] highlightPool = {
+                "carousel_aodai_1", "carousel_nhatbinh_1", "carousel_aotac_1",
+                "carousel_giaolinh_1", "carousel_yemdao_1"
+        };
+
         List<Product> list = new ArrayList<>();
+        int index = 0;
         for (Object[] row : data) {
             Product p = new Product();
             p.setId(prefix + row[0]);
@@ -87,6 +118,8 @@ public final class MockProductCatalog {
             p.setStock(20);
             p.setNew(recommended);
             applyGenericDetail(context, p);
+            setLocalImage(context, p, highlightPool[index % highlightPool.length]);
+            index++;
             list.add(p);
         }
         return list;

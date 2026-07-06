@@ -8,8 +8,8 @@
     android:orientation="vertical"
     android:background="@color/tc_bg_main">
 
-    <!-- ── Khối tiêu đề đỏ — cùng tinh thần khối "TiredCity xin chào" ở Trang chủ, cho trang
-         Danh mục một bản sắc rõ ràng thay vì mở đầu bằng nền trắng phẳng ── -->
+    <!-- ── Hero đỏ: rooster mark + wordmark TIREDCITY — cùng khuôn với section_hero ở màn Giới
+         thiệu (fragment_about.xml), cho trang Danh mục 1 mở đầu đồng bộ bản sắc thương hiệu. ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,37 +17,33 @@
         android:background="@color/tc_red"
         android:paddingHorizontal="@dimen/tc_space_xl"
         android:paddingTop="@dimen/tc_space_xl"
-        android:paddingBottom="@dimen/tc_space_lg">
+        android:paddingBottom="@dimen/tc_space_lg"
+        android:gravity="center_horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/home_eyebrow_categories"
-            android:textColor="@color/tc_gold_bright"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.18" />
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_tc_logo"
+            app:tint="@color/tc_on_red"
+            android:contentDescription="@string/app_name" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/section_categories"
-            android:textColor="@color/tc_on_red"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="@dimen/tc_space_sm"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo_main"
+            android:contentDescription="@string/app_name" />
     </LinearLayout>
 
-    <!-- ── Ô tìm kiếm + giỏ hàng — nền kem ngay dưới khối đỏ; giỏ hàng là nút tròn đỏ nổi bật
-         như 1 CTA thay vì icon phẳng ── -->
+    <!-- ── Ô tìm kiếm + giỏ hàng — nền đen ngay dưới khối đỏ (đồng bộ với khối tab + carousel
+         bên dưới); giỏ hàng là nút tròn đỏ nổi bật như 1 CTA thay vì icon phẳng ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/tc_bg_main"
+        android:background="@color/tc_noir"
         android:paddingStart="@dimen/tc_space_xl"
         android:paddingEnd="@dimen/tc_space_lg"
         android:paddingTop="@dimen/tc_space_lg"
@@ -147,12 +143,12 @@
     </LinearLayout>
 
     <!-- ── Tab nhóm kiểu áo (ÁO DÀI / NHẬT BÌNH / ÁO TẤC / GIAO LĨNH / YẾM ĐÀO) — dạng "viên
-         thuốc" (segmented control) thay cho gạch chân mặc định, hiện đại hơn ── -->
+         thuốc" đỏ đặc thay cho gạch chân mặc định, chữ trắng để đọc rõ trên nền đen. ── -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_groups"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tc_bg_main"
+        android:background="@color/tc_noir"
         android:paddingBottom="@dimen/tc_space_md"
         app:tabMode="scrollable"
         app:tabGravity="start"
@@ -162,59 +158,87 @@
         app:tabPaddingBottom="6dp"
         app:tabIndicatorHeight="0dp"
         app:tabBackground="@drawable/tc_tab_pill_selector"
-        app:tabSelectedTextColor="@color/tc_red"
-        app:tabTextColor="@color/tc_text_secondary"
-        app:tabRippleColor="@color/tc_red_pale"
+        app:tabSelectedTextColor="@android:color/white"
+        app:tabTextColor="@color/tc_on_dark"
+        app:tabRippleColor="@color/tc_on_dark_divider"
         app:tabTextAppearance="@style/TextAppearance.TC.CategoryTab" />
 
-    <!-- ── Banner danh mục — MỖI TAB 1 ảnh riêng (Áo Dài/Nhật Bình/Áo Tấc/Giao Lĩnh/Yếm Đào/
-         Phụ Kiện), không phải carousel nhiều trang. Đổi tab thì banner trượt ra ngoài bên trái
-         rồi banner mới trượt vào từ bên phải (StylingFragment.updateCategoryBanner). fitCenter +
-         khung đo đúng tỷ lệ ảnh gốc nên hiện FULL ảnh, không xén; kèm vệt sáng chéo "tráng
-         gương" lướt qua sau mỗi lần đổi. ── -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/tc_bg_card"
-        android:paddingVertical="14dp">
-
-        <FrameLayout
-            android:id="@+id/frame_category_banner"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_marginHorizontal="@dimen/tc_space_xl"
-            android:clipChildren="true"
-            android:clipToPadding="true">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_category_banner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/tc_bg_card"
-                android:scaleType="fitCenter"
-                android:contentDescription="@null"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
-
-            <View
-                android:id="@+id/shimmer_category_banner"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:background="@drawable/tc_shimmer_gradient"
-                android:rotation="-18" />
-        </FrameLayout>
-    </LinearLayout>
-
-    <!-- ── Danh sách danh mục ── -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_categories"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="@dimen/tc_space_xl"
-        android:paddingEnd="@dimen/tc_space_xl"
-        android:paddingTop="12dp"
-        android:clipToPadding="false" />
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ── Carousel ảnh trang phục THẬT của danh mục đang chọn (Horizontal Scroll Section,
+                 hiệu ứng "Card Fan" — mỗi thẻ xoay dần theo khoảng cách tới tâm như bài xoè quạt)
+                 — nền đen liền mạch với khối tab phía trên, kết thúc ở dòng gợi ý vuốt. ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/tc_noir"
+                android:paddingBottom="@dimen/tc_space_xl">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_category_carousel"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="4dp"
+                    android:clipToPadding="false"
+                    android:clipChildren="false" />
+
+                <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                    android:id="@+id/dots_category_carousel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    app:dotsColor="@color/tc_sand_light"
+                    app:selectedDotColor="@color/tc_red"
+                    app:dotsSize="8dp"
+                    app:dotsSpacing="5dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/ic_swipe_horizontal"
+                        app:tint="@color/tc_on_dark_secondary"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cat_carousel_swipe_hint"
+                        android:textColor="@color/tc_on_dark_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ── Danh sách danh mục màu — ảnh mẫu vải THẬT cho từng thẻ, lần lượt mờ+trượt vào
+                 khi hiện ra (xem StylingAdapter.playEntrance). ── -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_categories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:paddingStart="@dimen/tc_space_xl"
+                android:paddingEnd="@dimen/tc_space_xl"
+                android:nestedScrollingEnabled="false" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

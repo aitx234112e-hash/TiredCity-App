@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chấm đỏ nhỏ nối giữa 2 thẻ số thứ tự ở màn Chi tiết sản phẩm (Vertical Card Stack). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/tc_red" />
+</shape>

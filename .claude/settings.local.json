@@ -312,7 +312,19 @@
       "Bash(\"C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices *)",
       "Bash('C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe' shell *)",
       "Bash('C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe' exec-out *)",
-      "Bash('C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe' install *)"
+      "Bash('C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe' install *)",
+      "Bash(python3 -c ' *)",
+      "Bash(mkdir -p frames)",
+      "Bash(python -c ' *)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(python contact_sheet.py \"ÁO TẤC\" sheet_aotac.png)",
+      "Bash(python contact_sheet.py \"YẾM ĐÀO\" sheet_yemdao.png)",
+      "Bash(python import_photos.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(read name *)",
+      "Bash([ ! -f \"app/src/main/res/drawable/$name.jpg\" ])",
+      "Bash([ ! -f \"app/src/main/res/drawable/$name.png\" ])",
+      "Bash([ ! -f \"app/src/main/res/drawable/$name.xml\" ])"
     ]
   }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Thẻ "poster" cho lưới 2 cột — nền là CHÍNH màu/nhóm phụ kiện đó (đặt bằng code trong
-     StylingAdapter), biến cả danh sách thành 1 bảng màu sống động thay vì danh sách phẳng.
-     Màu chữ/icon tự đổi trắng hoặc than đậm tuỳ độ sáng nền (StylingAdapter.isColorLight) để
-     luôn đủ tương phản. Ảnh minh hoạ đặt trong khung tròn trắng để không lẫn vào nền màu. -->
+<!-- Thẻ "poster" ảnh trang phục THẬT cho lưới 2 cột — ảnh phủ kín thẻ (centerCrop). Hậu cảnh ảnh
+     thật không đoán trước được (tường gỗ tối, phông sáng,…) nên KHÔNG thể suy màu chữ từ
+     placeholderColor; dùng lớp phủ gradient tối dần ở đáy + chữ trắng cố định để luôn chắc chắn
+     đủ tương phản dù ảnh nền là gì. -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,15 +14,23 @@
     android:focusable="true"
     app:cardCornerRadius="@dimen/tc_radius_lg"
     app:cardElevation="0dp"
-    app:rippleColor="@color/tc_on_red_divider"
+    app:cardPreventCornerOverlap="false"
+    app:contentPadding="0dp"
+    app:rippleColor="@color/tc_on_dark_divider"
     tools:cardBackgroundColor="@color/tc_swatch_xanh_la">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="186dp"
+        android:layout_height="112dp"
         android:clipChildren="true"
         android:clipToPadding="true">
+
+        <ImageView
+            android:id="@+id/iv_category_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null" />
 
         <!-- Vệt sáng chéo "tráng gương" lướt 1 lần khi thẻ hiện ra -->
         <View
@@ -33,69 +41,64 @@
             android:background="@drawable/tc_shimmer_gradient"
             android:rotation="-18" />
 
-        <!-- Nội dung căn giữa: khung tròn ảnh + tên + mô tả ngắn -->
+        <!-- Lớp phủ tối dần về đáy để chữ trắng luôn nổi rõ trên mọi ảnh nền -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tc_category_card_scrim" />
+
+        <!-- Tên + mô tả ngắn, góc dưới-trái -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:padding="16dp">
-
-            <FrameLayout
-                android:id="@+id/frame_category_thumb"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:background="@drawable/tc_bg_circle_white">
-
-                <ImageView
-                    android:id="@+id/iv_category_thumb"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:contentDescription="@null" />
-            </FrameLayout>
+            android:padding="14dp"
+            android:paddingEnd="40dp">
 
             <TextView
                 android:id="@+id/tv_category_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
                 android:textAllCaps="true"
+                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
                 android:letterSpacing="0.01"
                 android:maxLines="2"
                 android:ellipsize="end"
-                tools:textColor="@android:color/white"
                 tools:text="Xanh Lục Bảo" />
 
             <TextView
                 android:id="@+id/tv_category_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/tc_on_dark_secondary"
                 android:textSize="11sp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                tools:textColor="@android:color/white"
                 tools:text="Bạch Sa Liên Vũ, Lam Ngọc Cổ Trấn,…" />
         </LinearLayout>
 
-        <!-- Mũi tên gợi ý "có thể chạm", góc dưới-phải -->
-        <ImageView
-            android:id="@+id/iv_category_chevron"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+        <!-- Mũi tên gợi ý "có thể chạm", góc dưới-phải, khung tròn trắng nổi trên ảnh -->
+        <FrameLayout
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="bottom|end"
-            android:layout_margin="10dp"
-            android:src="@drawable/ic_arrow_right"
-            android:contentDescription="@null"
-            tools:tint="@android:color/white" />
+            android:layout_margin="12dp"
+            android:background="@drawable/tc_bg_circle_white">
+
+            <ImageView
+                android:id="@+id/iv_category_chevron"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="@color/tc_red"
+                android:contentDescription="@null" />
+        </FrameLayout>
 
     </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

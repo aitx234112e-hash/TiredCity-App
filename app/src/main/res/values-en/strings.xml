@@ -351,6 +351,7 @@
     <string name="label_rating">Rating</string>
     <string name="label_price">Price</string>
     <string name="label_description">Description</string>
+    <string name="hint_swipe_down_details">Swipe down for details</string>
     <string name="label_reviews">Customer Reviews</string>
     <string name="label_menh_tags">Suitable Elements</string>
     <string name="out_of_stock">Out of Stock</string>
@@ -425,6 +426,7 @@
     <string name="phukien_mudoidau_desc">Modernized hats and headpieces,…</string>
 
     <!-- Category page: garment-type tabs + chrome (tab labels are proper nouns, kept untranslated) -->
+    <string name="cat_carousel_swipe_hint">Swipe to see more</string>
     <string name="filter_label">Filters</string>
     <string name="cd_scan">Scan code</string>
     <string name="cd_view_mode">View mode</string>

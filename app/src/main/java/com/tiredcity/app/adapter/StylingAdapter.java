@@ -1,6 +1,5 @@
 package com.tiredcity.app.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
@@ -17,11 +15,13 @@ import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.CategoryItem;
 import java.util.List;
 
-/** Thẻ "poster" cho lưới 2 cột ở trang "Danh mục" — nền mỗi thẻ LÀ chính màu/nhóm phụ kiện đó
- *  (biến cả danh sách thành 1 bảng màu sống động thay vì danh sách phẳng), chữ/mũi tên tự đổi
- *  trắng hay than đậm tuỳ độ sáng nền để luôn đủ tương phản. Mỗi lần bind: thẻ mờ + trượt NGANG
- *  từ ngoài vào (cột trái từ trái, cột phải từ phải) rồi vệt sáng chéo "tráng gương" lướt qua —
- *  đồng bộ ngôn ngữ hiệu ứng với các banner ở Trang chủ (HomeFragment.ShimmerSweep/ScrollReveal). */
+/** Thẻ "poster" ẢNH TRANG PHỤC THẬT cho lưới 2 cột ở trang "Danh mục" — ảnh phủ kín thẻ, lớp phủ
+ *  gradient tối dần ở đáy (xem tc_category_card_scrim + item_styling_category.xml) giữ chữ trắng
+ *  luôn đủ tương phản dù hậu cảnh ảnh thật là gì (tường gỗ tối, phông sáng,…) — không thể suy màu
+ *  chữ từ placeholderColor như với ảnh mẫu vải phẳng màu. Mỗi lần bind: thẻ mờ + trượt NGANG từ
+ *  ngoài vào (cột trái từ trái, cột phải từ phải) rồi vệt sáng chéo "tráng gương" lướt qua — đồng
+ *  bộ ngôn ngữ hiệu ứng với các banner ở Trang chủ (HomeFragment.ShimmerSweep/ScrollReveal); đây
+ *  cũng chính là cách các thẻ danh mục "lần lượt hiện ra" từng thẻ một khi vào tab. */
 public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHolder> {
 
     private static final long ENTRANCE_DURATION = 360L;
@@ -30,8 +30,6 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
     private static final float SLIDE_DISTANCE_DP = 90f;
     private static final long SHIMMER_DURATION = 950L;
     private static final long SHIMMER_DELAY = 160L;
-    private static final float LIGHT_LUMINANCE_THRESHOLD = 0.6f;
-    private static final int DESCRIPTION_ALPHA = 210;
     private static final float COLUMN_GUTTER_DP = 6f;
 
     public interface OnCategoryClickListener {
@@ -82,15 +80,8 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
             holder.ivThumb.setImageResource(item.getImageRes());
         } else {
             holder.ivThumb.setImageDrawable(null);
+            holder.card.setCardBackgroundColor(item.getPlaceholderColor());
         }
-
-        // Nền thẻ = chính màu của danh mục đó — chữ/mũi tên tự đổi trắng hay than đậm tuỳ độ sáng.
-        int bgColor = item.getPlaceholderColor();
-        holder.card.setCardBackgroundColor(bgColor);
-        int textColor = contrastColorFor(holder.itemView, bgColor);
-        holder.tvName.setTextColor(textColor);
-        holder.tvDescription.setTextColor(withAlpha(textColor, DESCRIPTION_ALPHA));
-        holder.ivChevron.setColorFilter(textColor);
 
         applyColumnGutter(holder.itemView, position);
 
@@ -113,23 +104,6 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
         lp.leftMargin = leftColumn ? 0 : gutter;
         lp.rightMargin = leftColumn ? gutter : 0;
         card.setLayoutParams(lp);
-    }
-
-    /** Trắng nếu nền tối, than đậm (tc_espresso) nếu nền sáng — tính theo độ chói tương đối, nên
-     *  chữ luôn đủ tương phản dù nền là màu gì trong bảng màu (đỏ/xanh/vàng/hồng/tím/…). */
-    @ColorInt
-    private static int contrastColorFor(View view, @ColorInt int backgroundColor) {
-        double luminance = (0.299 * Color.red(backgroundColor)
-                + 0.587 * Color.green(backgroundColor)
-                + 0.114 * Color.blue(backgroundColor)) / 255.0;
-        return luminance > LIGHT_LUMINANCE_THRESHOLD
-                ? view.getContext().getColor(R.color.tc_espresso)
-                : Color.WHITE;
-    }
-
-    @ColorInt
-    private static int withAlpha(@ColorInt int color, int alpha) {
-        return (color & 0x00FFFFFF) | (alpha << 24);
     }
 
     /** Thẻ mờ + trượt NGANG từ ngoài vào khi hiện ra — cột trái trượt từ trái, cột phải trượt từ
@@ -196,7 +170,6 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
         final TextView tvName;
         final TextView tvDescription;
         final ImageView ivThumb;
-        final ImageView ivChevron;
         final View shimmerThumb;
 
         ViewHolder(@NonNull View itemView) {
@@ -205,7 +178,6 @@ public class StylingAdapter extends RecyclerView.Adapter<StylingAdapter.ViewHold
             tvName = itemView.findViewById(R.id.tv_category_name);
             tvDescription = itemView.findViewById(R.id.tv_category_description);
             ivThumb = itemView.findViewById(R.id.iv_category_thumb);
-            ivChevron = itemView.findViewById(R.id.iv_category_chevron);
             shimmerThumb = itemView.findViewById(R.id.shimmer_category_thumb);
         }
     }

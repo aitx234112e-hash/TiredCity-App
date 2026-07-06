@@ -76,6 +76,42 @@
         <item name="android:letterSpacing">0.04</item>
     </style>
 
+    <!-- Số thứ tự "01".."06" ở các thẻ Vertical Card Stack (Chi tiết sản phẩm). Cần parent=""
+         tường minh vì tên có dấu chấm — nếu không AAPT sẽ tự suy ra parent ẩn "TextAppearance.TC"
+         (bỏ đoạn cuối) và báo lỗi "resource style/TextAppearance.TC not found" vì style đó
+         không tồn tại. -->
+    <style name="TextAppearance.TC.SectionNumber" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/tc_red</item>
+    </style>
+
+    <!-- Nhãn tên mục ("MÔ TẢ", "CÂU CHUYỆN"...) ngay dưới số thứ tự. parent="" tường minh — xem
+         ghi chú ở TextAppearance.TC.SectionNumber phía trên. -->
+    <style name="TextAppearance.TC.SectionLabel" parent="">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!-- Gạch ngang đỏ ngắn dưới nhãn mục, trước phần nội dung — thẻ Vertical Card Stack.
+         parent="" tường minh — xem ghi chú ở TextAppearance.TC.SectionNumber phía trên. -->
+    <style name="TC.SectionDash" parent="">
+        <item name="android:layout_width">28dp</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">14dp</item>
+        <item name="android:background">@color/tc_red</item>
+    </style>
+
     <style name="TextAppearance.TC.Nav" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">@dimen/tc_text_tiny</item>

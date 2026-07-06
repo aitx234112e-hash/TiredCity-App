@@ -356,6 +356,7 @@
     <string name="label_rating">Đánh giá</string>
     <string name="label_price">Giá</string>
     <string name="label_description">Mô tả</string>
+    <string name="hint_swipe_down_details">Vuốt xuống để xem chi tiết</string>
     <string name="label_reviews">Đánh giá khách hàng</string>
     <string name="label_menh_tags">Phù hợp mệnh</string>
     <string name="out_of_stock">Hết hàng</string>
@@ -575,6 +576,7 @@
     <string name="cat_tab_giao_linh">GIAO LĨNH</string>
     <string name="cat_tab_yem_dao">YẾM ĐÀO</string>
     <string name="cat_tab_phu_kien">PHỤ KIỆN</string>
+    <string name="cat_carousel_swipe_hint">Kéo ngang để xem thêm</string>
     <string name="filter_label">Bộ lọc</string>
     <string name="cd_scan">Quét mã</string>
     <string name="cd_view_mode">Chế độ xem</string>

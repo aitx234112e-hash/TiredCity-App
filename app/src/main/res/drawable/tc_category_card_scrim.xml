@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lớp phủ tối dần từ trong suốt (đỉnh) xuống đen mờ (đáy) đặt trên ảnh trang phục thật — ảnh
+     thật có hậu cảnh không đoán trước được (tường gỗ tối, phông sáng,…) nên không thể suy ra màu
+     chữ từ placeholderColor; phủ tối + chữ trắng cố định là cách duy nhất luôn chắc chắn đủ
+     tương phản dù ảnh nền là gì. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="90"
+        android:startColor="#00000000"
+        android:centerColor="#00000000"
+        android:centerY="0.5"
+        android:endColor="#B3000000" />
+</shape>
