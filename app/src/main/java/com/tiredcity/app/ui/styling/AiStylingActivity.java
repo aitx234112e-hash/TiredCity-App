@@ -3,17 +3,22 @@ package com.tiredcity.app.ui.styling;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
-import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.network.ApiService;
+import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.databinding.ActivityAiStylingBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.utils.ColorTaxonomy;
+import com.tiredcity.app.utils.GeminiStylist;
 import com.tiredcity.app.utils.MenhCalculator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,6 +28,7 @@ public class AiStylingActivity extends BaseActivity {
 
     private ActivityAiStylingBinding binding;
     private ApiService apiService;
+    private final FirestoreProductRepository firestoreRepository = new FirestoreProductRepository();
     private ProductAdapter recommendedAdapter;
 
     @Override
@@ -38,8 +44,20 @@ public class AiStylingActivity extends BaseActivity {
         apiService = ApiClient.getApiService(preferenceManager.getToken());
 
         recommendedAdapter = new ProductAdapter(null);
-        binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
+        recommendedAdapter.setFillWidth(true); // thẻ giãn đầy mỗi cột của lưới
+        binding.rvSuggestions.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvSuggestions.setAdapter(recommendedAdapter);
+        binding.rvSuggestions.setNestedScrollingEnabled(false);
+        recommendedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+            @Override public void onProductClick(Product product) {
+                if (product.getId() == null) return;
+                android.content.Intent i = new android.content.Intent(
+                        AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                i.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(i);
+            }
+            @Override public void onSaveToggle(Product product, boolean saved) { }
+        });
 
         binding.btnRefreshSuggestions.setOnClickListener(v -> loadUserProfileAndRecommend());
 
@@ -76,21 +94,31 @@ public class AiStylingActivity extends BaseActivity {
         });
     }
 
-    /** Mệnh đã lưu → tính từ năm sinh trong hồ sơ cache → mặc định "Kim". */
+    /** Ưu tiên tính lại từ năm sinh (nạp âm đúng, chữa lành cache cũ) → mệnh đã lưu → "Kim". */
     private String resolveMenh() {
-        String saved = preferenceManager.getMenh();
-        if (saved != null) return saved;
-
         UserProfile cached = preferenceManager.getUser();
         if (cached != null && cached.getBirthYear() > 0) {
-            return MenhCalculator.tinhMenh(cached.getBirthYear());
+            String fresh = MenhCalculator.tinhMenh(cached.getBirthYear());
+            preferenceManager.setMenh(fresh);
+            return fresh;
         }
-        return "Kim";
+        String saved = preferenceManager.getMenh();
+        return saved != null ? saved : "Kim";
     }
 
     private void setupMenhUI(String menh) {
         binding.tvMenhTitle.setText(getString(R.string.menh_label, menh));
         binding.tvMenhEmoji.setText(MenhCalculator.getEmojiMenh(menh));
+
+        // Tranh hero theo mệnh — nếu chưa có ảnh riêng thì ẩn ImageView,
+        // để lộ nền gradient sơn mài đỏ của khung hero.
+        int artwork = MenhCalculator.getMenhArtwork(menh);
+        if (artwork != 0) {
+            binding.imgMenhHero.setImageResource(artwork);
+            binding.imgMenhHero.setVisibility(View.VISIBLE);
+        } else {
+            binding.imgMenhHero.setVisibility(View.GONE);
+        }
 
         // Zodiac subtitle — nếu chưa có cung hoàng đạo thì hiển thị mô tả ngũ hành.
         String zodiac = preferenceManager.getZodiac();
@@ -127,7 +155,8 @@ public class AiStylingActivity extends BaseActivity {
             android.widget.TextView label = new android.widget.TextView(this);
             label.setText(MenhCalculator.localizeColor(this, colorName));
             label.setTextSize(11);
-            label.setTextColor(getResources().getColor(R.color.text_secondary, getTheme()));
+            // Nhãn nằm trên nền đen tuyền của thẻ → dùng màu kem sáng cho nổi bật.
+            label.setTextColor(getResources().getColor(R.color.tc_text_on_dark, getTheme()));
             label.setGravity(android.view.Gravity.CENTER);
             LinearLayout.LayoutParams labelLp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -166,34 +195,123 @@ public class AiStylingActivity extends BaseActivity {
         return android.graphics.Color.parseColor(hex);
     }
 
+    /** Số gợi ý hiển thị mỗi lần, và cỡ nhóm liên quan để "Làm mới" đổi được món. */
+    private static final int SUGGESTION_COUNT = 6;
+    private static final int RELEVANT_POOL = 12;
+
+    /**
+     * Gợi ý trang phục = sản phẩm THẬT từ Firestore (cùng nguồn với admin, có ảnh),
+     * lọc theo màu hợp mệnh. Nếu không có món hợp màu thì dùng hàng đánh giá cao nhất.
+     * Firestore lỗi/rỗng mới lùi về dữ liệu mẫu offline để mục không trống.
+     */
     private void loadRecommendedProducts(String menh) {
-        apiService.getRecommendedProducts(menh).enqueue(new Callback<ApiListResponse<Product>>() {
+        firestoreRepository.getProducts(all -> {
+            if (binding == null) return;
+            if (all == null || all.isEmpty()) {
+                recommendedAdapter.updateData(buildMockSuggestions());
+                return;
+            }
+
+            List<Product> matched = filterByMenh(all, menh);
+            // Không có SP hợp màu mệnh → vẫn ưu tiên hàng thật đánh giá cao (có ảnh).
+            List<Product> pool = matched.isEmpty() ? sortByRelevance(new ArrayList<>(all)) : matched;
+
+            // Lấy nhóm liên quan nhất rồi xáo trộn để "Làm mới" cho ra bộ gợi ý khác nhau.
+            List<Product> topPool = pool.subList(0, Math.min(pool.size(), RELEVANT_POOL));
+            List<Product> picks = new ArrayList<>(topPool);
+            Collections.shuffle(picks);
+            List<Product> shown = new ArrayList<>(picks.subList(0, Math.min(picks.size(), SUGGESTION_COUNT)));
+            recommendedAdapter.updateData(shown);
+            loadAiStylingTip(menh, shown);
+        });
+    }
+
+    /**
+     * Sinh "Lời khuyên phong cách" bằng Gemini (gọi thẳng từ app) theo mệnh + màu hợp
+     * mệnh + sản phẩm đang gợi ý. Chưa dán khoá / lỗi / không có mạng → giữ lời khuyên tĩnh.
+     */
+    private void loadAiStylingTip(String menh, List<Product> products) {
+        if (binding == null) return;
+
+        // Chưa cấu hình khoá Gemini → giữ nguyên lời khuyên mặc định, không hiện "đang tạo".
+        if (!GeminiStylist.isConfigured()) {
+            binding.tvStylingTip.setText(getString(R.string.aistyle_tip_desc));
+            return;
+        }
+
+        binding.tvStylingTip.setText(getString(R.string.aistyle_tip_loading));
+
+        List<String> productNames = new ArrayList<>();
+        if (products != null) {
+            for (Product p : products) {
+                if (p.getName() != null && !p.getName().trim().isEmpty()) productNames.add(p.getName());
+            }
+        }
+        List<String> colors = new ArrayList<>(Arrays.asList(MenhCalculator.getMauHopMenh(menh)));
+
+        GeminiStylist.suggest(menh, colors, productNames, new GeminiStylist.Callback() {
             @Override
-            public void onResponse(Call<ApiListResponse<Product>> call, Response<ApiListResponse<Product>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()
-                        && response.body().getData() != null && !response.body().getData().isEmpty()) {
-                    recommendedAdapter.updateData(response.body().getData());
-                } else {
-                    // Không có backend → hiển thị gợi ý mẫu để mục không trống.
-                    recommendedAdapter.updateData(buildMockSuggestions());
-                }
+            public void onAdvice(String advice) {
+                runOnUiThread(() -> {
+                    if (binding != null) binding.tvStylingTip.setText(advice);
+                });
             }
 
             @Override
-            public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
-                recommendedAdapter.updateData(buildMockSuggestions());
+            public void onError() {
+                runOnUiThread(() -> {
+                    if (binding != null) binding.tvStylingTip.setText(getString(R.string.aistyle_tip_desc));
+                });
             }
         });
     }
 
-    /** Gợi ý trang phục mẫu (offline) để mục luôn có nội dung. */
+    /** Lọc sản phẩm có màu thuộc nhóm màu hợp mệnh, đã xếp theo độ liên quan. */
+    private List<Product> filterByMenh(List<Product> all, String menh) {
+        String[] buckets = menhColorBuckets(menh);
+        List<Product> out = new ArrayList<>();
+        for (Product p : all) {
+            for (String bucket : buckets) {
+                if (ColorTaxonomy.matchesBucket(p.getColors(), bucket)) {
+                    out.add(p);
+                    break;
+                }
+            }
+        }
+        return sortByRelevance(out);
+    }
+
+    /** Nhóm màu chuẩn (ColorTaxonomy) tương ứng với màu hợp từng mệnh. */
+    private static String[] menhColorBuckets(String menh) {
+        if (menh == null) return new String[0];
+        switch (menh) {
+            case "Kim":  return new String[]{ColorTaxonomy.TRANG, ColorTaxonomy.VANG};
+            case "Mộc":  return new String[]{ColorTaxonomy.XANH_LA, ColorTaxonomy.XANH};
+            case "Thủy": return new String[]{ColorTaxonomy.DEN, ColorTaxonomy.XANH, ColorTaxonomy.TIM};
+            case "Hỏa":  return new String[]{ColorTaxonomy.DO, ColorTaxonomy.HONG, ColorTaxonomy.CAM, ColorTaxonomy.TIM};
+            case "Thổ":  return new String[]{ColorTaxonomy.VANG, ColorTaxonomy.CAM};
+            default:     return new String[0];
+        }
+    }
+
+    /** Đánh giá cao trước, rồi tới khuyến mãi sâu hơn. */
+    private List<Product> sortByRelevance(List<Product> list) {
+        Collections.sort(list, (a, b) -> {
+            int byRating = Double.compare(b.getRating(), a.getRating());
+            if (byRating != 0) return byRating;
+            return b.getDiscount() - a.getDiscount();
+        });
+        return list;
+    }
+
+    /** Gợi ý trang phục mẫu (offline) — chỉ dùng khi Firestore lỗi/rỗng. */
     private List<Product> buildMockSuggestions() {
         String[][] data = {
             {"1", "Áo Dài Lụa Trắng",   "Lụa tơ tằm",  "850000",  "10", "4.8"},
             {"2", "Nhật Bình Vàng Đồng", "Gấm thêu kim", "1450000", "15", "4.9"},
             {"5", "Áo Tấc Trắng Ngà",    "Đũi tơ cao cấp", "990000", "0",  "4.7"},
         };
-        List<Product> list = new java.util.ArrayList<>();
+        List<Product> list = new ArrayList<>();
         for (String[] row : data) {
             Product p = new Product();
             p.setId(row[0]);

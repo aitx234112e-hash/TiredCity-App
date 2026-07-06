@@ -612,7 +612,7 @@
     <!-- Styling / Chatbot / Explore / About -->
     <string name="styling_title">Phong cách của bạn</string>
     <string name="styling_subtitle">Khám phá phong cách phù hợp với mệnh và cung hoàng đạo</string>
-    <string name="styling_ai_title">Gợi ý phong cách AI</string>
+    <string name="styling_ai_title">Gợi ý theo Ngũ hành</string>
     <string name="styling_ai_desc">Trang phục hợp mệnh, hợp cung</string>
     <string name="styling_chat_title">Trợ lý thời trang AI</string>
     <string name="styling_chat_desc">Chat với AI để được tư vấn trực tiếp</string>
@@ -658,6 +658,7 @@
     <string name="aistyle_tips">💡  Lời khuyên phong cách</string>
     <string name="aistyle_color_desc">Màu trắng, vàng, bạc và xám mang lại vận khí tốt cho người mệnh Kim.</string>
     <string name="aistyle_tip_desc">Người mệnh Kim nên chọn những trang phục có gam màu sáng, đường cắt may tinh tế. Áo dài lụa trắng hoặc vàng đồng là lựa chọn hoàn hảo cho các dịp lễ trang trọng.</string>
+    <string name="aistyle_tip_loading">✨ Đang tạo lời khuyên phong cách riêng cho bạn…</string>
     <string name="aistyle_menh_tagline">Gợi ý phong cách theo ngũ hành bản mệnh</string>
 
     <!-- Profile -->
@@ -672,7 +673,7 @@
     <string name="label_general_settings">Cài đặt chung</string>
     <string name="label_terms_conditions">Điều khoản &amp; Điều kiện</string>
     <!-- Quick actions -->
-    <string name="label_styling_ai">Phối đồ AI</string>
+    <string name="label_styling_ai">Phối đồ</string>
     <string name="label_orders_short">Đơn hàng</string>
     <string name="label_find_store">Tìm cửa hàng</string>
     <string name="label_promotions">Ưu đãi</string>

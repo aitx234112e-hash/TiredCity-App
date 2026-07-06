@@ -38,3 +38,6 @@ captures/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Claude Code local settings (may chua log lenh cuc bo, khong commit)
+.claude/settings.local.json

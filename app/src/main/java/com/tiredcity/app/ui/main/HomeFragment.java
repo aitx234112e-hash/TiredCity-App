@@ -409,8 +409,9 @@ public class HomeFragment extends Fragment {
         String menh   = prefs.getMenh();
         String zodiac = prefs.getZodiac();
 
-        // Tự tính mệnh từ ngày sinh trong profile nếu chưa có
-        if (menh == null || menh.isEmpty()) {
+        // Luôn tính lại mệnh/cung từ ngày sinh khi có — vừa điền khi thiếu, vừa "chữa lành"
+        // các giá trị mệnh cũ đã lưu sai (do công thức tính cũ) sang nạp âm đúng.
+        {
             UserProfile profile = prefs.getUser();
             if (profile != null && profile.getBirthDate() != null
                     && profile.getBirthDate().length() >= 10) {

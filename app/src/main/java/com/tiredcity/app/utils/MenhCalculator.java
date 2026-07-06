@@ -2,6 +2,7 @@ package com.tiredcity.app.utils;
 
 import android.content.Context;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
 import com.tiredcity.app.R;
@@ -10,18 +11,42 @@ public class MenhCalculator {
     private MenhCalculator() {}
 
     /**
-     * Tính Mệnh Ngũ Hành từ năm sinh dương lịch.
-     * Quy tắc phổ biến: chữ số cuối của năm.
-     *   0,1 → Thủy  |  2,3 → Mộc  |  4,5 → Hỏa  |  6,7 → Thổ  |  8,9 → Kim
+     * Tính Mệnh Ngũ Hành từ năm sinh (âm lịch) theo NẠP ÂM — Lục thập hoa giáp.
+     *
+     * <p>Ngũ hành bản mệnh KHÔNG suy ra được từ chữ số cuối của năm; nó phụ thuộc vào
+     * Thiên Can và Địa Chi (chu kỳ 60 năm). Công thức:
+     * <pre>
+     *   giá trị Can (Thiên Can theo năm % 10):
+     *     Giáp/Ất=1, Bính/Đinh=2, Mậu/Kỷ=3, Canh/Tân=4, Nhâm/Quý=5
+     *   giá trị Chi (Địa Chi theo năm % 12):
+     *     Tý/Sửu/Ngọ/Mùi=0, Dần/Mão/Thân/Dậu=1, Thìn/Tỵ/Tuất/Hợi=2
+     *   tổng = Can + Chi; nếu tổng > 5 thì trừ 5
+     *   1→Kim, 2→Thủy, 3→Hỏa, 4→Thổ, 5→Mộc
+     * </pre>
+     * Đã đối chiếu đúng với nhiều năm quen thuộc: 1984 Giáp Tý = Kim, 1990 Canh Ngọ = Thổ,
+     * 1995 Ất Hợi = Hỏa, 1988 Mậu Thìn = Mộc, 1996 Bính Tý = Thủy, 2000 Canh Thìn = Kim.
+     *
+     * <p>Lưu ý: dùng năm âm lịch. App chỉ có năm sinh dương lịch nên người sinh vào
+     * tháng 1 / đầu tháng 2 (trước Tết) về lý thuộc năm can-chi trước đó — đây là giản
+     * lược chấp nhận được khi không có ngày sinh đầy đủ.
      */
     public static String tinhMenh(int namSinh) {
-        switch (namSinh % 10) {
-            case 0: case 1: return Constants.MENH_THUY;
-            case 2: case 3: return Constants.MENH_MOC;
-            case 4: case 5: return Constants.MENH_HOA;
-            case 6: case 7: return Constants.MENH_THO;
-            case 8: case 9: return Constants.MENH_KIM;
-            default:        return Constants.MENH_THO;
+        // Can theo năm % 10: bắt đầu từ Canh (0) … Kỷ (9).
+        int[] canValue = {4, 4, 5, 5, 1, 1, 2, 2, 3, 3};
+        // Chi theo năm % 12: 0→Thân, 1→Dậu, 2→Tuất, 3→Hợi, 4→Tý, 5→Sửu,
+        //                    6→Dần, 7→Mão, 8→Thìn, 9→Tỵ, 10→Ngọ, 11→Mùi
+        int[] chiValue = {1, 1, 2, 2, 0, 0, 1, 1, 2, 2, 0, 0};
+
+        int sum = canValue[namSinh % 10] + chiValue[namSinh % 12];
+        if (sum > 5) sum -= 5;
+
+        switch (sum) {
+            case 1:  return Constants.MENH_KIM;
+            case 2:  return Constants.MENH_THUY;
+            case 3:  return Constants.MENH_HOA;
+            case 4:  return Constants.MENH_THO;
+            case 5:  return Constants.MENH_MOC;
+            default: return Constants.MENH_THO;
         }
     }
 
@@ -149,6 +174,19 @@ public class MenhCalculator {
             case "Be":        return R.string.color_beige;
             case "Cam nhạt":  return R.string.color_light_orange;
             default:          return 0;
+        }
+    }
+
+    /**
+     * Tranh minh hoạ hero theo từng mệnh (dùng cho trang gợi ý phong cách).
+     * Trả về 0 nếu mệnh chưa có ảnh riêng — khi đó hero dùng nền gradient sơn mài.
+     */
+    @DrawableRes
+    public static int getMenhArtwork(String menh) {
+        if (menh == null) return 0;
+        switch (menh) {
+            case "Kim": return R.drawable.ai_1;
+            default:    return 0;
         }
     }
 

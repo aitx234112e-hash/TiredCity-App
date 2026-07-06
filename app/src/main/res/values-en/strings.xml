@@ -508,7 +508,7 @@
     <!-- Styling / Chatbot / Explore / About -->
     <string name="styling_title">Your Style</string>
     <string name="styling_subtitle">Discover styles that match your element and zodiac sign</string>
-    <string name="styling_ai_title">AI Style Suggestions</string>
+    <string name="styling_ai_title">Five Elements Style</string>
     <string name="styling_ai_desc">Outfits matching your element &amp; sign</string>
     <string name="styling_chat_title">AI Fashion Assistant</string>
     <string name="styling_chat_desc">Chat with AI for direct advice</string>
@@ -554,6 +554,7 @@
     <string name="aistyle_tips">💡  Styling tips</string>
     <string name="aistyle_color_desc">White, yellow, silver and gray bring good fortune to those of the Metal element.</string>
     <string name="aistyle_tip_desc">Those of the Metal element should choose light-toned garments with refined tailoring. A white or bronze silk áo dài is perfect for formal occasions.</string>
+    <string name="aistyle_tip_loading">✨ Crafting personalized style advice for you…</string>
     <string name="aistyle_menh_tagline">Style suggestions based on your Five-Element destiny</string>
 
     <!-- Profile -->
@@ -569,7 +570,7 @@
     <string name="settings_general_dark_mode_title">Dark mode</string>
     <string name="label_terms_conditions">Terms &amp; Conditions</string>
     <!-- Quick actions -->
-    <string name="label_styling_ai">AI Styling</string>
+    <string name="label_styling_ai">Styling</string>
     <string name="label_orders_short">Orders</string>
     <string name="label_find_store">Find Store</string>
     <string name="label_promotions">Promotions</string>

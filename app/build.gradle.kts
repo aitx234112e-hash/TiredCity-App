@@ -6,13 +6,15 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-// Doc Claude API key tu local.properties (khong commit key vao git) hoac bien moi truong.
-val claudeApiKey: String = run {
-    val props = Properties()
+// Doc API key tu local.properties (khong commit key vao git) hoac bien moi truong.
+val localProps: Properties = Properties().apply {
     val f = rootProject.file("local.properties")
-    if (f.exists()) f.inputStream().use { props.load(it) }
-    props.getProperty("CLAUDE_API_KEY") ?: System.getenv("CLAUDE_API_KEY") ?: ""
+    if (f.exists()) f.inputStream().use { load(it) }
 }
+val claudeApiKey: String =
+    localProps.getProperty("CLAUDE_API_KEY") ?: System.getenv("CLAUDE_API_KEY") ?: ""
+val geminiApiKey: String =
+    localProps.getProperty("GEMINI_API_KEY") ?: System.getenv("GEMINI_API_KEY") ?: ""
 
 android {
     namespace  = "com.tiredcity.app"
@@ -27,6 +29,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "CLAUDE_API_KEY", "\"$claudeApiKey\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
