@@ -48,7 +48,7 @@ public final class ModuleForm {
 
     public static boolean canDelete(AdminModule m) {
         switch (m) {
-            case PRODUCTS: case VOUCHERS: case EVENTS: case SHIPPING: case BLOGS: case USERS: case FEEDBACK:
+            case PRODUCTS: case VOUCHERS: case EVENTS: case SHIPPING: case BLOGS: case USERS: case FEEDBACK: case REVIEWS:
                 return true;
             default:
                 return false;
@@ -191,6 +191,10 @@ public final class ModuleForm {
             case BLOGS:
                 f.add(new FormField("title", "Tiêu đề", FormField.Type.TEXT, true)
                         .value(s(d, "title")));
+                f.add(new FormField("category", "Danh mục", FormField.Type.SELECT, false,
+                        new String[]{"Tin tức", "Văn hoá", "Sự kiện", "Sản phẩm", "Nghệ nhân"},
+                        new String[]{"news", "culture", "event", "product", "artisan"})
+                        .value(s(d, "category")));
                 f.add(new FormField("excerpt", "Mô tả ngắn", FormField.Type.TEXTAREA, false)
                         .value(s(d, "excerpt")));
                 f.add(new FormField("content", "Nội dung", FormField.Type.TEXTAREA, true)
@@ -318,7 +322,11 @@ public final class ModuleForm {
                 String status = val(v, "status");
                 if (status.isEmpty()) status = "draft";
                 String author = val(v, "authorName");
-                p.put("title", val(v, "title"));
+                String title = val(v, "title");
+                p.put("title", title);
+                p.put("titleVi", title); // dong bo voi model app
+                p.put("slug", slugify(title));
+                p.put("category", val(v, "category"));
                 p.put("excerpt", val(v, "excerpt"));
                 p.put("content", val(v, "content"));
                 p.put("thumbnail", val(v, "thumbnail"));
@@ -326,7 +334,10 @@ public final class ModuleForm {
                 p.put("status", status);
                 p.put("publishedAt", "published".equals(status) ? nowIso() : null);
                 p.put("updatedAt", nowIso());
-                if (isCreate) p.put("createdAt", nowIso());
+                if (isCreate) {
+                    p.put("views", 0L);
+                    p.put("createdAt", nowIso());
+                }
                 break;
             }
             case USERS: {
@@ -368,6 +379,7 @@ public final class ModuleForm {
             case BLOGS:    return "blog";
             case USERS:    return "user";
             case FEEDBACK: return "feedback";
+            case REVIEWS:  return "review";
             default:       return "record";
         }
     }
@@ -383,6 +395,7 @@ public final class ModuleForm {
             case BLOGS:    return firstNonEmpty(DocUtils.str(d, "title"), d.getId());
             case USERS:    return firstNonEmpty(DocUtils.str(d, "profileName", "fullName", "email"), d.getId());
             case FEEDBACK: return firstNonEmpty(DocUtils.str(d, "fullName", "email"), d.getId());
+            case REVIEWS:  return firstNonEmpty(DocUtils.str(d, "userName"), d.getId());
             default:       return d.getId();
         }
     }
@@ -481,5 +494,17 @@ public final class ModuleForm {
         SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         iso.setTimeZone(TimeZone.getTimeZone("UTC"));
         return iso.format(new Date());
+    }
+
+    private static String slugify(String text) {
+        if (text == null || text.isEmpty()) return "";
+        String normalized = java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD);
+        String result = normalized.replaceAll("[̀-ͯ]", "")
+                .replace("đ", "d").replace("Đ", "D")
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9\\s]", "")
+                .replaceAll("\\s+", "-")
+                .trim();
+        return result;
     }
 }

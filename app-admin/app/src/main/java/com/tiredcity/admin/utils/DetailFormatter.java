@@ -79,6 +79,17 @@ public final class DetailFormatter {
                 f.add(new DetailField("Nội dung", DocUtils.str(d, "message")));
                 f.add(new DetailField("Trạng thái", Boolean.TRUE.equals(d.getBoolean("replied")) ? "Đã phản hồi" : "Chờ xử lý"));
                 break;
+            case REVIEWS:
+                f.add(new DetailField("Khách hàng", DocUtils.str(d, "userName")));
+                f.add(new DetailField("Sản phẩm", DocUtils.str(d, "productId")));
+                f.add(new DetailField("Đánh giá", (long) DocUtils.num(d, "rating") + " ★"));
+                f.add(new DetailField("Nội dung", DocUtils.str(d, "comment")));
+                String status = DocUtils.str(d, "status");
+                if (status.isEmpty()) status = "APPROVED";
+                f.add(new DetailField("Trạng thái", "APPROVED".equals(status) ? "Công khai" : ("PENDING".equals(status) ? "Chờ duyệt" : "Đã ẩn")));
+                f.add(new DetailField("Ngày gửi", DocUtils.date(d, "createdAt")));
+                f.add(new DetailField("Phản hồi admin", DocUtils.str(d, "adminReply")));
+                break;
             case BLOGS:
                 f.add(new DetailField("Tiêu đề", DocUtils.str(d, "title")));
                 f.add(new DetailField("Mô tả ngắn", DocUtils.str(d, "excerpt")));

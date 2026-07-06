@@ -17,6 +17,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     public interface OnOrderClickListener {
         void onOrderClick(Order order);
+        default void onConfirmReceived(Order order) {}
+        default void onReviewOrder(Order order) {}
     }
 
     private final List<Order> orders;
@@ -52,6 +54,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         private final TextView tvOrderDate;
         private final TextView tvOrderTotal;
         private final TextView tvItemCount;
+        private final View layoutActions;
+        private final View dividerActions;
+        private final android.widget.Button btnConfirmReceived;
+        private final android.widget.Button btnReview;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,6 +66,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             tvOrderDate   = itemView.findViewById(R.id.tv_order_date);
             tvOrderTotal  = itemView.findViewById(R.id.tv_order_total);
             tvItemCount   = itemView.findViewById(R.id.tv_order_items);
+            layoutActions = itemView.findViewById(R.id.layout_actions);
+            dividerActions = itemView.findViewById(R.id.divider_actions);
+            btnConfirmReceived = itemView.findViewById(R.id.btn_confirm_received);
+            btnReview     = itemView.findViewById(R.id.btn_review);
         }
 
         void bind(Order order, OnOrderClickListener listener) {
@@ -79,6 +89,29 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                 int bgRes = getStatusBackground(order.getStatus());
                 tvOrderStatus.setBackgroundResource(bgRes);
             }
+
+            // Logic hien thi nut hanh dong
+            String status = order.getStatus() != null ? order.getStatus().toUpperCase() : "";
+            boolean canConfirm = status.equals("SHIPPING") || status.equals("SHIPPED") || status.equals("PROCESSING");
+            boolean canReview = status.equals("DELIVERED");
+
+            if (canConfirm || canReview) {
+                layoutActions.setVisibility(View.VISIBLE);
+                dividerActions.setVisibility(View.VISIBLE);
+                btnConfirmReceived.setVisibility(canConfirm ? View.VISIBLE : View.GONE);
+                btnReview.setVisibility(canReview ? View.VISIBLE : View.GONE);
+            } else {
+                layoutActions.setVisibility(View.GONE);
+                dividerActions.setVisibility(View.GONE);
+            }
+
+            btnConfirmReceived.setOnClickListener(v -> {
+                if (listener != null) listener.onConfirmReceived(order);
+            });
+
+            btnReview.setOnClickListener(v -> {
+                if (listener != null) listener.onReviewOrder(order);
+            });
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onOrderClick(order);

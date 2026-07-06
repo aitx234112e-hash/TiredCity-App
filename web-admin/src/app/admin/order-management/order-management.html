@@ -19,7 +19,7 @@
 
   <!-- Stats Row -->
   <div class="stats-row">
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('')" style="cursor: pointer;">
       <div class="stat-icon icon-primary">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
@@ -28,7 +28,7 @@
         <span class="stat-label">Doanh thu (Đã giao)</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('DELIVERED')" style="cursor: pointer;">
       <div class="stat-icon icon-success">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/></svg>
       </div>
@@ -37,7 +37,7 @@
         <span class="stat-label">Hoàn thành</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('PROCESSING_GROUP')" style="cursor: pointer;">
       <div class="stat-icon icon-warning">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
@@ -46,7 +46,7 @@
         <span class="stat-label">Đang xử lý</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('SHIPPING_GROUP')" style="cursor: pointer;">
       <div class="stat-icon icon-info">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M1 3h15v13H1z" stroke="#fff" stroke-width="1.5"/><path d="M16 8h4l3 4v5h-7V8z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
       </div>
@@ -55,7 +55,7 @@
         <span class="stat-label">Đang giao</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('CANCELLED')" style="cursor: pointer;">
       <div class="stat-icon icon-danger">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
@@ -87,6 +87,8 @@
       </select>
       <select class="filter-select" [(ngModel)]="selectedStatus" (change)="filterOrders()">
         <option value="">Tất cả trạng thái</option>
+        <option value="PROCESSING_GROUP">Đang xử lý (Chờ/Chuẩn bị)</option>
+        <option value="SHIPPING_GROUP">Đang giao (Tất cả)</option>
         <option value="PENDING">Chờ xác nhận</option>
         <option value="CONFIRMED">Đang chuẩn bị</option>
         <option value="SHIPPING">Đang giao</option>
@@ -367,9 +369,9 @@
           <div class="history-item" *ngFor="let log of selectedOrder.history.slice().reverse()">
             <div class="history-dot"></div>
             <div class="history-content">
-              <span class="history-time">{{ log.time | date:'dd/MM/yyyy HH:mm' }}</span>
+              <span class="history-time">{{ log.time | date:'dd/MM/yyyy HH:mm' }} — <strong>{{ log.actor || 'Hệ thống' }}</strong></span>
               <span class="history-desc">
-                <strong class="history-status">{{ getStatusLabel(log.status) }}</strong>: {{ log.note }}
+                <strong class="history-status">{{ getStatusLabel(log.status) }}:</strong> {{ log.note }}
               </span>
             </div>
           </div>

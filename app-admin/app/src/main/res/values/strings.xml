@@ -44,7 +44,9 @@
     <string name="m_shipping">Vận chuyển</string>
     <string name="m_shipping_desc">Phương thức giao hàng</string>
     <string name="m_feedback">Phản hồi</string>
-    <string name="m_feedback_desc">Ý kiến, đánh giá khách hàng</string>
+    <string name="m_feedback_desc">Ý kiến khách hàng</string>
+    <string name="m_reviews">Đánh giá</string>
+    <string name="m_reviews_desc">Đánh giá sản phẩm</string>
     <string name="m_blogs">Blogs</string>
     <string name="m_blogs_desc">Bài viết, tin tức</string>
     <string name="m_audit">Audit logs</string>
@@ -162,6 +164,9 @@
     <string name="paid_yes">Đã thanh toán</string>
     <string name="paid_no">Chưa thanh toán</string>
     <string name="feedback_marked">Đã đánh dấu phản hồi</string>
+    <string name="btn_reply_review">Phản hồi đánh giá</string>
+    <string name="hint_admin_reply">Nhập lời phản hồi của cửa hàng…</string>
+    <string name="review_replied_ok">Đã gửi phản hồi</string>
     <string name="revenue_chart_title">Doanh thu 6 tháng gần nhất</string>
     <string name="month_fmt">Th%1$d</string>
     <string name="btn_export_csv">Xuất CSV</string>

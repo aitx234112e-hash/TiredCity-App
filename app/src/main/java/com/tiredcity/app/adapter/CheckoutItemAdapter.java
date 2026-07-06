@@ -16,10 +16,22 @@ import java.util.List;
 /** Danh sách rút gọn sản phẩm trong đơn hàng ở màn Thanh toán — chỉ hiển thị, không cho sửa. */
 public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapter.ViewHolder> {
 
+    public interface OnItemReviewListener {
+        void onReviewItem(CartItem item);
+    }
+
     private final List<CartItem> items;
+    private OnItemReviewListener reviewListener;
+    private boolean showReviewButton = false;
 
     public CheckoutItemAdapter(List<CartItem> items) {
         this.items = items;
+    }
+
+    public CheckoutItemAdapter(List<CartItem> items, boolean showReviewButton, OnItemReviewListener listener) {
+        this.items = items;
+        this.showReviewButton = showReviewButton;
+        this.reviewListener = listener;
     }
 
     @NonNull
@@ -32,7 +44,7 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(items.get(position));
+        holder.bind(items.get(position), showReviewButton, reviewListener);
     }
 
     @Override
@@ -43,7 +55,7 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView ivImage;
-        final TextView tvName, tvVariant, tvQuantity, tvSubtotal;
+        final TextView tvName, tvVariant, tvQuantity, tvSubtotal, btnReview;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -52,9 +64,10 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
             tvVariant  = itemView.findViewById(R.id.tv_product_variant);
             tvQuantity = itemView.findViewById(R.id.tv_quantity);
             tvSubtotal = itemView.findViewById(R.id.tv_subtotal);
+            btnReview  = itemView.findViewById(R.id.btn_item_review);
         }
 
-        void bind(CartItem item) {
+        void bind(CartItem item, boolean showReviewButton, OnItemReviewListener listener) {
             if (item.getProduct() == null) return;
 
             tvName.setText(item.getProduct().getName());
@@ -68,6 +81,13 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
             tvVariant.setText(variant);
             tvQuantity.setText("x" + item.getQuantity());
             tvSubtotal.setText(PriceUtils.format(item.getSubtotal()));
+
+            if (btnReview != null) {
+                btnReview.setVisibility(showReviewButton ? View.VISIBLE : View.GONE);
+                btnReview.setOnClickListener(v -> {
+                    if (listener != null) listener.onReviewItem(item);
+                });
+            }
 
             String imageUrl = item.getProduct().getFirstImage();
             if (imageUrl != null && !imageUrl.isEmpty()) {

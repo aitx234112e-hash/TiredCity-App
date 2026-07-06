@@ -48,8 +48,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         holder.tvTitle.setText(event.getTitle());
         holder.tvLocation.setText(event.isOnline() ? "🌐 Online"
                 : (event.getLocation() != null ? event.getLocation() : ""));
-        holder.tvDate.setText(event.getStartDate() != null
-                ? DateUtils.formatDisplayDate(event.getStartDate()) : "");
+        holder.tvDate.setText(event.getEventDate() != null
+                ? DateUtils.formatDisplayDate(event.getEventDate()) : "");
 
         if (event.getImageUrl() != null && !event.getImageUrl().isEmpty()) {
             Glide.with(holder.ivImage.getContext())

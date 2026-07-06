@@ -67,6 +67,37 @@
         android:lineSpacingExtra="3dp"
         tools:text="Sản phẩm rất đẹp, chất lượng tốt. Lụa mềm mại, màu sắc đúng như hình. Sẽ mua lại!" />
 
+    <!-- Admin Reply Section -->
+    <LinearLayout
+        android:id="@+id/ll_admin_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/tc_bg_reply"
+        android:padding="12dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TiredCity phản hồi:"
+            android:textColor="@color/tc_red"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tv_admin_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp"
+            android:lineSpacingExtra="2dp"
+            tools:text="Cảm ơn bạn đã ủng hộ TiredCity. Chúc bạn một ngày tốt lành!" />
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

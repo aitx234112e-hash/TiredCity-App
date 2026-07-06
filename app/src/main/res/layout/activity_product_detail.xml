@@ -561,16 +561,36 @@
                         android:visibility="gone" />
 
                     <!-- ── Reviews summary ── -->
-                    <TextView
-                        android:id="@+id/tv_reviews_title"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/tc_red"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-medium"
-                        android:layout_marginTop="20dp"
-                        tools:text="Đánh giá khách hàng (128)" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="20dp">
+
+                        <TextView
+                            android:id="@+id/tv_reviews_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/tc_red"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
+                            tools:text="Đánh giá khách hàng (128)" />
+
+                        <TextView
+                            android:id="@+id/btn_write_review"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Viết đánh giá"
+                            android:textColor="@color/tc_red"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:background="@drawable/tc_btn_ghost_red" />
+                    </LinearLayout>
 
                     <View
                         android:layout_width="28dp"

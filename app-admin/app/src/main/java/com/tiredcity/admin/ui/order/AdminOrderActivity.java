@@ -132,13 +132,60 @@ public class AdminOrderActivity extends AppCompatActivity {
                             com.google.firebase.firestore.DocumentReference pRef = db.collection("products").document(pId);
                             DocumentSnapshot pSnap = transaction.get(pRef);
                             if (pSnap.exists()) {
-                                long currentStock = pSnap.getLong("stock") != null ? pSnap.getLong("stock") : 0;
                                 long qty = 0;
                                 Object qObj = item.get("quantity");
+                                if (qObj == null) qObj = item.get("qty");
                                 if (qObj instanceof Long) qty = (Long) qObj;
                                 else if (qObj instanceof Double) qty = ((Double) qObj).longValue();
-                                
-                                transaction.update(pRef, "stock", currentStock + qty);
+                                else if (qObj instanceof Integer) qty = ((Integer) qObj).longValue();
+
+                                Map<String, Object> pUpdates = new HashMap<>();
+                                long currentTotalStock = pSnap.getLong("stock") != null ? pSnap.getLong("stock") : 0;
+                                pUpdates.put("stock", currentTotalStock + qty);
+
+                                // Hoàn kho theo Size
+                                String selectedSize = (String) item.get("size");
+                                if (selectedSize == null) selectedSize = (String) item.get("selected_size");
+
+                                if (selectedSize != null) {
+                                    boolean sizeFound = false;
+                                    // Kiểm tra field 0, 1, 2...
+                                    for (int i = 0; i <= 10; i++) {
+                                        String field = String.valueOf(i);
+                                        Object sObj = pSnap.get(field);
+                                        if (sObj instanceof Map) {
+                                            Map<String, Object> sizeInfo = new HashMap<>((Map<String, Object>) sObj);
+                                            String sName = (String) sizeInfo.get("size");
+                                            if (selectedSize.equalsIgnoreCase(sName)) {
+                                                long sQty = 0;
+                                                Object sq = sizeInfo.get("quantity");
+                                                if (sq instanceof Number) sQty = ((Number) sq).longValue();
+                                                sizeInfo.put("quantity", sQty + qty);
+                                                pUpdates.put(field, sizeInfo);
+                                                sizeFound = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    // Kiểm tra mảng sizes
+                                    if (!sizeFound) {
+                                        List<Map<String, Object>> sizes = (List<Map<String, Object>>) pSnap.get("sizes");
+                                        if (sizes != null) {
+                                            List<Map<String, Object>> newSizes = new ArrayList<>();
+                                            for (Map<String, Object> s : sizes) {
+                                                Map<String, Object> sNew = new HashMap<>(s);
+                                                if (selectedSize.equalsIgnoreCase((String) sNew.get("size"))) {
+                                                    long sQty = ((Number) sNew.get("quantity")).longValue();
+                                                    sNew.put("quantity", sQty + qty);
+                                                }
+                                                newSizes.add(sNew);
+                                            }
+                                            pUpdates.put("sizes", newSizes);
+                                        }
+                                    }
+                                }
+                                transaction.update(pRef, pUpdates);
                             }
                         }
                     }
@@ -158,7 +205,8 @@ public class AdminOrderActivity extends AppCompatActivity {
             Map<String, Object> log = new HashMap<>();
             log.put("status", newStatus);
             log.put("time", updates.get("updatedAt"));
-            log.put("note", "Cập nhật từ Android Admin");
+            log.put("actor", "Admin App"); // Có thể lấy tên user login nếu có module auth
+            log.put("note", "Cập nhật trạng thái từ Android Admin");
             history.add(log);
             updates.put("history", history);
 

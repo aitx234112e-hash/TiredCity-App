@@ -167,8 +167,60 @@ public class OrderHistoryActivity extends BaseActivity {
         } else {
             binding.layoutEmpty.setVisibility(View.GONE);
             binding.swipeRefresh.setVisibility(View.VISIBLE);
-            orderAdapter = new OrderAdapter(orders, this::openOrderTracking);
+            orderAdapter = new OrderAdapter(orders, new OrderAdapter.OnOrderClickListener() {
+                @Override
+                public void onOrderClick(Order order) {
+                    openOrderTracking(order);
+                }
+
+                @Override
+                public void onConfirmReceived(Order order) {
+                    confirmReceived(order);
+                }
+
+                @Override
+                public void onReviewOrder(Order order) {
+                    openReviewDialog(order);
+                }
+            });
             binding.rvOrders.setAdapter(orderAdapter);
+        }
+    }
+
+    private void confirmReceived(Order order) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Xác nhận đã nhận hàng")
+            .setMessage("Bạn chắc chắn đã nhận được hàng và hài lòng với sản phẩm?")
+            .setPositiveButton("Xác nhận", (dialog, which) -> {
+                binding.swipeRefresh.setRefreshing(true);
+                orderRepository.updateOrderStatusInFirestore(order.getId(), "DELIVERED", "Khách hàng xác nhận đã nhận hàng", (success, error) -> {
+                    binding.swipeRefresh.setRefreshing(false);
+                    if (success) {
+                        android.widget.Toast.makeText(this, "Cảm ơn bạn đã xác nhận!", android.widget.Toast.LENGTH_SHORT).show();
+                        loadOrders(); // Tải lại danh sách
+                    } else {
+                        android.widget.Toast.makeText(this, "Lỗi: " + error, android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                });
+            })
+            .setNegativeButton("Đóng", null)
+            .show();
+    }
+
+    private void openReviewDialog(Order order) {
+        // Đơn hàng có thể có nhiều sản phẩm. Thường sẽ mở chi tiết để đánh giá từng cái
+        // Hoặc đơn giản là mở sản phẩm đầu tiên nếu chỉ có 1 cái
+        if (order.getItems() != null && !order.getItems().isEmpty()) {
+            if (order.getItems().size() == 1 && order.getItems().get(0).getProduct() != null) {
+                // Mở màn hình chi tiết sản phẩm để đánh giá
+                String pId = order.getItems().get(0).getProduct().getId();
+                Intent intent = new Intent(this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_PRODUCT_ID, pId);
+                startActivity(intent);
+            } else {
+                // Mở màn hình chi tiết đơn hàng (tracking) để người dùng chọn sản phẩm đánh giá
+                openOrderTracking(order);
+            }
         }
     }
 

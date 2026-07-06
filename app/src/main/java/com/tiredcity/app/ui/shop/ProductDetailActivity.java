@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -60,6 +61,7 @@ public class ProductDetailActivity extends BaseActivity {
     private CartLocalStore cartStore;
     private FavoritesLocalStore favoritesStore;
     private FavoritesRepository favoritesRepository;
+    private AlertDialog reviewDialog;
 
     private Product currentProduct;
     private String selectedSize = "";
@@ -104,6 +106,9 @@ public class ProductDetailActivity extends BaseActivity {
         binding.btnAddToCart.setOnClickListener(v -> addToCart());
         binding.btnBuyNow.setOnClickListener(v -> addToCartAndBuyNow());
 
+        // Review actions
+        binding.btnWriteReview.setOnClickListener(v -> showAddReviewDialog());
+
         // Setup static UI components
         setupSizeSelector();
         setupAccordions();
@@ -141,15 +146,34 @@ public class ProductDetailActivity extends BaseActivity {
         // Lắng nghe lỗi - Thêm fallback cho dữ liệu mẫu offline
         viewModel.getErrorMessage().observe(this, (String error) -> {
             if (error != null && !error.isEmpty()) {
-                String productId = getIntent().getStringExtra(Constants.EXTRA_PRODUCT_ID);
-                com.tiredcity.app.data.model.Product mock = com.tiredcity.app.data.mock.MockProductCatalog.findById(this, productId);
-                if (mock != null) {
-                    currentProduct = mock;
-                    bindProductToUI(mock);
+                Toast.makeText(ProductDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Lắng nghe trạng thái gửi feedback
+        viewModel.getIsSubmitting().observe(this, isSubmitting -> {
+            if (reviewDialog != null && reviewDialog.isShowing()) {
+                reviewDialog.findViewById(R.id.btn_submit).setEnabled(!isSubmitting);
+                reviewDialog.findViewById(R.id.btn_cancel).setEnabled(!isSubmitting);
+                if (isSubmitting) {
+                    ((android.widget.Button)reviewDialog.findViewById(R.id.btn_submit)).setText("Đang gửi...");
                 } else {
-                    Toast.makeText(ProductDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+                    ((android.widget.Button)reviewDialog.findViewById(R.id.btn_submit)).setText("Gửi đánh giá");
                 }
             }
+        });
+
+        viewModel.getIsSubmitSuccess().observe(this, success -> {
+            if (success != null && success) {
+                if (reviewDialog != null && reviewDialog.isShowing()) {
+                    reviewDialog.dismiss();
+                }
+                Toast.makeText(this, "Cảm ơn bạn đã gửi đánh giá!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.getCanUserReview().observe(this, canReview -> {
+            binding.btnWriteReview.setVisibility(canReview ? View.VISIBLE : View.GONE);
         });
 
         // Lắng nghe đánh giá
@@ -495,6 +519,28 @@ public class ProductDetailActivity extends BaseActivity {
         binding.rowShipping.setOnClickListener(v -> startSmoothActivity(new Intent(this, PolicyActivity.class)));
         binding.rowReturns.setOnClickListener(v -> startSmoothActivity(new Intent(this, PolicyActivity.class)));
         binding.rowPayment.setOnClickListener(v -> startSmoothActivity(new Intent(v.getContext(), PolicyActivity.class)));
+    }
+
+    private void showAddReviewDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_review, null);
+        android.widget.RatingBar rbInput = dialogView.findViewById(R.id.rb_input);
+        com.google.android.material.textfield.TextInputEditText etComment = dialogView.findViewById(R.id.et_comment);
+        android.widget.Button btnSubmit = dialogView.findViewById(R.id.btn_submit);
+        android.widget.Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+
+        reviewDialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        btnCancel.setOnClickListener(v -> reviewDialog.dismiss());
+        btnSubmit.setOnClickListener(v -> {
+            float rating = rbInput.getRating();
+            String comment = etComment.getText() != null ? etComment.getText().toString() : "";
+            viewModel.submitReview(rating, comment);
+        });
+
+        reviewDialog.show();
     }
 
     private List<Review> buildMockReviews() {

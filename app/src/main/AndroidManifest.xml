@@ -133,6 +133,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.explore.ArticleDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.TiredCity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.explore.EventActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

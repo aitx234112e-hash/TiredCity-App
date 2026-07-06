@@ -29,7 +29,7 @@ export class OrderApiService {
     return from(addDoc(this.col, record)).pipe(map((ref) => ({ _id: ref.id, ...record })));
   }
 
-  updateOrderStatus(id: string, status: string, note: string = ''): Observable<any> {
+  updateOrderStatus(id: string, status: string, note: string = '', actor: string = 'Admin'): Observable<any> {
     const orderRef = doc(this.firestore, 'orders', id);
 
     return from(runTransaction(this.firestore, async (transaction) => {
@@ -47,8 +47,42 @@ export class OrderApiService {
             const pRef = doc(this.firestore, 'products', item.productId);
             const pSnap = await transaction.get(pRef);
             if (pSnap.exists()) {
-              const currentStock = pSnap.data()['stock'] || 0;
-              transaction.update(pRef, { stock: currentStock + (item.quantity || 0) });
+              const pData = pSnap.data();
+              const qty = Number(item.quantity || item.qty || 0);
+              const pUpdates: any = {
+                stock: (pData['stock'] || 0) + qty
+              };
+
+              // Hoàn kho theo size
+              const selectedSize = item.size || item.selected_size;
+              if (selectedSize) {
+                // 1. Kiểm tra trong các field 0, 1, 2... (Map size)
+                let sizeFound = false;
+                for (let i = 0; i <= 10; i++) {
+                  const field = i.toString();
+                  const sizeInfo = pData[field];
+                  if (sizeInfo && typeof sizeInfo === 'object' && sizeInfo.size?.toString().toLowerCase() === selectedSize.toLowerCase()) {
+                    pUpdates[field] = {
+                      ...sizeInfo,
+                      quantity: (Number(sizeInfo.quantity) || 0) + qty
+                    };
+                    sizeFound = true;
+                    break;
+                  }
+                }
+
+                // 2. Nếu không thấy, kiểm tra trong mảng "sizes"
+                if (!sizeFound && Array.isArray(pData['sizes'])) {
+                  pUpdates['sizes'] = pData['sizes'].map((s: any) => {
+                    if (s.size?.toString().toLowerCase() === selectedSize.toLowerCase()) {
+                      return { ...s, quantity: (Number(s.quantity) || 0) + qty };
+                    }
+                    return s;
+                  });
+                }
+              }
+
+              transaction.update(pRef, pUpdates);
             }
           }
         }
@@ -68,6 +102,7 @@ export class OrderApiService {
       const logEntry = {
         status,
         time: new Date().toISOString(),
+        actor,
         note: note || `Chuyển trạng thái từ ${oldStatus} sang ${status}`
       };
 
@@ -80,8 +115,8 @@ export class OrderApiService {
     }));
   }
 
-  cancelOrder(id: string, reason: string = 'Admin hủy'): Observable<any> {
-    return this.updateOrderStatus(id, 'CANCELLED', reason);
+  cancelOrder(id: string, reason: string = 'Admin hủy', actor: string = 'Admin'): Observable<any> {
+    return this.updateOrderStatus(id, 'CANCELLED', reason, actor);
   }
 
   shipOrder(id: string, trackingCode: string): Observable<any> {

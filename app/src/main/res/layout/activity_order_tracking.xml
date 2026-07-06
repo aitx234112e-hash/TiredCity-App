@@ -222,6 +222,34 @@
                         android:nestedScrollingEnabled="false" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Cancel Order Button -->
+            <Button
+                android:id="@+id/btn_cancel_order"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/tc_btn_ghost_red"
+                android:text="Hủy đơn hàng"
+                android:textColor="@color/tc_red"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <!-- Confirm Received Button -->
+            <Button
+                android:id="@+id/btn_confirm_received"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/tc_btn_red_pill"
+                android:text="Đã nhận được hàng"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

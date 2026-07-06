@@ -16,6 +16,11 @@ export class ReviewManagement implements OnInit {
   searchText: string = '';
   loading = true;
 
+  // Reply modal
+  showReplyModal = false;
+  selectedReview: any = null;
+  replyContent: string = '';
+
   constructor(private reviewService: ReviewApiService) {}
 
   ngOnInit(): void {
@@ -43,6 +48,36 @@ export class ReviewManagement implements OnInit {
       (r.comment || '').toLowerCase().includes(text) ||
       (r.productId || '').toLowerCase().includes(text)
     );
+  }
+
+  openReply(review: any): void {
+    this.selectedReview = review;
+    this.replyContent = review.adminReply || '';
+    this.showReplyModal = true;
+  }
+
+  closeReply(): void {
+    this.showReplyModal = false;
+    this.selectedReview = null;
+    this.replyContent = '';
+  }
+
+  submitReply(): void {
+    if (!this.selectedReview) return;
+
+    const data = {
+      adminReply: this.replyContent,
+      repliedAt: new Date(),
+      status: 'APPROVED'
+    };
+
+    this.reviewService.updateReview(this.selectedReview._id, data).subscribe({
+      next: () => {
+        this.closeReply();
+        // Updated via collectionData automatically
+      },
+      error: (err) => console.error('Lỗi gửi phản hồi:', err)
+    });
   }
 
   deleteReview(id: string): void {

@@ -186,6 +186,9 @@ public class ModuleListActivity extends AppCompatActivity {
             case FEEDBACK:
                 showFeedbackDetail(d);
                 break;
+            case REVIEWS:
+                showReviewDetail(d);
+                break;
             default:
                 if (ModuleForm.canEdit(module) || ModuleForm.canDelete(module)) {
                     showEntityDetail(d);
@@ -262,6 +265,52 @@ public class ModuleListActivity extends AppCompatActivity {
                                 getString(R.string.update_error, e.getMessage()),
                                 Toast.LENGTH_LONG).show()),
                 getString(R.string.btn_delete), () -> confirmDelete(d));
+    }
+
+    /** Danh gia: xem chi tiet + phan hoi (adminReply) + xoa. */
+    private void showReviewDetail(DocumentSnapshot d) {
+        DetailDialog.show(this, getString(module.title),
+                DetailFormatter.format(this, module, d),
+                getString(R.string.btn_reply_review),
+                () -> promptReviewReply(d),
+                getString(R.string.btn_delete), () -> confirmDelete(d));
+    }
+
+    private void promptReviewReply(DocumentSnapshot d) {
+        EditText input = new EditText(this);
+        input.setHint(R.string.hint_admin_reply);
+        input.setText(DocUtils.str(d, "adminReply"));
+        input.setMinLines(3);
+        input.setGravity(android.view.Gravity.TOP);
+
+        FrameLayout wrap = new FrameLayout(this);
+        int pad = (int) (20 * getResources().getDisplayMetrics().density);
+        wrap.setPadding(pad, pad / 2, pad, 0);
+        wrap.addView(input);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.btn_reply_review)
+                .setView(wrap)
+                .setPositiveButton(R.string.btn_save, (dialog, which) -> {
+                    String reply = input.getText().toString().trim();
+                    Map<String, Object> patch = new java.util.HashMap<>();
+                    patch.put("adminReply", reply);
+                    patch.put("repliedAt", com.google.firebase.firestore.FieldValue.serverTimestamp());
+                    // Neu reply thi approve luon
+                    patch.put("status", "APPROVED");
+
+                    d.getReference().update(patch)
+                            .addOnSuccessListener(x -> {
+                                AuditLogger.log("review.reply", d.getId(), reply);
+                                Toast.makeText(this, R.string.review_replied_ok, Toast.LENGTH_SHORT).show();
+                                loadData();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(this,
+                                    getString(R.string.update_error, e.getMessage()),
+                                    Toast.LENGTH_LONG).show());
+                })
+                .setNegativeButton(R.string.btn_close, null)
+                .show();
     }
 
     /**

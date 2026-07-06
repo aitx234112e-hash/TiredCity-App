@@ -117,6 +117,11 @@ export class OrderManagement implements OnInit {
     this.loading = false;
   }
 
+  setStatusFilter(status: string): void {
+    this.selectedStatus = status;
+    this.filterOrders();
+  }
+
   filterOrders(): void {
 
     let result = [...this.orders];
@@ -152,6 +157,13 @@ export class OrderManagement implements OnInit {
         const orderS = (order.status || '').toString().toUpperCase();
 
         // Logic lọc thông minh: Gộp các trạng thái tương đương
+        if (filterS === 'PROCESSING_GROUP') {
+          return orderS === 'PENDING' || orderS === 'CONFIRMED' || orderS === 'PROCESSING';
+        }
+        if (filterS === 'SHIPPING_GROUP') {
+          return orderS === 'SHIPPING' || orderS === 'SHIPPED';
+        }
+
         if (filterS === 'CONFIRMED' || filterS === 'PROCESSING') {
           return orderS === 'CONFIRMED' || orderS === 'PROCESSING';
         }
@@ -191,9 +203,20 @@ export class OrderManagement implements OnInit {
 
   }
 
-  updateOrderStatus(order: any, status: string): void {
+  private getCurrentActorName(): string {
+    try {
+      const raw = localStorage.getItem('user');
+      if (!raw) return 'Admin';
+      const u = JSON.parse(raw);
+      return u.profileName || u.email || 'Admin';
+    } catch {
+      return 'Admin';
+    }
+  }
 
-    this.orderService.updateOrderStatus(order._id, status)
+  updateOrderStatus(order: any, status: string): void {
+    const actor = this.getCurrentActorName();
+    this.orderService.updateOrderStatus(order._id, status, '', actor)
       .subscribe({
 
         next: (updated: any) => {
@@ -236,7 +259,8 @@ export class OrderManagement implements OnInit {
 
   cancelOrder(order: any): void {
     if (order.status === 'cancelled') return;
-    this.orderService.cancelOrder(order._id).subscribe({
+    const actor = this.getCurrentActorName();
+    this.orderService.cancelOrder(order._id, 'Admin hủy', actor).subscribe({
       next: () => {
         order.status = 'cancelled';
         this.audit.log('order.cancel', order.orderID || order._id, '');
@@ -285,8 +309,9 @@ export class OrderManagement implements OnInit {
     if (!confirm(`Cập nhật ${ids.length} đơn sang "${this.getStatusLabel(this.bulkStatus)}"?`)) return;
 
     this.bulkProcessing = true;
+    const actor = this.getCurrentActorName();
     const calls = ids.map((id) =>
-      this.orderService.updateOrderStatus(id, this.bulkStatus).pipe(catchError(() => of(null)))
+      this.orderService.updateOrderStatus(id, this.bulkStatus, 'Cập nhật hàng loạt', actor).pipe(catchError(() => of(null)))
     );
 
     forkJoin(calls).subscribe({
@@ -401,7 +426,8 @@ export class OrderManagement implements OnInit {
   // Xác nhận đơn hàng: pending → processing
   confirmOrder() {
     if (!this.selectedOrder) return;
-    this.orderService.updateOrderStatus(this.selectedOrder._id, 'CONFIRMED').subscribe({
+    const actor = this.getCurrentActorName();
+    this.orderService.updateOrderStatus(this.selectedOrder._id, 'CONFIRMED', '', actor).subscribe({
       next: (updated: any) => {
         if (updated) {
           this.selectedOrder.status = updated.status;
@@ -450,7 +476,8 @@ export class OrderManagement implements OnInit {
   // Xác nhận đã giao: shipped → delivered
   markDelivered() {
     if (!this.selectedOrder) return;
-    this.orderService.updateOrderStatus(this.selectedOrder._id, 'DELIVERED').subscribe({
+    const actor = this.getCurrentActorName();
+    this.orderService.updateOrderStatus(this.selectedOrder._id, 'DELIVERED', '', actor).subscribe({
       next: (updated: any) => {
         if (updated) {
           this.selectedOrder.status = updated.status;

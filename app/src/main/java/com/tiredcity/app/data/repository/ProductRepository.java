@@ -9,6 +9,7 @@ import com.tiredcity.app.data.model.Review;
 import com.tiredcity.app.data.network.ApiService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import retrofit2.Call;
 
 public class ProductRepository {
@@ -92,7 +93,6 @@ public class ProductRepository {
     public void getProductReviewsFromFirestore(String productId, OnReviewsLoadedListener listener) {
         db.collection("reviews")
             .whereEqualTo("productId", productId)
-            .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener((value, error) -> {
                 if (error != null) {
                     listener.onError(error.getMessage());
@@ -100,6 +100,11 @@ public class ProductRepository {
                 }
                 if (value != null) {
                     List<Review> list = value.toObjects(Review.class);
+                    // Sắp xếp client-side để không yêu cầu Index
+                    java.util.Collections.sort(list, (r1, r2) -> {
+                        if (r1.getCreatedAt() == null || r2.getCreatedAt() == null) return 0;
+                        return r2.getCreatedAt().compareTo(r1.getCreatedAt());
+                    });
                     listener.onSuccess(list);
                 }
             });
@@ -108,6 +113,54 @@ public class ProductRepository {
     public interface OnReviewsLoadedListener {
         void onSuccess(List<Review> reviews);
         void onError(String message);
+    }
+
+    public interface OnActionCompleteListener {
+        void onSuccess();
+        void onError(String message);
+    }
+
+    public interface OnCheckPurchaseListener {
+        void onResult(boolean hasPurchased);
+        void onError(String message);
+    }
+
+    public void checkUserPurchasedProduct(String userId, String productId, OnCheckPurchaseListener listener) {
+        // Kiểm tra trong collection "orders" xem có đơn hàng nào của user này chứa productId không
+        // Giả sử cấu trúc Order có List<OrderItem> chứa productId
+        db.collection("orders")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("status", "DELIVERED")
+            .get()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                boolean found = false;
+                if (queryDocumentSnapshots != null) {
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                        List<Map<String, Object>> items = (List<Map<String, Object>>) doc.get("items");
+                        if (items != null) {
+                            for (Map<String, Object> item : items) {
+                                if (productId.equals(item.get("productId"))) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (found) break;
+                    }
+                }
+                listener.onResult(found);
+            })
+            .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    public void addReviewToFirestore(Review review, OnActionCompleteListener listener) {
+        db.collection("reviews").add(review)
+            .addOnSuccessListener(documentReference -> {
+                review.setId(documentReference.getId());
+                documentReference.update("id", review.getId());
+                listener.onSuccess();
+            })
+            .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
     public Call<ApiListResponse<Review>> getProductReviews(String productId) {

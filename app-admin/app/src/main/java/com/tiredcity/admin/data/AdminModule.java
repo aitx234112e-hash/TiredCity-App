@@ -19,6 +19,7 @@ public enum AdminModule {
     EVENTS   (R.string.m_events,   R.string.m_events_desc,   R.drawable.ic_events,   R.color.m_events,   "events",    Section.FUNCTIONS),
     SHIPPING (R.string.m_shipping, R.string.m_shipping_desc, R.drawable.ic_shipping, R.color.m_shipping, "shipping",  Section.FUNCTIONS),
     FEEDBACK (R.string.m_feedback, R.string.m_feedback_desc, R.drawable.ic_feedback, R.color.m_feedback, "feedback",  Section.FUNCTIONS),
+    REVIEWS  (R.string.m_reviews,  R.string.m_reviews_desc,  R.drawable.ic_reviews,  R.color.m_reviews,  "reviews",   Section.FUNCTIONS),
     BLOGS    (R.string.m_blogs,    R.string.m_blogs_desc,    R.drawable.ic_blogs,    R.color.m_blogs,    "blogs",     Section.FUNCTIONS),
     REVENUE  (R.string.m_revenue,  R.string.m_revenue_desc,  R.drawable.ic_revenue,  R.color.m_revenue,  null,        Section.FUNCTIONS),
     AUDIT    (R.string.m_audit,    R.string.m_audit_desc,    R.drawable.ic_audit,    R.color.m_audit,    "auditLogs", Section.SYSTEM),

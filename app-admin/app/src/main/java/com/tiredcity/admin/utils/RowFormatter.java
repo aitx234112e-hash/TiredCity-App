@@ -34,6 +34,7 @@ public final class RowFormatter {
             case EVENTS: return event(ctx, d);
             case SHIPPING: return shipping(ctx, d);
             case FEEDBACK: return feedback(ctx, d);
+            case REVIEWS: return review(ctx, d);
             case BLOGS: return blog(ctx, d);
             case AUDIT: return audit(ctx, d);
             default: return new Row(d.getId(), "", "");
@@ -196,6 +197,30 @@ public final class RowFormatter {
         return new Row(name.isEmpty() ? "(Ẩn danh)" : name, message, phone,
                 replied ? ctx.getString(R.string.feedback_replied) : ctx.getString(R.string.feedback_pending),
                 replied ? R.color.st_success : R.color.st_pending);
+    }
+
+    private static Row review(Context ctx, DocumentSnapshot d) {
+        String name = DocUtils.str(d, "userName");
+        String comment = DocUtils.str(d, "comment");
+        String product = DocUtils.str(d, "productId");
+        double rating = DocUtils.num(d, "rating");
+        String status = DocUtils.str(d, "status");
+        if (status.isEmpty()) status = "APPROVED"; // Default
+
+        String title = (name.isEmpty() ? "(Ẩn danh)" : name) + " • " + (long) rating + "★";
+        String subtitle = (product.isEmpty() ? "" : product + " • ") + comment;
+        
+        int color = R.color.st_success;
+        String statusLabel = "Công khai";
+        if ("PENDING".equals(status)) {
+            color = R.color.st_pending;
+            statusLabel = "Chờ duyệt";
+        } else if ("HIDDEN".equals(status)) {
+            color = R.color.st_danger;
+            statusLabel = "Đã ẩn";
+        }
+        
+        return new Row(title, subtitle, "", statusLabel, color);
     }
 
     private static Row blog(Context ctx, DocumentSnapshot d) {

@@ -57,6 +57,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         } else {
             holder.civAvatar.setImageResource(R.drawable.ic_person_placeholder);
         }
+
+        // Bind Admin Reply
+        if (review.getAdminReply() != null && !review.getAdminReply().isEmpty()) {
+            holder.llAdminReply.setVisibility(View.VISIBLE);
+            holder.tvAdminReply.setText(review.getAdminReply());
+        } else {
+            holder.llAdminReply.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -66,8 +74,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CircleImageView civAvatar;
-        TextView tvUserName, tvComment, tvDate;
+        TextView tvUserName, tvComment, tvDate, tvAdminReply;
         RatingBar rbRating;
+        View llAdminReply;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +85,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             rbRating   = itemView.findViewById(R.id.rb_rating);
             tvComment  = itemView.findViewById(R.id.tv_comment);
             tvDate     = itemView.findViewById(R.id.tv_date);
+            tvAdminReply = itemView.findViewById(R.id.tv_admin_reply);
+            llAdminReply = itemView.findViewById(R.id.ll_admin_reply);
         }
     }
 }
