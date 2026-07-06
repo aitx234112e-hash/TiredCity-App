@@ -32,7 +32,7 @@
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/tc_on_dark"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 tools:text="Nguyễn Thị Lan" />
@@ -46,6 +46,7 @@
                 android:numStars="5"
                 android:stepSize="1"
                 android:progressTint="@color/brand_gold"
+                android:progressBackgroundTint="@android:color/white"
                 tools:rating="4" />
         </LinearLayout>
 
@@ -53,7 +54,7 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_hint"
+            android:textColor="@color/tc_on_dark_secondary"
             android:textSize="11sp"
             tools:text="20/05/2025" />
     </LinearLayout>
@@ -62,7 +63,7 @@
         android:id="@+id/tv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_secondary"
+        android:textColor="@color/tc_on_dark_secondary"
         android:textSize="13sp"
         android:lineSpacingExtra="3dp"
         tools:text="Sản phẩm rất đẹp, chất lượng tốt. Lụa mềm mại, màu sắc đúng như hình. Sẽ mua lại!" />
@@ -70,6 +71,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bg_subtle"
+        android:background="@color/tc_on_dark_divider"
         android:layout_marginTop="12dp" />
 </LinearLayout>

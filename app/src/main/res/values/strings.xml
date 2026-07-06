@@ -273,6 +273,10 @@
     <string name="care_iron_low">Ủi ở nhiệt độ thấp</string>
     <string name="care_iron_low_cloth">Ủi ở nhiệt độ thấp, lót vải khi ủi</string>
     <string name="care_store_dry">Bảo quản nơi khô ráo, tránh ánh nắng trực tiếp</string>
+    <string name="care_wipe_soft_cloth">Lau nhẹ bằng khăn mềm, khô khi có bụi bẩn</string>
+    <string name="care_avoid_moisture">Tránh để nơi ẩm ướt gây ẩm mốc, hư hại chất liệu</string>
+    <string name="care_avoid_direct_sun">Không phơi hoặc để trực tiếp dưới nắng gắt để tránh phai màu</string>
+    <string name="care_store_box">Bảo quản trong hộp hoặc túi vải khi không sử dụng</string>
 
     <!-- ─── Mock catalog: mô tả/câu chuyện mặc định + riêng theo sản phẩm ─ -->
     <string name="desc_template_default">%1$s được may từ %2$s, tôn lên vẻ đẹp thanh lịch và tinh thần Việt phục truyền thống trong từng đường kim mũi chỉ.</string>
@@ -280,6 +284,47 @@
     <string name="desc_ad1">Chiếc áo dài trắng thanh khiết này lấy cảm hứng từ vẻ đẹp cô dâu truyền thống Việt Nam. Chất lụa mềm mại cùng đường thêu tay tinh xảo tượng trưng cho sự tinh khôi, hòa hợp và tình yêu bền lâu.</string>
     <string name="story_ad1">Thiết kế được phục dựng từ trang phục lễ nghi triều Nguyễn, kết hợp cùng kỹ thuật cắt may hiện đại để tôn dáng người mặc mà vẫn giữ trọn nét trang nghiêm, cổ kính.</string>
     <string name="desc_ad7">Áo dài trắng phối họa tiết hoa cổ điển, gợi nhớ tà áo nữ sinh một thời — nhẹ nhàng, thanh lịch và dễ phối cho nhiều dịp khác nhau.</string>
+
+    <!-- ─── Mock catalog: mô tả xoay vòng theo danh mục (3 biến thể/danh mục,
+         chèn tên + màu/loại + chất liệu để mỗi sản phẩm đọc khác nhau) ─── -->
+    <string name="desc_tmpl_ao_dai_1">%1$s là áo dài %3$s tông %2$s, tôn dáng thướt tha mà vẫn giữ nét trang nhã của tà áo truyền thống — lựa chọn đẹp cho dịp lễ, cưới hỏi hay du xuân.</string>
+    <string name="desc_tmpl_ao_dai_2">Thiết kế %1$s phối màu %2$s trên chất %3$s mềm mại, đường cắt ôm nhẹ tôn dáng, phù hợp diện đi lễ chùa, chụp ảnh kỷ niệm hay những dịp trang trọng.</string>
+    <string name="desc_tmpl_ao_dai_3">%1$s mang sắc %2$s dịu dàng, may từ %3$s cao cấp, tà áo bay nhẹ theo bước chân — vẻ đẹp Việt phục hiện đại mà vẫn đậm chất truyền thống.</string>
+    <string name="desc_tmpl_nhat_binh_1">%1$s phục dựng dáng nhật bình cung đình, sắc %2$s nổi bật trên nền %3$s, hoạ tiết tay áo cầu kỳ gợi nhắc lễ phục hoàng gia xưa.</string>
+    <string name="desc_tmpl_nhat_binh_2">Lấy cảm hứng từ triều phục thời Nguyễn, %1$s tông %2$s được may từ %3$s, cổ áo và tay áo rộng đúng chuẩn nhật bình, phù hợp cho ảnh cổ trang hoặc sự kiện văn hoá.</string>
+    <string name="desc_tmpl_nhat_binh_3">%1$s là mẫu nhật bình sắc %2$s trang nhã, chất %3$s dày dặn giữ form, hoạ tiết thêu điểm xuyết tạo nét uy nghi mà không kém phần tinh tế.</string>
+    <string name="desc_tmpl_ao_tac_1">%1$s là áo tấc ngũ thân sắc %2$s, chất %3$s thoáng nhẹ, phom dáng gọn gàng phù hợp mặc thường nhật lẫn các dịp lễ nhỏ.</string>
+    <string name="desc_tmpl_ao_tac_2">%1$s phối tông %2$s thanh nhã, may từ %3$s, giữ đúng cấu trúc năm thân truyền thống — dễ phối cùng quần ống rộng cho vẻ ngoài nho nhã.</string>
+    <string name="desc_tmpl_ao_tac_3">%1$s gợi nhắc hình ảnh nho sinh áo tấc xưa, sắc %2$s nhẹ nhàng trên nền %3$s, đường may tỉ mỉ từng đường chỉ.</string>
+    <string name="desc_tmpl_giao_linh_1">%1$s là giao lĩnh vạt chéo sắc %2$s, chất %3$s rủ đẹp, phom rộng phóng khoáng đúng chuẩn Việt phục thời Lê – Nguyễn.</string>
+    <string name="desc_tmpl_giao_linh_2">%1$s tông %2$s nổi bật với cổ chéo đặc trưng, may từ %3$s, phù hợp cho các buổi chụp ảnh cổ phục hoặc sự kiện văn hoá truyền thống.</string>
+    <string name="desc_tmpl_giao_linh_3">%1$s mang form giao lĩnh cổ điển, sắc %2$s trầm ấm trên chất %3$s, từng đường vạt được xử lý tỉ mỉ để giữ dáng rủ tự nhiên.</string>
+    <string name="desc_tmpl_yem_dao_1">%1$s là yếm đào sắc %2$s dịu dàng, chất %3$s mềm mại ôm nhẹ dáng người, gợi nhắc vẻ đẹp thôn nữ Bắc Bộ xưa.</string>
+    <string name="desc_tmpl_yem_dao_2">%1$s phối cùng áo hoặc mặc riêng đều đẹp, tông %2$s nữ tính trên nền %3$s, phù hợp diện cùng váy đụp hay quần lĩnh cho set đồ hoàn chỉnh.</string>
+    <string name="desc_tmpl_yem_dao_3">%1$s mang nét duyên ngầm của yếm đào truyền thống, sắc %2$s tươi tắn, chất %3$s thoáng mát dễ chịu khi mặc cả ngày.</string>
+    <string name="desc_tmpl_phu_kien_1">%1$s là phụ kiện %2$s thủ công tỉ mỉ, hoàn thiện set Việt phục thêm phần chỉn chu và có điểm nhấn riêng.</string>
+    <string name="desc_tmpl_phu_kien_2">%1$s được làm từ %3$s, chi tiết %2$s tinh xảo — món phụ kiện nhỏ nhưng đủ để nâng tầm cả bộ trang phục.</string>
+    <string name="desc_tmpl_phu_kien_3">%1$s là lựa chọn lý tưởng để hoàn thiện outfit Việt phục, %2$s hài hoà, dễ phối cùng nhiều kiểu áo khác nhau.</string>
+
+    <!-- ─── Mock catalog: câu chuyện xoay vòng theo danh mục (3 biến thể/danh mục) ─── -->
+    <string name="story_tmpl_ao_dai_1">Đường nét %1$s được phục dựng từ tà áo dài truyền thống nhiều thế hệ, cải tiến phom dáng để vừa vặn hơn với vóc dáng người Việt hiện đại mà vẫn giữ trọn sự duyên dáng vốn có.</string>
+    <string name="story_tmpl_ao_dai_2">Cảm hứng thiết kế %1$s đến từ những tà áo dài trong ảnh cưới xưa của các gia đình Hà Nội, kết hợp kỹ thuật may đo hiện đại để tôn dáng người mặc trong từng chuyển động.</string>
+    <string name="story_tmpl_ao_dai_3">%1$s ra đời từ mong muốn lưu giữ vẻ đẹp áo dài cổ điển giữa nhịp sống hiện đại — một phom dáng vừa hoài niệm, vừa dễ mặc trong đời sống thường nhật.</string>
+    <string name="story_tmpl_nhat_binh_1">%1$s phục dựng theo tư liệu về triều phục hoàng tộc thời Nguyễn, gìn giữ cấu trúc tay áo và cổ áo nguyên bản trong khi tinh giản hoạ tiết để phù hợp hơn với nhu cầu sử dụng ngày nay.</string>
+    <string name="story_tmpl_nhat_binh_2">Từ những ghi chép về lễ phục cung đình, %1$s tái hiện lại vẻ uy nghi của nhật bình xưa, mỗi chi tiết hoạ tiết đều được nghiên cứu kỹ để giữ đúng tinh thần cổ phong.</string>
+    <string name="story_tmpl_nhat_binh_3">%1$s là kết quả của quá trình tìm hiểu trang phục cung đình triều Nguyễn, được cách tân về chất liệu để nhẹ nhàng, thoáng mát hơn khi mặc trong thời gian dài.</string>
+    <string name="story_tmpl_ao_tac_1">%1$s lấy cảm hứng từ trang phục nho sinh, sĩ tử thời xưa, giữ nguyên cấu trúc năm thân biểu trưng cho đạo lý ngũ luân trong văn hoá truyền thống.</string>
+    <string name="story_tmpl_ao_tac_2">Hình ảnh %1$s gợi nhắc tà áo tấc giản dị của các nho sĩ đất Kinh kỳ, được may lại với chất liệu nhẹ nhàng hơn để phù hợp khí hậu và nhịp sống hiện đại.</string>
+    <string name="story_tmpl_ao_tac_3">%1$s được phục dựng từ hình ảnh áo tấc ngũ thân trong tư liệu triều Nguyễn, giữ trọn tinh thần giản dị mà trang nghiêm của loại trang phục này.</string>
+    <string name="story_tmpl_giao_linh_1">%1$s tái hiện phom giao lĩnh vạt chéo phổ biến từ thời Lê đến đầu triều Nguyễn, đường vạt được nghiên cứu kỹ để giữ đúng dáng rủ tự nhiên như tư liệu cổ.</string>
+    <string name="story_tmpl_giao_linh_2">Cảm hứng của %1$s đến từ những bức tranh cổ vẽ trang phục thường nhật của người Việt xưa, form giao lĩnh phóng khoáng được giữ nguyên nhưng chất liệu nhẹ nhàng hơn.</string>
+    <string name="story_tmpl_giao_linh_3">%1$s phục dựng lại nét đẹp giao lĩnh dân gian — không cầu kỳ như triều phục nhưng vẫn toát lên sự chỉn chu trong từng đường kim mũi chỉ.</string>
+    <string name="story_tmpl_yem_dao_1">%1$s gợi nhớ hình ảnh yếm đào trong ca dao, dân ca Bắc Bộ — món trang phục gắn liền với vẻ đẹp thôn quê mộc mạc mà duyên dáng của người phụ nữ Việt xưa.</string>
+    <string name="story_tmpl_yem_dao_2">Từ hình ảnh yếm đào trong các lễ hội làng quê truyền thống, %1$s được may lại với chất liệu mềm mại hơn, dễ phối cùng trang phục hiện đại.</string>
+    <string name="story_tmpl_yem_dao_3">%1$s tái hiện nét duyên ngầm của yếm đào xưa — chiếc yếm gắn với tuổi thơ và ký ức làng quê trong lòng nhiều thế hệ người Việt.</string>
+    <string name="story_tmpl_phu_kien_1">%1$s được chế tác thủ công theo lối làm phụ kiện truyền thống, mỗi chi tiết đều qua tay người thợ lành nghề để đảm bảo độ tinh xảo và bền đẹp theo thời gian.</string>
+    <string name="story_tmpl_phu_kien_2">Lấy cảm hứng từ các phụ kiện đi kèm Việt phục xưa, %1$s được làm lại với kỹ thuật thủ công hiện đại, giữ nguyên nét đẹp cổ điển nhưng bền chắc hơn khi sử dụng.</string>
+    <string name="story_tmpl_phu_kien_3">%1$s là món phụ kiện nhỏ nhưng chứa đựng nhiều tâm huyết của người thợ thủ công, góp phần hoàn thiện trọn vẹn set Việt phục truyền thống.</string>
 
     <!-- ─── Mock catalog: tên sản phẩm — Áo Dài ────────────────────────── -->
     <string name="mock_ad1_name">Khói Trắng Kết Duyên</string>
@@ -359,6 +404,8 @@
     <string name="label_price">Giá</string>
     <string name="label_description">Mô tả</string>
     <string name="hint_swipe_down_details">Vuốt xuống để xem chi tiết</string>
+    <string name="product_detail_tagline">VIỆT PHỤC ĐƯƠNG ĐẠI</string>
+    <string name="hint_swipe_products">Kéo ngang để xem sản phẩm</string>
     <string name="label_reviews">Đánh giá khách hàng</string>
     <string name="label_menh_tags">Phù hợp mệnh</string>
     <string name="out_of_stock">Hết hàng</string>
@@ -368,11 +415,17 @@
     <string name="label_details">Chi tiết</string>
     <string name="label_size_guide">Hướng dẫn chọn size</string>
     <string name="size_guide_content">S: 42–48kg · M: 48–54kg · L: 54–60kg · XL: 60–68kg\nSố đo tham khảo, có thể chênh lệch 1–2cm tùy dáng người.</string>
+    <string name="label_product_information">THÔNG TIN SẢN PHẨM</string>
     <string name="label_you_may_also_like">Có thể bạn cũng thích</string>
     <string name="btn_view_all_reviews">Xem tất cả đánh giá</string>
-    <string name="label_free_shipping">Miễn phí vận chuyển</string>
-    <string name="label_easy_returns">Đổi trả 14 ngày</string>
+    <string name="label_free_shipping">Giao hàng nhanh</string>
+    <string name="label_free_shipping_subtitle">Toàn quốc</string>
+    <string name="label_easy_returns">7 ngày đổi trả</string>
+    <string name="label_easy_returns_subtitle">Miễn phí</string>
     <string name="label_secure_payment">Thanh toán an toàn</string>
+    <string name="label_secure_payment_subtitle">Bảo mật 100%</string>
+    <string name="label_premium_material">Chất liệu cao cấp</string>
+    <string name="label_premium_material_subtitle">Thoáng mát</string>
     <string name="label_service_commitments">Cam kết dịch vụ</string>
     <string name="label_story">Câu chuyện</string>
     <string name="label_care">Hướng dẫn bảo quản</string>

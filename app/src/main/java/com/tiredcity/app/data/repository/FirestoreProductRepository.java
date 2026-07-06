@@ -60,6 +60,31 @@ public class FirestoreProductRepository {
         String desc = str(d, "description");
         if (desc != null) p.setDescription(desc);
 
+        String story = str(d, "story");
+        if (story != null) p.setStory(story);
+
+        // Hướng dẫn bảo quản: mảng chuỗi (mỗi phần tử là 1 gạch đầu dòng), do admin nhập.
+        Object care = d.get("care_instructions");
+        if (care instanceof List) {
+            List<String> careList = new ArrayList<>();
+            for (Object o : (List<?>) care) {
+                if (o != null && !o.toString().trim().isEmpty()) careList.add(o.toString());
+            }
+            if (!careList.isEmpty()) p.setCareInstructions(careList);
+        }
+
+        // Thông số kỹ thuật: map string→string, giữ nguyên thứ tự admin nhập.
+        Object specs = d.get("specifications");
+        if (specs instanceof Map) {
+            Map<String, String> specMap = new java.util.LinkedHashMap<>();
+            for (Map.Entry<?, ?> e : ((Map<?, ?>) specs).entrySet()) {
+                if (e.getKey() != null && e.getValue() != null) {
+                    specMap.put(e.getKey().toString(), e.getValue().toString());
+                }
+            }
+            if (!specMap.isEmpty()) p.setSpecifications(specMap);
+        }
+
         p.setPrice(num(d, "unit_price"));
         p.setRating(num(d, "rating"));
         p.setDiscount((int) num(d, "discount"));

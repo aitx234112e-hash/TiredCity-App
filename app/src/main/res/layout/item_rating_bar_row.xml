@@ -22,7 +22,7 @@
         android:layout_marginHorizontal="8dp"
         android:orientation="horizontal"
         android:weightSum="100"
-        android:background="@drawable/tc_bg_qty">
+        android:background="@drawable/tc_bg_rating_track">
 
         <View
             android:id="@+id/bar_fill"

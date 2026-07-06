@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Chip variant (size/kích cỡ) đang chọn: nền espresso + ripple trắng mờ khi chạm -->
+<!-- Chip variant (size/kích cỡ) đang chọn: nền đỏ son + ripple trắng mờ khi chạm -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/tc_red_ripple">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/tc_espresso" />
-            <stroke android:width="@dimen/tc_stroke_w" android:color="@color/tc_espresso" />
+            <solid android:color="@color/tc_red" />
+            <stroke android:width="@dimen/tc_stroke_w" android:color="@color/tc_red" />
             <corners android:radius="@dimen/tc_radius_sm" />
         </shape>
     </item>

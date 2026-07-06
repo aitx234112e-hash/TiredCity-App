@@ -1,8 +1,13 @@
 package com.tiredcity.app.ui.shop;
 
+import android.animation.Keyframe;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -12,12 +17,12 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.tiredcity.app.R;
-import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.ReviewAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.local.RecentlyViewedStore;
 import com.tiredcity.app.data.mock.MockProductCatalog;
+import com.tiredcity.app.data.mock.MockReviewCatalog;
 import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.ApiResponse;
 import com.tiredcity.app.data.model.CartItem;
@@ -26,7 +31,10 @@ import com.tiredcity.app.data.model.Review;
 import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.data.repository.ProductRepository;
+import androidx.annotation.NonNull;
+import androidx.viewpager2.widget.ViewPager2;
 import com.tiredcity.app.databinding.ActivityProductDetailBinding;
+import com.tiredcity.app.databinding.ItemHeroCarouselPhotoBinding;
 import com.tiredcity.app.databinding.ItemRatingBarRowBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.CartActivity;
@@ -93,6 +101,7 @@ public class ProductDetailActivity extends BaseActivity {
         setupSizeSelector();
         setupInfoRows();
         setupCardStackScroll();
+        setupSizeGuideImages();
 
         loadProduct(productId);
     }
@@ -148,6 +157,11 @@ public class ProductDetailActivity extends BaseActivity {
         // Ghi nhận đây là sản phẩm khách thật sự đã xem → hiển thị lại ở "Đã xem gần đây".
         if (recentlyViewedStore != null) recentlyViewedStore.addProduct(product);
 
+        // Điền mô tả/câu chuyện/thông số còn thiếu hoặc còn sơ sài (ví dụ sản phẩm lấy từ
+        // Firestore/REST chưa được admin viết nội dung riêng) — áp dụng cho MỌI nguồn dữ liệu,
+        // không riêng dữ liệu mẫu, để mục 01/02/03 luôn đầy đủ và khác nhau theo từng sản phẩm.
+        MockProductCatalog.applyGenericDetail(this, product);
+
         binding.tvProductName.setText(product.getName());
         binding.tvPrice.setText(PriceUtils.format(product.getEffectivePrice()));
         binding.tvMaterial.setText(product.getMaterial() != null ? product.getMaterial() : "");
@@ -182,26 +196,22 @@ public class ProductDetailActivity extends BaseActivity {
     private void bindAvailability(Product product) {
         int stock = product.getStock();
         boolean outOfStock = stock <= 0;
-        int statusColor;
+        int dotColor;
         String statusText;
         if (outOfStock) {
-            statusColor = getColor(R.color.tc_red);
+            dotColor = getColor(R.color.tc_stroke);
             statusText = getString(R.string.status_out_of_stock);
         } else if (stock <= 5) {
-            statusColor = getColor(R.color.tc_gold_deep);
+            dotColor = getColor(R.color.tc_gold_deep);
             statusText = getString(R.string.status_low_stock);
         } else {
-            statusColor = getColor(R.color.tc_success);
+            dotColor = getColor(R.color.tc_red);
             statusText = getString(R.string.status_in_stock);
         }
-        binding.tvAvailability.setText("●  " + statusText);
-        binding.tvAvailability.setTextColor(statusColor);
-
-        GradientDrawable pillBg = new GradientDrawable();
-        pillBg.setShape(GradientDrawable.RECTANGLE);
-        pillBg.setCornerRadius(dp(20));
-        pillBg.setColor((statusColor & 0x00FFFFFF) | 0x22000000);
-        binding.tvAvailability.setBackground(pillBg);
+        // Viên xám trung tính (đặt cố định trong XML) + chấm màu theo trạng thái + chữ luôn tối
+        // màu — thay cho kiểu tô cả viên theo màu trạng thái cũ.
+        binding.tvAvailability.setText(statusText);
+        binding.dotAvailability.setBackgroundTintList(android.content.res.ColorStateList.valueOf(dotColor));
 
         binding.btnAddToCart.setEnabled(!outOfStock);
         binding.btnBuyNow.setEnabled(!outOfStock);
@@ -296,46 +306,43 @@ public class ProductDetailActivity extends BaseActivity {
         return col;
     }
 
-    // ── Hero images ──────────────────────────────────────────────────────────
+    // ── Hero images (banner ngang full-bleed, liền mạch với mục thông tin bên dưới — không
+    //    còn kiểu "thẻ nổi" bo góc/xoay như trước) ─────────────────────────────────────────────
 
     private void bindImages(Product product) {
         final List<String> images = product.getImages();
         final boolean hasImage = images != null && !images.isEmpty();
 
-        binding.vpProductImages.setAdapter(new androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
-            @androidx.annotation.NonNull
+        ViewPager2 pager = binding.vpProductImages;
+        pager.setAdapter(new androidx.recyclerview.widget.RecyclerView.Adapter<HeroPhotoViewHolder>() {
+            @NonNull
             @Override
-            public androidx.recyclerview.widget.RecyclerView.ViewHolder onCreateViewHolder(
-                    @androidx.annotation.NonNull android.view.ViewGroup parent, int viewType) {
-                android.widget.ImageView iv = new android.widget.ImageView(parent.getContext());
-                iv.setLayoutParams(new android.view.ViewGroup.LayoutParams(
-                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                    android.view.ViewGroup.LayoutParams.MATCH_PARENT));
-                iv.setScaleType(hasImage
-                        ? android.widget.ImageView.ScaleType.CENTER_CROP
-                        : android.widget.ImageView.ScaleType.CENTER_INSIDE);
-                return new androidx.recyclerview.widget.RecyclerView.ViewHolder(iv) {};
+            public HeroPhotoViewHolder onCreateViewHolder(@NonNull android.view.ViewGroup parent, int viewType) {
+                ItemHeroCarouselPhotoBinding b = ItemHeroCarouselPhotoBinding.inflate(
+                        getLayoutInflater(), parent, false);
+                return new HeroPhotoViewHolder(b);
             }
 
             @Override
-            public void onBindViewHolder(@androidx.annotation.NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder holder, int position) {
-                android.widget.ImageView iv = (android.widget.ImageView) holder.itemView;
+            public void onBindViewHolder(@NonNull HeroPhotoViewHolder holder, int position) {
+                ImageView photo = holder.b.ivPhoto;
                 if (hasImage) {
                     // Load ĐÚNG ảnh theo vị trí (trước đây luôn load ảnh đầu → các trang bị lặp).
-                    Glide.with(iv.getContext())
+                    Glide.with(photo.getContext())
                         .load(images.get(position))
                         .timeout(30000)
                         .centerCrop()
                         .placeholder(R.color.tc_red_deep)
-                        .into(iv);
+                        .into(photo);
                 } else {
                     // Sản phẩm mẫu/offline chưa có ảnh thật — hiển thị hình minh hoạ thay vì khung trống.
-                    iv.setBackgroundColor(getColor(R.color.tc_red_deep));
-                    iv.setImageResource(R.drawable.ic_wardrobe);
-                    iv.setColorFilter(getColor(R.color.tc_on_red));
+                    photo.setBackgroundColor(getColor(R.color.tc_red_deep));
+                    photo.setImageResource(R.drawable.ic_wardrobe);
+                    photo.setColorFilter(getColor(R.color.tc_on_red));
                     int inset = dp(72);
-                    iv.setPadding(inset, inset, inset, inset);
+                    photo.setPadding(inset, inset, inset, inset);
                 }
+                startShine(holder);
             }
 
             @Override
@@ -343,6 +350,53 @@ public class ProductDetailActivity extends BaseActivity {
                 return hasImage ? images.size() : 1;
             }
         });
+
+        pager.setOffscreenPageLimit(3);
+        // Hiệu ứng "card swipe": ảnh đang vuốt đi thu nhỏ + mờ dần, ảnh mới trượt vào phóng to +
+        // hiện rõ dần — vẫn full-bleed khi đứng yên (scale/alpha = 1 tại position 0).
+        pager.setPageTransformer((page, position) -> {
+            if (position < -1f || position > 1f) {
+                page.setAlpha(0f);
+            } else {
+                float scale = 1f - (0.15f * Math.abs(position));
+                page.setScaleX(scale);
+                page.setScaleY(scale);
+                page.setAlpha(1f - Math.abs(position) * 0.5f);
+            }
+        });
+        binding.dotsImages.attachTo(pager);
+    }
+
+    static class HeroPhotoViewHolder extends androidx.recyclerview.widget.RecyclerView.ViewHolder {
+        final ItemHeroCarouselPhotoBinding b;
+        ObjectAnimator shineAnimator;
+        HeroPhotoViewHolder(ItemHeroCarouselPhotoBinding binding) {
+            super(binding.getRoot());
+            this.b = binding;
+        }
+    }
+
+    // Hiệu ứng "tráng gương": dải sáng chéo (v_shine) quét ngang qua ảnh rồi dừng ở ngoài khung
+    // hình, lặp lại theo chu kỳ — mô phỏng bề mặt bóng như tráng gương thay vì ảnh tĩnh.
+    private void startShine(HeroPhotoViewHolder holder) {
+        if (holder.shineAnimator != null) {
+            holder.shineAnimator.cancel();
+        }
+        View shine = holder.b.vShine;
+        float travel = getResources().getDisplayMetrics().widthPixels * 0.9f;
+
+        Keyframe hold1 = Keyframe.ofFloat(0f, -travel);
+        Keyframe holdUntilSweep = Keyframe.ofFloat(0.15f, -travel);
+        Keyframe sweepEnd = Keyframe.ofFloat(0.45f, travel);
+        Keyframe holdAfterSweep = Keyframe.ofFloat(1f, travel);
+        PropertyValuesHolder pvh = PropertyValuesHolder.ofKeyframe(
+                "translationX", hold1, holdUntilSweep, sweepEnd, holdAfterSweep);
+
+        ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(shine, pvh);
+        anim.setDuration(3200);
+        anim.setRepeatCount(ValueAnimator.INFINITE);
+        anim.start();
+        holder.shineAnimator = anim;
     }
 
     // ── Colour swatches ──────────────────────────────────────────────────────
@@ -449,7 +503,7 @@ public class ProductDetailActivity extends BaseActivity {
         for (TextView v : sizeViews) {
             boolean selected = v.getText().toString().equalsIgnoreCase(size);
             v.setBackgroundResource(selected ? R.drawable.tc_bg_variant_selected : R.drawable.tc_bg_variant);
-            v.setTextColor(getColor(selected ? R.color.white : R.color.text_primary));
+            v.setTextColor(getColor(selected ? R.color.white : R.color.tc_red));
         }
     }
 
@@ -520,7 +574,14 @@ public class ProductDetailActivity extends BaseActivity {
                 continue;
             }
 
-            int localScroll = scrollY - naturalTop[i];
+            // QUAN TRỌNG: chặn (cap) localScroll tại đúng lúc thẻ kế tiếp bắt đầu ghim
+            // (naturalTop[i+1]) — nếu không, translationY cứ tăng theo scrollY KHÔNG GIỚI HẠN,
+            // giữ thẻ này đứng yên ở đỉnh khung nhìn MÃI MÃI (chỉ mờ+nhỏ đi chứ không biến mất),
+            // gây "bóng mờ" đè lên nội dung phía dưới khi cuộn qua khỏi cả thẻ cuối (xem ảnh lỗi:
+            // mục 04/05 vẫn hiện mờ mờ dù đã cuộn qua mục 06). Sau khi bị che hẳn, thẻ phải cùng
+            // "trôi" lên khỏi màn hình với tốc độ cuộn bình thường, không dừng lại giữa chừng.
+            int cappedScrollY = Math.min(scrollY, naturalTop[i + 1]);
+            int localScroll = cappedScrollY - naturalTop[i];
 
             // Chưa tới điểm ghim: cuộn bình thường, không biến đổi.
             if (localScroll <= 0) {
@@ -531,7 +592,8 @@ public class ProductDetailActivity extends BaseActivity {
                 continue;
             }
 
-            // Ghim thẻ tại đỉnh khung nhìn cho tới khi thẻ kế tiếp cuộn trùm hẳn lên.
+            // Ghim thẻ tại đỉnh khung nhìn cho tới khi thẻ kế tiếp cuộn trùm hẳn lên, sau đó
+            // translationY bị "đóng băng" ở giá trị đã cap nên thẻ trôi lên cùng tốc độ cuộn.
             card.setTranslationY(localScroll);
 
             // Thẻ kế tiếp càng gần điểm ghim của nó thì thẻ này càng thu nhỏ + mờ dần — bắt đầu
@@ -554,21 +616,29 @@ public class ProductDetailActivity extends BaseActivity {
             @Override
             public void onResponse(Call<ApiListResponse<Review>> call, Response<ApiListResponse<Review>> response) {
                 List<Review> reviews = (response.isSuccessful() && response.body() != null && response.body().isSuccess())
-                        ? response.body().getData() : new ArrayList<>();
-                bindReviewsSummary(reviews);
-
-                binding.rvReviews.setLayoutManager(new LinearLayoutManager(ProductDetailActivity.this));
-                binding.rvReviews.setAdapter(new ReviewAdapter(reviews));
-                binding.btnViewAllReviews.setOnClickListener(v -> {
-                    binding.rvReviews.setVisibility(View.VISIBLE);
-                    binding.btnViewAllReviews.setVisibility(View.GONE);
-                });
+                        ? response.body().getData() : null;
+                // Backend chưa có đánh giá thật (offline/demo) → dùng bộ đánh giá mẫu thay vì
+                // để trống, để mục "Đánh giá khách hàng" luôn có nội dung xem được.
+                if (reviews == null || reviews.isEmpty()) {
+                    reviews = MockReviewCatalog.getReviewsForProduct(currentProduct);
+                }
+                applyReviews(reviews);
             }
 
             @Override
             public void onFailure(Call<ApiListResponse<Review>> call, Throwable t) {
-                bindReviewsSummary(new ArrayList<>());
+                applyReviews(MockReviewCatalog.getReviewsForProduct(currentProduct));
             }
+        });
+    }
+
+    private void applyReviews(List<Review> reviews) {
+        bindReviewsSummary(reviews);
+        binding.rvReviews.setLayoutManager(new LinearLayoutManager(ProductDetailActivity.this));
+        binding.rvReviews.setAdapter(new ReviewAdapter(reviews));
+        binding.btnViewAllReviews.setOnClickListener(v -> {
+            binding.rvReviews.setVisibility(View.VISIBLE);
+            binding.btnViewAllReviews.setVisibility(View.GONE);
         });
     }
 
@@ -609,21 +679,14 @@ public class ProductDetailActivity extends BaseActivity {
         row.barSpacer.setLayoutParams(spacerParams);
     }
 
-    // ── You may also like ────────────────────────────────────────────────────
+    // ── You may also like — thẻ ảnh phủ kín + chữ đè, cùng khuôn với danh mục (không viền) ──
 
     private void loadRelatedProducts(Product product) {
         binding.rvRelated.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        ProductAdapter relatedAdapter = new ProductAdapter(new ArrayList<>());
-        relatedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Product related) {
-                Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
-                intent.putExtra(Constants.EXTRA_PRODUCT_ID, related.getId());
-                startActivity(intent);
-            }
-
-            @Override
-            public void onSaveToggle(Product related, boolean saved) { /* handle wishlist */ }
+        RelatedProductAdapter relatedAdapter = new RelatedProductAdapter(new ArrayList<>(), related -> {
+            Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
+            intent.putExtra(Constants.EXTRA_PRODUCT_ID, related.getId());
+            startActivity(intent);
         });
         binding.rvRelated.setAdapter(relatedAdapter);
 
@@ -646,6 +709,60 @@ public class ProductDetailActivity extends BaseActivity {
         });
     }
 
+    private interface OnRelatedProductClickListener {
+        void onClick(Product product);
+    }
+
+    private static class RelatedProductAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<RelatedProductAdapter.ViewHolder> {
+        private List<Product> products;
+        private final OnRelatedProductClickListener listener;
+
+        RelatedProductAdapter(List<Product> products, OnRelatedProductClickListener listener) {
+            this.products = products;
+            this.listener = listener;
+        }
+
+        void updateData(List<Product> newProducts) {
+            this.products = newProducts;
+            notifyDataSetChanged();
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull android.view.ViewGroup parent, int viewType) {
+            return new ViewHolder(com.tiredcity.app.databinding.ItemRelatedProductBinding.inflate(
+                    LayoutInflater.from(parent.getContext()), parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            Product product = products.get(position);
+            holder.b.tvProductName.setText(product.getName());
+            holder.b.tvProductPrice.setText(PriceUtils.format(product.getEffectivePrice()));
+            Glide.with(holder.b.ivProductImage.getContext())
+                    .load(product.getFirstImage())
+                    .timeout(30000)
+                    .centerCrop()
+                    .placeholder(R.color.bg_subtle)
+                    .error(R.color.bg_subtle)
+                    .into(holder.b.ivProductImage);
+            holder.b.getRoot().setOnClickListener(v -> listener.onClick(product));
+        }
+
+        @Override
+        public int getItemCount() {
+            return products != null ? products.size() : 0;
+        }
+
+        static class ViewHolder extends androidx.recyclerview.widget.RecyclerView.ViewHolder {
+            final com.tiredcity.app.databinding.ItemRelatedProductBinding b;
+            ViewHolder(com.tiredcity.app.databinding.ItemRelatedProductBinding binding) {
+                super(binding.getRoot());
+                this.b = binding;
+            }
+        }
+    }
+
     private List<Product> excludeCurrent(List<Product> products, String currentId) {
         List<Product> filtered = new ArrayList<>();
         for (Product p : products) {
@@ -657,18 +774,29 @@ public class ProductDetailActivity extends BaseActivity {
     // ── Info rows: shipping / returns / payment ─────────────────────────────
 
     private void setupInfoRows() {
-        bindInfoCard(binding.rowShipping, binding.ivShippingIcon, binding.tvShippingText,
-                R.drawable.ic_policy_shipping, getString(R.string.label_free_shipping));
-        bindInfoCard(binding.rowReturns, binding.ivReturnsIcon, binding.tvReturnsText,
-                R.drawable.ic_policy_return, getString(R.string.label_easy_returns));
-        bindInfoCard(binding.rowPayment, binding.ivPaymentIcon, binding.tvPaymentText,
-                R.drawable.ic_policy_payment, getString(R.string.label_secure_payment));
+        bindInfoCard(binding.rowReturns, binding.ivReturnsIcon, binding.tvReturnsText, binding.tvReturnsSubtitle,
+                R.drawable.ic_policy_exchange, getString(R.string.label_easy_returns), getString(R.string.label_easy_returns_subtitle));
+        bindInfoCard(binding.rowPremium, binding.ivPremiumIcon, binding.tvPremiumText, binding.tvPremiumSubtitle,
+                R.drawable.ic_policy_leaf, getString(R.string.label_premium_material), getString(R.string.label_premium_material_subtitle));
+        bindInfoCard(binding.rowPayment, binding.ivPaymentIcon, binding.tvPaymentText, binding.tvPaymentSubtitle,
+                R.drawable.ic_policy_shield_check, getString(R.string.label_secure_payment), getString(R.string.label_secure_payment_subtitle));
+        bindInfoCard(binding.rowShipping, binding.ivShippingIcon, binding.tvShippingText, binding.tvShippingSubtitle,
+                R.drawable.ic_policy_fast_delivery, getString(R.string.label_free_shipping), getString(R.string.label_free_shipping_subtitle));
     }
 
-    private void bindInfoCard(View card, ImageView icon, TextView text, int iconRes, String label) {
+    private void bindInfoCard(View card, ImageView icon, TextView text, TextView subtitle, int iconRes, String label, String sublabel) {
         icon.setImageResource(iconRes);
         text.setText(label);
+        subtitle.setText(sublabel);
         card.setOnClickListener(v -> startActivity(new Intent(this, PolicyActivity.class)));
+    }
+
+    // ── Bảng size (mục 04) — ảnh tĩnh, giống nhau cho mọi sản phẩm; ảnh động (GIF) cần
+    // Glide để phát hoạt hình, setImageResource() chỉ hiển thị khung hình đầu tiên. ──────────
+
+    private void setupSizeGuideImages() {
+        Glide.with(this).load(R.drawable.dm_size_guide_chart).into(binding.ivSizeGuideChart);
+        Glide.with(this).load(R.raw.dm_size_guide_demo).into(binding.ivSizeGuideDemo);
     }
 
     // ── Cart ──────────────────────────────────────────────────────────────────

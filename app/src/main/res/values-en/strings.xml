@@ -266,12 +266,56 @@
     <string name="care_iron_low">Iron on low heat</string>
     <string name="care_iron_low_cloth">Iron on low heat, with a cloth barrier</string>
     <string name="care_store_dry">Store in a dry place, away from direct sunlight</string>
+    <string name="care_wipe_soft_cloth">Wipe gently with a soft, dry cloth when dusty</string>
+    <string name="care_avoid_moisture">Keep away from damp areas to prevent mold or damage</string>
+    <string name="care_avoid_direct_sun">Do not leave under strong direct sunlight to avoid fading</string>
+    <string name="care_store_box">Store in a box or fabric pouch when not in use</string>
 
     <!-- ─── Mock catalog: default + per-product description/story ──────── -->
     <string name="desc_template_default">%1$s is crafted from %2$s, showcasing elegant beauty and the spirit of traditional Vietnamese attire in every stitch.</string>
     <string name="story_template_default">The design draws inspiration from royal and folk attire across Vietnamese dynasties, restored and reimagined to suit modern life while preserving its traditional essence.</string>
     <string name="desc_ad1">This pure white áo dài draws inspiration from the beauty of the traditional Vietnamese bride. Its soft silk and delicate hand embroidery symbolize purity, harmony, and lasting love.</string>
     <string name="story_ad1">The design is restored from Nguyễn dynasty ceremonial attire, blended with modern tailoring techniques to flatter the wearer\'s silhouette while preserving its solemn, timeless character.</string>
+
+    <!-- ─── Mock catalog: rotating category description templates (3 per category) ─── -->
+    <string name="desc_tmpl_ao_dai_1">%1$s is a %3$s áo dài in %2$s, flattering the silhouette while keeping the elegance of the traditional tunic — a lovely pick for festivals, weddings, or spring outings.</string>
+    <string name="desc_tmpl_ao_dai_2">The %1$s design pairs %2$s with soft %3$s, its gently fitted cut suited for temple visits, keepsake photos, or formal occasions.</string>
+    <string name="desc_tmpl_ao_dai_3">%1$s carries a soft %2$s hue in premium %3$s, its panels flowing with every step — modern Việt phục with a timeless soul.</string>
+    <string name="desc_tmpl_nhat_binh_1">%1$s restores the imperial nhật bình silhouette, its %2$s tone set against %3$s, with intricate sleeve motifs echoing royal ceremonial dress.</string>
+    <string name="desc_tmpl_nhat_binh_2">Inspired by Nguyễn-dynasty court attire, %1$s in %2$s is made from %3$s, with the wide collar and sleeves true to nhật bình form — ideal for period photoshoots or cultural events.</string>
+    <string name="desc_tmpl_nhat_binh_3">%1$s is an elegant %2$s nhật bình in structured %3$s, its embroidered accents lending quiet grandeur.</string>
+    <string name="desc_tmpl_ao_tac_1">%1$s is a five-panel áo tấc in %2$s, made from breathable %3$s, with a tidy silhouette suited for everyday wear or small ceremonies.</string>
+    <string name="desc_tmpl_ao_tac_2">%1$s pairs a refined %2$s tone with %3$s, keeping the traditional five-panel structure — easy to style with wide-leg trousers for a scholarly look.</string>
+    <string name="desc_tmpl_ao_tac_3">%1$s recalls the scholar\'s áo tấc of old, a gentle %2$s over %3$s, each seam finished with care.</string>
+    <string name="desc_tmpl_giao_linh_1">%1$s is a cross-collar giao lĩnh in %2$s, its %3$s draping beautifully in a loose, free-flowing silhouette true to the Lê–Nguyễn era.</string>
+    <string name="desc_tmpl_giao_linh_2">%1$s in %2$s features the signature crossed collar, made from %3$s, well suited for period photoshoots or cultural events.</string>
+    <string name="desc_tmpl_giao_linh_3">%1$s carries the classic giao lĩnh form, a warm %2$s over %3$s, each panel finished carefully to keep its natural drape.</string>
+    <string name="desc_tmpl_yem_dao_1">%1$s is a gentle %2$s yếm đào in soft %3$s that skims the body lightly, recalling the beauty of old Northern Vietnamese village life.</string>
+    <string name="desc_tmpl_yem_dao_2">%1$s looks lovely worn alone or layered, its feminine %2$s tone over %3$s pairing well with a đụp skirt or lĩnh trousers for a complete look.</string>
+    <string name="desc_tmpl_yem_dao_3">%1$s carries the quiet charm of the traditional yếm đào, a bright %2$s in breathable %3$s comfortable for all-day wear.</string>
+    <string name="desc_tmpl_phu_kien_1">%1$s is a finely handcrafted %2$s accessory that completes a Việt phục look with a polished, distinctive touch.</string>
+    <string name="desc_tmpl_phu_kien_2">%1$s is made from %3$s, its %2$s detailing intricate — a small accessory that elevates the whole outfit.</string>
+    <string name="desc_tmpl_phu_kien_3">%1$s is an ideal finishing touch for a Việt phục outfit, its %2$s tone easy to pair with many styles of áo.</string>
+
+    <!-- ─── Mock catalog: rotating category story templates (3 per category) ─── -->
+    <string name="story_tmpl_ao_dai_1">The lines of %1$s are restored from generations of traditional áo dài, refined to better fit the modern Vietnamese figure while keeping its inherent grace.</string>
+    <string name="story_tmpl_ao_dai_2">The %1$s design draws from old Hanoi wedding photographs, paired with modern tailoring to flatter the wearer in every movement.</string>
+    <string name="story_tmpl_ao_dai_3">%1$s was born from a wish to keep classic áo dài beauty alive amid modern life — a silhouette that is both nostalgic and easy to wear day to day.</string>
+    <string name="story_tmpl_nhat_binh_1">%1$s is restored from records of Nguyễn-dynasty royal ceremonial dress, preserving the original sleeve and collar structure while simplifying the motifs for everyday relevance.</string>
+    <string name="story_tmpl_nhat_binh_2">Drawing on records of court ceremonial attire, %1$s recreates the stately air of old nhật bình, with every motif carefully researched to stay true to its period spirit.</string>
+    <string name="story_tmpl_nhat_binh_3">%1$s is the result of studying Nguyễn-dynasty court attire, refined in material to feel lighter and more breathable for extended wear.</string>
+    <string name="story_tmpl_ao_tac_1">%1$s is inspired by the attire of scholars and students of old, keeping the five-panel structure that symbolizes the five cardinal relationships in traditional culture.</string>
+    <string name="story_tmpl_ao_tac_2">%1$s recalls the simple áo tấc of scholars from the old capital, remade in a lighter fabric suited to today\'s climate and pace of life.</string>
+    <string name="story_tmpl_ao_tac_3">%1$s is restored from images of the five-panel áo tấc in Nguyễn-dynasty records, keeping the simple yet dignified spirit of this garment.</string>
+    <string name="story_tmpl_giao_linh_1">%1$s recreates the cross-collar giao lĩnh silhouette common from the Lê to early Nguyễn era, its panels carefully studied to keep the natural drape seen in old records.</string>
+    <string name="story_tmpl_giao_linh_2">%1$s draws inspiration from old paintings of everyday Vietnamese dress, keeping the free-flowing giao lĩnh form while lightening the fabric.</string>
+    <string name="story_tmpl_giao_linh_3">%1$s restores the folk beauty of giao lĩnh — less ornate than court dress, yet still carrying care in every stitch.</string>
+    <string name="story_tmpl_yem_dao_1">%1$s recalls the yếm đào of Northern Vietnamese folk songs and proverbs — a garment tied to the simple, graceful beauty of village women of old.</string>
+    <string name="story_tmpl_yem_dao_2">Drawing on the yếm đào worn at traditional village festivals, %1$s is remade in a softer fabric, easy to pair with modern dress.</string>
+    <string name="story_tmpl_yem_dao_3">%1$s recreates the quiet charm of the old yếm đào — a garment bound to childhood memory and village life for many generations of Vietnamese.</string>
+    <string name="story_tmpl_phu_kien_1">%1$s is handcrafted in the traditional way, every detail passing through a skilled artisan\'s hands for lasting refinement and durability.</string>
+    <string name="story_tmpl_phu_kien_2">Inspired by the accessories once paired with Việt phục, %1$s is remade with modern handcraft techniques, keeping its classic beauty while lasting longer in use.</string>
+    <string name="story_tmpl_phu_kien_3">%1$s is a small accessory carrying great artisan care, helping complete a traditional Việt phục outfit.</string>
     <string name="desc_ad7">A white áo dài with classic floral patterns, reminiscent of the schoolgirl áo dài of years past — light, elegant, and easy to style for many occasions.</string>
 
     <!-- ─── Mock catalog: product names — Áo Dài ────────────────────────── -->
@@ -352,6 +396,8 @@
     <string name="label_price">Price</string>
     <string name="label_description">Description</string>
     <string name="hint_swipe_down_details">Swipe down for details</string>
+    <string name="product_detail_tagline">MODERN VIETNAMESE HERITAGE WEAR</string>
+    <string name="hint_swipe_products">Swipe to see the product</string>
     <string name="label_reviews">Customer Reviews</string>
     <string name="label_menh_tags">Suitable Elements</string>
     <string name="out_of_stock">Out of Stock</string>
@@ -361,11 +407,17 @@
     <string name="label_details">Details</string>
     <string name="label_size_guide">Size Guide</string>
     <string name="size_guide_content">S: 42–48kg · M: 48–54kg · L: 54–60kg · XL: 60–68kg\nReference measurements — actual fit may vary by 1–2cm depending on body shape.</string>
+    <string name="label_product_information">PRODUCT INFORMATION</string>
     <string name="label_you_may_also_like">You May Also Like</string>
     <string name="btn_view_all_reviews">View All Reviews</string>
-    <string name="label_free_shipping">Free Shipping</string>
-    <string name="label_easy_returns">14-Day Returns</string>
+    <string name="label_free_shipping">Fast Delivery</string>
+    <string name="label_free_shipping_subtitle">Nationwide</string>
+    <string name="label_easy_returns">7-Day Returns</string>
+    <string name="label_easy_returns_subtitle">Free</string>
     <string name="label_secure_payment">Secure Payment</string>
+    <string name="label_secure_payment_subtitle">100% Protected</string>
+    <string name="label_premium_material">Premium Material</string>
+    <string name="label_premium_material_subtitle">Breathable</string>
     <string name="label_service_commitments">Our Commitments</string>
     <string name="label_story">Story</string>
     <string name="label_care">Care Instructions</string>

@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import com.tiredcity.app.R;
-import com.tiredcity.app.adapter.ProductAdapter;
+import com.tiredcity.app.adapter.ProductPhotoCardAdapter;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.data.network.ApiClient;
@@ -29,7 +29,7 @@ public class AiStylingActivity extends BaseActivity {
     private ActivityAiStylingBinding binding;
     private ApiService apiService;
     private final FirestoreProductRepository firestoreRepository = new FirestoreProductRepository();
-    private ProductAdapter recommendedAdapter;
+    private ProductPhotoCardAdapter recommendedAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +43,16 @@ public class AiStylingActivity extends BaseActivity {
 
         apiService = ApiClient.getApiService(preferenceManager.getToken());
 
-        recommendedAdapter = new ProductAdapter(null);
-        recommendedAdapter.setFillWidth(true); // thẻ giãn đầy mỗi cột của lưới
+        recommendedAdapter = new ProductPhotoCardAdapter(null);
         binding.rvSuggestions.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvSuggestions.setAdapter(recommendedAdapter);
         binding.rvSuggestions.setNestedScrollingEnabled(false);
-        recommendedAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override public void onProductClick(Product product) {
-                if (product.getId() == null) return;
-                android.content.Intent i = new android.content.Intent(
-                        AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
-                i.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
-                startActivity(i);
-            }
-            @Override public void onSaveToggle(Product product, boolean saved) { }
+        recommendedAdapter.setOnProductClickListener(product -> {
+            if (product.getId() == null) return;
+            android.content.Intent i = new android.content.Intent(
+                    AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+            i.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
+            startActivity(i);
         });
 
         binding.btnRefreshSuggestions.setOnClickListener(v -> loadUserProfileAndRecommend());
