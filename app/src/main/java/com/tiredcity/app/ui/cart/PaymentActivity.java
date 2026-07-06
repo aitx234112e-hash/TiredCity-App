@@ -19,7 +19,6 @@ import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.repository.OrderRepository;
 import com.tiredcity.app.databinding.ActivityPaymentBinding;
 import com.tiredcity.app.databinding.DialogEditRecipientBinding;
-import com.tiredcity.app.databinding.DialogVoucherCodeBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.utils.CheckoutPriceCalculator;
 import com.tiredcity.app.utils.PriceUtils;
@@ -85,7 +84,7 @@ public class PaymentActivity extends BaseActivity {
         setupPaymentSelector();
         loadShippingMethods();
 
-        binding.rowVoucher.setOnClickListener(v -> showVoucherDialog());
+        binding.rowVoucher.setOnClickListener(v -> showVoucherSheet());
         binding.tvChangeAddress.setOnClickListener(v -> showEditRecipientDialog());
         binding.rowAddress.setOnClickListener(v -> showEditRecipientDialog());
         binding.boxAddressAlert.setOnClickListener(v -> showEditRecipientDialog());
@@ -497,35 +496,27 @@ public class PaymentActivity extends BaseActivity {
         }
     }
 
-    private void showVoucherDialog() {
-        DialogVoucherCodeBinding dialogBinding = DialogVoucherCodeBinding.inflate(getLayoutInflater());
-        String currentCode = priceCalculator.getAppliedVoucherCode();
-        if (currentCode != null) dialogBinding.etVoucherCode.setText(currentCode);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle(com.tiredcity.app.R.string.pay_voucher_dialog_title)
-                .setView(dialogBinding.getRoot())
-                .setPositiveButton(com.tiredcity.app.R.string.btn_save, (dialog, which) -> {
-                    String code = dialogBinding.etVoucherCode.getText().toString().trim();
-                    if (code.isEmpty()) {
-                        priceCalculator.clearVoucher();
-                    } else if (!priceCalculator.applyVoucher(code)) {
-                        Toast.makeText(this, com.tiredcity.app.R.string.pay_voucher_invalid, Toast.LENGTH_SHORT).show();
-                    }
-                    updateVoucherStatusLabel();
-                    refreshTotals();
-                })
-                .setNegativeButton(com.tiredcity.app.R.string.btn_cancel, null);
-
-        if (currentCode != null) {
-            builder.setNeutralButton(com.tiredcity.app.R.string.btn_remove_short, (dialog, which) -> {
+    /** Mở bottom sheet chọn mã giảm giá (kiểu Shopee) — chọn từ danh sách hoặc nhập tay. */
+    private void showVoucherSheet() {
+        VoucherBottomSheet sheet = new VoucherBottomSheet();
+        sheet.setCurrentCode(priceCalculator.getAppliedVoucherCode());
+        sheet.setOnVoucherAppliedListener(code -> {
+            if (code == null || code.trim().isEmpty()) {
+                boolean had = priceCalculator.getAppliedVoucherCode() != null;
                 priceCalculator.clearVoucher();
-                updateVoucherStatusLabel();
-                refreshTotals();
-                Toast.makeText(this, com.tiredcity.app.R.string.pay_voucher_removed, Toast.LENGTH_SHORT).show();
-            });
-        }
-        builder.show();
+                if (had) Toast.makeText(this,
+                        com.tiredcity.app.R.string.pay_voucher_removed, Toast.LENGTH_SHORT).show();
+            } else if (priceCalculator.applyVoucher(code)) {
+                Toast.makeText(this, getString(
+                        com.tiredcity.app.R.string.pay_voucher_applied_toast, code), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,
+                        com.tiredcity.app.R.string.pay_voucher_invalid, Toast.LENGTH_SHORT).show();
+            }
+            updateVoucherStatusLabel();
+            refreshTotals();
+        });
+        sheet.show(getSupportFragmentManager(), "voucher_sheet");
     }
 
     private void showEditRecipientDialog() {

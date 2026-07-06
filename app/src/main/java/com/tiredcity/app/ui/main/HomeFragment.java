@@ -85,6 +85,10 @@ public class HomeFragment extends Fragment {
     private static final float PROMO_IMAGE_RATIO = 2061f / 763f;
     // Tỷ lệ rộng/cao thật của ảnh banner ngũ hành (1774×887) — dùng để khung không xén ảnh
     private static final float MENH_BANNER_RATIO = 1774f / 887f;
+    // Tỷ lệ rộng/cao thật của ảnh tin tức main13 (1191×842) — khung tự co để hiện FULL ảnh
+    private static final float NEWS_BANNER_RATIO = 1191f / 842f;
+    // Tỷ lệ rộng/cao thật của ảnh sự kiện main15 (1672×941) — khung tự co để hiện FULL ảnh
+    private static final float EVENTS_BANNER_RATIO = 1672f / 941f;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -111,7 +115,6 @@ public class HomeFragment extends Fragment {
         setupHotProducts();
         loadFirestoreHighlights();
         setupLanguageButton();
-        setupThemeToggle();
         setupClickListeners();
         setupBrandMedia();
         setupCategoryImages();
@@ -522,24 +525,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupBanner2() {
-        // Carousel thứ hai (dưới "Đằng sau mỗi thiết kế"): main11 → main12 (gif) → main15
+        // Carousel thứ hai (dưới "Đằng sau mỗi thiết kế"): chỉ còn 1 ảnh main12
+        // → không cần auto-scroll, ẩn luôn dots indicator.
         List<MediaBannerAdapter.MediaItem> items = new ArrayList<>();
-        items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main11));
         items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main12));
-        items.add(MediaBannerAdapter.MediaItem.image(R.drawable.main15));
 
         banner2Adapter = new MediaBannerAdapter(items);
         binding.vpBanner2.setAdapter(banner2Adapter);
-        binding.dotsIndicator2.attachTo(binding.vpBanner2);
+        binding.dotsIndicator2.setVisibility(View.GONE);
         applyAspectRatio(binding.vpBanner2, 16f / 9f);
-
-        banner2ScrollHandler  = new Handler(Looper.getMainLooper());
-        banner2ScrollRunnable = () -> {
-            if (banner2Adapter.getItemCount() == 0) return;
-            int next = (binding.vpBanner2.getCurrentItem() + 1) % banner2Adapter.getItemCount();
-            binding.vpBanner2.setCurrentItem(next, true);
-            banner2ScrollHandler.postDelayed(banner2ScrollRunnable, 4000L);
-        };
     }
 
     private void startAutoScroll() {
@@ -786,21 +780,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // ── Theme toggle (sáng/tối) ───────────────────────────────────────────────
-
-    private void setupThemeToggle() {
-        binding.ivThemeToggle.setImageResource(
-                com.tiredcity.app.utils.ThemeManager.isDarkMode(requireContext())
-                        ? R.drawable.ic_theme_light : R.drawable.ic_theme_dark);
-
-        binding.btnThemeToggle.setOnClickListener(v -> {
-            boolean nowDark = com.tiredcity.app.utils.ThemeManager.toggleTheme(requireContext());
-            binding.ivThemeToggle.setImageResource(
-                    nowDark ? R.drawable.ic_theme_light : R.drawable.ic_theme_dark);
-            requireActivity().recreate();
-        });
-    }
-
     // ── Click listeners ───────────────────────────────────────────────────────
 
     private void setupClickListeners() {
@@ -830,12 +809,17 @@ public class HomeFragment extends Fragment {
         binding.cardCatYemDao.setOnClickListener(v -> openStylingCategory("YẾM ĐÀO"));
         binding.cardCatAccessories.setOnClickListener(v -> openStylingCategory("PHỤ KIỆN"));
 
-        // Sự kiện → trang Sự kiện riêng (EventActivity)
-        View.OnClickListener eventsClick = v ->
+        // Ảnh sự kiện → trang chi tiết "Dân Tộc Tự Hào" (EventDetailActivity);
+        // "Xem tất cả" → danh sách sự kiện (EventActivity).
+        binding.cardEvents.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(),
-                        com.tiredcity.app.ui.explore.EventActivity.class));
-        binding.cardEvents.setOnClickListener(eventsClick);
-        binding.tvEventsSeeAll.setOnClickListener(eventsClick);
+                        com.tiredcity.app.ui.explore.EventDetailActivity.class)));
+        binding.tvEventsSeeAll.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(),
+                        com.tiredcity.app.ui.explore.EventActivity.class)));
+
+        // Khung sự kiện tự co về đúng tỷ lệ ảnh main15 → hiện FULL ảnh, không xén trên/dưới.
+        applyAspectRatio(binding.cardEvents, EVENTS_BANNER_RATIO);
 
         // Tin tức → trang Tin tức riêng (ArticleActivity)
         View.OnClickListener newsClick = v ->
@@ -843,6 +827,9 @@ public class HomeFragment extends Fragment {
                         com.tiredcity.app.ui.explore.ArticleActivity.class));
         binding.cardNews.setOnClickListener(newsClick);
         binding.tvNewsSeeAll.setOnClickListener(newsClick);
+
+        // Khung tin tức tự co về đúng tỷ lệ ảnh main13 → hiện FULL ảnh, không xén trên/dưới.
+        applyAspectRatio(binding.cardNews, NEWS_BANNER_RATIO);
     }
 
     /** Ảnh bìa dạng tem (front, drawable/cate_*) của mỗi danh mục; mặt sau (layout_cat_*_back
@@ -967,16 +954,12 @@ public class HomeFragment extends Fragment {
 
         ctaPulseAnimators = java.util.Arrays.asList(
                 createCtaPulse(binding.btnAiStripCta),
-                createCtaPulse(binding.btnEventsCta),
-                createCtaPulse(binding.btnNewsCta),
                 createCtaPulse(binding.btnMenhCta));
 
         // Mũi tên trước mỗi nút (hoặc mũi tên riêng của Ngũ hành) chỉ hiện ra 1 lần khi banner
         // cuộn vào tầm nhìn — gợi ý "có thể chạm", lấy cảm hứng từ hiệu ứng hover trên IKEA.
         arrowReveals = java.util.Arrays.asList(
                 new ArrowReveal(binding.cvAiStrip, binding.arrowAiStripCta),
-                new ArrowReveal(binding.cardEvents, binding.arrowEventsCta),
-                new ArrowReveal(binding.cardNews, binding.arrowNewsCta),
                 new ArrowReveal(binding.cardMenhCta, binding.arrowMenhCta),
                 new ArrowReveal(binding.cvMenhBanner, binding.ivMenhArrow));
 

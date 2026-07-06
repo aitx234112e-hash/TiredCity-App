@@ -123,7 +123,6 @@
       "Bash(/c/Users/ADMIN/AppData/Local/Android/Sdk/platform-tools/adb.exe -s 640e72b7 shell input keyevent KEYCODE_HOME)",
       "Bash(/c/Users/ADMIN/AppData/Local/Android/Sdk/platform-tools/adb.exe -s 640e72b7 exec-out screencap -p)",
       "Bash(/c/Users/ADMIN/AppData/Local/Android/Sdk/platform-tools/adb.exe -s 640e72b7 shell input tap 449 1072)",
-      "Bash(adb devices *)",
       "PowerShell(Get-Command gradle -ErrorAction SilentlyContinue)",
       "PowerShell(try { [xml]\\(Get-Content -Raw \"D:\\\\TiredCity-App\\\\app\\\\src\\\\main\\\\res\\\\layout\\\\activity_product_detail.xml\"\\); Write-Output \"OK well-formed\" } catch { Write-Output \"ERROR: $_\" })",
       "PowerShell(try { [xml]\\(Get-Content -Raw \"D:\\\\TiredCity-App\\\\app\\\\src\\\\main\\\\res\\\\layout\\\\activity_product_detail.xml\"\\) | Out-Null; Write-Output \"OK well-formed\" } catch { Write-Output \"ERROR: $_\" })",
@@ -167,7 +166,6 @@
       "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/emulator/emulator.exe' -list-avds)",
       "Bash(echo \"---\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4300)",
-<<<<<<< Updated upstream
       "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; & \"C:\\\\Users\\\\Acer\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\\\\arn2x92ynaizyzdaamcbpbhtj\\\\gradle-9.4.1\\\\bin\\\\gradle.bat\" :app:compileDebugJavaWithJavac --console=plain 2>&1 | Select-Object -Last 60)",
       "PowerShell($adb = \"$env:USERPROFILE\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; Write-Output \"---- packages tiredcity ----\"; & $adb shell pm list packages 2>$null | Select-String -Pattern \"tiredcity\"; Write-Output \"---- recent crashes \\(FATAL\\) ----\"; & $adb logcat -d -t 400 2>$null | Select-String -Pattern \"FATAL|AndroidRuntime|tiredcity\" | Select-Object -Last 30)",
       "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; & \"C:\\\\Users\\\\Acer\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\\\\arn2x92ynaizyzdaamcbpbhtj\\\\gradle-9.4.1\\\\bin\\\\gradle.bat\" :app:assembleDebug --console=plain 2>&1 | Select-Object -Last 15)",
@@ -236,8 +234,7 @@
       "Bash(curl -sL -A \"Mozilla/5.0\" -o momo_test.png \"https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png\" -w \"HTTP %{http_code} size=%{size_download}\\\\n\")",
       "PowerShell(git fetch)",
       "PowerShell(git add .claude/settings.local.json)",
-      "PowerShell(git add -A)"
-=======
+      "PowerShell(git add -A)",
       "PowerShell(Get-ChildItem \"$env:USERPROFILE\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\" -Recurse -Filter gradle.bat | Select-Object -First 1 -ExpandProperty FullName)",
       "PowerShell($c = @\\(\"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\", \"C:\\\\Program Files\\\\Java\", \"C:\\\\Program Files\\\\Eclipse Adoptium\"\\); foreach \\($p in $c\\) { if \\(Test-Path $p\\) { Write-Output \"FOUND: $p\"; Get-ChildItem $p -Name | Select-Object -First 5 } }; Select-String -Path D:\\\\TiredCity-App\\\\gradle.properties -Pattern \"java\" -SimpleMatch)",
       "PowerShell(Set-Location D:\\\\TiredCity-App; $env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; & \"C:\\\\Users\\\\ADMIN\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\\\\arn2x92ynaizyzdaamcbpbhtj\\\\gradle-9.4.1\\\\bin\\\\gradle.bat\" :app:assembleDebug --console=plain -q)",
@@ -282,8 +279,29 @@
       "Bash(powershell -Command 'Get-ChildItem -Path '\\\\''C:\\\\Users\\\\ADMIN\\\\AppData\\\\Roaming'\\\\'','\\\\''C:\\\\Users\\\\ADMIN\\\\AppData\\\\Local'\\\\'' -Recurse -Include *.png,*.jpg,*.jpeg -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -gt \\(Get-Date\\).AddMinutes\\(-20\\) -and $_.Directory.FullName -notlike '\\\\''*claude\\\\D--TiredCity-App*'\\\\'' } | Select-Object FullName, LastWriteTime, Length | Sort-Object LastWriteTime -Descending')",
       "Bash(echo \"exit:$?\")",
       "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\\(Resolve-Path 'app\\\\src\\\\main\\\\res\\\\drawable\\\\menh_banner.png'\\)\\); Write-Output \"$\\($img.Width\\)x$\\($img.Height\\)\"; $img.Dispose\\(\\))",
-      "PowerShell(try { [xml]\\(Get-Content 'app\\\\src\\\\main\\\\res\\\\layout\\\\activity_contact.xml' -Raw\\) | Out-Null; Write-Output \"XML VALID\" } catch { Write-Output \"XML ERROR: $\\($_.Exception.Message\\)\" })"
->>>>>>> Stashed changes
+      "PowerShell(try { [xml]\\(Get-Content 'app\\\\src\\\\main\\\\res\\\\layout\\\\activity_contact.xml' -Raw\\) | Out-Null; Write-Output \"XML VALID\" } catch { Write-Output \"XML ERROR: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(git commit -F \"C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--TiredCity-App-main-TiredCity-App-main\\\\0ecd3de3-f41b-4a9d-a08f-6eb3414585a4\\\\scratchpad\\\\commitmsg.txt\")",
+      "Bash(grep -iE \"Button|N\\\\\\\\.?HẬN|1:id/btn\")",
+      "Bash(rm -f java/com/tiredcity/app/ui/cart/MapConfirmActivity.java)",
+      "Bash(rm -f res/layout/activity_map_confirm.xml)",
+      "Bash(rm -f res/drawable/bg_map_bubble.xml)",
+      "Bash(timeout 8 'C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell getprop sys.boot_completed)",
+      "Bash(timeout 8 'C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell input keyevent 82)",
+      "Bash(echo \"wake exit=$?\")",
+      "Bash(timeout 150 'C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' install -r 'D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\app\\\\build\\\\outputs\\\\apk\\\\debug\\\\app-debug.apk')",
+      "Bash(echo \"install exit=$?\")",
+      "Bash('C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' reboot *)",
+      "Bash(timeout 8 'C:\\\\Users\\\\Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe' shell dumpsys activity activities)",
+      "PowerShell(git fetch origin)",
+      "Bash(exit 1)",
+      "Bash(git tag *)",
+      "Bash(git show *)",
+      "Bash(sed -i 's#explore_surface#card_white#g' app/src/main/res/values/colors.xml app/src/main/res/layout/fragment_explore.xml app/src/main/res/layout/fragment_about.xml app/src/main/res/layout/activity_contact.xml app/src/main/res/layout/item_shop_category.xml)",
+      "Bash(sed -i 's#<!-- Explore \\(Giới thiệu/Cửa hàng\\): giữ nền thẻ trắng như bản trước pull -->#<!-- Nền thẻ trắng bản cũ \\(trước pull\\) - dùng cho các màn muốn giữ màu cũ -->#' app/src/main/res/values/colors.xml)",
+      "Bash(sed -i 's#@color/bg_surface#@color/card_white#g' app/src/main/res/layout/activity_profile.xml)",
+      "Bash(find \"C:/Users/Acer/AppData/Local/Temp\" -maxdepth 4 -type f \\\\\\( -iname \"*.png\" -o -iname \"*.jpg\" -o -iname \"*.jpeg\" \\\\\\) -newermt \"-30 minutes\" 2>/dev/null | head -40 *)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\app\\\\src\\\\main\\\\res\\\\drawable\\\\main13.jpg\"\\); \"$\\($img.Width\\)x$\\($img.Height\\) ratio=$\\([math]::Round\\($img.Width/$img.Height,4\\)\\)\"; $img.Dispose\\(\\))",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\app\\\\src\\\\main\\\\res\\\\drawable\\\\main15.jpg\"\\); \"$\\($img.Width\\)x$\\($img.Height\\) ratio=$\\([math]::Round\\($img.Width/$img.Height,4\\)\\)\"; $img.Dispose\\(\\))"
     ]
   }
 }

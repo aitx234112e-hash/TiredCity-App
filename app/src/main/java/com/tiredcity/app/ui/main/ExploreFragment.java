@@ -1,8 +1,6 @@
 package com.tiredcity.app.ui.main;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayout;
 import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.FragmentExploreBinding;
-import com.tiredcity.app.ui.support.ContactActivity;
 
 public class ExploreFragment extends Fragment {
 
@@ -31,33 +28,39 @@ public class ExploreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Lần đầu tạo view: nạp tab "Giới thiệu" (vị trí 0).
+        if (savedInstanceState == null) {
+            showAbout();
+        }
+
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                // Cả hai tab hiển thị nội dung ngay trong trang (giữ nguyên header trắng + tab),
+                // không mở Activity riêng.
                 if (tab.getPosition() == 1) {
-                    // Tab "Store Location" → mở ContactActivity, revert về tab About
-                    startActivity(new Intent(requireContext(), ContactActivity.class));
-                    TabLayout.Tab aboutTab = binding.tabLayout.getTabAt(0);
-                    if (aboutTab != null) aboutTab.select();
+                    showStore();
+                } else {
+                    showAbout();
                 }
-                // Tab "About" (vị trí 0) hiển thị AboutFragment đã nhúng trong layout.
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Tab "About" là fragment con nhúng cố định, không bị huỷ khi rời/quay lại tab này
-        // (kể cả sau khi mở Cửa hàng/ContactActivity rồi back về), nên phải chủ động cuộn
-        // về đầu mỗi lần tab được vào lại thay vì giữ nguyên vị trí cuộn cũ.
-        Fragment about = getChildFragmentManager().findFragmentById(R.id.about_container);
-        Log.d("TC_DEBUG", "ExploreFragment.onResume: about=" + about);
-        if (about instanceof AboutFragment) {
-            ((AboutFragment) about).scrollToTop();
-        }
+    private void showAbout() {
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.about_container, new AboutFragment())
+                .commit();
+    }
+
+    private void showStore() {
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.about_container, new StoreFragment())
+                .commit();
     }
 
     @Override

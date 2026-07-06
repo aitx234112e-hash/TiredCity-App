@@ -6,17 +6,17 @@
     android:orientation="vertical"
     android:background="@color/bg_primary">
 
-    <!-- Toolbar đỏ son -->
+    <!-- Toolbar trắng — đồng bộ header trang Khám phá -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/tc_red"
+        android:background="@color/card_white"
         android:elevation="4dp"
         app:navigationIcon="@drawable/ic_back"
-        app:navigationIconTint="@color/white"
+        app:navigationIconTint="@color/text_primary"
         app:title="@string/title_store_locator"
-        app:titleTextColor="@color/white"
+        app:titleTextColor="@color/text_primary"
         app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
 
     <androidx.core.widget.NestedScrollView
@@ -70,7 +70,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="@dimen/tc_elev_sm"
-                app:cardBackgroundColor="@color/bg_surface"
+                app:cardBackgroundColor="@color/card_white"
                 app:rippleColor="@color/tc_red_pale">
 
                 <!-- Horizontal: image (portrait, left) + details (right) -->
@@ -202,7 +202,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="@dimen/tc_elev_sm"
-                app:cardBackgroundColor="@color/bg_surface"
+                app:cardBackgroundColor="@color/card_white"
                 app:rippleColor="@color/tc_red_pale">
 
                 <LinearLayout
@@ -356,7 +356,7 @@
                 android:layout_marginHorizontal="16dp"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="@dimen/tc_elev_sm"
-                app:cardBackgroundColor="@color/bg_surface">
+                app:cardBackgroundColor="@color/card_white">
 
                 <LinearLayout
                     android:layout_width="match_parent"

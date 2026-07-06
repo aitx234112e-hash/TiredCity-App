@@ -113,6 +113,11 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.explore.EventDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <!-- ── Notifications ─────────────────────────────────────────────── -->
         <activity
             android:name=".ui.notification.NotificationActivity"

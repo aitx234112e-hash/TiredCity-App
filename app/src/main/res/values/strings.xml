@@ -117,21 +117,21 @@
     <!-- Home sections: Events & News -->
     <string name="home_section_events">Sự kiện</string>
     <string name="home_events_eyebrow">SỰ KIỆN NỔI BẬT</string>
-    <string name="home_events_title">Triển lãm &amp; Workshop</string>
+    <string name="home_events_title">Lễ khai mạc | DÂN TỘC TỰ HÀO</string>
     <string name="home_events_cta">XEM SỰ KIỆN ✦</string>
     <string name="home_section_news">Tin tức</string>
     <string name="home_news_eyebrow">TIN TỨC &amp; CẢM HỨNG</string>
-    <string name="home_news_title">Câu chuyện Việt phục</string>
+    <string name="home_news_title">Sách văn hóa “Sắc Phục Việt” chính thức xuất bản</string>
     <string name="home_news_cta">ĐỌC THÊM ✦</string>
 
     <!-- Home — khối media thương hiệu (video/gif Behance) -->
-    <string name="home_hero_eyebrow">VIỆT PHỤC × BẢN SẮC VIỆT</string>
+    <string name="home_hero_eyebrow">VIỆT PHỤC × TIREDCITY</string>
     <string name="home_hero_caption">Chạm vào hồn Việt qua từng nếp áo.</string>
     <string name="home_craft_eyebrow">GÓI QUÀ VIỆT PHỤC</string>
     <string name="home_craft_title">Đi kèm trong mỗi sản phẩm</string>
     <!-- Home — khối Welcome to TiredCity (đỏ, chữ be) -->
     <string name="home_welcome_title">TiredCity xin chào</string>
-    <string name="home_welcome_intro">Từ những ngày đầu chập chững, TiredCity lớn lên cùng di sản Việt — nơi câu chuyện văn hoá được kể lại bằng ngôn ngữ thời trang đương đại.</string>
+    <string name="home_welcome_intro">Từ những ngày đầu chập chững, <font color="#A80D15">TiredCity</font> lớn lên cùng di sản Việt — nơi câu chuyện văn hoá được kể lại bằng <font color="#A80D15">ngôn ngữ thời trang đương đại</font>.</string>
 
     <!-- Banners (mock titles) -->
     <string name="banner_title_1">Bộ sưu tập Thu – Đông 2025</string>
@@ -536,6 +536,17 @@
     <string name="pay_voucher_dialog_hint">Ví dụ: SALE10, FREESHIP</string>
     <string name="pay_voucher_invalid">Mã giảm giá không hợp lệ.</string>
     <string name="pay_voucher_removed">Đã bỏ mã giảm giá.</string>
+
+    <!-- ─── Bottom sheet chọn mã giảm giá ─── -->
+    <string name="voucher_sheet_title">Chọn mã giảm giá</string>
+    <string name="voucher_sheet_type_label">Chọn loại Voucher:</string>
+    <string name="voucher_sheet_input_hint">Nhập mã giảm giá…</string>
+    <string name="voucher_sheet_apply_code">Áp dụng</string>
+    <string name="voucher_sheet_available">Mã khả dụng (%1$d)</string>
+    <string name="voucher_sheet_apply">Áp dụng</string>
+    <string name="voucher_sheet_apply_n">Áp dụng (%1$d)</string>
+    <string name="voucher_sheet_empty">Không có mã phù hợp bộ lọc này.</string>
+    <string name="pay_voucher_applied_toast">Đã áp dụng mã %s.</string>
     <string name="pay_edit_recipient_title">Sửa thông tin nhận hàng</string>
     <string name="pay_recipient_name_hint">Tên người nhận</string>
     <string name="pay_recipient_phone_hint">Số điện thoại</string>
@@ -922,6 +933,7 @@
     <!-- ── General settings (CHUNG) ── -->
     <string name="settings_general_title">CHUNG</string>
     <string name="settings_general_security_title">Bảo mật</string>
+    <string name="settings_general_dark_mode_title">Chế độ màn hình tối</string>
     <string name="settings_general_app_info_title">Thông tin ứng dụng</string>
     <string name="settings_general_rate_title">Đánh giá ứng dụng</string>
     <string name="settings_general_delete_title">Yêu cầu xóa tài khoản</string>
@@ -962,4 +974,49 @@
     <string name="settings_delete_confirm">Gửi yêu cầu xóa</string>
     <string name="settings_delete_submitted">Đã gửi yêu cầu xóa tài khoản.</string>
     <string name="cd_settings_row_chevron">Mở</string>
+    <!-- ═══ Chi tiết sự kiện: DÂN TỘC TỰ HÀO ═══ -->
+    <string name="ed_toolbar_title">Chi tiết sự kiện</string>
+    <string name="ed_hero_eyebrow">LỄ KHAI MẠC · TRƯNG BÀY THÁNG 9</string>
+    <string name="ed_hero_title">DÂN TỘC TỰ HÀO</string>
+    <string name="ed_hero_subtitle">“Proudly Vietnamese” — September Art Display</string>
+
+    <string name="ed_fact_time_label">Thời gian</string>
+    <string name="ed_fact_time_value">21 – 30 / 09 · Khai mạc 16:00, 21/09</string>
+    <string name="ed_fact_place_label">Địa điểm</string>
+    <string name="ed_fact_place_value">Sân Bái Đường — Văn Miếu · Quốc Tử Giám, Hà Nội</string>
+    <string name="ed_fact_ticket_label">Vào cửa</string>
+    <string name="ed_fact_ticket_value">Miễn phí · Mở cửa tự do cho tất cả mọi người</string>
+    <string name="ed_fact_scale_label">Quy mô</string>
+    <string name="ed_fact_scale_value">40 tác giả · 39 tác phẩm cổ động đương đại</string>
+
+    <string name="ed_about_title">Về triển lãm</string>
+    <string name="ed_about_body">“Dân Tộc Tự Hào” là triển lãm nghệ thuật cổ động do TiredCity tổ chức, quy tụ 40 hoạ sĩ Việt cùng 39 tác phẩm được sáng tác riêng cho mùa Quốc khánh. Mỗi bức tranh là một lát cắt đời thường — gánh hàng rong sớm mai, lá cờ đỏ trên tay bà, giờ tan trường rộn rã — được kể lại bằng ngôn ngữ thị giác trẻ trung và rực rỡ.</string>
+
+    <string name="ed_cap_display">39 tác phẩm cổ động trải dọc Sân Bái Đường, giữa nền ngói đỏ trăm năm của Văn Miếu.</string>
+
+    <string name="ed_story_title">Câu chuyện tự hào</string>
+    <string name="ed_story_body">Diễn ra ngay trong khuôn viên Văn Miếu – Quốc Tử Giám, không gian trưng bày trải dài giữa những dây cờ hoa và mái ngói rêu phong. Người xem không chỉ ngắm tranh, mà còn được chạm vào niềm tự hào: viết lời nhắn lên Bức tường Tự hào, gấp quạt cờ đỏ sao vàng và lưu giữ khoảnh khắc của riêng mình.</string>
+
+    <string name="ed_cap_view">Từng khung tranh là một câu chuyện — dừng lại, ngắm nhìn và lắng nghe thanh âm đất Việt.</string>
+
+    <string name="ed_exp_title">Trải nghiệm tại triển lãm</string>
+    <string name="ed_exp_intro">Bốn góc tương tác để bạn không chỉ xem, mà còn được sống trong không khí tự hào.</string>
+    <string name="ed_exp1_title">Workshop thủ công</string>
+    <string name="ed_exp1_desc">Tự tay vẽ sao vàng, gấp quạt &amp; nón cờ Tổ quốc.</string>
+    <string name="ed_exp2_title">Bức tường Tự hào</string>
+    <string name="ed_exp2_desc">Viết lời nhắn của bạn lên ngôi sao check-in.</string>
+    <string name="ed_exp3_title">Khung ảnh Viral Threads</string>
+    <string name="ed_exp3_desc">Biến khoảnh khắc thành “bài đăng triệu like”.</string>
+    <string name="ed_exp4_title">Photobooth Everyone</string>
+    <string name="ed_exp4_desc">Bắt trọn nụ cười “You · Now” cùng lá cờ đỏ.</string>
+
+    <string name="ed_cap_visitors">Những nụ cười và tấm thiệp lưu niệm mang về từ ngày hội của lòng tự hào dân tộc.</string>
+
+    <string name="ed_poster_title">Poster chính thức</string>
+    <string name="ed_org_title">Đơn vị tổ chức</string>
+    <string name="ed_org_body">Tổ chức bởi TIRED CITY. Bảo trợ truyền thông: Vietnam Local Artist Group · rgb.vn · Cổ Động · Chuyện Của Hà Nội.</string>
+
+    <string name="ed_cta_register">Đăng ký tham gia</string>
+    <string name="ed_cta_direction">Chỉ đường tới Văn Miếu</string>
+    <string name="ed_register_toast">Đã ghi nhận! Hẹn gặp bạn tại Văn Miếu ✦</string>
 </resources>

@@ -13,7 +13,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
-        android:background="@color/bg_surface">
+        android:background="@color/card_white">
 
         <TextView
             android:layout_width="0dp"
@@ -31,7 +31,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/bg_surface"
+        android:background="@color/card_white"
         app:tabTextColor="@color/text_secondary"
         app:tabSelectedTextColor="@color/tc_red"
         app:tabIndicatorColor="@color/tc_red">
@@ -47,10 +47,9 @@
             android:text="@string/explore_tab_events" />
     </com.google.android.material.tabs.TabLayout>
 
-    <!-- Nội dung tab "Giới thiệu / About" — nhúng trực tiếp AboutFragment -->
+    <!-- Khung nội dung — hoán đổi giữa AboutFragment (Giới thiệu) và StoreFragment (Cửa hàng) -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/about_container"
-        android:name="com.tiredcity.app.ui.main.AboutFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Bộ lọc loại voucher trong bottom sheet chọn mã giảm giá -->
+    <string-array name="voucher_type_filters">
+        <item>Tất cả</item>
+        <item>Giảm theo %</item>
+        <item>Giảm số tiền</item>
+        <item>Miễn phí vận chuyển</item>
+    </string-array>
+
     <!-- 63 tỉnh/thành Việt Nam (dùng cho dropdown địa chỉ giao hàng) -->
     <string-array name="vn_provinces">
         <item>TP. Hồ Chí Minh</item>

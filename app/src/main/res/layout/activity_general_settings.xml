@@ -51,6 +51,9 @@
             android:background="@color/bg_surface"
             android:orientation="vertical">
 
+            <include layout="@layout/item_settings_switch_row"
+                android:id="@+id/row_dark_mode" />
+            <View style="@style/SettingsRowDivider" />
             <include layout="@layout/item_settings_nav_row"
                 android:id="@+id/row_security" />
             <View style="@style/SettingsRowDivider" />

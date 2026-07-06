@@ -5,6 +5,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.ActivityContactBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 
@@ -17,6 +20,11 @@ public class ContactActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Header trắng — status bar cũng trắng + icon tối cho đồng bộ (thay header đỏ cũ)
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.card_white));
+        new WindowInsetsControllerCompat(getWindow(), binding.getRoot())
+                .setAppearanceLightStatusBars(true);
 
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {

@@ -122,11 +122,11 @@
     <string name="home_events_cta">VIEW EVENTS ✦</string>
     <string name="home_section_news">News</string>
     <string name="home_news_eyebrow">NEWS &amp; INSPIRATION</string>
-    <string name="home_news_title">Vietnamese fashion stories</string>
+    <string name="home_news_title">Culture book “Sắc Phục Việt” officially published</string>
     <string name="home_news_cta">READ MORE ✦</string>
 
     <!-- Home — brand media blocks (Behance videos/gifs) -->
-    <string name="home_hero_eyebrow">VIỆT PHỤC × VIETNAMESE IDENTITY</string>
+    <string name="home_hero_eyebrow">VIỆT PHỤC × TIREDCITY</string>
     <string name="home_hero_caption">Touching the Vietnamese soul, one fold of fabric at a time.</string>
     <string name="home_craft_eyebrow">VIỆT PHỤC GIFT WRAP</string>
     <string name="home_craft_title">Included with every product</string>
@@ -564,6 +564,7 @@
     <string name="label_notification_settings">Notification Settings</string>
     <string name="label_sales_policy">Sales Policy</string>
     <string name="label_general_settings">General Settings</string>
+    <string name="settings_general_dark_mode_title">Dark mode</string>
     <string name="label_terms_conditions">Terms &amp; Conditions</string>
     <!-- Quick actions -->
     <string name="label_styling_ai">AI Styling</string>

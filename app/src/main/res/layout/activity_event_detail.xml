@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trang chi tiết sự kiện "DÂN TỘC TỰ HÀO" — mở khi chạm ảnh Sự kiện ở Trang chủ.
+     Bố cục tạp chí: dải ảnh full-bleed xen kẽ khối chữ trên nền kem/trắng/đỏ,
+     lấy cảm hứng từ trang Giới thiệu (fragment_about). Ảnh nạp qua Glide (xem
+     EventDetailActivity) để không giải mã 9 ảnh full-size cùng lúc. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tc_cream">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/tc_space_2xl">
+
+            <!-- ═══ HERO — ảnh nhóm khai mạc + lớp phủ chữ ═══ -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="360dp">
+
+                <ImageView
+                    android:id="@+id/iv_hero"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@color/tc_red"
+                    android:contentDescription="@string/ed_hero_title" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/tc_gradient_bottom_scrim" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/tc_space_xl"
+                    android:paddingBottom="@dimen/tc_space_xl">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ed_hero_eyebrow"
+                        android:textColor="@color/tc_gold_bright"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.14" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/tc_space_xs"
+                        android:text="@string/ed_hero_title"
+                        android:textColor="@color/tc_on_red"
+                        android:textSize="34sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="0.02"
+                        android:shadowColor="#80000000"
+                        android:shadowDx="0"
+                        android:shadowDy="2"
+                        android:shadowRadius="6" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/tc_space_micro"
+                        android:text="@string/ed_hero_subtitle"
+                        android:textColor="@color/tc_on_red_secondary"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+
+                <!-- Nút quay lại nổi trên ảnh -->
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="top|start"
+                    android:layout_marginStart="@dimen/tc_space_md"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    android:background="@drawable/tc_bg_circle_scrim"
+                    android:src="@drawable/ic_back"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    app:tint="@color/tc_on_red"
+                    android:contentDescription="@string/cd_back" />
+            </FrameLayout>
+
+            <!-- ═══ THẺ THÔNG TIN NHANH ═══ -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/tc_space_xl"
+                android:layout_marginTop="@dimen/tc_space_xl"
+                app:cardCornerRadius="@dimen/tc_radius_lg"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@color/card_white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/tc_space_xl">
+
+                    <!-- Thời gian -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginEnd="@dimen/tc_space_md"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/tc_red"
+                            android:contentDescription="@string/ed_fact_time_label" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_fact_time_label"
+                                android:textColor="@color/tc_text_tertiary"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.06"
+                                android:textAllCaps="true" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="@string/ed_fact_time_value"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/tc_space_md"
+                        android:background="@color/tc_divider" />
+
+                    <!-- Địa điểm -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginEnd="@dimen/tc_space_md"
+                            android:src="@drawable/ic_pin"
+                            app:tint="@color/tc_red"
+                            android:contentDescription="@string/ed_fact_place_label" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_fact_place_label"
+                                android:textColor="@color/tc_text_tertiary"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.06"
+                                android:textAllCaps="true" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="@string/ed_fact_place_value"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/tc_space_md"
+                        android:background="@color/tc_divider" />
+
+                    <!-- Vào cửa -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginEnd="@dimen/tc_space_md"
+                            android:src="@drawable/ic_ticket"
+                            app:tint="@color/tc_red"
+                            android:contentDescription="@string/ed_fact_ticket_label" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_fact_ticket_label"
+                                android:textColor="@color/tc_text_tertiary"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.06"
+                                android:textAllCaps="true" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="@string/ed_fact_ticket_value"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/tc_space_md"
+                        android:background="@color/tc_divider" />
+
+                    <!-- Quy mô -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginEnd="@dimen/tc_space_md"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/tc_red"
+                            android:contentDescription="@string/ed_fact_scale_label" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_fact_scale_label"
+                                android:textColor="@color/tc_text_tertiary"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.06"
+                                android:textAllCaps="true" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="@string/ed_fact_scale_value"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ═══ VỀ TRIỂN LÃM ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_2xl"
+                android:paddingBottom="@dimen/tc_space_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_about_title"
+                    android:textColor="@color/tc_red"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_sm" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_about_body"
+                    android:textColor="@color/tc_text_secondary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="5dp" />
+            </LinearLayout>
+
+            <!-- Ảnh: không gian trưng bày -->
+            <ImageView
+                android:id="@+id/iv_display"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_marginTop="@dimen/tc_space_sm"
+                android:scaleType="centerCrop"
+                android:background="@color/bg_subtle"
+                android:contentDescription="@string/ed_cap_display" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ed_cap_display"
+                android:textColor="@color/tc_text_tertiary"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_sm"
+                android:paddingBottom="@dimen/tc_space_2xl"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- ═══ CÂU CHUYỆN TỰ HÀO — nền trắng ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/card_white"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingVertical="@dimen/tc_space_2xl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_story_title"
+                    android:textColor="@color/tc_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_sm" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_story_body"
+                    android:textColor="@color/tc_text_secondary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="5dp"
+                    android:layout_marginBottom="@dimen/tc_space_xl" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/bg_subtle"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
+                    android:contentDescription="@string/ed_cap_view" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_cap_view"
+                    android:textColor="@color/tc_text_tertiary"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:paddingTop="@dimen/tc_space_sm"
+                    android:lineSpacingExtra="2dp" />
+            </LinearLayout>
+
+            <!-- ═══ TRẢI NGHIỆM — nền đỏ, lưới 2×2 ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/tc_red"
+                android:paddingHorizontal="@dimen/tc_space_lg"
+                android:paddingVertical="@dimen/tc_space_3xl">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_exp_title"
+                    android:textColor="@color/tc_on_red"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_xs"
+                    android:layout_marginBottom="@dimen/tc_space_xl"
+                    android:text="@string/ed_exp_intro"
+                    android:textColor="@color/tc_on_red_secondary"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:paddingHorizontal="@dimen/tc_space_md"
+                    android:lineSpacingExtra="2dp" />
+
+                <!-- Hàng 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/tc_space_xs"
+                        app:cardCornerRadius="@dimen/tc_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv_exp1"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:scaleType="centerCrop"
+                                android:background="@color/bg_subtle"
+                                android:contentDescription="@string/ed_exp1_title" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp1_title"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="@dimen/tc_space_md" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp1_desc"
+                                android:textColor="@color/tc_text_secondary"
+                                android:textSize="11sp"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="@dimen/tc_space_md"
+                                android:lineSpacingExtra="1dp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/tc_space_xs"
+                        app:cardCornerRadius="@dimen/tc_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv_exp2"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:scaleType="centerCrop"
+                                android:background="@color/bg_subtle"
+                                android:contentDescription="@string/ed_exp2_title" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp2_title"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="@dimen/tc_space_md" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp2_desc"
+                                android:textColor="@color/tc_text_secondary"
+                                android:textSize="11sp"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="@dimen/tc_space_md"
+                                android:lineSpacingExtra="1dp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Hàng 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/tc_space_xs"
+                        app:cardCornerRadius="@dimen/tc_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv_exp3"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:scaleType="centerCrop"
+                                android:background="@color/bg_subtle"
+                                android:contentDescription="@string/ed_exp3_title" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp3_title"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="@dimen/tc_space_md" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp3_desc"
+                                android:textColor="@color/tc_text_secondary"
+                                android:textSize="11sp"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="@dimen/tc_space_md"
+                                android:lineSpacingExtra="1dp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/tc_space_xs"
+                        app:cardCornerRadius="@dimen/tc_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv_exp4"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:scaleType="centerCrop"
+                                android:background="@color/bg_subtle"
+                                android:contentDescription="@string/ed_exp4_title" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp4_title"
+                                android:textColor="@color/tc_text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="@dimen/tc_space_md" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ed_exp4_desc"
+                                android:textColor="@color/tc_text_secondary"
+                                android:textSize="11sp"
+                                android:paddingHorizontal="@dimen/tc_space_md"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="@dimen/tc_space_md"
+                                android:lineSpacingExtra="1dp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Ảnh: khách tham quan -->
+            <ImageView
+                android:id="@+id/iv_visitors"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:scaleType="centerCrop"
+                android:background="@color/bg_subtle"
+                android:contentDescription="@string/ed_cap_visitors" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ed_cap_visitors"
+                android:textColor="@color/tc_text_tertiary"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_sm"
+                android:paddingBottom="@dimen/tc_space_2xl"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- ═══ POSTER CHÍNH THỨC + ĐƠN VỊ TỔ CHỨC ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/tc_space_xl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_poster_title"
+                    android:textColor="@color/tc_red"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_md" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="@dimen/tc_radius_lg"
+                    app:cardElevation="3dp">
+
+                    <ImageView
+                        android:id="@+id/iv_poster"
+                        android:layout_width="match_parent"
+                        android:layout_height="440dp"
+                        android:scaleType="centerCrop"
+                        android:background="@color/tc_red"
+                        android:contentDescription="@string/ed_poster_title" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_2xl"
+                    android:text="@string/ed_org_title"
+                    android:textColor="@color/tc_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_xs" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ed_org_body"
+                    android:textColor="@color/tc_text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="4dp" />
+
+                <!-- ═══ CTA ═══ -->
+                <Button
+                    android:id="@+id/btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="@dimen/tc_space_2xl"
+                    android:background="@drawable/tc_btn_red_pill"
+                    android:text="@string/ed_cta_register"
+                    android:textColor="@color/tc_on_red"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.06"
+                    android:fontFamily="sans-serif-medium"
+                    android:elevation="2dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_direction"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    android:text="@string/ed_cta_direction"
+                    android:textColor="@color/tc_red"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:strokeColor="@color/tc_red"
+                    app:icon="@drawable/ic_pin"
+                    app:iconTint="@color/tc_red"
+                    app:iconGravity="textStart" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

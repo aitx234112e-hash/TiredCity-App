@@ -23,6 +23,7 @@
     <color name="bg_primary">#F5EDE3</color>     <!-- Kem editorial -->
     <color name="bg_surface">#F5EDE3</color>     <!-- Card surface (kem, đồng bộ với bg_primary) -->
     <color name="bg_subtle">#EDE2D0</color>      <!-- Linen nhạt -->
+    <color name="card_white">#FFFFFF</color> <!-- Nền thẻ trắng bản cũ (trước pull) - dùng cho các màn muốn giữ màu cũ -->
 
     <!-- ─── Text ────────────────────────────────────────────────────── -->
     <color name="text_primary">#1A1208</color>
@@ -175,6 +176,10 @@
 
     <!-- ─── Thanh toán — dải xám ngăn cách các mục full-width (Shopee style) ─ -->
     <color name="tc_section_gap">#ECECEC</color>
+
+    <!-- Ghi chú điều kiện voucher (cam) + nền thẻ voucher chưa chọn -->
+    <color name="tc_voucher_note">#E8743B</color>
+    <color name="tc_voucher_card_bg">#F5F5F5</color>
 
     <!-- ─── Vận chuyển — freeship xanh ngọc (Shopee style) ──────────── -->
     <color name="tc_ship_green">#26AA99</color>       <!-- xanh ngọc Shopee: viền + "Miễn Phí" + pill -->
