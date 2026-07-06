@@ -174,9 +174,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- ── Carousel ảnh trang phục THẬT của danh mục đang chọn (Horizontal Scroll Section,
-                 hiệu ứng "Card Fan" — mỗi thẻ xoay dần theo khoảng cách tới tâm như bài xoè quạt)
-                 — nền đen liền mạch với khối tab phía trên, kết thúc ở dòng gợi ý vuốt. ── -->
+            <!-- ── Banner ảnh trang phục THẬT của danh mục đang chọn (Horizontal Scroll Section)
+                 — ảnh full-bleed cuộn ngang như 1 banner quảng cáo, không viền/thẻ nổi — nền đen
+                 liền mạch với khối tab phía trên, kết thúc ở dòng gợi ý vuốt. ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -187,10 +187,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/vp_category_carousel"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="4dp"
-                    android:clipToPadding="false"
-                    android:clipChildren="false" />
+                    android:layout_height="220dp" />
 
                 <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
                     android:id="@+id/dots_category_carousel"

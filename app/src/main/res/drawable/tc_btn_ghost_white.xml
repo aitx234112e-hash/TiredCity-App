@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nút viền trắng trong suốt + ripple trắng nhạt — dùng trên nền tối (thẻ đánh giá). -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/tc_on_dark_divider">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="@dimen/tc_stroke_w_thick" android:color="@android:color/white" />
+            <corners android:radius="@dimen/tc_radius_xl" />
+        </shape>
+    </item>
+</ripple>

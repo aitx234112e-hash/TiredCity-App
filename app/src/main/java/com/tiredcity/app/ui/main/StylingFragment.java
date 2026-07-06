@@ -60,19 +60,21 @@ public class StylingFragment extends Fragment {
     };
 
     // Ảnh trang phục THẬT cho carousel, 5 ảnh/danh mục, theo đúng thứ tự TAB_CATEGORY_IDS.
+    // Ảnh "dm_*" lấy từ bộ ảnh D:\DANH MỤC (ưu tiên đứng trước); những danh mục chưa đủ 5 ảnh
+    // được bù thêm bằng ảnh carousel cũ (carousel_*) của chính danh mục đó.
     private static final int[][] CAROUSEL_IMAGES = {
-            {R.drawable.carousel_aodai_1, R.drawable.carousel_aodai_2, R.drawable.carousel_aodai_3,
-                    R.drawable.carousel_aodai_4, R.drawable.carousel_aodai_5},
-            {R.drawable.carousel_nhatbinh_1, R.drawable.carousel_nhatbinh_2, R.drawable.carousel_nhatbinh_3,
-                    R.drawable.carousel_nhatbinh_4, R.drawable.carousel_nhatbinh_5},
-            {R.drawable.carousel_aotac_1, R.drawable.carousel_aotac_2, R.drawable.carousel_aotac_3,
-                    R.drawable.carousel_aotac_4, R.drawable.carousel_aotac_5},
-            {R.drawable.carousel_giaolinh_1, R.drawable.carousel_giaolinh_2, R.drawable.carousel_giaolinh_3,
+            {R.drawable.dm_aodai_1, R.drawable.dm_aodai_2, R.drawable.dm_aodai_3,
+                    R.drawable.dm_aodai_4, R.drawable.carousel_aodai_5},
+            {R.drawable.dm_nhatbinh_1, R.drawable.dm_nhatbinh_2, R.drawable.dm_nhatbinh_3,
+                    R.drawable.dm_nhatbinh_4, R.drawable.dm_nhatbinh_5},
+            {R.drawable.dm_aotac_1, R.drawable.dm_aotac_2, R.drawable.dm_aotac_3,
+                    R.drawable.dm_aotac_4, R.drawable.carousel_aotac_5},
+            {R.drawable.dm_giaolinh_1, R.drawable.dm_giaolinh_2, R.drawable.dm_giaolinh_3,
                     R.drawable.carousel_giaolinh_4, R.drawable.carousel_giaolinh_5},
-            {R.drawable.carousel_yemdao_1, R.drawable.carousel_yemdao_2, R.drawable.carousel_yemdao_3,
-                    R.drawable.carousel_yemdao_4, R.drawable.carousel_yemdao_5},
-            {R.drawable.carousel_phukien_1, R.drawable.carousel_phukien_2, R.drawable.carousel_phukien_3,
-                    R.drawable.carousel_phukien_4, R.drawable.carousel_phukien_5},
+            {R.drawable.dm_yemdao_1, R.drawable.dm_yemdao_2, R.drawable.dm_yemdao_3,
+                    R.drawable.dm_yemdao_4, R.drawable.carousel_yemdao_5},
+            {R.drawable.dm_phukien_1, R.drawable.dm_phukien_2, R.drawable.dm_phukien_3,
+                    R.drawable.dm_phukien_4, R.drawable.carousel_phukien_5},
     };
 
     @Nullable
@@ -153,20 +155,15 @@ public class StylingFragment extends Fragment {
         binding.rvCategories.setItemAnimator(null);
     }
 
-    // ── Carousel ảnh trang phục (Horizontal Scroll Section — hiệu ứng "Card Fan") ──────
+    // ── Carousel ảnh trang phục (Horizontal Scroll Section — banner ngang full-bleed) ──────
 
-    /** 3 thẻ hiện cùng lúc (padding ngang để 2 thẻ bên lộ ra), mỗi thẻ tự xoay theo khoảng cách
-     *  tới tâm — như 1 bài xoè quạt (Card Fan Animation). */
+    /** Mỗi trang là 1 ảnh full màn hình, không viền/bo góc, cuộn ngang như 1 banner quảng cáo. */
     private void setupCarousel() {
         carouselAdapter = new StylingCarouselAdapter(imagesForTab(0));
 
         ViewPager2 pager = binding.vpCategoryCarousel;
         pager.setAdapter(carouselAdapter);
         pager.setOffscreenPageLimit(3);
-        pager.setPageTransformer(new CardFanPageTransformer());
-
-        int peekPx = (int) (56 * getResources().getDisplayMetrics().density);
-        pager.setPadding(peekPx, 0, peekPx, 0);
 
         binding.dotsCategoryCarousel.attachTo(pager);
     }
@@ -181,31 +178,6 @@ public class StylingFragment extends Fragment {
         List<Integer> list = new ArrayList<>(images.length);
         for (int image : images) list.add(image);
         return list;
-    }
-
-    /** Xoay mỗi thẻ quanh 1 điểm tựa NGAY DƯỚI đáy thẻ (thay vì xoay quanh tâm) — thẻ càng lệch
-     *  xa tâm càng nghiêng nhiều, tạo cảm giác cả dải thẻ xoè ra như 1 bài quạt bài (Card Fan),
-     *  cộng thu nhỏ + mờ nhẹ để thẻ đang ở giữa vẫn nổi bật nhất. */
-    private static class CardFanPageTransformer implements ViewPager2.PageTransformer {
-        private static final float MAX_ROTATION_DEGREES = 20f;
-        private static final float MIN_SCALE = 0.86f;
-        private static final float MIN_ALPHA = 0.7f;
-        private static final float PIVOT_Y_FACTOR = 1.15f;
-
-        @Override
-        public void transformPage(@NonNull View page, float position) {
-            float clamped = Math.max(-1f, Math.min(1f, position));
-            float distance = Math.abs(clamped);
-
-            page.setPivotX(page.getWidth() / 2f);
-            page.setPivotY(page.getHeight() * PIVOT_Y_FACTOR);
-            page.setRotation(clamped * MAX_ROTATION_DEGREES);
-
-            float scale = MIN_SCALE + (1f - MIN_SCALE) * (1f - distance);
-            page.setScaleX(scale);
-            page.setScaleY(scale);
-            page.setAlpha(MIN_ALPHA + (1f - MIN_ALPHA) * (1f - distance));
-        }
     }
 
     // ── Tab nhóm trang phục ────────────────────────────────────────────────────

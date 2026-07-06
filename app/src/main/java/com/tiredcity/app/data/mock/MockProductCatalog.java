@@ -283,30 +283,94 @@ public final class MockProductCatalog {
         return spec;
     }
 
-    /** Điền phần mô tả/câu chuyện/bảo quản/thông số còn thiếu bằng nội dung hợp lý theo danh mục. */
-    private static void applyGenericDetail(Context ctx, Product p) {
+    // Tên biến thể mô tả/câu chuyện theo danh mục — mỗi danh mục có 3 biến thể xoay vòng
+    // theo id sản phẩm để các sản phẩm liền kề không đọc giống hệt nhau.
+    private static final Map<String, int[]> DESC_TEMPLATES_BY_CATEGORY = new LinkedHashMap<>();
+    private static final Map<String, int[]> STORY_TEMPLATES_BY_CATEGORY = new LinkedHashMap<>();
+    static {
+        DESC_TEMPLATES_BY_CATEGORY.put("ÁO DÀI", new int[]{R.string.desc_tmpl_ao_dai_1, R.string.desc_tmpl_ao_dai_2, R.string.desc_tmpl_ao_dai_3});
+        DESC_TEMPLATES_BY_CATEGORY.put("NHẬT BÌNH", new int[]{R.string.desc_tmpl_nhat_binh_1, R.string.desc_tmpl_nhat_binh_2, R.string.desc_tmpl_nhat_binh_3});
+        DESC_TEMPLATES_BY_CATEGORY.put("ÁO TẤC", new int[]{R.string.desc_tmpl_ao_tac_1, R.string.desc_tmpl_ao_tac_2, R.string.desc_tmpl_ao_tac_3});
+        DESC_TEMPLATES_BY_CATEGORY.put("GIAO LĨNH", new int[]{R.string.desc_tmpl_giao_linh_1, R.string.desc_tmpl_giao_linh_2, R.string.desc_tmpl_giao_linh_3});
+        DESC_TEMPLATES_BY_CATEGORY.put("YẾM ĐÀO", new int[]{R.string.desc_tmpl_yem_dao_1, R.string.desc_tmpl_yem_dao_2, R.string.desc_tmpl_yem_dao_3});
+        DESC_TEMPLATES_BY_CATEGORY.put("PHỤ KIỆN", new int[]{R.string.desc_tmpl_phu_kien_1, R.string.desc_tmpl_phu_kien_2, R.string.desc_tmpl_phu_kien_3});
+
+        STORY_TEMPLATES_BY_CATEGORY.put("ÁO DÀI", new int[]{R.string.story_tmpl_ao_dai_1, R.string.story_tmpl_ao_dai_2, R.string.story_tmpl_ao_dai_3});
+        STORY_TEMPLATES_BY_CATEGORY.put("NHẬT BÌNH", new int[]{R.string.story_tmpl_nhat_binh_1, R.string.story_tmpl_nhat_binh_2, R.string.story_tmpl_nhat_binh_3});
+        STORY_TEMPLATES_BY_CATEGORY.put("ÁO TẤC", new int[]{R.string.story_tmpl_ao_tac_1, R.string.story_tmpl_ao_tac_2, R.string.story_tmpl_ao_tac_3});
+        STORY_TEMPLATES_BY_CATEGORY.put("GIAO LĨNH", new int[]{R.string.story_tmpl_giao_linh_1, R.string.story_tmpl_giao_linh_2, R.string.story_tmpl_giao_linh_3});
+        STORY_TEMPLATES_BY_CATEGORY.put("YẾM ĐÀO", new int[]{R.string.story_tmpl_yem_dao_1, R.string.story_tmpl_yem_dao_2, R.string.story_tmpl_yem_dao_3});
+        STORY_TEMPLATES_BY_CATEGORY.put("PHỤ KIỆN", new int[]{R.string.story_tmpl_phu_kien_1, R.string.story_tmpl_phu_kien_2, R.string.story_tmpl_phu_kien_3});
+    }
+
+    // Phụ kiện dạng vải (khăn/vấn) cần bảo quản như hàng dệt; phụ kiện cứng (mũ/quạt/ô) cần
+    // tránh ẩm và lau khô thay vì giặt.
+    private static final List<String> FABRIC_ACCESSORY_TYPES = Arrays.asList("Khăn đội đầu");
+
+    // Mô tả rập khuôn do admin để mặc định khi tạo sản phẩm trên Firestore (chưa kịp viết nội
+    // dung riêng) — xem như "còn thiếu" để sinh nội dung thay vì hiển thị nguyên câu này.
+    private static final String GENERIC_PLACEHOLDER_DESC = "Sản phẩm Việt Phục TiredCity cao cấp.";
+
+    private static boolean isSparse(String s) {
+        return s == null || s.trim().isEmpty() || s.trim().equalsIgnoreCase(GENERIC_PLACEHOLDER_DESC);
+    }
+
+    /** Điền phần mô tả/câu chuyện/bảo quản/thông số còn thiếu (hoặc còn sơ sài — ví dụ mô tả
+     *  mặc định do admin chưa kịp viết) bằng nội dung hợp lý theo danh mục — mỗi sản phẩm nhận
+     *  1 trong 3 biến thể xoay vòng (chèn tên + màu/loại + chất liệu riêng) thay vì lặp lại đúng
+     *  1 câu mẫu cho mọi sản phẩm. Gọi cho MỌI sản phẩm bất kể nguồn dữ liệu (mẫu offline, REST
+     *  hay Firestore) để mục 01/02/03 ở Chi tiết sản phẩm không bao giờ trống hay quá sơ sài. */
+    public static void applyGenericDetail(Context ctx, Product p) {
         if (p.getOrigin() == null) p.setOrigin(ctx.getString(R.string.default_origin));
 
-        if (p.getDescription() == null) {
-            p.setDescription(ctx.getString(R.string.desc_template_default,
-                    p.getName(), p.getMaterial().toLowerCase(Locale.getDefault())));
+        String category = p.getCategory();
+        int variant = Math.abs((p.getId() != null ? p.getId() : p.getName()).hashCode()) % 3;
+        String colorOrType = (p.getColors() != null && !p.getColors().isEmpty())
+                ? String.join(", ", p.getColors()) : ctx.getString(R.string.spec_color_various);
+        String materialLower = p.getMaterial() != null ? p.getMaterial().toLowerCase(Locale.getDefault()) : "";
+
+        if (isSparse(p.getDescription())) {
+            int[] templates = DESC_TEMPLATES_BY_CATEGORY.get(category);
+            if (templates != null) {
+                p.setDescription(ctx.getString(templates[variant], p.getName(), colorOrType, materialLower));
+            } else {
+                p.setDescription(ctx.getString(R.string.desc_template_default, p.getName(), materialLower));
+            }
         }
-        if (p.getStory() == null) {
-            p.setStory(ctx.getString(R.string.story_template_default));
+        if (isSparse(p.getStory())) {
+            int[] templates = STORY_TEMPLATES_BY_CATEGORY.get(category);
+            p.setStory(templates != null
+                    ? ctx.getString(templates[variant], p.getName())
+                    : ctx.getString(R.string.story_template_default));
         }
         if (p.getCareInstructions() == null) {
-            p.setCareInstructions(Arrays.asList(
-                    ctx.getString(R.string.care_hand_wash_cold_gentle),
-                    ctx.getString(R.string.care_no_bleach),
-                    ctx.getString(R.string.care_iron_low_cloth),
-                    ctx.getString(R.string.care_store_dry)));
+            boolean isFabricAccessory = p.getColors() != null && !Collections.disjoint(p.getColors(), FABRIC_ACCESSORY_TYPES);
+            if ("PHỤ KIỆN".equals(category) && !isFabricAccessory) {
+                // Mũ/quạt/ô: chất liệu cứng hoặc bán cứng, không giặt được — lau khô + tránh ẩm/nắng.
+                p.setCareInstructions(Arrays.asList(
+                        ctx.getString(R.string.care_wipe_soft_cloth),
+                        ctx.getString(R.string.care_avoid_moisture),
+                        ctx.getString(R.string.care_avoid_direct_sun),
+                        ctx.getString(R.string.care_store_box)));
+            } else if ("PHỤ KIỆN".equals(category)) {
+                // Khăn/vấn: vải mềm, giặt nhẹ được nhưng vẫn cần tránh nắng gắt khi phơi.
+                p.setCareInstructions(Arrays.asList(
+                        ctx.getString(R.string.care_hand_wash_cold_gentle),
+                        ctx.getString(R.string.care_no_bleach),
+                        ctx.getString(R.string.care_avoid_direct_sun),
+                        ctx.getString(R.string.care_store_box)));
+            } else {
+                p.setCareInstructions(Arrays.asList(
+                        ctx.getString(R.string.care_hand_wash_cold_gentle),
+                        ctx.getString(R.string.care_no_bleach),
+                        ctx.getString(R.string.care_iron_low_cloth),
+                        ctx.getString(R.string.care_store_dry)));
+            }
         }
         if (p.getSpecifications() == null || p.getSpecifications().isEmpty()) {
-            String color = (p.getColors() != null && !p.getColors().isEmpty())
-                    ? String.join(", ", p.getColors()) : ctx.getString(R.string.spec_color_various);
-            String style = "PHỤ KIỆN".equals(p.getCategory()) ? ctx.getString(R.string.spec_style_accessory)
-                    : (p.getCategory() != null ? p.getCategory() : ctx.getString(R.string.spec_style_traditional));
-            p.setSpecifications(specs(ctx, color, style, ctx.getString(R.string.spec_occasion_default), p.getOrigin()));
+            String style = "PHỤ KIỆN".equals(category) ? ctx.getString(R.string.spec_style_accessory)
+                    : (category != null ? category : ctx.getString(R.string.spec_style_traditional));
+            p.setSpecifications(specs(ctx, colorOrType, style, ctx.getString(R.string.spec_occasion_default), p.getOrigin()));
         }
     }
 }

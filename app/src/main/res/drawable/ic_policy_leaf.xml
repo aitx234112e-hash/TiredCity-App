@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide "leaf" — Chất liệu cao cấp, thoáng mát -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="@color/brand_red">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="@color/brand_red"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M11,20 A7,7 0 0 1 9.8,6.1 C15.5,5 17,4.48 19,2 c1,2 2,4.18 2,8 0,5.5 -4.78,10 -10,10 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="@color/brand_red"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M2,21 C2,18 3.85,15.64 7.08,15 C9.5,14.52 12,13 13,12" />
+</vector>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Một trang của carousel ảnh sản phẩm ở đầu trang Chi tiết sản phẩm — ảnh full-bleed, không
+     viền/bo góc, liền mạch với khối trắng bao quanh (không còn kiểu "thẻ nổi" Arc/Curved Carousel
+     cũ) để toàn bộ khối ảnh + mục thông tin bên dưới đọc như 1 khối duy nhất.
+     v_shine: dải sáng chéo quét ngang định kỳ qua ảnh, tạo hiệu ứng "tráng gương" bóng loáng. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="true">
+
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:src="@android:drawable/ic_menu_gallery"
+        android:contentDescription="@null" />
+
+    <View
+        android:id="@+id/v_shine"
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:rotation="22"
+        android:background="@drawable/tc_shine_gradient" />
+
+</FrameLayout>

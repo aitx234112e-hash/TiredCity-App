@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ sản phẩm "Có thể bạn cũng thích" — cùng khuôn với item_styling_category.xml (ảnh phủ
+     kín + lớp phủ tối dần + chữ trắng đáy), không viền/không thẻ nổi. -->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="@dimen/tc_radius_lg"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="false"
+    app:contentPadding="0dp"
+    app:rippleColor="@color/tc_on_dark_divider"
+    tools:cardBackgroundColor="@color/tc_swatch_xanh_la">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:clipChildren="true"
+        android:clipToPadding="true">
+
+        <ImageView
+            android:id="@+id/iv_product_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@color/bg_subtle"
+            android:contentDescription="@null"
+            tools:src="@android:drawable/ic_menu_gallery" />
+
+        <!-- Lớp phủ tối dần về đáy để chữ trắng luôn nổi rõ trên mọi ảnh nền -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tc_category_card_scrim" />
+
+        <!-- Tên + giá, góc dưới-trái -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:paddingEnd="36dp">
+
+            <TextView
+                android:id="@+id/tv_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tools:text="Khói Trắng Kết Duyên" />
+
+            <TextView
+                android:id="@+id/tv_product_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/tc_gold"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                tools:text="2.890.000 đ" />
+        </LinearLayout>
+
+        <!-- Mũi tên gợi ý "có thể chạm", góc dưới-phải -->
+        <FrameLayout
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="10dp"
+            android:background="@drawable/tc_bg_circle_white">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="@color/tc_red"
+                android:contentDescription="@null" />
+        </FrameLayout>
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Viên thuốc trắng đặc — khung gợi ý vuốt ngang ở carousel ảnh sản phẩm (nền đen phía sau). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/white" />
+    <corners android:radius="@dimen/tc_radius_pill" />
+</shape>
