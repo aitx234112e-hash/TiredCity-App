@@ -1,0 +1,54 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  TiredCity — Firestore Security Rules
+//
+//  BỐI CẢNH: App khách đăng nhập OFFLINE (không dùng Firebase Auth) nên khi ghi
+//  đơn hàng, request.auth == null. Với rule mặc định "khoá hết", thao tác này bị
+//  chặn → lỗi "PERMISSION_DENIED: Missing or insufficient permissions".
+//
+//  Bộ rule dưới đây cho phép app khách TẠO đơn (create) mà không cần đăng nhập,
+//  nhưng vẫn khoá đọc/sửa/xoá đơn và mọi dữ liệu nhạy cảm cho admin đã đăng nhập.
+//
+//  ⚠️ "allow create: if true" nghĩa là bất kỳ ai cũng tạo được document đơn hàng.
+//     Chấp nhận được cho demo. Muốn siết chặt → xem mục "Phương án bảo mật hơn"
+//     trong hướng dẫn (bật Anonymous Auth và đổi thành: if request.auth != null).
+// ─────────────────────────────────────────────────────────────────────────────
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Sản phẩm: ai cũng đọc, chỉ admin (đã đăng nhập) mới ghi
+    match /products/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Cấu hình vận chuyển: app khách cần đọc để hiện gói ship
+    match /shipping_settings/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /shipping_configs/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Đơn hàng: app khách TẠO đơn (không cần auth, có kiểm tra field tối thiểu);
+    // đọc/sửa/xoá dành cho admin đã đăng nhập.
+    match /orders/{id} {
+      allow create: if request.resource.data.status == 'pending'
+                    && request.resource.data.totalPrice is number
+                    && request.resource.data.totalPrice >= 0;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Người dùng & nhật ký kiểm toán: chỉ admin
+    match /users/{id} {
+      allow read, write: if request.auth != null;
+    }
+    match /auditLogs/{id} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

@@ -560,25 +560,32 @@ public class PaymentActivity extends BaseActivity {
             actWard.setText(user.getWard(), false);
         }
 
-        new AlertDialog.Builder(this)
-                .setTitle(com.tiredcity.app.R.string.pay_edit_recipient_title)
+        // Header + nút Lưu/Hủy nằm trong layout → dựng dialog trần, nền trong suốt để lộ bo góc
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogBinding.getRoot())
-                .setPositiveButton(com.tiredcity.app.R.string.btn_save, (dialog, which) -> {
-                    UserProfile p = preferenceManager.getUser();
-                    if (p == null) p = new UserProfile();
-                    p.setName(dialogBinding.etRecipientName.getText().toString().trim());
-                    p.setPhone(dialogBinding.etRecipientPhone.getText().toString().trim());
-                    p.setProvince(actProvince.getText().toString().trim());
-                    p.setDistrict(actDistrict.getText().toString().trim());
-                    p.setWard(actWard.getText().toString().trim());
-                    p.setStreet(dialogBinding.etRecipientAddress.getText().toString().trim());
-                    p.setAddress(p.getFullAddress());
-                    preferenceManager.saveUser(p);
-                    bindRecipientCard();
-                    applyShippingForAddress();   // địa chỉ đổi → lọc lại gói (Hỏa Tốc theo Hà Nội)
-                })
-                .setNegativeButton(com.tiredcity.app.R.string.btn_cancel, null)
-                .show();
+                .create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dialogBinding.btnRecipientCancel.setOnClickListener(v -> dialog.dismiss());
+        dialogBinding.btnRecipientSave.setOnClickListener(v -> {
+            UserProfile p = preferenceManager.getUser();
+            if (p == null) p = new UserProfile();
+            p.setName(dialogBinding.etRecipientName.getText().toString().trim());
+            p.setPhone(dialogBinding.etRecipientPhone.getText().toString().trim());
+            p.setProvince(actProvince.getText().toString().trim());
+            p.setDistrict(actDistrict.getText().toString().trim());
+            p.setWard(actWard.getText().toString().trim());
+            p.setStreet(dialogBinding.etRecipientAddress.getText().toString().trim());
+            p.setAddress(p.getFullAddress());
+            preferenceManager.saveUser(p);
+            bindRecipientCard();
+            applyShippingForAddress();   // địa chỉ đổi → lọc lại gói (Hỏa Tốc theo Hà Nội)
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void setDropdown(AutoCompleteTextView view, List<String> items) {
@@ -657,6 +664,9 @@ public class PaymentActivity extends BaseActivity {
                     }
                     Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
                     intent.putExtra("order_id", ref.getId());
+                    intent.putExtra("order_total", total);
+                    intent.putExtra("order_payment", paymentMethod);
+                    intent.putExtra("order_item_count", items.size());
                     startActivity(intent);
                     finish();
                 })

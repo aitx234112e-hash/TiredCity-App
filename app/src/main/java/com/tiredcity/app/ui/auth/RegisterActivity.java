@@ -7,6 +7,11 @@ import android.widget.Toast;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import java.util.TimeZone;
 import com.tiredcity.app.data.model.ApiResponse;
 import com.tiredcity.app.data.model.User;
@@ -128,9 +133,44 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void attemptRegister(String email, String password, String fullName, String phone) {
-        // ⚠️ Backend tiredcity.vn KHÔNG có API auth → đăng ký offline cho bản demo giao diện.
-        // Tính Mệnh / Cung hoàng đạo / Con giáp NGAY tại máy từ ngày sinh, lưu cục bộ.
+        // Tạo tài khoản THẬT trên Firebase Authentication (lưu trên backend Firebase).
+        // Email đã tồn tại / mật khẩu yếu → nhảy vào addOnFailureListener và báo lỗi trên form.
+        binding.btnRegister.setEnabled(false);
+        FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(result -> {
+                    binding.btnRegister.setEnabled(true);
+                    saveLocalProfileAndProceed(email, fullName, phone);
+                })
+                .addOnFailureListener(e -> {
+                    binding.btnRegister.setEnabled(true);
+                    String msg = registerErrorMessage(e);
+                    binding.etEmail.setError(msg);
+                    binding.etEmail.requestFocus();
+                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                });
+    }
 
+    /** Diễn giải lỗi đăng ký Firebase thành thông báo tiếng Việt. */
+    private String registerErrorMessage(Exception e) {
+        if (e instanceof FirebaseAuthUserCollisionException) {
+            return getString(com.tiredcity.app.R.string.error_email_in_use);
+        }
+        if (e instanceof FirebaseAuthWeakPasswordException) {
+            return getString(com.tiredcity.app.R.string.error_weak_password);
+        }
+        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+            return getString(com.tiredcity.app.R.string.error_invalid_email);
+        }
+        if (e instanceof FirebaseNetworkException) {
+            return getString(com.tiredcity.app.R.string.error_network_auth);
+        }
+        return e.getLocalizedMessage() != null ? e.getLocalizedMessage()
+                : getString(com.tiredcity.app.R.string.error_login_failed);
+    }
+
+    /** Sau khi Firebase tạo tài khoản thành công: tính Mệnh, lưu hồ sơ cục bộ rồi vào app. */
+    private void saveLocalProfileAndProceed(String email, String fullName, String phone) {
         String menh   = MenhCalculator.tinhMenh(birthYear);
         String sign   = MenhCalculator.tinhCungHoangDao(birthMonth, birthDay);
         String animal = MenhCalculator.tinhConGiap(birthYear);

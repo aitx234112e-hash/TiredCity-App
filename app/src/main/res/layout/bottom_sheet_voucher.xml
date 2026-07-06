@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bottom sheet chọn mã giảm giá: lọc loại + nhập mã + danh sách mã khả dụng (chọn 1). -->
+<!-- Bottom sheet chọn mã giảm giá: lọc theo chip + nhập mã + danh sách thẻ vé (chọn 1). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/bg_surface">
+    android:background="@drawable/tc_bg_bottom_sheet">
+
+    <!-- Tay nắm -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_grabber" />
 
     <!-- Header -->
     <LinearLayout
@@ -15,7 +23,16 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="16dp">
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_ticket"
+            app:tint="@color/tc_red"
+            android:contentDescription="@string/pay_voucher_label" />
 
         <TextView
             android:layout_width="0dp"
@@ -28,54 +45,14 @@
 
         <ImageView
             android:id="@+id/btn_close"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="3dp"
             android:src="@drawable/ic_close"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@color/text_primary"
+            app:tint="@color/text_secondary"
             android:contentDescription="@string/btn_cancel" />
     </LinearLayout>
-
-    <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:background="@color/bg_subtle" />
-
-    <!-- Chọn loại Voucher -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="12dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/voucher_sheet_type_label"
-            android:textColor="@color/text_primary"
-            android:textSize="15sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_voucher_type"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            app:boxStrokeColor="@color/tc_input_stroke">
-
-            <AutoCompleteTextView
-                android:id="@+id/act_voucher_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:background="@color/bg_subtle" />
 
     <!-- Nhập mã thủ công -->
     <LinearLayout
@@ -84,7 +61,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="12dp">
+        android:paddingBottom="4dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_code"
@@ -93,6 +70,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/voucher_sheet_input_hint"
+            app:boxCornerRadiusTopStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:startIconDrawable="@drawable/ic_ticket"
+            app:startIconTint="@color/tc_gold"
             app:boxStrokeColor="@color/tc_input_stroke"
             app:hintTextColor="@color/tc_red">
 
@@ -105,38 +88,59 @@
                 android:textSize="15sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_apply_code"
             android:layout_width="wrap_content"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/tc_btn_red_pill"
+            android:backgroundTint="@color/tc_red"
             android:paddingHorizontal="20dp"
             android:text="@string/voucher_sheet_apply_code"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="14dp" />
     </LinearLayout>
+
+    <!-- Chip lọc loại -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:clipToPadding="false">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleLine="true"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:chipSpacingHorizontal="8dp" />
+    </HorizontalScrollView>
 
     <!-- Header "Mã khả dụng (N)" -->
     <TextView
         android:id="@+id/tv_available_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tc_section_gap"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="12dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="6dp"
         android:textColor="@color/text_primary"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        tools:text="Mã khả dụng (2)" />
+        tools:text="Mã khả dụng (4)" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_vouchers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"
-        android:paddingTop="14dp"
+        android:paddingTop="6dp"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="true" />
 
@@ -157,12 +161,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
 
         <Button
             android:id="@+id/btn_apply"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
             android:background="@drawable/tc_btn_red_pill"
             android:text="@string/voucher_sheet_apply"
             android:textColor="@color/white"

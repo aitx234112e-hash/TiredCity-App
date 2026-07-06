@@ -1,152 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Hộp thoại "Thông tin nhận hàng": header đỏ sơn mài + thân cuộn + thanh nút. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="480dp">
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_recipient">
 
-    <LinearLayout
+    <!-- ── Header đỏ ─────────────────────────────────────────────────────────── -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="8dp">
+        android:background="@drawable/bg_recipient_header"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp"
+        android:gravity="center"
+        android:text="@string/pay_recipient_header"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.05" />
 
-        <!-- Họ và tên -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_recipient_name"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="@string/pay_recipient_name_hint"
-            app:startIconDrawable="@drawable/ic_person"
-            app:startIconTint="@color/tc_red"
-            app:boxStrokeColor="@color/tc_input_stroke"
-            app:hintTextColor="@color/tc_red">
+    <!-- ── Thân cuộn ────────────────────────────────────────────────────────── -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="420dp"
+        android:scrollbars="none"
+        android:fillViewport="false">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_recipient_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Số điện thoại -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_recipient_phone"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="@string/pay_recipient_phone_hint"
-            app:startIconDrawable="@drawable/ic_phone"
-            app:startIconTint="@color/tc_red"
-            app:boxStrokeColor="@color/tc_input_stroke"
-            app:hintTextColor="@color/tc_red">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_recipient_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Tỉnh/Thành phố -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_province"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="@string/addr_province"
-            app:startIconDrawable="@drawable/ic_pin"
-            app:startIconTint="@color/tc_red"
-            app:boxStrokeColor="@color/tc_input_stroke"
-            app:hintTextColor="@color/tc_red">
-
-            <AutoCompleteTextView
-                android:id="@+id/act_province"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Quận/Huyện + Phường/Xã -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:baselineAligned="false"
-            android:layout_marginBottom="12dp">
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="4dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_district"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="0dp"
+            <!-- Nhãn: Người nhận -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:hint="@string/addr_district"
+                android:layout_marginBottom="10dp"
+                android:text="@string/pay_recipient_section_contact"
+                android:textColor="@color/tc_red"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06"
+                android:textAllCaps="true" />
+
+            <!-- Họ và tên -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_recipient_name"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="@string/pay_recipient_name_hint"
+                app:startIconDrawable="@drawable/ic_person"
+                app:startIconTint="@color/tc_red"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
                 app:boxStrokeColor="@color/tc_input_stroke"
                 app:hintTextColor="@color/tc_red">
 
-                <AutoCompleteTextView
-                    android:id="@+id/act_district"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_recipient_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapWords"
-                    android:completionThreshold="1"
+                    android:inputType="textPersonName"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Số điện thoại -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_ward"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="0dp"
+                android:id="@+id/til_recipient_phone"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                android:hint="@string/addr_ward"
+                android:layout_marginBottom="18dp"
+                android:hint="@string/pay_recipient_phone_hint"
+                app:startIconDrawable="@drawable/ic_phone"
+                app:startIconTint="@color/tc_red"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxStrokeColor="@color/tc_input_stroke"
+                app:hintTextColor="@color/tc_red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_recipient_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Nhãn: Địa chỉ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/pay_recipient_section_address"
+                android:textColor="@color/tc_red"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06"
+                android:textAllCaps="true" />
+
+            <!-- Tỉnh/Thành phố -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_province"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="@string/addr_province"
+                app:startIconDrawable="@drawable/ic_pin"
+                app:startIconTint="@color/tc_red"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
                 app:boxStrokeColor="@color/tc_input_stroke"
                 app:hintTextColor="@color/tc_red">
 
                 <AutoCompleteTextView
-                    android:id="@+id/act_ward"
+                    android:id="@+id/act_province"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapWords"
-                    android:completionThreshold="1"
+                    android:inputType="none"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Quận/Huyện + Phường/Xã -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_district"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:hint="@string/addr_district"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxStrokeColor="@color/tc_input_stroke"
+                    app:hintTextColor="@color/tc_red">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/act_district"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords"
+                        android:completionThreshold="1"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_ward"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:hint="@string/addr_ward"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxStrokeColor="@color/tc_input_stroke"
+                    app:hintTextColor="@color/tc_red">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/act_ward"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords"
+                        android:completionThreshold="1"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- Số nhà, tên đường -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_recipient_address"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/addr_street"
+                app:startIconDrawable="@drawable/ic_home"
+                app:startIconTint="@color/tc_red"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxStrokeColor="@color/tc_input_stroke"
+                app:hintTextColor="@color/tc_red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_recipient_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <!-- Số nhà, tên đường -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_recipient_address"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
+    <!-- ── Thanh nút ────────────────────────────────────────────────────────── -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/tc_input_stroke"
+        android:alpha="0.6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_recipient_cancel"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:hint="@string/addr_street"
-            app:boxStrokeColor="@color/tc_input_stroke"
-            app:hintTextColor="@color/tc_red">
+            android:text="@string/btn_cancel"
+            android:textColor="@color/text_secondary"
+            android:textStyle="bold"
+            app:rippleColor="@color/tc_input_stroke" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_recipient_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPostalAddress"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_recipient_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            android:text="@string/btn_save"
+            android:textStyle="bold"
+            android:backgroundTint="@color/tc_red"
+            android:textColor="@color/white"
+            app:cornerRadius="14dp"
+            app:icon="@drawable/ic_check_circle"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white"
+            app:iconSize="18dp" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

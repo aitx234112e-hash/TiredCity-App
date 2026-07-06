@@ -29,6 +29,11 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+
 import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.ApiResponse;
 import com.tiredcity.app.data.model.User;
@@ -345,13 +350,49 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void attemptLogin(String email, String password) {
-        // ⚠️ Backend tiredcity.vn KHÔNG có API auth → luôn đăng nhập offline cho MỌI tài khoản.
-        // Khi có backend thật, thay dòng dưới bằng: attemptOnlineLogin(email, password);
-        loginOffline(email);
+        // Tài khoản demo để test nhanh UI: đăng nhập ẩn danh Firebase (để ghi đơn được) rồi vào app.
+        if (DEMO_EMAIL.equals(email) && DEMO_PASSWORD.equals(password)) {
+            binding.btnLogin.setEnabled(false);
+            FirebaseAuth.getInstance().signInAnonymously()
+                    .addOnCompleteListener(this, t -> {
+                        binding.btnLogin.setEnabled(true);
+                        completeLogin(email);
+                    });
+            return;
+        }
+
+        // Đăng nhập THẬT qua Firebase Authentication (email/mật khẩu).
+        // Sai mật khẩu / chưa đăng ký → nhảy vào addOnFailureListener và báo lỗi ngay trên form.
+        binding.btnLogin.setEnabled(false);
+        FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(this, result -> {
+                    binding.btnLogin.setEnabled(true);
+                    completeLogin(email);
+                })
+                .addOnFailureListener(this, e -> {
+                    binding.btnLogin.setEnabled(true);
+                    // Chỉ báo lỗi ngay trên ô mật khẩu (dấu ❗), không bật Toast nổi.
+                    binding.etPassword.setError(authErrorMessage(e));
+                    binding.etPassword.requestFocus();
+                });
     }
 
-    /** Đăng nhập cục bộ, không cần mạng — dùng cho bản demo giao diện. */
-    private void loginOffline(String email) {
+    /** Diễn giải lỗi Firebase Auth thành thông báo tiếng Việt dễ hiểu. */
+    private String authErrorMessage(Exception e) {
+        if (e instanceof FirebaseAuthInvalidUserException
+                || e instanceof FirebaseAuthInvalidCredentialsException) {
+            return getString(R.string.error_login_failed);
+        }
+        if (e instanceof FirebaseNetworkException) {
+            return getString(R.string.error_network_auth);
+        }
+        return e.getLocalizedMessage() != null
+                ? e.getLocalizedMessage() : getString(R.string.error_login_failed);
+    }
+
+    /** Thiết lập hồ sơ cục bộ sau khi Firebase xác thực thành công rồi vào Onboarding. */
+    private void completeLogin(String email) {
         preferenceManager.saveToken(DEMO_TOKEN);
         preferenceManager.saveUserId(TextUtils.isEmpty(email) ? DEMO_USER_ID : email);
 

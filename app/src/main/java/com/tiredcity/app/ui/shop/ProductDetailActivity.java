@@ -677,7 +677,6 @@ public class ProductDetailActivity extends BaseActivity {
         if (currentProduct == null) return;
         CartItem item = new CartItem(currentProduct, quantity, selectedSize, selectedColor);
         cartLocalStore.addItem(item);
-        Toast.makeText(this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
     }
 
     private void openCart() {

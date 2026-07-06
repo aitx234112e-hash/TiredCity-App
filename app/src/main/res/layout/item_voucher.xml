@@ -1,31 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 1 thẻ voucher: icon vé + tiêu đề + điều kiện (cam) + ô tích chọn bên phải. -->
+<!-- 1 thẻ voucher kiểu vé: cuống màu theo loại (giá trị lớn) + thân (tiêu đề, điều kiện, mã) + nút chọn tròn. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/voucher_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="84dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:background="@drawable/bg_voucher_card"
-    android:padding="14dp"
     android:layout_marginBottom="12dp"
     android:clickable="true"
     android:focusable="true">
 
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_ticket"
-        android:tint="@color/tc_gold"
-        android:contentDescription="@string/pay_voucher_label" />
+    <!-- Cuống vé -->
+    <FrameLayout
+        android:id="@+id/voucher_stub"
+        android:layout_width="76dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_voucher_stub"
+        android:backgroundTint="@color/tc_red">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_voucher_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false"
+                tools:text="10%" />
+
+            <TextView
+                android:id="@+id/tv_voucher_value_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="#F2FFFFFF"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                tools:text="GIẢM" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Đường ngăn cách cuống vé -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="12dp"
+        android:background="@color/tc_input_stroke" />
+
+    <!-- Thân vé -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginHorizontal="12dp">
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="12dp">
 
         <TextView
             android:id="@+id/tv_voucher_title"
@@ -47,15 +87,31 @@
             android:ellipsize="end"
             android:textColor="@color/tc_voucher_note"
             android:textStyle="italic"
-            android:textSize="13sp"
+            android:textSize="12.5sp"
             tools:text="Áp dụng cho toàn bộ đơn hàng" />
+
+        <TextView
+            android:id="@+id/tv_voucher_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_voucher_code_chip"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textColor="@color/tc_gold_deep"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04"
+            tools:text="MÃ: SALE10" />
     </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/cb_voucher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:focusable="false"
-        android:buttonTint="@color/tc_red" />
+    <!-- Nút chọn -->
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:duplicateParentState="true"
+        android:src="@drawable/selector_voucher_check"
+        android:contentDescription="@string/voucher_sheet_apply" />
 </LinearLayout>

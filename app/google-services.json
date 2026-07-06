@@ -12,15 +12,41 @@
           "package_name": "com.tiredcity.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "683649996737-0ad06tjn70ll7tnbp7gpkukfd1d1lm7e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tiredcity.app",
+            "certificate_hash": "2e446c6eec1cab44368937254e29b079fba159fc"
+          }
+        },
+        {
+          "client_id": "683649996737-7vjlpsh6f3av9hnvnuhaaln6se2vbb2k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tiredcity.app",
+            "certificate_hash": "6976e432cc29d8a41d13ba7da59f057df5eda15e"
+          }
+        },
+        {
+          "client_id": "683649996737-70ls6idlls5laql9uiguo2hq80u11mgt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFKXern20RnlEdF_qbgp8n18q7KD2c4gc"
+          "current_key": "AIzaSyDgcGnd8hwcrKO5OmKDdOplDuRD_Wd_PQc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "683649996737-70ls6idlls5laql9uiguo2hq80u11mgt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

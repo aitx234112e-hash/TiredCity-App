@@ -1,17 +1,19 @@
 package com.tiredcity.app.ui.cart;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.VoucherAdapter;
 import com.tiredcity.app.databinding.BottomSheetVoucherBinding;
@@ -65,7 +67,7 @@ public class VoucherBottomSheet extends BottomSheetDialogFragment {
         binding.rvVouchers.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvVouchers.setAdapter(adapter);
 
-        setupTypeDropdown();
+        setupTypeChips();
         renderList();
 
         binding.btnClose.setOnClickListener(v -> dismiss());
@@ -84,15 +86,26 @@ public class VoucherBottomSheet extends BottomSheetDialogFragment {
         updateApplyLabel();
     }
 
-    private void setupTypeDropdown() {
+    private void setupTypeChips() {
         String[] labels = getResources().getStringArray(R.array.voucher_type_filters);
-        binding.actVoucherType.setAdapter(new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_list_item_1, labels));
-        binding.actVoucherType.setText(labels[0], false);
-        binding.actVoucherType.setOnItemClickListener((parent, v, pos, id) -> {
-            activeFilter = pos >= 0 && pos < TYPE_FILTERS.length ? TYPE_FILTERS[pos] : null;
-            renderList();
-        });
+        ColorStateList bg = ContextCompat.getColorStateList(requireContext(), R.color.voucher_chip_bg);
+        ColorStateList text = ContextCompat.getColorStateList(requireContext(), R.color.voucher_chip_text);
+        for (int i = 0; i < labels.length; i++) {
+            Chip chip = new Chip(requireContext());
+            chip.setText(labels[i]);
+            chip.setCheckable(true);
+            chip.setCheckedIconVisible(false);
+            chip.setChipBackgroundColor(bg);
+            chip.setTextColor(text);
+            chip.setChipStrokeWidth(0f);
+            final int idx = i;
+            chip.setOnClickListener(v -> {
+                activeFilter = idx < TYPE_FILTERS.length ? TYPE_FILTERS[idx] : null;
+                renderList();
+            });
+            binding.chipGroupType.addView(chip);
+            if (i == 0) chip.setChecked(true);
+        }
     }
 
     private void renderList() {

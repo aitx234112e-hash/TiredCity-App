@@ -188,10 +188,8 @@
     <string name="google_signin_not_configured">Google Sign-In chưa cấu hình Web Client ID — đang dùng chế độ demo.</string>
     <string name="brand_tagline">VIỆT PHỤC TRUYỀN THỐNG</string>
 
-    <!-- Web Client ID của OAuth (Google Cloud Console). THAY bằng client id thật để bật idToken.
-         Để nguyên giá trị mặc định này nghĩa là chưa cấu hình → app vẫn hiện hộp chọn tài khoản Google
-         nhưng KHÔNG lấy idToken (không gửi backend được). -->
-    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID.apps.googleusercontent.com</string>
+    <!-- default_web_client_id do plugin google-services TỰ SINH từ google-services.json
+         (web client_type 3). Không khai báo thủ công ở đây để tránh trùng resource. -->
     <string name="brand_name_caps">TIREDCITY</string>
 
     <!-- Register screen -->
@@ -202,6 +200,10 @@
     <string name="register_agree_terms">Tôi đồng ý với Điều khoản &amp; Điều kiện</string>
     <string name="error_confirm_password">Mật khẩu nhập lại không khớp</string>
     <string name="error_agree_terms">Vui lòng đồng ý với điều khoản</string>
+    <string name="error_email_in_use">Email này đã được đăng ký. Vui lòng đăng nhập.</string>
+    <string name="error_weak_password">Mật khẩu quá yếu (tối thiểu 6 ký tự).</string>
+    <string name="error_invalid_email">Email không hợp lệ.</string>
+    <string name="error_network_auth">Lỗi mạng. Kiểm tra kết nối rồi thử lại.</string>
 
     <!-- Splash -->
     <string name="splash_slogan">Giữ hồn Việt trong từng thiết kế</string>
@@ -231,7 +233,7 @@
     <string name="error_network">Không có kết nối mạng. Vui lòng thử lại.</string>
     <string name="error_loading">Không thể tải dữ liệu. Vui lòng thử lại.</string>
     <string name="error_empty_cart">Giỏ hàng trống.</string>
-    <string name="error_login_failed">Đăng nhập thất bại. Kiểm tra lại thông tin.</string>
+    <string name="error_login_failed">Email hoặc mật khẩu không đúng, hoặc tài khoản chưa được đăng ký.</string>
     <string name="error_register_failed">Đăng ký thất bại. Email có thể đã được sử dụng.</string>
     <string name="error_update_failed">Cập nhật thất bại. Vui lòng thử lại.</string>
     <string name="error_order_failed">Đặt hàng thất bại. Vui lòng thử lại.</string>
@@ -474,6 +476,19 @@
     <string name="cart_title">Giỏ hàng</string>
     <string name="cart_remove_item">Xóa sản phẩm</string>
     <string name="order_code_prefix">Mã đơn: </string>
+    <string name="order_success_thanks">Cảm ơn bạn đã tin chọn TiredCity</string>
+    <string name="order_success_subtitle">Đơn hàng đã được ghi nhận. Chúng tôi sẽ liên hệ xác nhận và giao đến bạn sớm nhất.</string>
+    <string name="order_success_code_label">Mã đơn hàng</string>
+    <string name="order_success_total_label">Tổng thanh toán</string>
+    <string name="order_success_payment_label">Thanh toán</string>
+    <string name="order_success_items_label">Số sản phẩm</string>
+    <string name="order_success_items_value">%1$d sản phẩm</string>
+    <string name="order_success_status_label">Trạng thái</string>
+    <string name="order_success_status_pending">Chờ xác nhận</string>
+    <string name="pay_method_cod">Khi nhận hàng (COD)</string>
+    <string name="pay_method_bank">Chuyển khoản ngân hàng</string>
+    <string name="pay_method_momo">Ví điện tử MoMo</string>
+    <string name="pay_method_card">Thẻ tín dụng/ghi nợ</string>
     <string name="cart_total">Tổng thanh toán</string>
     <string name="recently_viewed_title">Đã xem gần đây</string>
     <string name="label_total">Tổng tiền</string>
@@ -525,7 +540,9 @@
     <string name="pay_spx_brand">SPX Express</string>
     <string name="spx_select_title">Chọn gói vận chuyển SPX</string>
     <string name="captcha_title">Xác minh bảo mật</string>
-    <string name="captcha_instruction">Kéo mảnh ghép sang phải để hoàn tất</string>
+    <string name="captcha_instruction">Kéo mảnh ghép để hoàn thiện bức hình</string>
+    <string name="captcha_failed">Chưa khớp, thử lại nhé</string>
+    <string name="captcha_refresh">Làm mới ảnh</string>
     <string name="captcha_verified">Đã xác minh</string>
     <string name="pay_grand_total">Tổng cộng</string>
     <string name="pay_place_order">Đặt hàng</string>
@@ -549,6 +566,9 @@
     <string name="voucher_sheet_empty">Không có mã phù hợp bộ lọc này.</string>
     <string name="pay_voucher_applied_toast">Đã áp dụng mã %s.</string>
     <string name="pay_edit_recipient_title">Sửa thông tin nhận hàng</string>
+    <string name="pay_recipient_header">Thông tin nhận hàng</string>
+    <string name="pay_recipient_section_contact">Người nhận</string>
+    <string name="pay_recipient_section_address">Địa chỉ giao hàng</string>
     <string name="pay_recipient_name_hint">Tên người nhận</string>
     <string name="pay_recipient_phone_hint">Số điện thoại</string>
     <string name="pay_recipient_address_hint">Địa chỉ giao hàng</string>

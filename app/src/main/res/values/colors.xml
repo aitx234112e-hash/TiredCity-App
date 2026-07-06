@@ -187,6 +187,7 @@
 
     <!-- ─── Status colors ───────────────────────────────────────────── -->
     <color name="tc_success">#4A6B3A</color>
+    <color name="tc_success_pale">#DDE8D2</color>
     <color name="tc_warning">#D4A04B</color>
     <color name="tc_error">#A80D15</color>
     <color name="tc_info">#3B5A7A</color>
