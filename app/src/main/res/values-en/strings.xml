@@ -748,7 +748,7 @@
         • Request to stop receiving advertising information.<br/>
         • Request deletion of personal data according to current regulations.
     ]]></string>
-    <string name="str_policy_term">POLICY &amp; TERMS</string>
+    <string name="str_policy_term">SALES POLICY</string>
 
     <!-- Header buttons (content descriptions) -->
     <string name="cd_cart">Cart</string>

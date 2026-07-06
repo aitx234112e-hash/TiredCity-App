@@ -20,10 +20,10 @@
     <color name="brand_red">#A80D15</color>      <!-- ĐỎ SON TIREDCITY -->
 
     <!-- ─── Backgrounds ─────────────────────────────────────────────── -->
-    <color name="bg_primary">#FFFFFF</color>     <!-- Nền chính -->
-    <color name="bg_surface">#FFFFFF</color>     <!-- Card surface (đồng bộ với bg_primary) -->
+    <color name="bg_primary">#F5EDE3</color>     <!-- Kem editorial (nền trang) -->
+    <color name="bg_surface">#FFFFFF</color>     <!-- Mặt thẻ/card TRẮNG (nền trang + toolbar vẫn kem qua bg_primary) -->
     <color name="bg_subtle">#EDE2D0</color>      <!-- Linen nhạt -->
-    <color name="card_white">#FFFFFF</color> <!-- Nền thẻ trắng bản cũ (trước pull) - dùng cho các màn muốn giữ màu cũ -->
+    <color name="card_white">#FFFFFF</color> <!-- Nền thẻ TRẮNG (đúng tên) - card toàn app dùng token này -->
 
     <!-- ─── Text ────────────────────────────────────────────────────── -->
     <color name="text_primary">#1A1208</color>
@@ -100,7 +100,7 @@
     <color name="tc_sand_light">#C9B89A</color>
 
     <!-- ─── Backgrounds ─────────────────────────────────────────────── -->
-    <color name="tc_bg_main">#FFFFFF</color>
+    <color name="tc_bg_main">#F5EDE3</color>
     <color name="tc_bg_subtle">#EDE2D0</color>
     <color name="tc_bg_card">#FFFFFF</color>
     <color name="tc_bg_dark">#1A1208</color>

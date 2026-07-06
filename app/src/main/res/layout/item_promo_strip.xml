@@ -10,7 +10,7 @@
         android:id="@+id/iv_promo_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/tc_bg_card"
+        android:background="@color/bg_primary"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />

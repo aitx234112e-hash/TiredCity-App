@@ -232,7 +232,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/tc_bg_card"
+            android:background="@color/bg_primary"
             android:paddingBottom="0dp">
 
             <androidx.viewpager2.widget.ViewPager2
@@ -365,7 +365,7 @@
                     android:layout_height="match_parent"
                     android:clickable="false"
                     android:focusable="false"
-                    android:background="@color/tc_bg_card"
+                    android:background="@color/bg_primary"
                     android:scaleType="fitCenter"
                     android:src="@drawable/menh_banner"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
@@ -469,7 +469,7 @@
                     android:layout_height="match_parent"
                     android:clickable="false"
                     android:focusable="false"
-                    android:background="@color/tc_bg_card"
+                    android:background="@color/bg_primary"
                     android:scaleType="fitCenter"
                     android:src="@drawable/menh_banner"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
@@ -579,7 +579,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/tc_bg_card"
+            android:background="@color/bg_primary"
             android:layout_marginTop="40dp"
             android:paddingTop="0dp"
             android:paddingBottom="0dp">
@@ -1025,7 +1025,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/tc_bg_card"
+            android:background="@color/bg_primary"
             android:layout_marginTop="40dp"
             android:paddingTop="0dp"
             android:paddingBottom="0dp">
@@ -1096,7 +1096,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/tc_bg_card"
+            android:background="@color/bg_primary"
             android:layout_marginTop="40dp"
             android:paddingTop="0dp"
             android:paddingBottom="0dp">
@@ -1511,7 +1511,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/tc_bg_card"
+            android:background="@color/bg_primary"
             android:layout_marginTop="40dp"
             android:paddingBottom="0dp">
 
@@ -1691,7 +1691,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="40dp"
-            android:background="@color/tc_bg_card">
+            android:background="@color/bg_primary">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -1727,7 +1727,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="18dp"
-                android:background="@color/tc_bg_card">
+                android:background="@color/bg_primary">
 
                 <VideoView
                     android:id="@+id/video_craft"
@@ -1745,7 +1745,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/tc_bg_card"
+            android:background="@color/bg_primary"
             android:paddingBottom="0dp">
 
             <androidx.viewpager2.widget.ViewPager2

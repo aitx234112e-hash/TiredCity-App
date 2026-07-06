@@ -15,7 +15,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/bg_surface"
+        android:background="@color/bg_primary"
         android:elevation="4dp"
         app:navigationIcon="@drawable/ic_back"
         app:title="@string/btn_checkout"

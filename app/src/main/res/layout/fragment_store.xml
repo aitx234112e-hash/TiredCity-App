@@ -54,7 +54,7 @@
             android:layout_marginBottom="14dp"
             app:cardCornerRadius="@dimen/tc_radius_md"
             app:cardElevation="@dimen/tc_elev_sm"
-            app:cardBackgroundColor="@color/card_white"
+            app:cardBackgroundColor="@color/white"
             app:rippleColor="@color/tc_red_pale">
 
             <!-- Horizontal: image (portrait, left) + details (right) -->
@@ -187,7 +187,7 @@
             android:layout_marginBottom="14dp"
             app:cardCornerRadius="@dimen/tc_radius_md"
             app:cardElevation="@dimen/tc_elev_sm"
-            app:cardBackgroundColor="@color/card_white"
+            app:cardBackgroundColor="@color/white"
             app:rippleColor="@color/tc_red_pale">
 
             <LinearLayout
@@ -342,7 +342,7 @@
             android:layout_marginHorizontal="16dp"
             app:cardCornerRadius="@dimen/tc_radius_md"
             app:cardElevation="@dimen/tc_elev_sm"
-            app:cardBackgroundColor="@color/card_white">
+            app:cardBackgroundColor="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -375,6 +375,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_name"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxBackgroundColor="@color/white"
                     app:boxStrokeColor="@color/tc_stroke"
                     app:boxStrokeWidthFocused="2dp"
                     app:hintTextColor="@color/tc_red"
@@ -395,6 +396,7 @@
                     android:layout_marginTop="12dp"
                     android:hint="@string/hint_phone_contact"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxBackgroundColor="@color/white"
                     app:boxStrokeColor="@color/tc_stroke"
                     app:boxStrokeWidthFocused="2dp"
                     app:hintTextColor="@color/tc_red"
@@ -416,6 +418,7 @@
                     android:layout_marginTop="12dp"
                     android:hint="@string/hint_email"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxBackgroundColor="@color/white"
                     app:boxStrokeColor="@color/tc_stroke"
                     app:boxStrokeWidthFocused="2dp"
                     app:hintTextColor="@color/tc_red"
@@ -462,6 +465,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxBackgroundColor="@color/white"
                     app:boxStrokeColor="@color/tc_stroke"
                     app:boxStrokeWidthFocused="2dp"
                     app:hintEnabled="false">

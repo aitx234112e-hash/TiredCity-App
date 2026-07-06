@@ -59,7 +59,7 @@
             android:focusable="true"
             app:cardCornerRadius="@dimen/tc_radius_pill"
             app:cardElevation="3dp"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="@color/bg_surface"
             app:rippleColor="@color/tc_red_pale">
 
             <LinearLayout

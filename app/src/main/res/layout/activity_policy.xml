@@ -57,15 +57,20 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:letterSpacing="-0.02"
+                    android:maxLines="1"
                     android:text="@string/str_policy_term"
+                    android:textAllCaps="true"
                     android:textColor="@color/brand_red"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="18sp"
+                    app:autoSizeMaxTextSize="34sp"
+                    app:autoSizeStepGranularity="1sp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -86,7 +91,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
                 app:strokeColor="#F0EAE0">
                 <LinearLayout
@@ -126,7 +131,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
                 app:strokeColor="#F0EAE0">
                 <LinearLayout
@@ -166,7 +171,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
                 app:strokeColor="#F0EAE0">
                 <LinearLayout
@@ -206,7 +211,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
                 app:strokeColor="#F0EAE0">
                 <LinearLayout
@@ -246,7 +251,7 @@
                 android:layout_marginBottom="14dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_surface"
                 app:strokeWidth="1dp"
                 app:strokeColor="#F0EAE0">
                 <LinearLayout

@@ -324,7 +324,16 @@
       "Bash(read name *)",
       "Bash([ ! -f \"app/src/main/res/drawable/$name.jpg\" ])",
       "Bash([ ! -f \"app/src/main/res/drawable/$name.png\" ])",
-      "Bash([ ! -f \"app/src/main/res/drawable/$name.xml\" ])"
+      "Bash([ ! -f \"app/src/main/res/drawable/$name.xml\" ])",
+      "Bash(git commit --amend -m 'App khách: thêm màn Tin tức \\(News\\) & Điều khoản \\(Terms\\) *)",
+      "Bash(npm -v)",
+      "Bash(grep -rnE 'android:background=\"@color/\\(card_white|white\\)\"|android:background=\"#[Ff]{3,}\"|cardBackgroundColor=\"@color/\\(card_white|white\\)\"|cardBackgroundColor=\"#[Ff]{3,}\"|android:background=\"@android:color/white\"' app/src/main/res/layout/)",
+      "Bash(grep -nB3 'card_white' app/src/main/res/layout/fragment_store.xml)",
+      "Bash(grep -nB3 'card_white' app/src/main/res/layout/activity_profile.xml)",
+      "Bash(xargs grep -l \"PolicyActivity\\\\|TermsActivity\")",
+      "Read(//c/Users/Acer/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj/gradle-9.4.1/bin/**)",
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\" \"C:/Users/Acer/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj/gradle-9.4.1/bin/gradle.bat\" :app:assembleDebug)",
+      "Bash(git rebase *)"
     ]
   }
 }

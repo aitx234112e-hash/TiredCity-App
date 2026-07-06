@@ -436,7 +436,7 @@
                 android:layout_marginTop="@dimen/tc_space_3xl"
                 app:cardCornerRadius="@dimen/tc_radius_md"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/card_white">
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"

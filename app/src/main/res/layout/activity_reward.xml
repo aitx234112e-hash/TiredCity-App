@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_surface"
+    android:background="@color/bg_primary"
     android:fitsSystemWindows="true">
 
     <!-- ── Header tuỳ biến ─────────────────────────────────────────────── -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/bg_surface"
+        android:background="@color/bg_primary"
         android:paddingHorizontal="8dp">
 
         <ImageButton

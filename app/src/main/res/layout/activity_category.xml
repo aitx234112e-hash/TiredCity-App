@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/bg_surface"
+        android:background="@color/bg_primary"
         android:elevation="4dp">
 
         <ImageButton
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/bg_surface"
+        android:background="@color/bg_primary"
         android:paddingHorizontal="10dp"
         android:paddingVertical="6dp">
 
