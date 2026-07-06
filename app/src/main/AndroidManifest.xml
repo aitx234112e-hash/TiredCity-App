@@ -118,6 +118,11 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.explore.NewsDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <!-- ── Notifications ─────────────────────────────────────────────── -->
         <activity
             android:name=".ui.notification.NotificationActivity"
@@ -177,6 +182,11 @@
         <!-- ── Support ───────────────────────────────────────────────────── -->
         <activity
             android:name=".ui.support.PolicyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.support.TermsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

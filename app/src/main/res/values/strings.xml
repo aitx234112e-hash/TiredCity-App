@@ -861,6 +861,77 @@
     ]]></string>
     <string name="str_policy_term">POLICY &amp; TERMS</string>
 
+    <!-- ─── Terms &amp; Conditions screen (Điều khoản &amp; Điều kiện) ─────────── -->
+    <string name="terms_header_eyebrow">TIREDCITY</string>
+    <string name="terms_header_title">Điều khoản &amp; Điều kiện</string>
+    <string name="terms_subtitle">Vui lòng đọc kỹ các điều khoản dưới đây trước khi sử dụng ứng dụng và mua sắm tại TiredCity.</string>
+    <string name="terms_updated">Cập nhật lần cuối: 06/2026</string>
+
+    <string name="terms_1_title">1. Chấp nhận điều khoản</string>
+    <string name="terms_1_content"><![CDATA[
+        Khi tải, cài đặt hoặc sử dụng ứng dụng <b>TiredCity</b>, bạn đồng ý tuân thủ toàn bộ các Điều khoản &amp; Điều kiện được nêu tại đây.<br/><br/>
+        • Nếu bạn không đồng ý với bất kỳ nội dung nào, vui lòng ngừng sử dụng ứng dụng.<br/>
+        • Điều khoản áp dụng cho tất cả khách truy cập, người dùng và khách hàng.<br/>
+        • Bạn xác nhận đủ 16 tuổi trở lên, hoặc sử dụng dưới sự giám sát của người giám hộ hợp pháp.<br/><br/>
+        Việc tiếp tục sử dụng ứng dụng sau khi điều khoản được cập nhật đồng nghĩa với việc bạn chấp nhận những thay đổi đó.
+    ]]></string>
+
+    <string name="terms_2_title">2. Tài khoản người dùng</string>
+    <string name="terms_2_content"><![CDATA[
+        <b>Đăng ký &amp; bảo mật</b><br/>
+        • Bạn có trách nhiệm cung cấp thông tin chính xác, đầy đủ khi tạo tài khoản.<br/>
+        • Giữ bí mật mật khẩu và chịu trách nhiệm cho mọi hoạt động phát sinh từ tài khoản của mình.<br/>
+        • Thông báo ngay cho chúng tôi nếu phát hiện tài khoản bị truy cập trái phép.<br/><br/>
+        <b>Quyền của TiredCity</b><br/>
+        Chúng tôi có quyền tạm khóa hoặc chấm dứt tài khoản nếu phát hiện hành vi gian lận, vi phạm điều khoản hoặc gây hại cho hệ thống và người dùng khác.
+    ]]></string>
+
+    <string name="terms_3_title">3. Đặt hàng &amp; hợp đồng mua bán</string>
+    <string name="terms_3_content"><![CDATA[
+        • Mọi đơn hàng được xem là <b>đề nghị mua hàng</b> và chỉ có hiệu lực khi TiredCity xác nhận.<br/>
+        • Chúng tôi có quyền từ chối hoặc hủy đơn trong trường hợp: hết hàng, sai giá do lỗi hệ thống, hoặc nghi ngờ gian lận.<br/>
+        • Thông tin sản phẩm (hình ảnh, màu sắc, mô tả) mang tính minh họa; có thể chênh lệch nhẹ so với thực tế.<br/><br/>
+        Sau khi đơn được xác nhận, bạn sẽ nhận thông báo qua ứng dụng, email hoặc số điện thoại đã đăng ký.
+    ]]></string>
+
+    <string name="terms_4_title">4. Giá cả &amp; thanh toán</string>
+    <string name="terms_4_content"><![CDATA[
+        • Giá sản phẩm được niêm yết bằng <b>đồng Việt Nam (VNĐ)</b> và đã bao gồm thuế theo quy định.<br/>
+        • Phí vận chuyển (nếu có) được hiển thị rõ trước khi bạn xác nhận thanh toán.<br/>
+        • TiredCity có quyền điều chỉnh giá bán và chương trình khuyến mãi bất kỳ lúc nào mà không cần báo trước.<br/><br/>
+        <b>Phương thức thanh toán</b><br/>
+        Thanh toán khi nhận hàng (COD), chuyển khoản ngân hàng, ví điện tử và thẻ tín dụng/ghi nợ. Mọi giao dịch trực tuyến đều được mã hóa và bảo mật.
+    ]]></string>
+
+    <string name="terms_5_title">5. Sở hữu trí tuệ &amp; nội dung</string>
+    <string name="terms_5_content"><![CDATA[
+        • Toàn bộ thiết kế, hình ảnh, logo, minh họa và nội dung trong ứng dụng thuộc quyền sở hữu của <b>TiredCity</b>.<br/>
+        • Nghiêm cấm sao chép, phân phối hoặc sử dụng cho mục đích thương mại khi chưa có sự đồng ý bằng văn bản.<br/><br/>
+        <b>Nội dung do bạn đăng tải</b><br/>
+        Khi gửi đánh giá, hình ảnh hoặc bình luận, bạn cho phép TiredCity sử dụng những nội dung đó để phục vụ hoạt động quảng bá, đồng thời cam kết nội dung không vi phạm pháp luật hay quyền của bên thứ ba.
+    ]]></string>
+
+    <string name="terms_6_title">6. Quy tắc ứng xử &amp; hành vi bị cấm</string>
+    <string name="terms_6_content"><![CDATA[
+        Khi sử dụng ứng dụng, bạn đồng ý <b>không</b>:<br/><br/>
+        • Cung cấp thông tin giả mạo hoặc mạo danh người khác.<br/>
+        • Can thiệp, phá hoại hoặc dò quét bảo mật của hệ thống.<br/>
+        • Sử dụng ứng dụng cho mục đích lừa đảo, spam hoặc trái pháp luật.<br/>
+        • Đăng tải nội dung xúc phạm, phản cảm hoặc vi phạm thuần phong mỹ tục.<br/><br/>
+        Vi phạm các quy tắc này có thể dẫn đến việc khóa tài khoản và xử lý theo quy định pháp luật.
+    ]]></string>
+
+    <string name="terms_7_title">7. Giới hạn trách nhiệm &amp; thay đổi điều khoản</string>
+    <string name="terms_7_content"><![CDATA[
+        <b>Giới hạn trách nhiệm</b><br/>
+        • TiredCity nỗ lực đảm bảo ứng dụng vận hành ổn định nhưng không cam kết hoàn toàn không có lỗi hay gián đoạn.<br/>
+        • Chúng tôi không chịu trách nhiệm cho thiệt hại gián tiếp phát sinh ngoài tầm kiểm soát hợp lý.<br/><br/>
+        <b>Thay đổi &amp; luật áp dụng</b><br/>
+        • Điều khoản có thể được cập nhật theo thời gian; phiên bản mới nhất luôn hiển thị trong ứng dụng.<br/>
+        • Các điều khoản này được điều chỉnh theo pháp luật Việt Nam hiện hành.<br/><br/>
+        Mọi thắc mắc, vui lòng liên hệ: <b>hello@tiredcity.com</b>.
+    ]]></string>
+
     <!-- ─── Shop Explore screen ──────────────────────────────────── -->
     <!-- Horizontal section tabs -->
     <string name="shop_tab_women">Nữ</string>
@@ -1019,4 +1090,40 @@
     <string name="ed_cta_register">Đăng ký tham gia</string>
     <string name="ed_cta_direction">Chỉ đường tới Văn Miếu</string>
     <string name="ed_register_toast">Đã ghi nhận! Hẹn gặp bạn tại Văn Miếu ✦</string>
+
+    <!-- ═══ Chi tiết tin tức: Sách văn hóa "Sắc Phục Việt" ═══ -->
+    <string name="nd_toolbar_title">Chi tiết tin tức</string>
+    <string name="nd_hero_eyebrow">TIN TỨC &amp; CẢM HỨNG</string>
+    <string name="nd_hero_title">Sách văn hóa “Sắc Phục Việt” chính thức xuất bản</string>
+    <string name="nd_hero_subtitle">Hành trình 3 năm phục dựng cổ phục Việt được kể lại trọn vẹn trong một ấn phẩm nghệ thuật.</string>
+
+    <string name="nd_lead">Sau hơn ba năm nghiên cứu, khảo cứu tư liệu và làm việc cùng các nhà sử học, TiredCity chính thức ra mắt “Sắc Phục Việt” — cuốn sách nghệ thuật đầu tiên hệ thống lại vẻ đẹp của trang phục Việt qua từng triều đại. Đây không chỉ là một ấn phẩm để xem, mà là một lời mời gọi thế hệ trẻ chạm vào di sản của chính mình.</string>
+
+    <string name="nd_sec1_title">Một hành trình từ khảo cứu đến sáng tạo</string>
+    <string name="nd_sec1_body">“Sắc Phục Việt” khởi nguồn từ một câu hỏi giản dị: ông cha ta đã mặc gì, và vì sao? Để trả lời, nhóm thực hiện đã lật giở hàng trăm trang tư liệu, đối chiếu tranh tượng, thư tịch và cả những mảnh vải còn sót lại trong bảo tàng. Từ Áo Giao Lĩnh thời Lê, Nhật Bình cung đình triều Nguyễn cho đến chiếc Áo Dài tân thời — mỗi bộ trang phục được vẽ lại tỉ mỉ, kèm chú giải về chất liệu, hoa văn và tầng lớp người mặc.</string>
+
+    <string name="nd_cap_1">Bìa sách “Sắc Phục Việt” — biểu tượng chim hạc và hoa văn cung đình được dát nhũ vàng thủ công.</string>
+
+    <string name="nd_sec2_title">Khi hoa văn cổ được thổi hồn chuyển động</string>
+    <string name="nd_sec2_body">Điểm đặc biệt của ấn phẩm nằm ở phần minh hoạ động: khi quét mã trên mỗi trang, những hoa văn tưởng như tĩnh lặng bỗng chuyển mình sống động. Long, ly, quy, phụng uốn lượn; tà áo bay trong gió; sắc chàm, sắc điều dần hiện lên như được nhuộm ngay trước mắt người đọc. Công nghệ không thay thế truyền thống — nó nắm tay truyền thống bước vào thời đại mới.</string>
+
+    <string name="nd_cap_2">Hoa văn rồng phượng được số hoá và làm chuyển động, tái hiện nhịp thở của mỹ thuật cung đình.</string>
+
+    <string name="nd_sec3_title">Di sản không nằm trong tủ kính</string>
+    <string name="nd_sec3_body">Với TiredCity, cổ phục không phải thứ chỉ để ngắm nhìn từ xa. Cuốn sách dành hẳn một chương hướng dẫn cách phối cổ phục vào đời sống hiện đại — mặc đi lễ hội, chụp ảnh cưới, hay đơn giản là khoác lên trong ngày Tết. Bởi một di sản chỉ thực sự sống khi nó còn được mặc, được yêu và được kể tiếp.</string>
+
+    <string name="nd_cap_3">Người trẻ trong tà cổ phục — minh chứng rằng truyền thống và hiện đại hoàn toàn có thể song hành.</string>
+
+    <string name="nd_quote">“Chúng tôi không muốn giữ di sản trong tủ kính. Chúng tôi muốn mặc nó, sống cùng nó, và trao lại cho mai sau.”</string>
+    <string name="nd_quote_author">— Đại diện nhóm thực hiện Sắc Phục Việt</string>
+
+    <string name="nd_cap_4">Từng trang sách là một lát cắt lịch sử, được kể bằng ngôn ngữ thị giác trẻ trung và rực rỡ.</string>
+
+    <string name="nd_outro_title">Đặt sách &amp; đồng hành</string>
+    <string name="nd_outro_body">“Sắc Phục Việt” hiện đã có mặt tại TiredCity với số lượng giới hạn cho lần in đầu tiên. Mỗi cuốn sách bán ra góp một phần vào quỹ phục dựng cổ phục — để hành trình tìm về nguồn cội không bao giờ dừng lại.</string>
+
+    <string name="nd_cta_order">Đặt sách ngay ✦</string>
+    <string name="nd_cta_share">Chia sẻ bài viết</string>
+    <string name="nd_order_toast">Cảm ơn bạn! Chúng tôi sẽ liên hệ khi sách sẵn sàng ✦</string>
+    <string name="nd_share_subject">Sách văn hóa “Sắc Phục Việt” chính thức xuất bản</string>
 </resources>

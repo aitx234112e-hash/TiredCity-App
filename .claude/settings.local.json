@@ -301,7 +301,18 @@
       "Bash(sed -i 's#@color/bg_surface#@color/card_white#g' app/src/main/res/layout/activity_profile.xml)",
       "Bash(find \"C:/Users/Acer/AppData/Local/Temp\" -maxdepth 4 -type f \\\\\\( -iname \"*.png\" -o -iname \"*.jpg\" -o -iname \"*.jpeg\" \\\\\\) -newermt \"-30 minutes\" 2>/dev/null | head -40 *)",
       "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\app\\\\src\\\\main\\\\res\\\\drawable\\\\main13.jpg\"\\); \"$\\($img.Width\\)x$\\($img.Height\\) ratio=$\\([math]::Round\\($img.Width/$img.Height,4\\)\\)\"; $img.Dispose\\(\\))",
-      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\app\\\\src\\\\main\\\\res\\\\drawable\\\\main15.jpg\"\\); \"$\\($img.Width\\)x$\\($img.Height\\) ratio=$\\([math]::Round\\($img.Width/$img.Height,4\\)\\)\"; $img.Dispose\\(\\))"
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"D:\\\\TiredCity-App-main\\\\TiredCity-App-main\\\\app\\\\src\\\\main\\\\res\\\\drawable\\\\main15.jpg\"\\); \"$\\($img.Width\\)x$\\($img.Height\\) ratio=$\\([math]::Round\\($img.Width/$img.Height,4\\)\\)\"; $img.Dispose\\(\\))",
+      "PowerShell($env:JAVA_HOME=\"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; & \"C:\\\\Users\\\\Acer\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\\\\arn2x92ynaizyzdaamcbpbhtj\\\\gradle-9.4.1\\\\bin\\\\gradle.bat\" :app:compileDebugJavaWithJavac -q --console=plain 2>&1 | Select-Object -Last 40)",
+      "Bash(file app/src/main/res/drawable/policy_1.png)",
+      "Bash(python -c \"from PIL import Image; print\\(Image.open\\(r'app/src/main/res/drawable/policy_1.png'\\).size\\)\")",
+      "Bash(identify app/src/main/res/drawable/policy_1.png)",
+      "Bash(ls gradlew*)",
+      "Bash(ls settings.gradle* build.gradle*)",
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\" \"C:\\\\Users\\\\Acer\\\\.gradle\\\\wrapper\\\\dists\\\\gradle-9.4.1-bin\\\\arn2x92ynaizyzdaamcbpbhtj\\\\gradle-9.4.1\\\\bin\\\\gradle.bat\" :app:compileDebugJavaWithJavac -q)",
+      "Bash(\"C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices *)",
+      "Bash('C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe' shell *)",
+      "Bash('C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe' exec-out *)",
+      "Bash('C:\\\\Users\\\\Acer\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe' install *)"
     ]
   }
 }

@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trang chi tiết tin tức "Sắc Phục Việt" — mở khi chạm ảnh Tin tức ở Trang chủ.
+     Bố cục tạp chí: dải ảnh full-bleed (news_1..news_5, gồm cả gif động) xen kẽ khối
+     chữ trên nền kem/trắng/đỏ, cùng họ với trang chi tiết sự kiện (activity_event_detail).
+     Ảnh nạp qua Glide (xem NewsDetailActivity) để không giải mã 5 ảnh full-size cùng lúc. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tc_cream">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/tc_space_2xl">
+
+            <!-- ═══ HERO — ảnh bìa sách + lớp phủ chữ ═══ -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="380dp">
+
+                <ImageView
+                    android:id="@+id/iv_hero"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@color/tc_red"
+                    android:contentDescription="@string/nd_hero_title" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/tc_gradient_bottom_scrim" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/tc_space_xl"
+                    android:paddingBottom="@dimen/tc_space_xl">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nd_hero_eyebrow"
+                        android:textColor="@color/tc_gold_bright"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.14" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/tc_space_xs"
+                        android:text="@string/nd_hero_title"
+                        android:textColor="@color/tc_on_red"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="0.01"
+                        android:lineSpacingExtra="2dp"
+                        android:shadowColor="#80000000"
+                        android:shadowDx="0"
+                        android:shadowDy="2"
+                        android:shadowRadius="6" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/tc_space_sm"
+                        android:text="@string/nd_hero_subtitle"
+                        android:textColor="@color/tc_on_red_secondary"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:lineSpacingExtra="2dp" />
+                </LinearLayout>
+
+                <!-- Nút quay lại nổi trên ảnh -->
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="top|start"
+                    android:layout_marginStart="@dimen/tc_space_md"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    android:background="@drawable/tc_bg_circle_scrim"
+                    android:src="@drawable/ic_back"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    app:tint="@color/tc_on_red"
+                    android:contentDescription="@string/cd_back" />
+            </FrameLayout>
+
+            <!-- ═══ ĐOẠN DẪN (lead) ═══ -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nd_lead"
+                android:textColor="@color/tc_text_primary"
+                android:textSize="16sp"
+                android:lineSpacingExtra="6dp"
+                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_xl" />
+
+            <!-- ═══ PHẦN 1 ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_2xl"
+                android:paddingBottom="@dimen/tc_space_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_sec1_title"
+                    android:textColor="@color/tc_red"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_sm" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_sec1_body"
+                    android:textColor="@color/tc_text_secondary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="5dp" />
+            </LinearLayout>
+
+            <!-- Ảnh 1: bìa sách -->
+            <ImageView
+                android:id="@+id/iv_photo1"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginTop="@dimen/tc_space_sm"
+                android:scaleType="centerCrop"
+                android:background="@color/bg_subtle"
+                android:contentDescription="@string/nd_cap_1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nd_cap_1"
+                android:textColor="@color/tc_text_tertiary"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_sm"
+                android:paddingBottom="@dimen/tc_space_2xl"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- ═══ PHẦN 2 — nền trắng, kèm gif động ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/card_white"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingVertical="@dimen/tc_space_2xl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_sec2_title"
+                    android:textColor="@color/tc_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_sm" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_sec2_body"
+                    android:textColor="@color/tc_text_secondary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="5dp"
+                    android:layout_marginBottom="@dimen/tc_space_xl" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_photo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/bg_subtle"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
+                    android:contentDescription="@string/nd_cap_2" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_cap_2"
+                    android:textColor="@color/tc_text_tertiary"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:paddingTop="@dimen/tc_space_sm"
+                    android:lineSpacingExtra="2dp" />
+            </LinearLayout>
+
+            <!-- ═══ PHẦN 3 ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_2xl"
+                android:paddingBottom="@dimen/tc_space_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_sec3_title"
+                    android:textColor="@color/tc_red"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_sm" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_sec3_body"
+                    android:textColor="@color/tc_text_secondary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="5dp" />
+            </LinearLayout>
+
+            <!-- Ảnh 3 (gif động): người trẻ trong cổ phục -->
+            <ImageView
+                android:id="@+id/iv_photo3"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginTop="@dimen/tc_space_sm"
+                android:scaleType="centerCrop"
+                android:background="@color/bg_subtle"
+                android:contentDescription="@string/nd_cap_3" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nd_cap_3"
+                android:textColor="@color/tc_text_tertiary"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_sm"
+                android:paddingBottom="@dimen/tc_space_2xl"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- ═══ TRÍCH DẪN — nền đỏ ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/tc_red"
+                android:paddingHorizontal="@dimen/tc_space_2xl"
+                android:paddingVertical="@dimen/tc_space_3xl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="“"
+                    android:textColor="@color/tc_gold_bright"
+                    android:textSize="56sp"
+                    android:textStyle="bold"
+                    android:fontFamily="serif"
+                    android:includeFontPadding="false"
+                    android:layout_marginBottom="@dimen/tc_space_xs" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_quote"
+                    android:textColor="@color/tc_on_red"
+                    android:textSize="20sp"
+                    android:textStyle="italic"
+                    android:fontFamily="serif"
+                    android:lineSpacingExtra="6dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_lg"
+                    android:text="@string/nd_quote_author"
+                    android:textColor="@color/tc_on_red_secondary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+
+            <!-- Ảnh 4 (gif động): trang sách -->
+            <ImageView
+                android:id="@+id/iv_photo4"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:scaleType="centerCrop"
+                android:background="@color/bg_subtle"
+                android:contentDescription="@string/nd_cap_4" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nd_cap_4"
+                android:textColor="@color/tc_text_tertiary"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_sm"
+                android:paddingBottom="@dimen/tc_space_2xl"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- ═══ ĐẶT SÁCH & ĐỒNG HÀNH ═══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/tc_space_xl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_outro_title"
+                    android:textColor="@color/tc_red"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="@dimen/tc_space_sm" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nd_outro_body"
+                    android:textColor="@color/tc_text_secondary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="5dp" />
+
+                <Button
+                    android:id="@+id/btn_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="@dimen/tc_space_2xl"
+                    android:background="@drawable/tc_btn_red_pill"
+                    android:text="@string/nd_cta_order"
+                    android:textColor="@color/tc_on_red"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.06"
+                    android:fontFamily="sans-serif-medium"
+                    android:elevation="2dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_share"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    android:text="@string/nd_cta_share"
+                    android:textColor="@color/tc_red"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:strokeColor="@color/tc_red"
+                    app:icon="@drawable/ic_send"
+                    app:iconTint="@color/tc_red"
+                    app:iconGravity="textStart" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

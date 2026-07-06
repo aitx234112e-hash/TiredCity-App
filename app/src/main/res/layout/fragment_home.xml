@@ -482,15 +482,16 @@
                     android:background="@drawable/tc_shimmer_gradient"
                     android:rotation="-18" />
 
-                <!-- Nội dung: thông tin thật (mệnh, cung, màu hợp) — giữ nguyên trên ảnh vì đây
-                     là dữ liệu chức năng, không phải chữ quảng cáo trang trí. -->
+                <!-- Overlay chữ (mệnh, cung, màu hợp) đã ẩn theo yêu cầu — chỉ hiện ảnh banner gốc,
+                     tránh chồng lên chữ có sẵn của ảnh. Dữ liệu vẫn set trong code, chỉ ẩn hiển thị. -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="20dp"
-                    android:paddingVertical="18dp">
+                    android:paddingVertical="18dp"
+                    android:visibility="gone">
 
                     <!-- Hàng trên: emoji + tên mệnh + mũi tên -->
                     <LinearLayout

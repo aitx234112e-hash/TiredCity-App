@@ -20,6 +20,7 @@ import com.tiredcity.app.ui.styling.AiStylingActivity;
 import com.tiredcity.app.ui.styling.ChatBotActivity;
 import com.tiredcity.app.ui.support.ContactActivity;
 import com.tiredcity.app.ui.support.PolicyActivity;
+import com.tiredcity.app.ui.support.TermsActivity;
 import com.tiredcity.app.utils.MenhCalculator;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,6 +72,8 @@ public class ProfileActivity extends BaseActivity {
                 startActivity(new Intent(this, ContactActivity.class)));
         binding.layoutPolicy.setOnClickListener(v ->
                 startActivity(new Intent(this, PolicyActivity.class)));
+        binding.layoutTerms.setOnClickListener(v ->
+                startActivity(new Intent(this, TermsActivity.class)));
 
         // Cài đặt thông báo & Cài đặt chung → các module mới
         binding.layoutNotifications.setOnClickListener(v ->

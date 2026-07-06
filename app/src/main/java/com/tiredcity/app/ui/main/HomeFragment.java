@@ -821,12 +821,14 @@ public class HomeFragment extends Fragment {
         // Khung sự kiện tự co về đúng tỷ lệ ảnh main15 → hiện FULL ảnh, không xén trên/dưới.
         applyAspectRatio(binding.cardEvents, EVENTS_BANNER_RATIO);
 
-        // Tin tức → trang Tin tức riêng (ArticleActivity)
-        View.OnClickListener newsClick = v ->
+        // Ảnh tin tức → trang chi tiết "Sắc Phục Việt" (NewsDetailActivity);
+        // "Xem tất cả" → danh sách bài viết (ArticleActivity).
+        binding.cardNews.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(),
-                        com.tiredcity.app.ui.explore.ArticleActivity.class));
-        binding.cardNews.setOnClickListener(newsClick);
-        binding.tvNewsSeeAll.setOnClickListener(newsClick);
+                        com.tiredcity.app.ui.explore.NewsDetailActivity.class)));
+        binding.tvNewsSeeAll.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(),
+                        com.tiredcity.app.ui.explore.ArticleActivity.class)));
 
         // Khung tin tức tự co về đúng tỷ lệ ảnh main13 → hiện FULL ảnh, không xén trên/dưới.
         applyAspectRatio(binding.cardNews, NEWS_BANNER_RATIO);
