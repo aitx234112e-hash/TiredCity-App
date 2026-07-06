@@ -78,6 +78,7 @@ public final class DetailFormatter {
                 f.add(new DetailField("SĐT", DocUtils.str(d, "phone")));
                 f.add(new DetailField("Nội dung", DocUtils.str(d, "message")));
                 f.add(new DetailField("Trạng thái", Boolean.TRUE.equals(d.getBoolean("replied")) ? "Đã phản hồi" : "Chờ xử lý"));
+                f.add(new DetailField("Ghi chú admin", DocUtils.str(d, "adminNote")));
                 break;
             case REVIEWS:
                 f.add(new DetailField("Khách hàng", DocUtils.str(d, "userName")));

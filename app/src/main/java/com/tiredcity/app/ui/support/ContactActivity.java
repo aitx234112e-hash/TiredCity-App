@@ -71,7 +71,7 @@ public class ContactActivity extends BaseActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) contact.put("userId", user.getUid());
 
-        FirebaseFirestore.getInstance().collection("contacts")
+        FirebaseFirestore.getInstance().collection("feedbacks")
                 .add(contact)
                 .addOnSuccessListener(ref -> {
                     Toast.makeText(this, "Đã gửi tin nhắn thành công!", Toast.LENGTH_SHORT).show();

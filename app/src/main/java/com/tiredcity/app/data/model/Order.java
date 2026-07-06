@@ -29,6 +29,9 @@ public class Order {
     public void setUserId(String userId) { this.userId = userId; }
     public List<CartItem> getItems() { return items; }
     public void setItems(List<CartItem> items) { this.items = items; }
+
+    @com.google.firebase.firestore.PropertyName("orderItems")
+    public void setOrderItems(List<CartItem> items) { this.items = items; }
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
     public double getShippingFee() { return shippingFee; }

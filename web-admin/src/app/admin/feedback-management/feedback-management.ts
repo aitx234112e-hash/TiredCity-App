@@ -44,17 +44,29 @@ export class FeedbackManagement implements OnInit {
   loadFeedback() {
     this.loading = true;
     this.errorMsg = '';
+
+    // Thêm timeout 10s để tránh loading vô tận nếu mất kết nối Firebase
+    const timeoutMsg = setTimeout(() => {
+      if (this.loading && this.feedbacks.length === 0) {
+        this.loading = false;
+        this.errorMsg = 'Quá thời gian tải dữ liệu. Vui lòng kiểm tra kết nối mạng hoặc quyền truy cập Firebase.';
+      }
+    }, 10000);
+
     this.api.getFeedback().subscribe({
       next: (res) => {
+        clearTimeout(timeoutMsg);
         this.feedbacks = res as any[];
         this.applyFilter();
         this.loading = false;
       },
       error: (err) => {
+        clearTimeout(timeoutMsg);
         this.loading = false;
-        this.errorMsg = err.status === 0
-          ? 'Không thể kết nối server. Kiểm tra server có đang chạy.'
-          : `Lỗi tải dữ liệu (${err.status})`;
+        console.error('Feedback Load Error:', err);
+        this.errorMsg = err.code === 'permission-denied'
+          ? 'Bạn không có quyền truy cập dữ liệu phản hồi (Rules expired?).'
+          : `Lỗi tải dữ liệu: ${err.message || err.status || 'Unknown error'}`;
       }
     });
   }

@@ -108,6 +108,7 @@ public class OrderTrackingActivity extends BaseActivity {
                 if (item.getProduct() != null) {
                     android.content.Intent intent = new android.content.Intent(this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
                     intent.putExtra(Constants.EXTRA_PRODUCT_ID, item.getProduct().getId());
+                    intent.putExtra(Constants.EXTRA_ACTION_REVIEW, true); // Chuyển sang màn hình chi tiết và tự mở dialog
                     startActivity(intent);
                 }
             }));
@@ -171,10 +172,11 @@ public class OrderTrackingActivity extends BaseActivity {
     private void updateTrackingSteps(String status) {
         // Status progression: PENDING → CONFIRMED → SHIPPING → DELIVERED
         boolean isPending   = true;
-        boolean isConfirmed = !Constants.ORDER_PENDING.equals(status);
-        boolean isShipping  = Constants.ORDER_SHIPPING.equals(status)
-                              || Constants.ORDER_DELIVERED.equals(status);
-        boolean isDelivered = Constants.ORDER_DELIVERED.equals(status);
+        boolean isConfirmed = !status.equalsIgnoreCase("PENDING");
+        boolean isShipping  = status.equalsIgnoreCase("SHIPPING") 
+                              || status.equalsIgnoreCase("SHIPPED")
+                              || status.equalsIgnoreCase("DELIVERED");
+        boolean isDelivered = status.equalsIgnoreCase("DELIVERED");
 
         applyStep(binding.stepPlaced,    getString(R.string.track_step_placed),    isPending);
         applyStep(binding.stepConfirmed, getString(R.string.track_step_confirmed), isConfirmed);

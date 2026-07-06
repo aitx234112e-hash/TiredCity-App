@@ -35,6 +35,9 @@ public class AdminOrderActivity extends AppCompatActivity {
     }
 
     private void loadOrders() {
+        // Tự động xác nhận các đơn hàng đã giao quá 2 phút mà khách chưa nhấn xác nhận
+        autoConfirmOverdueOrders();
+
         db.collection("orders").get()
             .addOnSuccessListener(snap -> {
                 List<Map<String, Object>> orders = new ArrayList<>();
@@ -77,12 +80,20 @@ public class AdminOrderActivity extends AppCompatActivity {
                 // Set color for badge
                 int badgeColor = getResources().getColor(android.R.color.darker_gray);
                 if ("PENDING".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_orange_dark);
-                else if ("SHIPPING".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_blue_dark);
+                else if ("SHIPPED".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_blue_dark);
                 else if ("DELIVERED".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_green_dark);
                 else if ("CANCELLED".equals(statusKey)) badgeColor = getResources().getColor(android.R.color.holo_red_dark);
                 holder.binding.tvBadge.setTextColor(badgeColor);
 
-                holder.itemView.setOnClickListener(v -> showStatusUpdateDialog(o));
+                holder.itemView.setOnClickListener(v -> {
+                    if ("SHIPPED".equalsIgnoreCase(statusKey) || "DELIVERED".equalsIgnoreCase(statusKey)) {
+                        Toast.makeText(AdminOrderActivity.this, 
+                            "Đơn hàng đang giao hoặc đã hoàn tất, không thể thay đổi trạng thái.", 
+                            Toast.LENGTH_SHORT).show();
+                    } else {
+                        showStatusUpdateDialog(o);
+                    }
+                });
             }
 
             @Override
@@ -90,12 +101,27 @@ public class AdminOrderActivity extends AppCompatActivity {
         });
     }
 
+    private void autoConfirmOverdueOrders() {
+        long twoMinsAgo = System.currentTimeMillis() - (2 * 60 * 1000);
+        db.collection("orders")
+            .whereEqualTo("status", "SHIPPED")
+            .get()
+            .addOnSuccessListener(snap -> {
+                for (com.google.firebase.firestore.QueryDocumentSnapshot doc : snap) {
+                    com.google.firebase.Timestamp ts = doc.getTimestamp("updatedAt");
+                    if (ts != null && ts.toDate().getTime() < twoMinsAgo) {
+                        updateOrderWithTransaction(doc.getId(), "DELIVERED");
+                    }
+                }
+            });
+    }
+
     private void showStatusUpdateDialog(Map<String, Object> order) {
         String currentStatus = (String) order.get("status");
         String docId = (String) order.get("docId");
         
-        String[] options = {"Xác nhận đơn (CONFIRMED)", "Giao hàng (SHIPPING)", "Hoàn tất (DELIVERED)", "Hủy đơn (CANCELLED)"};
-        String[] keys = {"CONFIRMED", "SHIPPING", "DELIVERED", "CANCELLED"};
+        String[] options = {"Xác nhận đơn (CONFIRMED)", "Giao hàng (SHIPPED)", "Hủy đơn (CANCELLED)"};
+        String[] keys = {"CONFIRMED", "SHIPPED", "CANCELLED"};
 
         new androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Cập nhật trạng thái đơn hàng")

@@ -19,6 +19,9 @@ public class OrderRepository {
 
     /** Lấy đơn hàng từ Firestore thay vì API để đồng bộ với PaymentActivity. */
     public void getOrdersFromFirestore(String userId, OnOrdersLoadedListener listener) {
+        // Tự động xác nhận các đơn hàng quá hạn 2 phút
+        autoConfirmOverdueOrders(userId);
+
         // Query by either 'userId' or 'user' field to cover both old and new data
         com.google.firebase.firestore.Query query1 = db.collection("orders").whereEqualTo("userId", userId);
         com.google.firebase.firestore.Query query2 = db.collection("orders").whereEqualTo("user", userId);
@@ -144,6 +147,22 @@ public class OrderRepository {
             return null;
         }).addOnSuccessListener(v -> listener.onFinished(true, null))
           .addOnFailureListener(e -> listener.onFinished(false, e.getMessage()));
+    }
+
+    private void autoConfirmOverdueOrders(String userId) {
+        long twoMinsAgo = System.currentTimeMillis() - (2 * 60 * 1000);
+        db.collection("orders")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("status", "SHIPPED")
+            .get()
+            .addOnSuccessListener(snap -> {
+                for (com.google.firebase.firestore.DocumentSnapshot doc : snap) {
+                    com.google.firebase.Timestamp ts = doc.getTimestamp("updatedAt");
+                    if (ts != null && ts.toDate().getTime() < twoMinsAgo) {
+                        updateOrderStatusInFirestore(doc.getId(), "DELIVERED", "Hệ thống tự động xác nhận sau 2 phút", (success, err) -> {});
+                    }
+                }
+            });
     }
 
     public void updateOrderStatusInFirestore(String orderId, String newStatus, String note, OnOrderActionFinishedListener listener) {

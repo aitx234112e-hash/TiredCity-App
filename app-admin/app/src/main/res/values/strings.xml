@@ -165,6 +165,11 @@
     <string name="paid_no">Chưa thanh toán</string>
     <string name="feedback_marked">Đã đánh dấu phản hồi</string>
     <string name="btn_reply_review">Phản hồi đánh giá</string>
+    <string name="btn_approve_review">Duyệt đánh giá</string>
+    <string name="btn_hide_review">Ẩn đánh giá</string>
+    <string name="review_status_approved">Công khai</string>
+    <string name="review_status_hidden">Đã ẩn</string>
+    <string name="review_status_pending">Chờ duyệt</string>
     <string name="hint_admin_reply">Nhập lời phản hồi của cửa hàng…</string>
     <string name="review_replied_ok">Đã gửi phản hồi</string>
     <string name="revenue_chart_title">Doanh thu 6 tháng gần nhất</string>

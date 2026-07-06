@@ -117,8 +117,12 @@ public class DashboardActivity extends AppCompatActivity {
             double totalRev = 0;
             int pending = 0;
             for (QueryDocumentSnapshot d : snap) {
-                totalRev += DocUtils.num(d, "totalPrice", "total", "amount");
-                if ("pending".equalsIgnoreCase(DocUtils.str(d, "status"))) pending++;
+                String status = DocUtils.str(d, "status");
+                // Doanh thu chỉ tính trên các đơn hàng đã hoàn tất (DELIVERED)
+                if ("DELIVERED".equalsIgnoreCase(status)) {
+                    totalRev += DocUtils.num(d, "totalPrice", "total", "amount");
+                }
+                if ("pending".equalsIgnoreCase(status)) pending++;
             }
             binding.tvRevenue.setText(DocUtils.money(totalRev));
             binding.tvOrders.setText(String.valueOf(snap.size()));

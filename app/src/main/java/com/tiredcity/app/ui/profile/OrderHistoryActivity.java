@@ -139,7 +139,21 @@ public class OrderHistoryActivity extends BaseActivity {
         } else {
             filtered = new ArrayList<>();
             for (Order o : allOrders) {
-                if (currentStatusFilter.equalsIgnoreCase(o.getStatus())) {
+                String status = o.getStatus() != null ? o.getStatus().toUpperCase() : "";
+                
+                // Xử lý bộ lọc cho tab "Đang giao" (chấp nhận cả SHIPPING và SHIPPED)
+                if (Constants.ORDER_SHIPPING.equals(currentStatusFilter)) {
+                    if (status.equals("SHIPPING") || status.equals("SHIPPED")) {
+                        filtered.add(o);
+                    }
+                } 
+                // Xử lý bộ lọc cho tab "Chờ xử lý" (bao gồm cả PENDING, CONFIRMED, PROCESSING)
+                else if (Constants.ORDER_PENDING.equals(currentStatusFilter)) {
+                    if (status.equals("PENDING") || status.equals("CONFIRMED") || status.equals("PROCESSING")) {
+                        filtered.add(o);
+                    }
+                }
+                else if (currentStatusFilter.equalsIgnoreCase(o.getStatus())) {
                     filtered.add(o);
                 }
             }
@@ -216,6 +230,7 @@ public class OrderHistoryActivity extends BaseActivity {
                 String pId = order.getItems().get(0).getProduct().getId();
                 Intent intent = new Intent(this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
                 intent.putExtra(Constants.EXTRA_PRODUCT_ID, pId);
+                intent.putExtra(Constants.EXTRA_ACTION_REVIEW, true); // Tự động mở dialog đánh giá
                 startActivity(intent);
             } else {
                 // Mở màn hình chi tiết đơn hàng (tracking) để người dùng chọn sản phẩm đánh giá

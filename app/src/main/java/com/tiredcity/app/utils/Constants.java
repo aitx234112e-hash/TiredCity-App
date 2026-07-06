@@ -41,6 +41,7 @@ public final class Constants {
     public static final String EXTRA_PRODUCT_ID = "extra_product_id";
     public static final String EXTRA_ORDER_ID   = "extra_order_id";
     public static final String EXTRA_CATEGORY   = "extra_category";
+    public static final String EXTRA_ACTION_REVIEW = "extra_action_review";
 
     // Languages
     public static final String LANG_VI          = "vi";
@@ -50,7 +51,7 @@ public final class Constants {
     // Order statuses
     public static final String ORDER_PENDING   = "PENDING";
     public static final String ORDER_CONFIRMED = "CONFIRMED";
-    public static final String ORDER_SHIPPING  = "SHIPPING";
+    public static final String ORDER_SHIPPING  = "SHIPPED";
     public static final String ORDER_DELIVERED = "DELIVERED";
     public static final String ORDER_CANCELLED = "CANCELLED";
 

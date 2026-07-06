@@ -92,7 +92,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
             // Logic hien thi nut hanh dong
             String status = order.getStatus() != null ? order.getStatus().toUpperCase() : "";
-            boolean canConfirm = status.equals("SHIPPING") || status.equals("SHIPPED") || status.equals("PROCESSING");
+            boolean canConfirm = status.equals("SHIPPING") || status.equals("SHIPPED") || status.equals("PROCESSING") || status.equals("CONFIRMED");
             boolean canReview = status.equals("DELIVERED");
 
             if (canConfirm || canReview) {
@@ -120,24 +120,25 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
         private String getStatusLabel(String status) {
             if (status == null) return "Không rõ";
-            switch (status) {
-                case Constants.ORDER_PENDING:   return "Chờ xử lý";
-                case Constants.ORDER_CONFIRMED: return "Đã xác nhận";
-                case Constants.ORDER_SHIPPING:  return "Đang giao";
-                case Constants.ORDER_DELIVERED: return "Đã nhận";
-                case Constants.ORDER_CANCELLED: return "Đã hủy";
+            String s = status.toUpperCase();
+            if (s.equals("SHIPPING") || s.equals("SHIPPED")) return "Đang giao";
+            switch (s) {
+                case "PENDING":   return "Chờ xử lý";
+                case "CONFIRMED": 
+                case "PROCESSING": return "Đã xác nhận";
+                case "DELIVERED": return "Đã nhận";
+                case "CANCELLED": return "Đã hủy";
                 default: return status;
             }
         }
 
         private int getStatusBackground(String status) {
             if (status == null) return R.drawable.bg_status_pending;
-            switch (status) {
-                case Constants.ORDER_DELIVERED: return R.drawable.bg_status_delivered;
-                case Constants.ORDER_SHIPPING:  return R.drawable.bg_status_shipping;
-                case Constants.ORDER_CANCELLED: return R.drawable.bg_status_cancelled;
-                default: return R.drawable.bg_status_pending;
-            }
+            String s = status.toUpperCase();
+            if (s.equals("DELIVERED")) return R.drawable.bg_status_delivered;
+            if (s.equals("SHIPPING") || s.equals("SHIPPED")) return R.drawable.bg_status_shipping;
+            if (s.equals("CANCELLED")) return R.drawable.bg_status_cancelled;
+            return R.drawable.bg_status_pending;
         }
     }
 }

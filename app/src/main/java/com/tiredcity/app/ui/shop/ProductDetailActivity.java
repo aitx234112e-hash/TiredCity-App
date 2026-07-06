@@ -174,6 +174,12 @@ public class ProductDetailActivity extends BaseActivity {
 
         viewModel.getCanUserReview().observe(this, canReview -> {
             binding.btnWriteReview.setVisibility(canReview ? View.VISIBLE : View.GONE);
+            
+            // Tự động mở dialog đánh giá nếu được yêu cầu từ màn hình Đơn hàng
+            if (canReview && getIntent().getBooleanExtra(Constants.EXTRA_ACTION_REVIEW, false)) {
+                getIntent().removeExtra(Constants.EXTRA_ACTION_REVIEW); // Chỉ mở một lần
+                showAddReviewDialog();
+            }
         });
 
         // Lắng nghe đánh giá
