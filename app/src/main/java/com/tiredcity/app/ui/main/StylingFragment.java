@@ -6,11 +6,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.StylingAdapter;
@@ -39,6 +44,7 @@ public class StylingFragment extends Fragment {
 
     private FragmentStylingBinding binding;
     private StylingAdapter adapter;
+    private boolean bannerInitialized = false;
 
     // Nhãn các tab (giữ in hoa từ string resource).
     private static final int[] TAB_LABELS = {
@@ -55,6 +61,22 @@ public class StylingFragment extends Fragment {
             "ÁO DÀI", "NHẬT BÌNH", "ÁO TẤC", "GIAO LĨNH", "YẾM ĐÀO", "PHỤ KIỆN"
     };
 
+    // Ảnh banner danh mục ứng với từng tab, theo đúng thứ tự TAB_CATEGORY_IDS.
+    private static final int[] TAB_BANNER_IMAGES = {
+            R.drawable.cat_banner_ao_dai,
+            R.drawable.cat_banner_nhat_binh,
+            R.drawable.cat_banner_ao_tac,
+            R.drawable.cat_banner_giao_linh,
+            R.drawable.cat_banner_yem_dao,
+            R.drawable.cat_banner_phu_kien
+    };
+
+    // Tỷ lệ rộng/cao thật của ảnh banner danh mục (1999×787) — dùng để khung hiện FULL ảnh
+    private static final float CATEGORY_BANNER_RATIO = 1999f / 787f;
+    private static final long BANNER_SLIDE_DURATION = 220L;
+    private static final long SHIMMER_DURATION = 900L;
+    private static final long SHIMMER_DELAY = 150L;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -68,6 +90,7 @@ public class StylingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupCategoryList();
+        setupCategoryBanner();
         setupTabs();
         setupHeader();
     }
@@ -81,6 +104,10 @@ public class StylingFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (binding != null) {
+            binding.frameCategoryBanner.animate().cancel();
+            binding.shimmerCategoryBanner.animate().cancel();
+        }
         binding = null;
     }
 
@@ -125,8 +152,11 @@ public class StylingFragment extends Fragment {
             }
             startActivity(intent);
         });
-        binding.rvCategories.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvCategories.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         binding.rvCategories.setAdapter(adapter);
+        // Tắt animator mặc định để không "đánh nhau" với hiệu ứng mờ+trượt lên tự vẽ trong
+        // StylingAdapter (mỗi lần notifyDataSetChanged khi đổi tab).
+        binding.rvCategories.setItemAnimator(null);
     }
 
     // ── Tab nhóm trang phục ────────────────────────────────────────────────────
@@ -140,6 +170,7 @@ public class StylingFragment extends Fragment {
             @Override public void onTabSelected(TabLayout.Tab tab) {
                 adapter.setItems(buildCategories(tab.getPosition()));
                 binding.rvCategories.scrollToPosition(0);
+                updateCategoryBanner(tab.getPosition());
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) { }
             @Override public void onTabReselected(TabLayout.Tab tab) { }
@@ -160,6 +191,91 @@ public class StylingFragment extends Fragment {
             if (TAB_CATEGORY_IDS[i].equals(categoryId)) return i;
         }
         return 0;
+    }
+
+    // ── Banner danh mục — 1 ảnh riêng cho tab đang chọn ────────────────────────
+
+    /** Chỉ đo khung theo tỷ lệ ảnh gốc; ảnh thật được nạp lần đầu qua updateCategoryBanner()
+     *  khi setupTabs() chọn tab mặc định (tab.select() tự gọi listener bên dưới). */
+    private void setupCategoryBanner() {
+        applyAspectRatio(binding.frameCategoryBanner, CATEGORY_BANNER_RATIO);
+    }
+
+    /** Đổi ảnh banner theo tab: lần đầu vào màn hình banner Áo Dài hiện ra NGAY (không trượt) —
+     *  chỉ vệt sáng chéo "tráng gương" lướt qua; các lần đổi tab sau đó thì banner cũ trượt ra
+     *  ngoài bên trái rồi banner mới trượt vào từ bên phải, đồng bộ ngôn ngữ hiệu ứng với các
+     *  banner ở Trang chủ. */
+    private void updateCategoryBanner(int tabPosition) {
+        if (binding == null || tabPosition < 0 || tabPosition >= TAB_BANNER_IMAGES.length) return;
+        int imageRes = TAB_BANNER_IMAGES[tabPosition];
+        View banner = binding.frameCategoryBanner;
+
+        if (!bannerInitialized) {
+            bannerInitialized = true;
+            binding.ivCategoryBanner.setImageResource(imageRes);
+            banner.post(this::playBannerShimmer);
+            return;
+        }
+
+        banner.animate().cancel();
+        banner.animate()
+                .translationX(-banner.getWidth())
+                .setDuration(BANNER_SLIDE_DURATION)
+                .setInterpolator(new AccelerateInterpolator())
+                .withEndAction(() -> {
+                    if (binding == null) return;
+                    binding.ivCategoryBanner.setImageResource(imageRes);
+                    slideBannerIn(banner);
+                })
+                .start();
+    }
+
+    /** Đặt banner ra ngoài mép phải rồi trượt vào vị trí — dùng chung cho lần vào màn hình đầu
+     *  tiên lẫn mỗi lần đổi tab sau đó. */
+    private void slideBannerIn(View banner) {
+        if (binding == null) return;
+        int width = banner.getWidth();
+        if (width <= 0) return;
+        banner.setTranslationX(width);
+        banner.animate()
+                .translationX(0f)
+                .setDuration(BANNER_SLIDE_DURATION)
+                .setInterpolator(new DecelerateInterpolator())
+                .withEndAction(this::playBannerShimmer)
+                .start();
+    }
+
+    /** Vệt sáng chéo lướt 1 lần qua banner — xem HomeFragment.ShimmerSweep (cùng ý tưởng). */
+    private void playBannerShimmer() {
+        if (binding == null) return;
+        View shimmer = binding.shimmerCategoryBanner;
+        int width = binding.frameCategoryBanner.getWidth();
+        if (width <= 0) return;
+        shimmer.animate().cancel();
+        shimmer.setTranslationX(-width * 0.6f);
+        shimmer.animate()
+                .translationX(width * 1.3f)
+                .setStartDelay(SHIMMER_DELAY)
+                .setDuration(SHIMMER_DURATION)
+                .setInterpolator(new LinearInterpolator())
+                .start();
+    }
+
+    /** Ép container về đúng tỷ lệ rộng/cao theo bề rộng đo được thực tế (giống HomeFragment). */
+    private static void applyAspectRatio(View container, float widthToHeightRatio) {
+        container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = container.getWidth();
+                if (width <= 0) return;
+                int desiredHeight = Math.round(width / widthToHeightRatio);
+                ViewGroup.LayoutParams params = container.getLayoutParams();
+                if (params.height != desiredHeight) {
+                    params.height = desiredHeight;
+                    container.setLayoutParams(params);
+                }
+            }
+        });
     }
 
     /** Danh mục con hiển thị cho từng tab. */
@@ -240,10 +356,25 @@ public class StylingFragment extends Fragment {
         for (int i = 0; i < colorsWithDescRes.length; i++) {
             String bucket = (String) colorsWithDescRes[i][0];
             int descRes = (int) colorsWithDescRes[i][1];
-            list.add(new CategoryItem(i + 1, ColorTaxonomy.displayNameRes(bucket), descRes, 0,
-                    swatchFor(ctx, bucket), parentCategory, bucket));
+            list.add(new CategoryItem(i + 1, ColorTaxonomy.displayNameRes(bucket), descRes,
+                    imageForBucket(bucket), swatchFor(ctx, bucket), parentCategory, bucket));
         }
         return list;
+    }
+
+    /** Ảnh minh hoạ riêng cho từng nhóm màu (thay ô màu phẳng) — trả về 0 nếu chưa có ảnh
+     *  (StylingAdapter sẽ tự lùi về màu phẳng của swatchFor() làm nền). */
+    @DrawableRes
+    private static int imageForBucket(String bucket) {
+        if (ColorTaxonomy.DO.equals(bucket))      return R.drawable.swatch_do;
+        if (ColorTaxonomy.XANH.equals(bucket))    return R.drawable.swatch_xanh;
+        if (ColorTaxonomy.VANG.equals(bucket))    return R.drawable.swatch_vang;
+        if (ColorTaxonomy.TRANG.equals(bucket))   return R.drawable.swatch_trang;
+        if (ColorTaxonomy.HONG.equals(bucket))    return R.drawable.swatch_hong;
+        if (ColorTaxonomy.TIM.equals(bucket))     return R.drawable.swatch_tim;
+        if (ColorTaxonomy.XANH_LA.equals(bucket)) return R.drawable.swatch_xanh_la;
+        if (ColorTaxonomy.CAM.equals(bucket))     return R.drawable.swatch_cam;
+        return 0; // Đen Huyền Bí: chưa có ảnh riêng
     }
 
     @ColorInt
@@ -263,12 +394,12 @@ public class StylingFragment extends Fragment {
     // ── PHỤ KIỆN: chia theo loại phụ kiện, không phải theo màu ─────────────────
 
     private List<CategoryItem> buildPhuKienCategories() {
-        // {tên hiển thị (@StringRes), mô tả (@StringRes), giá trị lọc khớp với cột MÀU trong dữ liệu phụ kiện}
+        // {tên hiển thị (@StringRes), mô tả (@StringRes), giá trị lọc khớp với cột MÀU trong dữ liệu phụ kiện, ảnh minh hoạ}
         Object[][] data = {
-                {R.string.phukien_khan_title,     R.string.phukien_khan_desc,     "Khăn đội đầu"},
-                {R.string.phukien_quat_title,     R.string.phukien_quat_desc,     "Quạt"},
-                {R.string.phukien_oche_title,     R.string.phukien_oche_desc,     "Ô che"},
-                {R.string.phukien_mudoidau_title, R.string.phukien_mudoidau_desc, "Mũ đội đầu"},
+                {R.string.phukien_khan_title,     R.string.phukien_khan_desc,     "Khăn đội đầu", R.drawable.phukien_khan},
+                {R.string.phukien_quat_title,     R.string.phukien_quat_desc,     "Quạt",         R.drawable.phukien_quat},
+                {R.string.phukien_oche_title,     R.string.phukien_oche_desc,     "Ô che",        R.drawable.phukien_oche},
+                {R.string.phukien_mudoidau_title, R.string.phukien_mudoidau_desc, "Mũ đội đầu",   R.drawable.phukien_mudoidau},
         };
         Context ctx = requireContext();
         int[] palette = {
@@ -280,8 +411,8 @@ public class StylingFragment extends Fragment {
 
         List<CategoryItem> list = new ArrayList<>();
         for (int i = 0; i < data.length; i++) {
-            list.add(new CategoryItem(i + 1, (int) data[i][0], (int) data[i][1], 0, palette[i % palette.length],
-                    "PHỤ KIỆN", (String) data[i][2]));
+            list.add(new CategoryItem(i + 1, (int) data[i][0], (int) data[i][1], (int) data[i][3],
+                    palette[i % palette.length], "PHỤ KIỆN", (String) data[i][2]));
         }
         return list;
     }

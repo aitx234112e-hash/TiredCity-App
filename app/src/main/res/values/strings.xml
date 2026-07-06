@@ -387,15 +387,15 @@
     <string name="cart_badge_overflow">9+</string>
 
     <!-- Nhãn màu hiển thị cho các nhóm màu (ColorTaxonomy) — tách riêng khỏi hằng số khoá dùng để lọc dữ liệu -->
-    <string name="color_bucket_do">Đỏ</string>
-    <string name="color_bucket_xanh">Xanh</string>
-    <string name="color_bucket_vang">Vàng</string>
-    <string name="color_bucket_trang">Trắng</string>
-    <string name="color_bucket_den">Đen</string>
-    <string name="color_bucket_hong">Hồng</string>
-    <string name="color_bucket_tim">Tím</string>
-    <string name="color_bucket_xanh_la">Xanh lá</string>
-    <string name="color_bucket_cam">Cam</string>
+    <string name="color_bucket_do">Đỏ Cẩm Thạch</string>
+    <string name="color_bucket_xanh">Xanh Lam Ngọc Bích</string>
+    <string name="color_bucket_vang">Vàng Hổ Phách</string>
+    <string name="color_bucket_trang">Trắng Bạch Ngọc</string>
+    <string name="color_bucket_den">Đen Huyền Bí</string>
+    <string name="color_bucket_hong">Hồng Thạch Anh</string>
+    <string name="color_bucket_tim">Tím Hoàng Gia</string>
+    <string name="color_bucket_xanh_la">Xanh Lục Bảo</string>
+    <string name="color_bucket_cam">Cam Hổ Phách</string>
 
     <!-- Styling: mô tả xem trước theo danh mục màu — tên sản phẩm thật, giữ nguyên không dịch -->
     <string name="desc_ao_dai_trang">Khói Trắng Kết Duyên, Phấn Hoa Cổ Điển,…</string>
@@ -420,13 +420,13 @@
     <string name="desc_yem_dao_hong">Dạ Kim Mẫu Đơn,…</string>
 
     <!-- Styling: Phụ Kiện — tên + mô tả từng loại -->
-    <string name="phukien_khan_title">Khăn đội đầu</string>
+    <string name="phukien_khan_title">Vấn đội đầu</string>
     <string name="phukien_khan_desc">Khăn vấn, khăn đội đầu truyền thống,…</string>
-    <string name="phukien_quat_title">Quạt</string>
+    <string name="phukien_quat_title">Quạt Lụa</string>
     <string name="phukien_quat_desc">Quạt xếp, quạt lụa cầm tay,…</string>
-    <string name="phukien_oche_title">Ô che</string>
+    <string name="phukien_oche_title">Lọng Nghi</string>
     <string name="phukien_oche_desc">Ô lọng, dù che truyền thống,…</string>
-    <string name="phukien_mudoidau_title">Mũ đội đầu</string>
+    <string name="phukien_mudoidau_title">Mão đội đầu</string>
     <string name="phukien_mudoidau_desc">Mũ, mão đội đầu cách tân,…</string>
 
     <!-- Shop / Search / Category -->

@@ -6,82 +6,122 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary">
+    android:background="@color/tc_bg_main">
 
-    <!-- ── Search header (ô tìm kiếm + quét mã + giỏ hàng) ── -->
+    <!-- ── Khối tiêu đề đỏ — cùng tinh thần khối "TiredCity xin chào" ở Trang chủ, cho trang
+         Danh mục một bản sắc rõ ràng thay vì mở đầu bằng nền trắng phẳng ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/tc_red"
+        android:paddingHorizontal="@dimen/tc_space_xl"
+        android:paddingTop="@dimen/tc_space_xl"
+        android:paddingBottom="@dimen/tc_space_lg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_eyebrow_categories"
+            android:textColor="@color/tc_gold_bright"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.18" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/section_categories"
+            android:textColor="@color/tc_on_red"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <!-- ── Ô tìm kiếm + giỏ hàng — nền kem ngay dưới khối đỏ; giỏ hàng là nút tròn đỏ nổi bật
+         như 1 CTA thay vì icon phẳng ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/bg_surface"
-        android:elevation="2dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:background="@color/tc_bg_main"
+        android:paddingStart="@dimen/tc_space_xl"
+        android:paddingEnd="@dimen/tc_space_lg"
+        android:paddingTop="@dimen/tc_space_lg"
+        android:paddingBottom="@dimen/tc_space_md">
 
-        <!-- Ô tìm kiếm -->
-        <LinearLayout
+        <!-- Ô tìm kiếm — thẻ trắng nổi nhẹ (thay nền be phẳng cũ) để bật lên trên nền kem -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/ll_search"
             android:layout_width="0dp"
-            android:layout_height="44dp"
+            android:layout_height="46dp"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/tc_bg_search"
-            android:paddingStart="14dp"
-            android:paddingEnd="8dp"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            app:cardCornerRadius="@dimen/tc_radius_pill"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/white"
+            app:rippleColor="@color/tc_red_pale">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_search"
-                app:tint="@color/tc_text_secondary"
-                android:contentDescription="@string/search_hint" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="8dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="10dp"
-                android:text="@string/search_hint"
-                android:textColor="@color/tc_input_hint"
-                android:textSize="14sp"
-                android:maxLines="1"
-                android:ellipsize="end" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/tc_red"
+                    android:contentDescription="@string/search_hint" />
 
-            <ImageView
-                android:id="@+id/ib_scan"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_scan"
-                app:tint="@color/tc_text_secondary"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/cd_scan" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/search_hint"
+                    android:textColor="@color/tc_input_hint"
+                    android:textSize="14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <ImageView
+                    android:id="@+id/ib_scan"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_scan"
+                    app:tint="@color/tc_text_secondary"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/cd_scan" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Giỏ hàng -->
         <FrameLayout
             android:id="@+id/btn_cart"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="6dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/tc_bg_circle_red"
             android:clickable="true"
             android:focusable="true">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_cart"
-                app:tint="@color/tc_red"
+                app:tint="@color/tc_on_red"
                 android:contentDescription="@string/cd_cart" />
 
             <TextView
@@ -89,12 +129,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
+                android:layout_marginTop="-2dp"
+                android:layout_marginEnd="-2dp"
                 android:minWidth="17dp"
                 android:minHeight="17dp"
                 android:paddingHorizontal="4dp"
                 android:gravity="center"
-                android:background="@drawable/tc_badge_count"
-                android:textColor="@color/white"
+                android:background="@drawable/tc_badge_count_on_red"
+                android:textColor="@color/tc_espresso"
                 android:textSize="9sp"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -104,24 +146,65 @@
 
     </LinearLayout>
 
-    <!-- ── Tab nhóm kiểu áo (ÁO DÀI / NHẬT BÌNH / ÁO TẤC / GIAO LĨNH / YẾM ĐÀO) ── -->
+    <!-- ── Tab nhóm kiểu áo (ÁO DÀI / NHẬT BÌNH / ÁO TẤC / GIAO LĨNH / YẾM ĐÀO) — dạng "viên
+         thuốc" (segmented control) thay cho gạch chân mặc định, hiện đại hơn ── -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_groups"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_surface"
-        android:elevation="2dp"
+        android:background="@color/tc_bg_main"
+        android:paddingBottom="@dimen/tc_space_md"
         app:tabMode="scrollable"
         app:tabGravity="start"
         app:tabPaddingStart="14dp"
         app:tabPaddingEnd="14dp"
-        app:tabIndicatorColor="@color/tc_red"
-        app:tabIndicatorHeight="3dp"
-        app:tabIndicatorFullWidth="false"
+        app:tabPaddingTop="6dp"
+        app:tabPaddingBottom="6dp"
+        app:tabIndicatorHeight="0dp"
+        app:tabBackground="@drawable/tc_tab_pill_selector"
         app:tabSelectedTextColor="@color/tc_red"
         app:tabTextColor="@color/tc_text_secondary"
         app:tabRippleColor="@color/tc_red_pale"
         app:tabTextAppearance="@style/TextAppearance.TC.CategoryTab" />
+
+    <!-- ── Banner danh mục — MỖI TAB 1 ảnh riêng (Áo Dài/Nhật Bình/Áo Tấc/Giao Lĩnh/Yếm Đào/
+         Phụ Kiện), không phải carousel nhiều trang. Đổi tab thì banner trượt ra ngoài bên trái
+         rồi banner mới trượt vào từ bên phải (StylingFragment.updateCategoryBanner). fitCenter +
+         khung đo đúng tỷ lệ ảnh gốc nên hiện FULL ảnh, không xén; kèm vệt sáng chéo "tráng
+         gương" lướt qua sau mỗi lần đổi. ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/tc_bg_card"
+        android:paddingVertical="14dp">
+
+        <FrameLayout
+            android:id="@+id/frame_category_banner"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginHorizontal="@dimen/tc_space_xl"
+            android:clipChildren="true"
+            android:clipToPadding="true">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_category_banner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/tc_bg_card"
+                android:scaleType="fitCenter"
+                android:contentDescription="@null"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large" />
+
+            <View
+                android:id="@+id/shimmer_category_banner"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@drawable/tc_shimmer_gradient"
+                android:rotation="-18" />
+        </FrameLayout>
+    </LinearLayout>
 
     <!-- ── Danh sách danh mục ── -->
     <androidx.recyclerview.widget.RecyclerView
@@ -129,8 +212,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingStart="@dimen/tc_space_xl"
+        android:paddingEnd="@dimen/tc_space_xl"
         android:paddingTop="12dp"
         android:clipToPadding="false" />
 
