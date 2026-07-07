@@ -30,10 +30,8 @@ import java.util.List;
 public class OrderHistoryActivity extends BaseActivity {
 
     private ActivityOrderHistoryBinding binding;
-    private OrderRepository orderRepository;
-    private OrderAdapter orderAdapter;
     private final List<Order> allOrders = new ArrayList<>();
-    private String currentStatusFilter = null; // null = "Tất cả"
+    private int selectedTab = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,36 +54,18 @@ public class OrderHistoryActivity extends BaseActivity {
         binding.swipeRefresh.setColorSchemeColors(
                 getResources().getColor(com.tiredcity.app.R.color.tc_red, getTheme()));
 
-        binding.btnShopNow.setOnClickListener(v -> goShopping());
-
-        setupTabs();
-
-        loadOrders();
-    }
-
-    private void setupTabs() {
-        // Khởi tạo filter dựa trên tab đang chọn ban đầu
-        updateFilterFromTab(binding.tabLayout.getSelectedTabPosition());
-
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                updateFilterFromTab(tab.getPosition());
-                filterAndDisplay();
+            @Override public void onTabSelected(TabLayout.Tab tab) {
+                selectedTab = tab.getPosition();
+                renderList();
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
-    }
 
-    private void updateFilterFromTab(int position) {
-        switch (position) {
-            case 0: currentStatusFilter = null; break; // Tất cả
-            case 1: currentStatusFilter = Constants.ORDER_PENDING; break; // Chờ xử lý
-            case 2: currentStatusFilter = Constants.ORDER_SHIPPING; break; // Đang giao
-            case 3: currentStatusFilter = Constants.ORDER_DELIVERED; break; // Đã nhận
-            case 4: currentStatusFilter = Constants.ORDER_CANCELLED; break; // Đã hủy
-        }
+        binding.btnShopNow.setOnClickListener(v -> goShopping());
+
+        loadOrders();
     }
 
     private void loadOrders() {
@@ -120,12 +100,12 @@ public class OrderHistoryActivity extends BaseActivity {
                         return Long.compare(tb, ta);
                     });
                     binding.swipeRefresh.setRefreshing(false);
-                    filterAndDisplay();
+                    renderList();
                 })
                 .addOnFailureListener(e -> {
                     binding.swipeRefresh.setRefreshing(false);
                     allOrders.clear();
-                    filterAndDisplay();
+                    renderList();
                 });
     }
 
@@ -146,9 +126,16 @@ public class OrderHistoryActivity extends BaseActivity {
         }
     }
 
-    private void openReviewDialog(Order order) {
-        // Đơn hàng có thể có nhiều sản phẩm. Mở chi tiết đơn để người dùng chọn sản phẩm đánh giá.
-        openOrderTracking(order);
+    /** tab: 0 Tất cả · 1 Chờ xử lý · 2 Đang giao · 3 Đã nhận · 4 Đã hủy */
+    private boolean matchesTab(String status, int tab) {
+        switch (tab) {
+            case 1: return Constants.ORDER_PENDING.equals(status)
+                        || Constants.ORDER_CONFIRMED.equals(status);
+            case 2: return Constants.ORDER_SHIPPING.equals(status);
+            case 3: return Constants.ORDER_DELIVERED.equals(status);
+            case 4: return Constants.ORDER_CANCELLED.equals(status);
+            default: return true;
+        }
     }
 
     /** Hiện badge số thông báo chưa đọc trên chuông thông báo, tối đa "9+". */

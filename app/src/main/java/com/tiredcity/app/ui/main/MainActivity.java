@@ -63,10 +63,24 @@ public class MainActivity extends BaseActivity {
             binding.navProfile.setOnClickListener(v ->
                     startActivity(new Intent(this, com.tiredcity.app.ui.profile.ProfileActivity.class)));
 
-        navController.addOnDestinationChangedListener((controller, destination, args) ->
-                updateSelected(destination.getId()));
+            navController.addOnDestinationChangedListener((controller, destination, args) ->
+                    updateSelected(destination.getId()));
 
-        handleOpenCategoryIntent(getIntent());
+            handleOpenCategoryIntent(getIntent());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_PIN_VERIFY) {
+            if (resultCode == RESULT_OK) {
+                pinVerified = true;
+                initUI();
+            } else {
+                finish(); // Không nhập đúng PIN thì thoát app
+            }
+        }
     }
 
     @Override
