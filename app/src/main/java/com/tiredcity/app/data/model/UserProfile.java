@@ -8,6 +8,10 @@ public class UserProfile {
     @SerializedName("id")
     private String id;
 
+    /** Firebase Auth UID (đăng nhập Google/email thật) — dùng để đồng bộ hồ sơ với Firestore. */
+    @SerializedName("uid")
+    private String uid;
+
     @SerializedName("name")
     private String name;
 
@@ -59,6 +63,9 @@ public class UserProfile {
 
     public String getId()                       { return id; }
     public void setId(String id)                { this.id = id; }
+
+    public String getUid()                      { return uid; }
+    public void setUid(String uid)              { this.uid = uid; }
 
     public String getName()                     { return name; }
     public void setName(String name)            { this.name = name; }

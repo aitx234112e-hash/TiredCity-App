@@ -1,5 +1,6 @@
 package com.tiredcity.app.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.Order;
 import com.tiredcity.app.data.model.OrderItemPreview;
@@ -18,12 +20,17 @@ import com.tiredcity.app.utils.Constants;
 import com.tiredcity.app.utils.DateUtils;
 import com.tiredcity.app.utils.PriceUtils;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
 
     /** Số dòng sản phẩm hiển thị tối đa trong 1 thẻ; phần dư gộp vào "+N sản phẩm khác". */
     private static final int MAX_VISIBLE_ITEMS = 3;
+
+    /** Số ngày ước tính từ lúc đặt đến lúc giao — dùng cho dòng "Dự kiến giao" khi đang SHIPPING. */
+    private static final int ESTIMATED_SHIPPING_DAYS = 3;
 
     public interface OnOrderClickListener {
         void onOrderClick(Order order);
@@ -65,23 +72,25 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         private final TextView tvOrderTotal;
         private final TextView tvMoreItems;
         private final LinearLayout llProducts;
-        private final View layoutActions;
-        private final View dividerActions;
-        private final android.widget.Button btnConfirmReceived;
-        private final android.widget.Button btnReview;
+        private final LinearLayout layoutStatusPanel;
+        private final ImageView ivStatusIcon;
+        private final TextView tvStatusTitle;
+        private final TextView tvStatusDesc;
+        private final MaterialButton btnStatusAction;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvOrderId     = itemView.findViewById(R.id.tv_order_id);
-            tvOrderStatus = itemView.findViewById(R.id.tv_order_status);
-            tvOrderDate   = itemView.findViewById(R.id.tv_order_date);
-            tvOrderTotal  = itemView.findViewById(R.id.tv_order_total);
-            tvMoreItems   = itemView.findViewById(R.id.tv_more_items);
-            llProducts    = itemView.findViewById(R.id.ll_products);
-            layoutActions = itemView.findViewById(R.id.layout_actions);
-            dividerActions = itemView.findViewById(R.id.divider_actions);
-            btnConfirmReceived = itemView.findViewById(R.id.btn_confirm_received);
-            btnReview     = itemView.findViewById(R.id.btn_review);
+            tvOrderId         = itemView.findViewById(R.id.tv_order_id);
+            tvOrderStatus     = itemView.findViewById(R.id.tv_order_status);
+            tvOrderDate       = itemView.findViewById(R.id.tv_order_date);
+            tvOrderTotal      = itemView.findViewById(R.id.tv_order_total);
+            tvMoreItems       = itemView.findViewById(R.id.tv_more_items);
+            llProducts        = itemView.findViewById(R.id.ll_products);
+            layoutStatusPanel = itemView.findViewById(R.id.layout_status_panel);
+            ivStatusIcon      = itemView.findViewById(R.id.iv_status_icon);
+            tvStatusTitle     = itemView.findViewById(R.id.tv_status_title);
+            tvStatusDesc      = itemView.findViewById(R.id.tv_status_desc);
+            btnStatusAction   = itemView.findViewById(R.id.btn_status_action);
         }
 
         void bind(Order order, OnOrderClickListener listener) {
@@ -96,33 +105,44 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                     getStatusColor(order.getStatus()), itemView.getContext().getTheme()));
 
             bindProducts(order.getPreviewItems());
+            bindStatusPanel(order);
 
-            // Logic hien thi nut hanh dong
-            String status = order.getStatus() != null ? order.getStatus().toUpperCase() : "";
-            boolean canConfirm = status.equals("SHIPPING") || status.equals("SHIPPED") || status.equals("PROCESSING") || status.equals("CONFIRMED");
-            boolean canReview = status.equals("DELIVERED");
-
-            if (canConfirm || canReview) {
-                layoutActions.setVisibility(View.VISIBLE);
-                dividerActions.setVisibility(View.VISIBLE);
-                btnConfirmReceived.setVisibility(canConfirm ? View.VISIBLE : View.GONE);
-                btnReview.setVisibility(canReview ? View.VISIBLE : View.GONE);
-            } else {
-                layoutActions.setVisibility(View.GONE);
-                dividerActions.setVisibility(View.GONE);
-            }
-
-            btnConfirmReceived.setOnClickListener(v -> {
-                if (listener != null) listener.onConfirmReceived(order);
-            });
-
-            btnReview.setOnClickListener(v -> {
-                if (listener != null) listener.onReviewOrder(order);
-            });
-
-            itemView.setOnClickListener(v -> {
+            View.OnClickListener openOrder = v -> {
                 if (listener != null) listener.onOrderClick(order);
-            });
+            };
+            itemView.setOnClickListener(openOrder);
+            btnStatusAction.setOnClickListener(openOrder);
+        }
+
+        /** Panel be ở cuối thẻ: icon xe tải + "Dự kiến giao" khi đang SHIPPING, icon đồng hồ +
+         *  lời nhắn khi CHỜ XỬ LÝ; ẩn hẳn khi đã nhận/đã hủy vì không còn hành động theo dõi. */
+        private void bindStatusPanel(Order order) {
+            String status = order.getStatus();
+            Context context = itemView.getContext();
+
+            if (Constants.ORDER_SHIPPING.equals(status)) {
+                layoutStatusPanel.setVisibility(View.VISIBLE);
+                ivStatusIcon.setImageResource(R.drawable.ic_truck);
+                tvStatusTitle.setText(R.string.order_status_shipping_title);
+                tvStatusDesc.setText(context.getString(R.string.order_status_shipping_desc,
+                        DateUtils.formatShortVN(estimatedDelivery(order.getCreatedAt()))));
+                btnStatusAction.setText(R.string.order_track_button);
+            } else if (Constants.ORDER_PENDING.equals(status) || Constants.ORDER_CONFIRMED.equals(status)) {
+                layoutStatusPanel.setVisibility(View.VISIBLE);
+                ivStatusIcon.setImageResource(R.drawable.ic_clock);
+                tvStatusTitle.setText(R.string.order_status_pending_title);
+                tvStatusDesc.setText(R.string.order_status_pending_desc);
+                btnStatusAction.setText(R.string.order_view_detail_button);
+            } else {
+                layoutStatusPanel.setVisibility(View.GONE);
+            }
+        }
+
+        private Date estimatedDelivery(Date createdAt) {
+            Calendar cal = Calendar.getInstance();
+            if (createdAt != null) cal.setTime(createdAt);
+            cal.add(Calendar.DAY_OF_MONTH, ESTIMATED_SHIPPING_DAYS);
+            return cal.getTime();
         }
 
         /** Đổ tối đa MAX_VISIBLE_ITEMS dòng sản phẩm vào container; phần dư → "+N sản phẩm khác". */

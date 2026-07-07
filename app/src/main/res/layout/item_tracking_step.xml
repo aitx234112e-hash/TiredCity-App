@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -38,18 +39,20 @@
             android:id="@+id/tv_step_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đặt hàng thành công"
             android:textColor="@color/text_primary"
             android:textSize="13sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Đặt hàng thành công" />
 
         <TextView
             android:id="@+id/tv_step_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="25/05/2026 10:30"
             android:textColor="@color/text_hint"
             android:textSize="11sp"
-            android:layout_marginTop="2dp" />
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            tools:text="25/05/2026 10:30"
+            tools:visibility="visible" />
     </LinearLayout>
 </LinearLayout>

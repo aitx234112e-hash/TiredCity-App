@@ -447,7 +447,21 @@
       "Bash(cp '__TRACKED_VAR__/mệnh thuỷ/pattern.gif' menh_thuy_patterns_4.gif)",
       "Bash(./gradlew :app:compileDebugJavaWithJavac -q)",
       "Bash(python -c \"import json; json.load\\(open\\('.claude/settings.local.json', encoding='utf-8'\\)\\); print\\('JSON OK'\\)\")",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(git ls-remote *)",
+      "Bash(./gradlew.bat :app:compileDebugJavaWithJavac -q)",
+      "Bash(command -v gradle)",
+      "Bash(\"/c/Users/ADMIN/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj/gradle-9.4.1/bin/gradle.bat\" :app:compileDebugJavaWithJavac -q)",
+      "Read(//c/Program Files/Android/Android Studio/jbr/**)",
+      "Read(//c/Program Files/**)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "Bash(JAVA_HOME=\"/c/Program Files/Android/Android Studio/jbr\" \"/c/Users/ADMIN/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj/gradle-9.4.1/bin/gradle.bat\" :app:compileDebugJavaWithJavac -q)",
+      "Bash([ -f \"$DEBUG_KS\" ])",
+      "Bash('/c/Program Files/Android/Android Studio/jbr/bin/keytool.exe' -list -v -keystore /c/Users/ADMIN/.android/debug.keystore -storepass android -alias androiddebugkey)",
+      "Bash(keytool -list -v -keystore \"/c/Users/ADMIN/.android/debug.keystore\" -alias androiddebugkey -storepass android -keypass android)",
+      "Read(//c/Program Files/Android/Android Studio/jbr/bin/**)",
+      "Bash(\"/c/Program Files/Android/Android Studio/jbr/bin/keytool.exe\" -list -v -keystore \"C:\\\\Users\\\\ADMIN\\\\.android\\\\debug.keystore\" -alias androiddebugkey -storepass android -keypass android)",
+      "Bash(python -c \"import xml.etree.ElementTree as ET; ET.parse\\('app/src/main/res/layout/activity_product_detail.xml'\\); ET.parse\\('app/src/main/res/values/strings.xml'\\); print\\('OK'\\)\")"
     ]
   }
 }

@@ -31,6 +31,7 @@ import com.tiredcity.app.databinding.ActivitySearchBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.CartActivity;
 import com.tiredcity.app.ui.explore.EventDetailActivity;
+import com.tiredcity.app.ui.main.MainActivity;
 import com.tiredcity.app.ui.reward.VoucherDetailActivity;
 import com.tiredcity.app.utils.Constants;
 
@@ -113,7 +114,7 @@ public class SearchActivity extends BaseActivity {
         binding.btnViewAllResults.setOnClickListener(v -> showAllProductsAsResults());
 
         setupSearchBannerCarousel();
-        setupSuggestedKeywords();
+        refreshSuggestedKeywords();
         setupSuggestions();
         refreshRecentSearches();
 
@@ -148,6 +149,7 @@ public class SearchActivity extends BaseActivity {
         firestoreRepository.getProducts(products -> {
             allProducts = products != null ? products : new ArrayList<>();
             refreshSuggestionProducts();
+            refreshSuggestedKeywords();
         });
     }
 
@@ -168,12 +170,7 @@ public class SearchActivity extends BaseActivity {
                 R.drawable.search_banner_ao_tac_xanh_lam_ngoc_bich, getString(R.string.cat_ao_tac)));
 
         searchBannerAdapter = new BannerAdapter(items);
-        searchBannerAdapter.setOnBannerClickListener((position, item) -> {
-            Intent intent = new Intent(this, CategoryActivity.class);
-            intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, item.title);
-            intent.putExtra(CategoryActivity.EXTRA_CATEGORY_NAME, item.title);
-            startActivity(intent);
-        });
+        searchBannerAdapter.setOnBannerClickListener((position, item) -> openCategory(item.title, item.title));
         binding.vpSearchBanner.setAdapter(searchBannerAdapter);
         binding.dotsSearchBanner.attachTo(binding.vpSearchBanner);
     }
@@ -195,9 +192,9 @@ public class SearchActivity extends BaseActivity {
 
         binding.chipGroupRecent.removeAllViews();
         for (String query : recent) {
-            Chip chip = createDarkChip(query);
+            Chip chip = createRedOutlineChip(query);
             chip.setCloseIconVisible(true);
-            chip.setCloseIconTint(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
+            chip.setCloseIconTint(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.tc_red)));
             chip.setOnClickListener(v -> {
                 binding.etSearch.setText(query);
                 binding.etSearch.setSelection(query.length());
@@ -213,26 +210,74 @@ public class SearchActivity extends BaseActivity {
 
     // ── Gợi ý từ khóa ───────────────────────────────────────────────────────────
 
-    private void setupSuggestedKeywords() {
-        for (String keyword : getResources().getStringArray(R.array.search_suggested_keywords)) {
-            Chip chip = createDarkChip(keyword);
-            chip.setOnClickListener(v -> {
-                binding.etSearch.setText(keyword);
-                binding.etSearch.setSelection(keyword.length());
-                performSearch(keyword);
-            });
+    /** 6 danh mục trang phục — khớp với các tab bên "Danh mục" (StylingFragment). */
+    private static final int[] SUGGESTED_CATEGORY_LABELS = {
+            R.string.cat_tab_ao_dai,
+            R.string.cat_tab_nhat_binh,
+            R.string.cat_tab_ao_tac,
+            R.string.cat_tab_giao_linh,
+            R.string.cat_tab_yem_dao,
+            R.string.cat_tab_phu_kien
+    };
+    private static final String[] SUGGESTED_CATEGORY_IDS = {
+            "ÁO DÀI", "NHẬT BÌNH", "ÁO TẤC", "GIAO LĨNH", "YẾM ĐÀO", "PHỤ KIỆN"
+    };
+
+    /** Số tên sản phẩm thật bơm thêm vào cuối danh sách gợi ý, sau khi Firestore tải xong. */
+    private static final int SUGGESTED_PRODUCT_KEYWORD_COUNT = 4;
+
+    /**
+     * Vẽ lại toàn bộ chip "gợi ý từ khóa": 6 tên danh mục trước, rồi vài tên sản phẩm thật
+     * (nếu đã tải xong) — bấm vào tên danh mục sẽ mở đúng danh mục đó, bấm vào tên sản phẩm
+     * sẽ mở đúng trang chi tiết sản phẩm đó.
+     */
+    private void refreshSuggestedKeywords() {
+        binding.chipGroupKeywords.removeAllViews();
+        for (int i = 0; i < SUGGESTED_CATEGORY_IDS.length; i++) {
+            String categoryId = SUGGESTED_CATEGORY_IDS[i];
+            Chip chip = createRedOutlineChip(getString(SUGGESTED_CATEGORY_LABELS[i]));
+            chip.setOnClickListener(v -> openStylingCategoryTab(categoryId));
+            binding.chipGroupKeywords.addView(chip);
+        }
+
+        int count = Math.min(SUGGESTED_PRODUCT_KEYWORD_COUNT, allProducts.size());
+        for (int i = 0; i < count; i++) {
+            Product product = allProducts.get(i);
+            if (product.getName() == null) continue;
+            Chip chip = createRedOutlineChip(product.getName());
+            chip.setOnClickListener(v -> openProductDetail(product));
             binding.chipGroupKeywords.addView(chip);
         }
     }
 
-    /** Chip nền nâu than, chữ trắng in hoa — dùng cho cả chip "gần đây" lẫn "gợi ý từ khóa". */
-    private Chip createDarkChip(String text) {
+    /** Mở lưới sản phẩm của một danh mục (khớp với {@code Product.getCategory()}) — dùng cho banner carousel. */
+    private void openCategory(String categoryId, String categoryName) {
+        Intent intent = new Intent(this, CategoryActivity.class);
+        intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, categoryId);
+        intent.putExtra(CategoryActivity.EXTRA_CATEGORY_NAME, categoryName);
+        startActivity(intent);
+    }
+
+    /**
+     * Mở tab "Danh mục" (StylingFragment) và chọn sẵn đúng nhóm trang phục — dùng cho chip tên
+     * danh mục trong "gợi ý từ khóa", thay vì mở thẳng lưới sản phẩm như {@link #openCategory}.
+     */
+    private void openStylingCategoryTab(String categoryId) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(MainActivity.EXTRA_OPEN_CATEGORY_ID, categoryId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
+    /** Chip nền trắng, viền đỏ, chữ đen in hoa — dùng cho cả chip "gần đây" lẫn "gợi ý từ khóa". */
+    private Chip createRedOutlineChip(String text) {
         Chip chip = new Chip(this);
         chip.setText(text);
         chip.setAllCaps(true);
-        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.tc_espresso)));
-        chip.setTextColor(ContextCompat.getColor(this, R.color.white));
-        chip.setChipStrokeWidth(0f);
+        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
+        chip.setTextColor(ContextCompat.getColor(this, R.color.black));
+        chip.setChipStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.tc_red)));
+        chip.setChipStrokeWidth(getResources().getDimension(R.dimen.tc_stroke_w));
         return chip;
     }
 
@@ -311,6 +356,7 @@ public class SearchActivity extends BaseActivity {
             firestoreRepository.getProducts(products -> {
                 allProducts = products != null ? products : new ArrayList<>();
                 refreshSuggestionProducts();
+                refreshSuggestedKeywords();
                 binding.swipeRefresh.setRefreshing(false);
                 showFilteredResults(keyword);
             });

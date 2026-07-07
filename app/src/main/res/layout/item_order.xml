@@ -5,49 +5,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="@dimen/tc_space_lg"
+    android:layout_marginBottom="@dimen/tc_space_lg"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="@color/bg_surface"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="2dp"
-    app:strokeColor="@color/tc_stroke"
-    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/tc_radius_lg"
+    app:cardElevation="3dp"
     app:rippleColor="@color/tc_ripple_red_subtle">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="15dp">
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="18dp">
 
-        <!-- Header: mã đơn + trạng thái -->
+        <!-- Header: mã đơn + ngày đặt (trái) / trạng thái (phải) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:orientation="horizontal">
 
             <View
                 android:layout_width="3dp"
                 android:layout_height="15dp"
                 android:layout_marginEnd="9dp"
+                android:layout_marginTop="1dp"
                 android:background="@drawable/bg_order_accent" />
 
-            <TextView
-                android:id="@+id/tv_order_id"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ellipsize="middle"
-                android:singleLine="true"
-                android:textColor="@color/text_primary"
-                android:textSize="13.5sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.01"
-                tools:text="#DH2024001" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_order_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.01"
+                    tools:text="#5rbpoGFdFKZCwDfNr6hV" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="6dp">
+
+                    <ImageView
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="@color/text_hint"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:id="@+id/tv_order_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_hint"
+                        android:textSize="12sp"
+                        tools:text="07/07/2026" />
+                </LinearLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_order_status"
@@ -62,46 +90,13 @@
                 tools:text="Chờ xử lý" />
         </LinearLayout>
 
-        <!-- Ngày đặt -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="7dp"
-            android:layout_marginStart="12dp">
-
-            <ImageView
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:layout_marginEnd="5dp"
-                android:src="@drawable/ic_calendar"
-                app:tint="@color/text_hint"
-                android:contentDescription="@null" />
-
-            <TextView
-                android:id="@+id/tv_order_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_hint"
-                android:textSize="12sp"
-                tools:text="07/07/2026" />
-        </LinearLayout>
-
-        <!-- Kẻ răng cưa -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="12dp"
-            android:layerType="software"
-            android:background="@drawable/bg_dashed_line" />
-
         <!-- Danh sách sản phẩm (đổ động từ adapter) -->
         <LinearLayout
             android:id="@+id/ll_products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:layout_marginTop="16dp" />
 
         <!-- "+ N sản phẩm khác" -->
         <TextView
@@ -109,7 +104,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginStart="2dp"
             android:textColor="@color/tc_red"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -117,13 +111,12 @@
             tools:text="+ 2 sản phẩm khác"
             tools:visibility="visible" />
 
-        <!-- Kẻ răng cưa -->
+        <!-- Đường kẻ rất nhạt -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginVertical="12dp"
-            android:layerType="software"
-            android:background="@drawable/bg_dashed_line" />
+            android:layout_marginVertical="14dp"
+            android:background="@color/bg_subtle" />
 
         <!-- Footer: thành tiền + mũi tên -->
         <LinearLayout
@@ -137,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/order_amount_label"
                 android:textColor="@color/text_secondary"
-                android:textSize="12.5sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_order_total"
@@ -148,10 +141,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="4dp"
                 android:textColor="@color/tc_red"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
-                tools:text="1.730.000 ₫" />
+                tools:text="1.730.000 đ" />
 
             <ImageView
                 android:layout_width="18dp"
@@ -161,53 +154,63 @@
                 android:contentDescription="@null" />
         </LinearLayout>
 
-        <!-- Divider -->
-        <View
-            android:id="@+id/divider_actions"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/bg_subtle"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:visibility="gone"
-            tools:visibility="visible"/>
-
-        <!-- Action buttons -->
+        <!-- Panel trạng thái: giao hàng / chờ xử lý — ẩn với đơn đã nhận/đã hủy -->
         <LinearLayout
-            android:id="@+id/layout_actions"
+            android:id="@+id/layout_status_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="end"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_order_status_panel"
+            android:padding="16dp"
+            android:layout_marginTop="14dp">
+
+            <ImageView
+                android:id="@+id/iv_status_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:tint="@color/tc_red"
+                android:src="@drawable/ic_truck"
+                android:contentDescription="@null" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:id="@+id/tv_status_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Đang giao" />
+
+                <TextView
+                    android:id="@+id/tv_status_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    tools:text="Dự kiến giao: 08 Thg 7" />
+            </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_confirm_received"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:id="@+id/btn_status_action"
+                style="@style/Widget.TC.Button.Outlined"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đã nhận được hàng"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textColor="@color/tc_red"
-                app:strokeColor="@color/tc_red"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_review"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Đánh giá"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:backgroundTint="@color/tc_red"
-                android:textColor="@color/white"
-                android:layout_marginStart="8dp"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+                android:layout_marginStart="10dp"
+                android:paddingHorizontal="14dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                tools:text="Theo dõi đơn" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

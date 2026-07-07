@@ -74,6 +74,7 @@
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
         <item name="android:letterSpacing">0.04</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <!-- Số thứ tự "01".."06" ở các thẻ Vertical Card Stack (Chi tiết sản phẩm). Cần parent=""

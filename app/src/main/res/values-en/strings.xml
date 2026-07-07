@@ -478,7 +478,7 @@
     <string name="search_view_all_results">View all results</string>
     <string-array name="search_recent_seed_keywords">
         <item>Silk áo dài</item>
-        <item>Hand-embroidered Nhật Bình</item>
+        <item>Nhật Bình</item>
         <item>Hair accessories</item>
     </string-array>
     <string name="search_empty_title">No results found</string>
@@ -487,14 +487,6 @@
     <string name="search_result_count">%1$d results found</string>
     <string name="search_not_found">No results for \"%1$s\"</string>
 
-    <string-array name="search_suggested_keywords">
-        <item>White áo dài</item>
-        <item>Brocade áo dài</item>
-        <item>Men\'s áo tấc</item>
-        <item>Imperial Nhật Bình</item>
-        <item>Embroidered Giao Lĩnh</item>
-        <item>Traditional fan</item>
-    </string-array>
     <string name="sort_popular">Popular</string>
     <string name="sort_newest">Newest</string>
     <string name="sort_price_asc">Price: Low to High</string>
@@ -517,6 +509,12 @@
     <string name="order_history_title">My Purchases</string>
     <string name="order_more_items">+ %1$d more items</string>
     <string name="order_amount_label">Total</string>
+    <string name="order_status_shipping_title">Shipping</string>
+    <string name="order_status_shipping_desc">Estimated delivery: %1$s</string>
+    <string name="order_status_pending_title">Order pending</string>
+    <string name="order_status_pending_desc">We\'ll confirm your order shortly.</string>
+    <string name="order_track_button">Track order</string>
+    <string name="order_view_detail_button">View details</string>
     <string name="order_tab_all">All</string>
     <string name="order_tab_pending">Processing</string>
     <string name="order_tab_shipping">Shipping</string>

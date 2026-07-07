@@ -7,13 +7,15 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingVertical="7dp">
+    android:paddingVertical="8dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="58dp"
-        android:layout_height="58dp"
-        app:cardCornerRadius="12dp"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        app:cardCornerRadius="@dimen/tc_radius_lg"
         app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:contentPadding="0dp"
         app:strokeColor="@color/tc_stroke"
         app:strokeWidth="1dp">
 
@@ -31,58 +33,73 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:layout_marginStart="14dp">
 
-        <TextView
-            android:id="@+id/tv_product_name"
+        <!-- Tên sản phẩm + giá cùng một hàng, chia đều 2 đầu -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            android:lineSpacingExtra="1dp"
-            tools:text="Áo dài gấm hoa sen truyền thống" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tv_product_variant"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_product_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Kim Vũ Phong Hoa" />
+
+            <TextView
+                android:id="@+id/tv_line_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                tools:text="1.750.000 đ" />
+        </LinearLayout>
+
+        <!-- Biến thể + số lượng cùng một hàng, chia đều 2 đầu -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:paddingHorizontal="7dp"
-            android:paddingVertical="2dp"
-            android:background="@drawable/bg_variant_chip"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp"
-            android:visibility="gone"
-            tools:text="Size M • Đỏ"
-            tools:visibility="visible" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="end"
-        android:layout_marginStart="10dp">
+            <TextView
+                android:id="@+id/tv_product_variant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="9dp"
+                android:paddingVertical="3dp"
+                android:background="@drawable/bg_variant_chip"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="S • Vàng"
+                tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tv_line_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
-            tools:text="890.000 ₫" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/tv_quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textColor="@color/text_hint"
-            android:textSize="11.5sp"
-            tools:text="x1" />
+            <TextView
+                android:id="@+id/tv_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/text_hint"
+                android:textSize="12sp"
+                tools:text="x1" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

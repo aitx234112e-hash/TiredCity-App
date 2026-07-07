@@ -8,6 +8,7 @@ public class DateUtils {
     private static final Locale VN_LOCALE = new Locale("vi", "VN");
     private static final SimpleDateFormat DISPLAY_FORMAT = new SimpleDateFormat("dd/MM/yyyy", VN_LOCALE);
     private static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm", VN_LOCALE);
+    private static final SimpleDateFormat SHORT_VN_FORMAT = new SimpleDateFormat("dd 'Thg' M", VN_LOCALE);
     private static final SimpleDateFormat API_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
     private DateUtils() {}
@@ -39,6 +40,12 @@ public class DateUtils {
     /** Alias for formatDisplayDate — used by activities that call DateUtils.formatDisplay(). */
     public static String formatDisplay(Date date) {
         return formatDisplayDate(date);
+    }
+
+    /** Vd "08 Thg 7" — dùng cho dòng "Dự kiến giao" ở thẻ đơn hàng. */
+    public static String formatShortVN(Date date) {
+        if (date == null) return "";
+        return SHORT_VN_FORMAT.format(date);
     }
 
     public static String getRelativeTime(Date date) {

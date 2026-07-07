@@ -11,21 +11,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.tiredcity.app.adapter.OrderAdapter;
 import com.tiredcity.app.data.model.Order;
-import com.tiredcity.app.data.model.OrderItemPreview;
-import com.tiredcity.app.data.repository.OrderRepository;
+import com.tiredcity.app.data.repository.OrderMapper;
 import com.tiredcity.app.databinding.ActivityOrderHistoryBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.OrderTrackingActivity;
 import com.tiredcity.app.ui.main.MainActivity;
 import com.tiredcity.app.utils.Constants;
+import com.tiredcity.app.utils.EdgeToEdgeUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
 
 /**
  * Lịch sử đơn hàng — đọc thẳng từ Cloud Firestore (collection "orders"),
@@ -45,11 +41,14 @@ public class OrderHistoryActivity extends BaseActivity {
         binding = ActivityOrderHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        orderRepository = new OrderRepository(null);
+        // targetSdk 35 vẽ edge-to-edge: đệm header đỏ xuống dưới thanh trạng thái (pin/wifi)
+        // để không bị dính/che chữ, xem EdgeToEdgeUtils.
+        EdgeToEdgeUtils.applyStatusBarTopPadding(binding.headerRed);
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        binding.toolbar.setNavigationOnClickListener(v -> finish());
+        binding.btnBack.setOnClickListener(v -> finish());
+        binding.btnNotification.setOnClickListener(v -> startActivity(new Intent(this,
+                com.tiredcity.app.ui.notification.NotificationActivity.class)));
+        bindNotifBadge();
 
         binding.rvOrders.setLayoutManager(new LinearLayoutManager(this));
 
@@ -112,7 +111,7 @@ public class OrderHistoryActivity extends BaseActivity {
 
                     allOrders.clear();
                     for (QueryDocumentSnapshot doc : use) {
-                        allOrders.add(mapOrder(doc));
+                        allOrders.add(OrderMapper.mapOrder(doc));
                     }
                     // Mới nhất lên đầu (sắp xếp phía client để khỏi cần composite index).
                     Collections.sort(allOrders, (a, b) -> {
@@ -130,163 +129,37 @@ public class OrderHistoryActivity extends BaseActivity {
                 });
     }
 
-    private void filterAndDisplay() {
-        List<Order> filtered;
-        if (currentStatusFilter == null) {
-            filtered = allOrders;
-        } else {
-            filtered = new ArrayList<>();
-            for (Order o : allOrders) {
-                String status = o.getStatus() != null ? o.getStatus().toUpperCase(Locale.US) : "";
-
-                // Xử lý bộ lọc cho tab "Đang giao" (chấp nhận cả SHIPPING và SHIPPED)
-                if (Constants.ORDER_SHIPPING.equals(currentStatusFilter)) {
-                    if (status.equals("SHIPPING") || status.equals("SHIPPED")) {
-                        filtered.add(o);
-                    }
-                }
-                // Xử lý bộ lọc cho tab "Chờ xử lý" (bao gồm cả PENDING, CONFIRMED, PROCESSING)
-                else if (Constants.ORDER_PENDING.equals(currentStatusFilter)) {
-                    if (status.equals("PENDING") || status.equals("CONFIRMED") || status.equals("PROCESSING")) {
-                        filtered.add(o);
-                    }
-                }
-                else if (currentStatusFilter.equalsIgnoreCase(o.getStatus())) {
-                    filtered.add(o);
-                }
-            }
+    /** Áp bộ lọc theo tab đang chọn rồi cập nhật danh sách / trạng thái rỗng. */
+    private void renderList() {
+        List<Order> filtered = new ArrayList<>();
+        for (Order o : allOrders) {
+            if (matchesTab(o.getStatus(), selectedTab)) filtered.add(o);
         }
-        displayOrders(filtered);
-    }
 
-    /** Cập nhật danh sách / trạng thái rỗng theo kết quả đã lọc. */
-    private void displayOrders(List<Order> orders) {
-        if (orders.isEmpty()) {
+        if (filtered.isEmpty()) {
             binding.layoutEmpty.setVisibility(View.VISIBLE);
             binding.swipeRefresh.setVisibility(View.GONE);
         } else {
             binding.layoutEmpty.setVisibility(View.GONE);
             binding.swipeRefresh.setVisibility(View.VISIBLE);
-            orderAdapter = new OrderAdapter(orders, new OrderAdapter.OnOrderClickListener() {
-                @Override
-                public void onOrderClick(Order order) {
-                    openOrderTracking(order);
-                }
-
-                @Override
-                public void onConfirmReceived(Order order) {
-                    confirmReceived(order);
-                }
-
-                @Override
-                public void onReviewOrder(Order order) {
-                    openReviewDialog(order);
-                }
-            });
-            binding.rvOrders.setAdapter(orderAdapter);
+            binding.rvOrders.setAdapter(new OrderAdapter(filtered, this::openOrderTracking));
         }
-    }
-
-    /** Map 1 document Firestore → model Order (chỉ các field cần cho danh sách). */
-    private Order mapOrder(QueryDocumentSnapshot doc) {
-        Order order = new Order();
-        order.setId(doc.getId());
-        order.setStatus(normalizeStatus(safeString(doc.get("status"))));
-        order.setPaymentMethod(safeString(doc.get("paymentMethod")));
-        order.setShippingAddress(safeString(doc.get("shippingAddress")));
-
-        Object total = doc.get("totalPrice");
-        order.setTotalPrice(total instanceof Number ? ((Number) total).doubleValue() : 0);
-
-        Object items = doc.get("items");
-        List<OrderItemPreview> previews = new ArrayList<>();
-        if (items instanceof List) {
-            for (Object raw : (List<?>) items) {
-                if (raw instanceof Map) previews.add(mapPreview((Map<?, ?>) raw));
-            }
-        }
-        order.setItemCount(previews.size());
-        order.setPreviewItems(previews);
-
-        order.setCreatedAt(parseCreatedAt(doc.get("createdAt")));
-        return order;
-    }
-
-    /** createdAt có thể là String ISO (app ghi) hoặc Firestore Timestamp/Date (web-admin ghi). */
-    private java.util.Date parseCreatedAt(Object raw) {
-        if (raw instanceof com.google.firebase.Timestamp) return ((com.google.firebase.Timestamp) raw).toDate();
-        if (raw instanceof java.util.Date) return (java.util.Date) raw;
-        if (raw instanceof String) return parseIso((String) raw);
-        return null;
-    }
-
-    /** Map 1 phần tử trong mảng items của Firestore → OrderItemPreview. */
-    private OrderItemPreview mapPreview(Map<?, ?> m) {
-        String name  = safeString(m.get("product_name"));
-        String image = safeString(m.get("image"));
-        String size  = safeString(m.get("size"));
-        String color = safeString(m.get("color"));
-        int qty = m.get("quantity") instanceof Number ? ((Number) m.get("quantity")).intValue() : 1;
-        double line = m.get("lineTotal") instanceof Number ? ((Number) m.get("lineTotal")).doubleValue() : 0;
-        return new OrderItemPreview(name, image, size, color, qty, line);
-    }
-
-    /** Trả String nếu là chuỗi; null nếu rỗng — tránh crash khi field là kiểu khác. */
-    private String safeString(Object o) {
-        return o instanceof String ? (String) o : (o != null ? String.valueOf(o) : null);
-    }
-
-    /** Chuẩn hoá status chữ thường của web/app về hằng số Constants (chữ hoa). */
-    private String normalizeStatus(String raw) {
-        if (raw == null) return Constants.ORDER_PENDING;
-        switch (raw.toLowerCase(Locale.US)) {
-            case "processing":
-            case "confirmed":  return Constants.ORDER_CONFIRMED;
-            case "shipped":
-            case "shipping":   return Constants.ORDER_SHIPPING;
-            case "delivered":
-            case "received":   return Constants.ORDER_DELIVERED;
-            case "cancelled":
-            case "canceled":   return Constants.ORDER_CANCELLED;
-            default:           return Constants.ORDER_PENDING;
-        }
-    }
-
-    private java.util.Date parseIso(String iso) {
-        if (iso == null || iso.isEmpty()) return null;
-        // Định dạng PaymentActivity ghi: yyyy-MM-dd'T'HH:mm:ss.SSS'Z' (UTC)
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
-        try {
-            return fmt.parse(iso);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private void confirmReceived(Order order) {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Xác nhận đã nhận hàng")
-            .setMessage("Bạn chắc chắn đã nhận được hàng và hài lòng với sản phẩm?")
-            .setPositiveButton("Xác nhận", (dialog, which) -> {
-                binding.swipeRefresh.setRefreshing(true);
-                orderRepository.updateOrderStatusInFirestore(order.getId(), "DELIVERED", "Khách hàng xác nhận đã nhận hàng", (success, error) -> {
-                    binding.swipeRefresh.setRefreshing(false);
-                    if (success) {
-                        android.widget.Toast.makeText(this, "Cảm ơn bạn đã xác nhận!", android.widget.Toast.LENGTH_SHORT).show();
-                        loadOrders(); // Tải lại danh sách
-                    } else {
-                        android.widget.Toast.makeText(this, "Lỗi: " + error, android.widget.Toast.LENGTH_SHORT).show();
-                    }
-                });
-            })
-            .setNegativeButton("Đóng", null)
-            .show();
     }
 
     private void openReviewDialog(Order order) {
         // Đơn hàng có thể có nhiều sản phẩm. Mở chi tiết đơn để người dùng chọn sản phẩm đánh giá.
         openOrderTracking(order);
+    }
+
+    /** Hiện badge số thông báo chưa đọc trên chuông thông báo, tối đa "9+". */
+    private void bindNotifBadge() {
+        int count = new com.tiredcity.app.data.local.NotificationStore(this).getUnreadCount();
+        if (count <= 0) {
+            binding.tvNotifBadge.setVisibility(View.GONE);
+        } else {
+            binding.tvNotifBadge.setVisibility(View.VISIBLE);
+            binding.tvNotifBadge.setText(count > 9 ? "9+" : String.valueOf(count));
+        }
     }
 
     private void openOrderTracking(Order order) {

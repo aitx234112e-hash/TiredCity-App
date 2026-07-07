@@ -116,13 +116,15 @@
 
     </LinearLayout>
 
-    <!-- ── Tab nhóm kiểu áo (ÁO DÀI / NHẬT BÌNH / ÁO TẤC / GIAO LĨNH / YẾM ĐÀO) — dạng "viên
-         thuốc" đỏ đặc thay cho gạch chân mặc định, chữ trắng để đọc rõ trên nền đen. ── -->
+    <!-- ── Tab nhóm kiểu áo (ÁO DÀI / NHẬT BÌNH / ÁO TẤC / GIAO LĨNH / YẾM ĐÀO) — gạch chân đỏ
+         báo hiệu tab đang chọn, chữ trắng đậm để đọc rõ trên nền đen. ── -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_groups"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/tc_noir"
+        android:paddingStart="@dimen/tc_space_lg"
+        android:paddingEnd="@dimen/tc_space_lg"
         android:paddingTop="@dimen/tc_space_sm"
         android:paddingBottom="@dimen/tc_space_md"
         app:tabMode="scrollable"
@@ -131,10 +133,11 @@
         app:tabPaddingEnd="14dp"
         app:tabPaddingTop="6dp"
         app:tabPaddingBottom="6dp"
-        app:tabIndicatorHeight="0dp"
-        app:tabBackground="@drawable/tc_tab_pill_selector"
+        app:tabIndicatorHeight="3dp"
+        app:tabIndicatorColor="@color/tc_red"
+        app:tabIndicatorFullWidth="false"
         app:tabSelectedTextColor="@android:color/white"
-        app:tabTextColor="@color/tc_on_dark"
+        app:tabTextColor="@color/tc_on_dark_secondary"
         app:tabRippleColor="@color/tc_on_dark_divider"
         app:tabTextAppearance="@style/TextAppearance.TC.CategoryTab" />
 

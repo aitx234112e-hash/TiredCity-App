@@ -429,11 +429,11 @@
     <string name="btn_view_all_reviews">Xem tất cả đánh giá</string>
     <string name="label_free_shipping">Giao hàng nhanh</string>
     <string name="label_free_shipping_subtitle">Toàn quốc</string>
-    <string name="label_easy_returns">7 ngày đổi trả</string>
+    <string name="label_easy_returns">7 ngày\nđổi trả</string>
     <string name="label_easy_returns_subtitle">Miễn phí</string>
-    <string name="label_secure_payment">Thanh toán an toàn</string>
+    <string name="label_secure_payment">Thanh toán\nan toàn</string>
     <string name="label_secure_payment_subtitle">Bảo mật 100%</string>
-    <string name="label_premium_material">Chất liệu cao cấp</string>
+    <string name="label_premium_material">Chất liệu\ncao cấp</string>
     <string name="label_premium_material_subtitle">Thoáng mát</string>
     <string name="label_service_commitments">Cam kết dịch vụ</string>
     <string name="label_story">Câu chuyện</string>
@@ -505,8 +505,8 @@
     <string name="search_suggested_products_title">Sản phẩm đề xuất</string>
     <string name="search_view_all_results">Xem tất cả kết quả</string>
     <string-array name="search_recent_seed_keywords">
-        <item>Áo dài lụa tơ tằm</item>
-        <item>Nhật bình thêu tay</item>
+        <item>Áo dài lụa</item>
+        <item>Nhật bình</item>
         <item>Phụ kiện tóc</item>
     </string-array>
     <string name="search_empty_title">Không tìm thấy kết quả</string>
@@ -515,14 +515,6 @@
     <string name="search_result_count">Tìm thấy %1$d kết quả</string>
     <string name="search_not_found">Không tìm thấy \"%1$s\"</string>
 
-    <string-array name="search_suggested_keywords">
-        <item>Áo dài trắng</item>
-        <item>Áo dài gấm</item>
-        <item>Áo tấc nam</item>
-        <item>Nhật bình cung đình</item>
-        <item>Giao lĩnh thêu hoa</item>
-        <item>Quạt truyền thống</item>
-    </string-array>
     <string name="sort_popular">Phổ biến</string>
     <string name="sort_newest">Mới nhất</string>
     <string name="sort_price_asc">Giá tăng dần</string>
@@ -545,6 +537,12 @@
     <string name="order_history_title">Đơn hàng đã mua</string>
     <string name="order_more_items">+ %1$d sản phẩm khác</string>
     <string name="order_amount_label">Thành tiền</string>
+    <string name="order_status_shipping_title">Đang giao</string>
+    <string name="order_status_shipping_desc">Dự kiến giao: %1$s</string>
+    <string name="order_status_pending_title">Đơn hàng đang chờ xử lý</string>
+    <string name="order_status_pending_desc">Chúng tôi sẽ sớm xác nhận đơn hàng của bạn.</string>
+    <string name="order_track_button">Theo dõi đơn</string>
+    <string name="order_view_detail_button">Xem chi tiết</string>
     <string name="order_tab_all">Tất cả</string>
     <string name="order_tab_pending">Chờ xử lý</string>
     <string name="order_tab_shipping">Đang giao</string>
