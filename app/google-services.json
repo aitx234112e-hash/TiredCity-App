@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "683649996737-0ibbe0kk4f1081uo7m7djrr6d4vg2v4l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tiredcity.app",
+            "certificate_hash": "06ff4629f65fd59ecb75240daebd2f2fdae62a19"
+          }
+        },
+        {
           "client_id": "683649996737-7vjlpsh6f3av9hnvnuhaaln6se2vbb2k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

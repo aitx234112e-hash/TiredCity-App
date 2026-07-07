@@ -14,6 +14,10 @@ import com.tiredcity.app.ui.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
 
+    /** Extra: id danh mục cần mở sẵn ở tab "Danh mục" — dùng khi một Activity khác (vd. chip
+     *  tên danh mục ở màn Tìm kiếm) muốn quay lại đây và nhảy thẳng vào đúng nhóm trang phục. */
+    public static final String EXTRA_OPEN_CATEGORY_ID = "open_category_id";
+
     private ActivityMainBinding binding;
     private NavController navController;
 
@@ -39,6 +43,32 @@ public class MainActivity extends BaseActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, args) ->
                 updateSelected(destination.getId()));
+
+        handleOpenCategoryIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleOpenCategoryIntent(intent);
+    }
+
+    /** Nếu Intent mang theo {@link #EXTRA_OPEN_CATEGORY_ID} thì mở thẳng tab Danh mục và chọn
+     *  sẵn đúng nhóm trang phục đó (vd. bấm chip tên danh mục ở "gợi ý từ khóa" trong Tìm kiếm). */
+    private void handleOpenCategoryIntent(Intent intent) {
+        String categoryId = intent.getStringExtra(EXTRA_OPEN_CATEGORY_ID);
+        if (categoryId == null) return;
+
+        Bundle args = new Bundle();
+        args.putString(StylingFragment.ARG_CATEGORY_ID, categoryId);
+        // Không setRestoreState(true): thao tác này phải luôn hiện đúng danh mục vừa bấm, không
+        // được khôi phục lại instance StylingFragment đã lưu trước đó (đang đứng ở tab khác).
+        NavOptions options = new NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setPopUpTo(navController.getGraph().getStartDestinationId(), false, false)
+                .build();
+        navController.navigate(R.id.stylingFragment, args, options);
     }
 
     /** Điều hướng tab theo kiểu bottom-nav: single-top + lưu/khôi phục trạng thái. */

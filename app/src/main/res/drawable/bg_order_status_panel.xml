@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền be nhạt cho panel trạng thái ở cuối thẻ đơn hàng (giao hàng / chờ xử lý). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_linen" />
+    <corners android:radius="16dp" />
+</shape>

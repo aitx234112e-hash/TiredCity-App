@@ -1,71 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary">
+    android:background="@color/white">
 
-    <!-- Toolbar -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <!-- ── Header đỏ: back + logo gà trống + thông báo (bỏ banner wordmark TIREDCITY). ── -->
+    <LinearLayout
+        android:id="@+id/header_red"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/bg_primary"
-        app:navigationIcon="@drawable/ic_back"
-        app:title="@string/order_history_title"
-        app:titleTextColor="@color/text_primary"
-        app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/tc_red"
+        android:paddingStart="6dp"
+        android:paddingEnd="@dimen/tc_space_sm"
+        android:paddingTop="18dp"
+        android:paddingBottom="@dimen/tc_space_lg">
 
-    <!-- Status filter tabs -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            app:tint="@color/tc_on_red"
+            android:scaleType="centerInside"
+            android:padding="8dp"
+            android:contentDescription="@string/nav_back" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_tc_logo"
+            app:tint="@color/tc_on_red"
+            android:contentDescription="@string/app_name" />
+
+        <FrameLayout
+            android:id="@+id/btn_notification"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/cd_notifications">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_bell"
+                app:tint="@color/tc_on_red"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/tv_notif_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:minWidth="17dp"
+                android:minHeight="17dp"
+                android:paddingHorizontal="4dp"
+                android:gravity="center"
+                android:background="@drawable/tc_badge_count_on_red"
+                android:textColor="@color/tc_espresso"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="56"
+                tools:visibility="visible" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- ── Tiêu đề + tab lọc trạng thái: nền đen, chữ trắng, gạch chân đỏ + ripple khi nhấn —
+         cùng bản sắc với tab nhóm trang phục ở màn Danh mục (fragment_styling.xml). ── -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="46dp"
-        android:background="@color/bg_primary"
-        app:tabTextColor="@color/text_secondary"
-        app:tabSelectedTextColor="@color/tc_red"
-        app:tabIndicatorColor="@color/tc_red"
-        app:tabIndicatorHeight="3dp"
-        app:tabIndicatorFullWidth="false"
-        app:tabInlineLabel="true"
-        app:tabRippleColor="@color/tc_ripple_red_subtle"
-        app:tabTextAppearance="@style/TextAppearance.TiredCity.OrderTab"
-        app:tabPaddingStart="14dp"
-        app:tabPaddingEnd="14dp"
-        app:tabMode="scrollable">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/tc_noir">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/order_tab_all" />
+            android:text="@string/order_history_title"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/tc_space_xl"
+            android:paddingTop="@dimen/tc_space_lg"
+            android:paddingBottom="@dimen/tc_space_md" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_tab_pending" />
+        <!-- Status filter tabs -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@color/tc_noir"
+            app:tabTextColor="@color/tc_on_dark_secondary"
+            app:tabSelectedTextColor="@color/white"
+            app:tabIndicatorColor="@color/tc_red"
+            app:tabIndicatorHeight="3dp"
+            app:tabIndicatorFullWidth="false"
+            app:tabInlineLabel="true"
+            app:tabRippleColor="@color/tc_on_dark_divider"
+            app:tabTextAppearance="@style/TextAppearance.TiredCity.OrderTab"
+            app:tabPaddingStart="14dp"
+            app:tabPaddingEnd="14dp"
+            app:tabMode="scrollable">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_tab_shipping" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_tab_all" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_tab_received" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_tab_pending" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/order_tab_cancelled" />
-    </com.google.android.material.tabs.TabLayout>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_tab_shipping" />
 
-    <!-- Đường phân cách mảnh dưới tabs -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/tc_stroke" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_tab_received" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_tab_cancelled" />
+        </com.google.android.material.tabs.TabLayout>
+    </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -77,7 +152,7 @@
             android:id="@+id/rv_orders"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="14dp"
+            android:paddingTop="@dimen/tc_space_lg"
             android:paddingBottom="20dp"
             android:clipToPadding="false" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -30,9 +30,12 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.ApiResponse;
@@ -40,6 +43,7 @@ import com.tiredcity.app.data.model.User;
 import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.repository.AuthRepository;
+import com.tiredcity.app.data.repository.FirestoreUserRepository;
 import com.tiredcity.app.databinding.ActivityLoginBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.main.MainActivity;
@@ -81,6 +85,7 @@ public class LoginActivity extends BaseActivity {
 
     private GoogleSignInClient googleSignInClient;
     private ActivityResultLauncher<Intent> googleSignInLauncher;
+    private final FirestoreUserRepository userRepository = new FirestoreUserRepository();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,11 +247,43 @@ public class LoginActivity extends BaseActivity {
         try {
             GoogleSignInAccount account =
                     GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException.class);
-            // idToken có giá trị khi đã cấu hình Web Client ID — gửi sang backend khi sẵn sàng:
-            //   authRepository.googleLogin(account.getIdToken())...
-            String email = account.getEmail();
-            String name  = account.getDisplayName();
-            completeSocialLogin("Google", email != null ? email : "", name);
+            String email    = account.getEmail();
+            String name     = account.getDisplayName();
+            String idToken  = account.getIdToken();
+            String avatar   = account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : null;
+
+            if (idToken == null) {
+                // Chưa cấu hình Web Client ID thật → không có idToken để xác thực qua Firebase,
+                // đành đăng nhập cục bộ (không có FirebaseUser/uid) như trước đây.
+                completeSocialLogin("Google", email != null ? email : "", name, null);
+                return;
+            }
+
+            // Xác thực THẬT qua Firebase Auth bằng idToken của Google → có FirebaseUser.uid
+            // dùng chung cho Firestore (thay vì chỉ lấy email/tên cục bộ như trước).
+            AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+            binding.btnGoogle.setEnabled(false);
+            FirebaseAuth.getInstance().signInWithCredential(credential)
+                    .addOnSuccessListener(this, result -> {
+                        binding.btnGoogle.setEnabled(true);
+                        FirebaseUser firebaseUser = result.getUser();
+                        String uid = firebaseUser != null ? firebaseUser.getUid() : null;
+                        if (uid != null) {
+                            userRepository.syncUser(uid, email, name, avatar, "google");
+                        }
+                        completeSocialLogin("Google", email != null ? email : "", name, uid);
+                    })
+                    .addOnFailureListener(this, e -> {
+                        binding.btnGoogle.setEnabled(true);
+                        // Log chi tiết thật của lỗi (vd "CONFIGURATION_NOT_FOUND" khi provider Google
+                        // chưa được bật trong Firebase Console → Authentication → Sign-in method) để
+                        // chẩn đoán qua Logcat thay vì chỉ thấy thông báo chung chung.
+                        android.util.Log.e("LoginActivity", "Firebase signInWithCredential(Google) thất bại", e);
+                        String detail = e.getMessage();
+                        String msg = getString(R.string.google_signin_failed)
+                                + (detail != null ? " (" + detail + ")" : "");
+                        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                    });
         } catch (ApiException e) {
             if (e.getStatusCode() != GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
                 Toast.makeText(this,
@@ -420,19 +457,28 @@ public class LoginActivity extends BaseActivity {
      * Khi có backend: thay bằng Google Sign-In / Facebook Login SDK / Apple, lấy token rồi gọi server.
      */
     private void socialLogin(String provider, String email) {
-        completeSocialLogin(provider, email, null);
+        completeSocialLogin(provider, email, null, null);
     }
 
     /**
      * Hoàn tất đăng nhập mạng xã hội. {@code displayName} là tên thật lấy từ tài khoản
      * (vd Google account); nếu null sẽ suy ra từ email hoặc dùng "{provider} User".
+     * {@code uid} là Firebase Auth UID thật (chỉ có khi đã xác thực qua signInWithCredential,
+     * vd Google); null nếu đăng nhập cục bộ không qua Firebase (vd Facebook demo).
      */
-    private void completeSocialLogin(String provider, String email, String displayName) {
+    private void completeSocialLogin(String provider, String email, String displayName, String uid) {
         preferenceManager.saveToken(DEMO_TOKEN);
-        preferenceManager.saveUserId(TextUtils.isEmpty(email) ? provider : email);
+        preferenceManager.saveUserId(!TextUtils.isEmpty(uid) ? uid
+                : (TextUtils.isEmpty(email) ? provider : email));
 
         UserProfile profile = preferenceManager.getUser();
         if (profile == null) profile = new UserProfile();
+        if (!TextUtils.isEmpty(uid)) {
+            profile.setUid(uid);
+            // profile.id chưa từng được gán ở nơi khác trong luồng đăng nhập cục bộ này —
+            // gán bằng uid thật để đơn hàng (PaymentActivity) gắn đúng chủ tài khoản Firebase.
+            profile.setId(uid);
+        }
         boolean hasRealName = profile.getName() != null && !profile.getName().trim().isEmpty();
         if (!hasRealName) {
             profile.setEmail(email);

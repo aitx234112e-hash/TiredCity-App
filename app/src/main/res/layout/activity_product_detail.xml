@@ -891,20 +891,20 @@
                     android:layout_marginBottom="14dp"
                     android:background="@color/tc_red" />
 
-                <!-- 1 khung thống nhất nền đen + viền đỏ, 4 cột chia bởi vạch mảnh — giống hệt
+                <!-- 1 khung nền đỏ sơn mài (gradient), 4 cột chia bởi vạch mảnh — giống hệt
                      mẫu tham khảo: đổi trả / chất liệu / thanh toán / giao hàng. -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/tc_red"
-                    app:cardBackgroundColor="@color/tc_noir">
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@android:color/transparent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/tc_gradient_red_lacquer"
                         android:orientation="horizontal">
 
                         <!-- 7 ngày đổi trả -->
@@ -925,7 +925,7 @@
                                 android:id="@+id/iv_returns_icon"
                                 android:layout_width="26dp"
                                 android:layout_height="26dp"
-                                app:tint="@color/tc_red"
+                                app:tint="@android:color/white"
                                 tools:src="@drawable/ic_policy_exchange"
                                 android:contentDescription="@null" />
 
@@ -947,7 +947,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:textColor="@color/tc_on_dark_secondary"
+                                android:textColor="@android:color/white"
                                 android:textSize="9.5sp"
                                 android:fontFamily="sans-serif-medium"
                                 android:gravity="center"
@@ -978,7 +978,7 @@
                                 android:id="@+id/iv_premium_icon"
                                 android:layout_width="26dp"
                                 android:layout_height="26dp"
-                                app:tint="@color/tc_red"
+                                app:tint="@android:color/white"
                                 tools:src="@drawable/ic_policy_leaf"
                                 android:contentDescription="@null" />
 
@@ -1000,7 +1000,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:textColor="@color/tc_on_dark_secondary"
+                                android:textColor="@android:color/white"
                                 android:textSize="9.5sp"
                                 android:fontFamily="sans-serif-medium"
                                 android:gravity="center"
@@ -1031,7 +1031,7 @@
                                 android:id="@+id/iv_payment_icon"
                                 android:layout_width="26dp"
                                 android:layout_height="26dp"
-                                app:tint="@color/tc_red"
+                                app:tint="@android:color/white"
                                 tools:src="@drawable/ic_policy_shield_check"
                                 android:contentDescription="@null" />
 
@@ -1053,7 +1053,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:textColor="@color/tc_on_dark_secondary"
+                                android:textColor="@android:color/white"
                                 android:textSize="9.5sp"
                                 android:fontFamily="sans-serif-medium"
                                 android:gravity="center"
@@ -1084,7 +1084,7 @@
                                 android:id="@+id/iv_shipping_icon"
                                 android:layout_width="26dp"
                                 android:layout_height="26dp"
-                                app:tint="@color/tc_red"
+                                app:tint="@android:color/white"
                                 tools:src="@drawable/ic_policy_fast_delivery"
                                 android:contentDescription="@null" />
 
@@ -1106,7 +1106,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:textColor="@color/tc_on_dark_secondary"
+                                android:textColor="@android:color/white"
                                 android:textSize="9.5sp"
                                 android:fontFamily="sans-serif-medium"
                                 android:gravity="center"
