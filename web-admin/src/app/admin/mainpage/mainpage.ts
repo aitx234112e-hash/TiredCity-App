@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AdminApiService } from '../admin-api.service';
+import { Firestore } from '@angular/fire/firestore';
+import { seedProducts } from '../seed-data';
 
 @Component({
   selector: 'app-mainpage',
@@ -24,7 +26,11 @@ export class Mainpage implements OnInit {
   activities: Array<any> = [];
   recentOrders: Array<any> = [];
 
-  constructor(private router: Router, private adminApi: AdminApiService) {}
+  constructor(
+    private router: Router,
+    private adminApi: AdminApiService,
+    private firestore: Firestore
+  ) {}
 
   ngOnInit() {
     this.profileName = 'Admin';
@@ -63,5 +69,17 @@ export class Mainpage implements OnInit {
 
   goTo(path: string) {
     this.router.navigate([path]);
+  }
+
+  async onQuickImport() {
+    if (confirm('Bạn có chắc chắn muốn nạp toàn bộ sản phẩm từ dữ liệu Sheet lên Firebase không?')) {
+      try {
+        await seedProducts(this.firestore);
+        this.loadAdminStats();
+      } catch (error) {
+        console.error('Lỗi khi nạp dữ liệu:', error);
+        alert('Có lỗi xảy ra khi nạp dữ liệu. Vui lòng kiểm tra console.');
+      }
+    }
   }
 }

@@ -111,7 +111,7 @@ public class RewardListFragment extends Fragment {
                     getString(R.string.reward_voucher_birthday_subtitle),
                     R.drawable.banner_1,
                     0,
-                    getString(R.string.barcode_code)));
+                    getString(R.string.barcode_code_birthday)));
         }
         // Voucher Tri Ân — BST Áo Dài / Nhật Bình (không dùng hạng thành viên).
         if (category == CATEGORY_ALL || category == CATEGORY_FEATURED) {
@@ -120,7 +120,7 @@ public class RewardListFragment extends Fragment {
                     getString(R.string.reward_voucher_tri_an_subtitle),
                     R.drawable.banner_2,
                     0,
-                    getString(R.string.barcode_code)));
+                    getString(R.string.barcode_code_tri_an)));
         }
         // LAST CHANCE → để trống (empty state).
         return list;

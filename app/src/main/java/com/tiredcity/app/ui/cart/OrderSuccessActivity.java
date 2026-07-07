@@ -23,13 +23,17 @@ public class OrderSuccessActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         orderId = getIntent().getStringExtra("order_id");
+        String orderCode = getIntent().getStringExtra("order_code");
         double total = getIntent().getDoubleExtra("order_total", 0);
         String payment = getIntent().getStringExtra("order_payment");
         int itemCount = getIntent().getIntExtra("order_item_count", 0);
 
-        if (orderId != null) {
-            binding.tvOrderId.setText(orderId);
+        if (orderCode != null) {
+            binding.tvOrderId.setText(orderCode);
+        } else if (orderId != null) {
+            binding.tvOrderId.setText("#" + orderId);
         }
+
         binding.tvOrderTotal.setText(PriceUtils.formatVnd(total));
         binding.tvOrderItems.setText(getString(R.string.order_success_items_value, itemCount));
         binding.tvOrderPayment.setText(paymentLabel(payment));

@@ -160,5 +160,54 @@
                 app:tint="@color/tc_sand"
                 android:contentDescription="@null" />
         </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/divider_actions"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/bg_subtle"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <!-- Action buttons -->
+        <LinearLayout
+            android:id="@+id/layout_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm_received"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đã nhận được hàng"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textColor="@color/tc_red"
+                app:strokeColor="@color/tc_red"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_review"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đánh giá"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:backgroundTint="@color/tc_red"
+                android:textColor="@color/white"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

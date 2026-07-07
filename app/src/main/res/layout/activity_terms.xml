@@ -9,7 +9,6 @@
 
     <!-- ── Toolbar tối giản: chỉ nút Back đỏ son. Tiêu đề nằm ở hero bên dưới. ── -->
     <FrameLayout
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/bg_primary"
@@ -24,7 +23,7 @@
             android:contentDescription="@string/cd_back"
             android:padding="8dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/brand_red" />
+            app:tint="@color/tc_red" />
     </FrameLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -62,14 +61,11 @@
                     android:layout_marginTop="6dp"
                     android:gravity="center"
                     android:letterSpacing="0.02"
-                    android:maxLines="1"
                     android:text="@string/terms_header_title"
                     android:textAllCaps="true"
-                    android:textColor="@color/brand_red"
+                    android:textColor="@color/tc_red"
                     android:textStyle="bold"
-                    app:autoSizeMaxTextSize="30sp"
-                    app:autoSizeMinTextSize="18sp"
-                    app:autoSizeTextType="uniform" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -90,20 +86,19 @@
                     android:paddingHorizontal="14dp"
                     android:paddingVertical="6dp"
                     android:text="@string/terms_updated"
-                    android:textColor="@color/brand_red"
+                    android:textColor="@color/tc_red"
                     android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- ── Ảnh minh hoạ chính sách (frame ngang, tràn viền) ── -->
+            <!-- ── Ảnh minh hoạ chính sách ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardPreventCornerOverlap="false"
-                app:contentPadding="0dp">
+                app:cardPreventCornerOverlap="false">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -113,13 +108,13 @@
                     android:src="@drawable/policy_1" />
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ── Nội dung điều khoản: một trang chữ liền mạch ── -->
+            <!-- ── Nội dung điều khoản ── -->
             <TextView
-                android:id="@+id/tvContent"
+                android:id="@+id/tvTermsContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="6dp"
-                android:textColor="#444444"
+                android:textColor="@color/text_primary"
                 android:textSize="15sp" />
 
             <!-- Ghi chú chân trang -->
@@ -129,10 +124,11 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:lineSpacingExtra="3dp"
-                android:text="@string/terms_updated"
+                android:text="@string/footer_tagline"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>

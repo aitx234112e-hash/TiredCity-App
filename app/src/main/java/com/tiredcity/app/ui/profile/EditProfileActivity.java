@@ -10,11 +10,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.UserProfile;
+import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.AuthRepository;
 import com.tiredcity.app.databinding.ActivityEditProfileBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.utils.AddressData;
@@ -29,6 +35,7 @@ import java.util.TimeZone;
 public class EditProfileActivity extends BaseActivity {
 
     private ActivityEditProfileBinding binding;
+    private AuthRepository authRepository;
 
     // Bộ chọn ảnh từ thư viện (không cần xin quyền — dùng system picker).
     private final ActivityResultLauncher<String> pickAvatar =
@@ -42,6 +49,13 @@ public class EditProfileActivity extends BaseActivity {
         binding = ActivityEditProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Xử lý bàn phím che khuất các ô nhập liệu (đặc biệt trên Android 15+)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            int ime = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), ime);
+            return insets;
+        });
+
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.toolbar.setNavigationOnClickListener(v -> finish());
@@ -49,6 +63,8 @@ public class EditProfileActivity extends BaseActivity {
         // Đổi ảnh đại diện
         binding.ivAvatar.setOnClickListener(v -> pickAvatar.launch("image/*"));
         binding.ibChangeAvatar.setOnClickListener(v -> pickAvatar.launch("image/*"));
+
+        authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
 
         binding.btnSave.setOnClickListener(v -> saveProfileLocal());
         setupBirthDateFormatter();
@@ -213,9 +229,39 @@ public class EditProfileActivity extends BaseActivity {
 
     private void onAvatarPicked(Uri uri) {
         try {
+            // Hiển thị cục bộ ngay
+            Glide.with(this).load(uri).circleCrop().into(binding.ivAvatar);
+            
+            binding.btnSave.setEnabled(false);
+            Toast.makeText(this, "Đang tải ảnh lên...", Toast.LENGTH_SHORT).show();
+
+            // Tải lên Cloud
+            AvatarUtils.uploadToCloud(this, uri, new AvatarUtils.OnUploadListener() {
+                @Override
+                public void onSuccess(String url) {
+                    UserProfile p = preferenceManager.getUser();
+                    if (p == null) p = new UserProfile();
+                    p.setAvatar(url);
+                    preferenceManager.saveUser(p);
+                    authRepository.syncUserProfileToFirestore(p);
+                    
+                    runOnUiThread(() -> {
+                        binding.btnSave.setEnabled(true);
+                        Toast.makeText(EditProfileActivity.this, "Cập nhật ảnh đại diện thành công", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                @Override
+                public void onError(String message) {
+                    runOnUiThread(() -> {
+                        binding.btnSave.setEnabled(true);
+                        Toast.makeText(EditProfileActivity.this, "Lỗi tải ảnh: " + message, Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+            
             String path = AvatarUtils.saveFromUri(this, uri);
             preferenceManager.setAvatarPath(path);
-            AvatarUtils.load(this, binding.ivAvatar);
         } catch (Exception e) {
             Toast.makeText(this, getString(R.string.error_update_failed), Toast.LENGTH_SHORT).show();
         }
@@ -280,6 +326,10 @@ public class EditProfileActivity extends BaseActivity {
         p.setAddress(p.getFullAddress());
 
         preferenceManager.saveUser(p);
+
+        // ĐỒNG BỘ LÊN CLOUD
+        authRepository.syncUserProfileToFirestore(p);
+
         Toast.makeText(this, getString(R.string.success_profile_update), Toast.LENGTH_SHORT).show();
         finish();
     }

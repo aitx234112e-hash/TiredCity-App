@@ -12,6 +12,8 @@ public class Row {
     public final String meta;      // gia tri ben phai (gia tien, ngay...)
     public final String badge;     // nhan trang thai (co the null)
     @ColorRes public final int badgeColor;
+    public String actionLabel;     // nhan nut bam (vd: "Dừng")
+    public Runnable onActionClick; // callback khi bam nut
 
     public Row(String title, String subtitle, String meta, String badge, @ColorRes int badgeColor) {
         this.title = title;
@@ -23,5 +25,11 @@ public class Row {
 
     public Row(String title, String subtitle, String meta) {
         this(title, subtitle, meta, null, 0);
+    }
+
+    public Row withAction(String label, Runnable callback) {
+        this.actionLabel = label;
+        this.onActionClick = callback;
+        return this;
     }
 }

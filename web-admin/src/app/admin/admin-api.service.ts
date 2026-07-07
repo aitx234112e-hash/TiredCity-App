@@ -78,6 +78,10 @@ export class AdminApiService {
     );
   }
 
+  updateEvent(id: string, data: any): Observable<void> {
+    return this.inCtx(() => updateDoc(doc(this.firestore, 'events', id), data));
+  }
+
   deleteEvent(id: string): Observable<void> {
     return this.inCtx(() => deleteDoc(doc(this.firestore, 'events', id)));
   }
@@ -93,6 +97,10 @@ export class AdminApiService {
     return this.inCtx(() => addDoc(collection(this.firestore, 'vouchers'), data)).pipe(
       map((ref) => ref.id)
     );
+  }
+
+  updateVoucher(id: string, data: any): Observable<void> {
+    return this.inCtx(() => updateDoc(doc(this.firestore, 'vouchers', id), data));
   }
 
   deleteVoucher(id: string): Observable<void> {

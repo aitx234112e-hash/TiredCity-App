@@ -119,15 +119,34 @@
             android:stepSize="0.5"
             tools:rating="4.5" />
 
-        <TextView
-            android:id="@+id/tv_product_price"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textColor="@color/tc_red"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
-            tools:text="850.000 ₫" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_product_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/tc_red"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                tools:text="850.000 ₫" />
+
+            <ImageButton
+                android:id="@+id/btn_quick_add"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/tc_bg_circle_red"
+                android:src="@drawable/ic_cart"
+                app:tint="@color/white"
+                android:padding="7dp"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/btn_add_to_cart" />
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

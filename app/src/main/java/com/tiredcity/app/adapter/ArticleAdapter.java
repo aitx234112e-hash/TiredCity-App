@@ -48,8 +48,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         String title = article.getTitleVi() != null ? article.getTitleVi() : article.getTitle();
         holder.tvTitle.setText(title);
         holder.tvAuthor.setText(article.getAuthor() != null ? article.getAuthor() : "Tired City");
-        holder.tvDate.setText(article.getPublishedAt() != null
-                ? DateUtils.formatDisplayDate(article.getPublishedAt()) : "");
+        holder.tvDate.setText(article.getPublishedDate() != null
+                ? DateUtils.formatDisplayDate(article.getPublishedDate()) : "");
 
         if (article.getImageUrl() != null && !article.getImageUrl().isEmpty()) {
             Glide.with(holder.ivImage.getContext())

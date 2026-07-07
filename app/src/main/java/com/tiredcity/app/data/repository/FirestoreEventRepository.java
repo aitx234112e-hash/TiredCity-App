@@ -38,8 +38,8 @@ public class FirestoreEventRepository {
                     List<Event> list = new ArrayList<>();
                     for (QueryDocumentSnapshot d : snap) list.add(map(d));
                     Collections.sort(list, (a, b) -> {
-                        long ta = a.getStartDate() != null ? a.getStartDate().getTime() : Long.MAX_VALUE;
-                        long tb = b.getStartDate() != null ? b.getStartDate().getTime() : Long.MAX_VALUE;
+                        long ta = a.getEventDate() != null ? a.getEventDate().getTime() : Long.MAX_VALUE;
+                        long tb = b.getEventDate() != null ? b.getEventDate().getTime() : Long.MAX_VALUE;
                         return Long.compare(ta, tb);
                     });
                     cb.onResult(list);

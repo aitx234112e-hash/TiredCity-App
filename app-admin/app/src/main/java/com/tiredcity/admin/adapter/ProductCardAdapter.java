@@ -182,6 +182,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     }
 
     private static String categoryLabel(String dept) {
+        if (dept == null) return "";
         switch (dept) {
             case "ao-dai":   return "ÁO DÀI";
             case "nhat-binh": return "NHẬT BÌNH";

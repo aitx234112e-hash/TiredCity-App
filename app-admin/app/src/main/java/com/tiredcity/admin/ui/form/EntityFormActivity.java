@@ -68,6 +68,7 @@ public class EntityFormActivity extends AppCompatActivity {
     private boolean saving;
 
     private final List<Binding> bindings = new ArrayList<>();
+    private android.text.TextWatcher activeValueWatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +146,9 @@ public class EntityFormActivity extends AppCompatActivity {
                     case DATE:
                         addDate(container, f);
                         break;
+                    case TIME:
+                        addTime(container, f);
+                        break;
                     default:
                         addEditText(container, f);
                         break;
@@ -170,9 +174,10 @@ public class EntityFormActivity extends AppCompatActivity {
         EditText et = new EditText(this);
         et.setBackgroundResource(R.drawable.bg_input);
         et.setPadding(dp(14), dp(12), dp(14), dp(12));
-        et.setTextColor(ContextCompat.getColor(this, R.color.tc_text_primary));
+        et.setTextColor(ContextCompat.getColor(this, f.enabled ? R.color.tc_text_primary : R.color.tc_text_secondary));
         et.setTextSize(15f);
         et.setText(f.value);
+        et.setEnabled(f.enabled);
         if (f.hint != null) et.setHint(f.hint);
         switch (f.type) {
             case TEXTAREA:
@@ -184,6 +189,11 @@ public class EntityFormActivity extends AppCompatActivity {
                 et.setInputType(InputType.TYPE_CLASS_NUMBER);
                 et.setSingleLine(true);
                 break;
+            case MONEY:
+                et.setInputType(InputType.TYPE_CLASS_NUMBER);
+                et.setSingleLine(true);
+                setupMoneyInput(et);
+                break;
             case DECIMAL:
                 et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 et.setSingleLine(true);
@@ -194,23 +204,147 @@ public class EntityFormActivity extends AppCompatActivity {
                 break;
         }
         et.setLayoutParams(fieldParams());
+        et.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                et.setError(null);
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        });
         parent.addView(et);
-        bindings.add(new Binding(f, () -> et.getText().toString().trim(), et));
+        bindings.add(new Binding(f, () -> {
+            String val = et.getText().toString().trim();
+            if (f.type == FormField.Type.MONEY || (module == AdminModule.VOUCHERS && "value".equals(f.key))) {
+                return val.replaceAll("[^0-9]", "");
+            }
+            return val;
+        }, et));
+    }
+
+    private void updateVoucherValueFormat(String type) {
+        EditText etValue = null;
+        for (Binding b : bindings) {
+            if ("value".equals(b.field.key)) {
+                etValue = b.errorTarget;
+                break;
+            }
+        }
+        if (etValue == null) return;
+
+        if (activeValueWatcher != null) {
+            etValue.removeTextChangedListener(activeValueWatcher);
+        }
+
+        if ("percent".equals(type)) {
+            setupPercentInput(etValue);
+        } else {
+            setupMoneyInput(etValue);
+        }
+    }
+
+    private void setupPercentInput(EditText et) {
+        String initial = et.getText().toString().replaceAll("[^0-9]", "");
+        et.setText(formatPercentInput(initial));
+
+        activeValueWatcher = new android.text.TextWatcher() {
+            private String current = "";
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                et.setError(null);
+                if (!s.toString().equals(current)) {
+                    et.removeTextChangedListener(this);
+                    String clean = s.toString().replaceAll("[^0-9]", "");
+                    if (!clean.isEmpty()) {
+                        long val = Long.parseLong(clean);
+                        if (val > 100) clean = "100";
+                    }
+                    String formatted = formatPercentInput(clean);
+                    current = formatted;
+                    et.setText(formatted);
+                    int pos = formatted.length();
+                    if (formatted.endsWith(" %")) pos -= 2;
+                    et.setSelection(Math.max(0, pos));
+                    et.addTextChangedListener(this);
+                }
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        };
+        et.addTextChangedListener(activeValueWatcher);
+    }
+
+    private String formatPercentInput(String clean) {
+        return clean.isEmpty() ? "" : clean + " %";
+    }
+
+    private void setupMoneyInput(EditText et) {
+        // Initial format if has value
+        String initial = et.getText().toString().replaceAll("[^0-9]", "");
+        if (!initial.isEmpty()) {
+            et.setText(formatMoneyInput(initial));
+        }
+
+        activeValueWatcher = new android.text.TextWatcher() {
+            private String current = "";
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                et.setError(null); // Clear error on change
+                if (!s.toString().equals(current)) {
+                    et.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[^0-9]", "");
+                    if (cleanString.length() > 12) cleanString = cleanString.substring(0, 12); // Limit to 999 billions
+
+                    String formatted = formatMoneyInput(cleanString);
+
+                    current = formatted;
+                    et.setText(formatted);
+                    
+                    // Dat con tro truoc ky tu ' ₫'
+                    int pos = formatted.length();
+                    if (formatted.endsWith(" ₫")) pos -= 2;
+                    et.setSelection(Math.max(0, pos));
+
+                    et.addTextChangedListener(this);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        };
+        et.addTextChangedListener(activeValueWatcher);
+    }
+
+    private String formatMoneyInput(String cleanString) {
+        if (cleanString.isEmpty()) return "";
+        try {
+            long parsed = Long.parseLong(cleanString);
+            java.text.DecimalFormat df = (java.text.DecimalFormat) java.text.NumberFormat.getInstance(new Locale("vi", "VN"));
+            return df.format(parsed) + " ₫";
+        } catch (Exception e) {
+            return cleanString;
+        }
     }
 
     private void addDate(LinearLayout parent, FormField f) {
         EditText et = new EditText(this);
         et.setBackgroundResource(R.drawable.bg_input);
         et.setPadding(dp(14), dp(12), dp(14), dp(12));
-        et.setTextColor(ContextCompat.getColor(this, R.color.tc_text_primary));
+        et.setTextColor(ContextCompat.getColor(this, f.enabled ? R.color.tc_text_primary : R.color.tc_text_secondary));
         et.setTextSize(15f);
         et.setText(f.value);
         et.setHint(R.string.hint_pick_date);
         et.setFocusable(false);
-        et.setClickable(true);
+        et.setClickable(f.enabled);
+        et.setEnabled(f.enabled);
         et.setInputType(InputType.TYPE_NULL);
         et.setLayoutParams(fieldParams());
-        et.setOnClickListener(v -> pickDate(et));
+        et.setOnClickListener(v -> {
+            et.setError(null);
+            pickDate(et);
+        });
         parent.addView(et);
         bindings.add(new Binding(f, () -> et.getText().toString().trim(), et));
     }
@@ -224,47 +358,155 @@ public class EntityFormActivity extends AppCompatActivity {
                 c.set(Integer.parseInt(p[0]), Integer.parseInt(p[1]) - 1, Integer.parseInt(p[2]));
             } catch (Exception ignored) {}
         }
-        new DatePickerDialog(this, (view, year, month, day) ->
-                target.setText(String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day)),
+        new DatePickerDialog(this, (view, year, month, day) -> {
+            target.setText(String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day));
+            validateDateTimeRealtime();
+        },
                 c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void addSpinner(LinearLayout parent, FormField f) {
         Spinner sp = new Spinner(this);
-        sp.setBackgroundResource(R.drawable.bg_input);
+        sp.setBackgroundResource(R.drawable.bg_spinner);
         sp.setPadding(dp(10), dp(6), dp(10), dp(6));
+        sp.setEnabled(f.enabled);
+        
+        // Su dung ArrayList de co the thay doi phan tu "custom"
+        List<String> options = new ArrayList<>(java.util.Arrays.asList(f.options));
+        List<String> values = new ArrayList<>(java.util.Arrays.asList(f.optionValues));
+        
         ArrayAdapter<String> ad = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, f.options);
+                android.R.layout.simple_spinner_item, options);
         ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp.setAdapter(ad);
-        int sel = 0;
-        for (int i = 0; i < f.optionValues.length; i++) {
-            if (f.optionValues[i].equals(f.value)) {
+
+        int sel = -1;
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i).equals(f.value)) {
                 sel = i;
                 break;
             }
         }
-        sp.setSelection(sel);
+        
+        // Neu gia tri hien tai khong co trong list mac dinh (gia tri tu nhap truoc do)
+        if (sel == -1 && !f.value.isEmpty()) {
+            // Thay the cho item "custom" neu co, hoac add vao
+            int customIdx = values.indexOf("custom");
+            if (customIdx != -1) {
+                options.set(customIdx, f.value);
+                values.set(customIdx, f.value);
+                sel = customIdx;
+            }
+        }
+        
+        if (sel != -1) sp.setSelection(sel);
         sp.setLayoutParams(fieldParams());
         parent.addView(sp);
+
+        if (f.enabled) {
+            sp.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                    String val = values.get(position);
+                    if ("custom".equals(val)) {
+                        promptCustomInput(sp, options, values, position);
+                    }
+                    
+                    // Logic dac thu cho Voucher: Doi dinh dang o "Gia tri giam" khi doi "Loai giam"
+                    if (module == AdminModule.VOUCHERS && "type".equals(f.key)) {
+                        updateVoucherValueFormat(val);
+                    }
+                }
+                @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            });
+        }
+
         bindings.add(new Binding(f, () -> {
             int pos = sp.getSelectedItemPosition();
-            return pos >= 0 && pos < f.optionValues.length ? f.optionValues[pos] : "";
+            return pos >= 0 && pos < values.size() ? values.get(pos) : "";
         }, null));
+    }
+
+    private void promptCustomInput(Spinner sp, List<String> options, List<String> values, int position) {
+        EditText input = new EditText(this);
+        input.setHint("Nhập đối tượng áp dụng...");
+        input.setSingleLine(true);
+        
+        android.widget.FrameLayout container = new android.widget.FrameLayout(this);
+        int p = dp(20);
+        container.setPadding(p, p/2, p, 0);
+        container.addView(input);
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Tự nhập đối tượng")
+                .setView(container)
+                .setPositiveButton("Xác nhận", (dialog, which) -> {
+                    String text = input.getText().toString().trim();
+                    if (!text.isEmpty()) {
+                        options.set(position, text);
+                        values.set(position, text);
+                        ((ArrayAdapter<?>)sp.getAdapter()).notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton("Huỷ", (dialog, which) -> {
+                    // Reset ve lua chon dau tien neu huy
+                    sp.setSelection(0);
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void addSwitch(LinearLayout parent, FormField f, boolean spaced) {
         SwitchCompat sw = new SwitchCompat(this);
         sw.setText(f.label);
-        sw.setTextColor(ContextCompat.getColor(this, R.color.tc_text_primary));
+        sw.setTextColor(ContextCompat.getColor(this, f.enabled ? R.color.tc_text_primary : R.color.tc_text_secondary));
         sw.setTextSize(15f);
         sw.setChecked("true".equals(f.value));
+        sw.setEnabled(f.enabled);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.topMargin = dp(spaced ? 18 : 4);
         sw.setLayoutParams(lp);
         parent.addView(sw);
         bindings.add(new Binding(f, () -> sw.isChecked() ? "true" : "false", null));
+    }
+
+    private void addTime(LinearLayout parent, FormField f) {
+        EditText et = new EditText(this);
+        et.setBackgroundResource(R.drawable.bg_input);
+        et.setPadding(dp(14), dp(12), dp(14), dp(12));
+        et.setTextColor(ContextCompat.getColor(this, f.enabled ? R.color.tc_text_primary : R.color.tc_text_secondary));
+        et.setTextSize(15f);
+        et.setText(f.value);
+        et.setHint(R.string.hint_pick_time);
+        et.setFocusable(false);
+        et.setClickable(f.enabled);
+        et.setEnabled(f.enabled);
+        et.setInputType(InputType.TYPE_NULL);
+        et.setLayoutParams(fieldParams());
+        et.setOnClickListener(v -> {
+            et.setError(null);
+            pickTime(et);
+        });
+        parent.addView(et);
+        bindings.add(new Binding(f, () -> et.getText().toString().trim(), et));
+    }
+
+    private void pickTime(EditText target) {
+        Calendar c = Calendar.getInstance();
+        String cur = target.getText().toString().trim();
+        if (cur.contains(":")) {
+            try {
+                String[] p = cur.split(":");
+                c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(p[0]));
+                c.set(Calendar.MINUTE, Integer.parseInt(p[1]));
+            } catch (Exception ignored) {}
+        }
+        new android.app.TimePickerDialog(this, (view, hour, minute) -> {
+            target.setText(String.format(Locale.US, "%02d:%02d", hour, minute));
+            validateDateTimeRealtime();
+        },
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show();
     }
 
     private LinearLayout.LayoutParams fieldParams() {
@@ -297,6 +539,36 @@ public class EntityFormActivity extends AppCompatActivity {
             return;
         }
 
+        // Logic check logic date range cho Voucher
+        if (module == AdminModule.VOUCHERS) {
+            String start = values.get("startDate");
+            String expiry = values.get("expiry");
+            String startTime = values.get("startTime");
+            String endTime = values.get("endTime");
+
+            if (start != null && !start.isEmpty() && expiry != null && !expiry.isEmpty()) {
+                int dateComp = start.compareTo(expiry);
+                if (dateComp > 0) {
+                    setErrorOnField("expiry", R.string.error_date_range);
+                    return;
+                } else if (dateComp == 0) {
+                    // Cung ngày: Bắt buộc phải có giờ để phân biệt, hoặc báo lỗi nếu trùng cả giờ
+                    if (startTime != null && !startTime.isEmpty() && endTime != null && !endTime.isEmpty()) {
+                        int timeComp = startTime.compareTo(endTime);
+                        if (timeComp >= 0) {
+                            // Nếu trùng hoàn toàn cả ngày và giờ
+                            setErrorOnField("endTime", R.string.error_time_range);
+                            return;
+                        }
+                    } else {
+                        // Nếu cùng ngày mà không có giờ, hoặc chỉ có 1 trong 2 giờ -> Coi như trùng thời điểm
+                        setErrorOnField("expiry", R.string.error_date_range);
+                        return;
+                    }
+                }
+            }
+        }
+
         Map<String, Object> payload = ModuleForm.payload(module, values, isCreate);
         setSaving(true);
 
@@ -319,6 +591,55 @@ public class EntityFormActivity extends AppCompatActivity {
                     })
                     .addOnFailureListener(this::onSaveError);
         }
+    }
+
+    private void validateDateTimeRealtime() {
+        if (module != AdminModule.VOUCHERS) return;
+        
+        String start = null, expiry = null, startTime = null, endTime = null;
+        Binding expiryBinding = null, endTimeBinding = null;
+
+        for (Binding b : bindings) {
+            String val = b.reader.read();
+            if ("startDate".equals(b.field.key)) start = val;
+            else if ("expiry".equals(b.field.key)) { expiry = val; expiryBinding = b; }
+            else if ("startTime".equals(b.field.key)) startTime = val;
+            else if ("endTime".equals(b.field.key)) { endTime = val; endTimeBinding = b; }
+        }
+
+        if (start != null && !start.isEmpty() && expiry != null && !expiry.isEmpty()) {
+            int dateComp = start.compareTo(expiry);
+            if (dateComp > 0) {
+                if (expiryBinding != null && expiryBinding.errorTarget != null) {
+                    expiryBinding.errorTarget.setError(getString(R.string.error_date_range));
+                }
+            } else if (dateComp == 0) {
+                if (startTime != null && !startTime.isEmpty() && endTime != null && !endTime.isEmpty()) {
+                    if (startTime.compareTo(endTime) >= 0) {
+                        if (endTimeBinding != null && endTimeBinding.errorTarget != null) {
+                            endTimeBinding.errorTarget.setError(getString(R.string.error_time_range));
+                        }
+                    } else {
+                        if (endTimeBinding != null && endTimeBinding.errorTarget != null) endTimeBinding.errorTarget.setError(null);
+                        if (expiryBinding != null && expiryBinding.errorTarget != null) expiryBinding.errorTarget.setError(null);
+                    }
+                }
+            } else {
+                if (expiryBinding != null && expiryBinding.errorTarget != null) expiryBinding.errorTarget.setError(null);
+                if (endTimeBinding != null && endTimeBinding.errorTarget != null) endTimeBinding.errorTarget.setError(null);
+            }
+        }
+    }
+
+    private void setErrorOnField(String key, int stringRes) {
+        for (Binding b : bindings) {
+            if (key.equals(b.field.key) && b.errorTarget != null) {
+                b.errorTarget.setError(getString(stringRes));
+                b.errorTarget.requestFocus();
+                break;
+            }
+        }
+        Toast.makeText(this, stringRes, Toast.LENGTH_LONG).show();
     }
 
     private void onSaveError(Exception e) {

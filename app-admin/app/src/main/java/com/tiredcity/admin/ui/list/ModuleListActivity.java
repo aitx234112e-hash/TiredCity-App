@@ -126,6 +126,9 @@ public class ModuleListActivity extends AppCompatActivity {
     }
 
     private void loadData() {
+        if (module == AdminModule.ORDERS) {
+            autoConfirmOverdueOrders();
+        }
         binding.swipeRefresh.setRefreshing(true);
         db.collection(module.collection).get()
                 .addOnSuccessListener(snap -> {
@@ -151,6 +154,14 @@ public class ModuleListActivity extends AppCompatActivity {
         List<Row> rows = new ArrayList<>();
         for (DocumentSnapshot d : allDocs) {
             Row r = RowFormatter.formatOne(this, module, d);
+            
+            // Them nut "Dung" cho Voucher dang hoat dong (chua het han/het luot)
+            if (module == AdminModule.VOUCHERS) {
+                if ("Hoạt động".equals(r.badge)) {
+                    r.withAction("Dừng", () -> stopVoucher(d));
+                }
+            }
+
             if (q.isEmpty() || matches(r, q)) {
                 shownDocs.add(d);
                 rows.add(r);
@@ -163,6 +174,21 @@ public class ModuleListActivity extends AppCompatActivity {
         }
         binding.tvEmpty.setVisibility(rows.isEmpty() ? View.VISIBLE : View.GONE);
         binding.tvCount.setText(getString(R.string.list_count_fmt, rows.size()));
+    }
+
+    private void stopVoucher(DocumentSnapshot d) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Dừng voucher")
+                .setMessage("Bạn có chắc muốn dừng mã giảm giá này? Khách hàng sẽ không thể sử dụng mã được nữa.")
+                .setPositiveButton("Dừng ngay", (dialog, which) -> {
+                    d.getReference().update("isActive", false)
+                            .addOnSuccessListener(aVoid -> {
+                                android.widget.Toast.makeText(this, "Đã dừng voucher", android.widget.Toast.LENGTH_SHORT).show();
+                                loadData(); // Reload de cap nhat UI
+                            });
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private static boolean matches(Row r, String q) {
@@ -186,6 +212,9 @@ public class ModuleListActivity extends AppCompatActivity {
             case FEEDBACK:
                 showFeedbackDetail(d);
                 break;
+            case REVIEWS:
+                showReviewDetail(d);
+                break;
             default:
                 if (ModuleForm.canEdit(module) || ModuleForm.canDelete(module)) {
                     showEntityDetail(d);
@@ -200,13 +229,23 @@ public class ModuleListActivity extends AppCompatActivity {
      * Chi tiet ban ghi co CRUD: nut Sua (mo form) + nut Xoa (mirror edit/delete ben web-admin).
      */
     private void showEntityDetail(DocumentSnapshot d) {
-        String posLabel = null, neuLabel = null;
-        DetailDialog.OnAction posAction = null, neuAction = null;
+        String posLabel = null, neuLabel = null, negLabel = null;
+        DetailDialog.OnAction posAction = null, neuAction = null, negAction = null;
 
         if (ModuleForm.canEdit(module)) {
             posLabel = getString(R.string.btn_edit);
             posAction = () -> openForm(d.getId());
         }
+        
+        // Nut "Dung" cho Voucher dang hoat dong
+        if (module == AdminModule.VOUCHERS) {
+            boolean isActive = !Boolean.FALSE.equals(d.getBoolean("isActive"));
+            if (isActive) {
+                negLabel = "Dừng voucher";
+                negAction = () -> stopVoucher(d);
+            }
+        }
+
         if (ModuleForm.canDelete(module)) {
             neuLabel = getString(R.string.btn_delete);
             neuAction = () -> confirmDelete(d);
@@ -214,7 +253,7 @@ public class ModuleListActivity extends AppCompatActivity {
 
         DetailDialog.show(this, getString(module.title),
                 DetailFormatter.format(this, module, d),
-                posLabel, posAction, neuLabel, neuAction);
+                posLabel, posAction, neuLabel, neuAction, negLabel, negAction);
     }
 
     /** Mo man hinh them (docId == null) hoac sua ban ghi. */
@@ -247,21 +286,124 @@ public class ModuleListActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Lien he: xem chi tiet + danh dau da phan hoi (mirror markReplied) + xoa. */
+    /** Lien he: xem chi tiet + danh dau da phan hoi (mirror markReplied) + ghi chu + xoa. */
     private void showFeedbackDetail(DocumentSnapshot d) {
         boolean replied = Boolean.TRUE.equals(d.getBoolean("replied"));
         DetailDialog.show(this, getString(module.title),
                 DetailFormatter.format(this, module, d),
-                replied ? null : getString(R.string.btn_mark_replied),
-                replied ? null : () -> d.getReference().update("replied", true)
-                        .addOnSuccessListener(x -> {
-                            Toast.makeText(this, R.string.feedback_marked, Toast.LENGTH_SHORT).show();
-                            loadData();
-                        })
-                        .addOnFailureListener(e -> Toast.makeText(this,
-                                getString(R.string.update_error, e.getMessage()),
-                                Toast.LENGTH_LONG).show()),
+                replied ? "Sửa ghi chú" : getString(R.string.btn_mark_replied),
+                () -> {
+                    if (!replied) {
+                        d.getReference().update("replied", true)
+                                .addOnSuccessListener(x -> {
+                                    Toast.makeText(this, R.string.feedback_marked, Toast.LENGTH_SHORT).show();
+                                    promptFeedbackNote(d);
+                                });
+                    } else {
+                        promptFeedbackNote(d);
+                    }
+                },
                 getString(R.string.btn_delete), () -> confirmDelete(d));
+    }
+
+    private void promptFeedbackNote(DocumentSnapshot d) {
+        EditText input = new EditText(this);
+        input.setHint("Nhập ghi chú xử lý liên hệ này...");
+        input.setText(DocUtils.str(d, "adminNote"));
+        input.setMinLines(3);
+        input.setGravity(android.view.Gravity.TOP);
+
+        FrameLayout wrap = new FrameLayout(this);
+        int pad = (int) (20 * getResources().getDisplayMetrics().density);
+        wrap.setPadding(pad, pad / 2, pad, 0);
+        wrap.addView(input);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Ghi chú Admin")
+                .setView(wrap)
+                .setPositiveButton(R.string.btn_save, (dialog, which) -> {
+                    String note = input.getText().toString().trim();
+                    d.getReference().update("adminNote", note)
+                            .addOnSuccessListener(x -> {
+                                Toast.makeText(this, "Đã lưu ghi chú", Toast.LENGTH_SHORT).show();
+                                loadData();
+                            });
+                })
+                .setNegativeButton(R.string.btn_close, null)
+                .show();
+    }
+
+    /** Danh gia: xem chi tiet + phan hoi (adminReply) + duyet/an + xoa. */
+    private void showReviewDetail(DocumentSnapshot d) {
+        DetailDialog.show(this, getString(module.title),
+                DetailFormatter.format(this, module, d),
+                getString(R.string.btn_reply_review),
+                () -> promptReviewReply(d),
+                "Cập nhật trạng thái",
+                () -> showReviewStatusPicker(d),
+                getString(R.string.btn_delete), () -> confirmDelete(d));
+    }
+
+    private void showReviewStatusPicker(DocumentSnapshot d) {
+        String[] options = {
+                getString(R.string.btn_approve_review),
+                getString(R.string.btn_hide_review)
+        };
+        String[] values = {"APPROVED", "HIDDEN"};
+
+        new AlertDialog.Builder(this)
+                .setTitle("Chọn trạng thái cho đánh giá")
+                .setItems(options, (dialog, which) -> {
+                    String newStatus = values[which];
+                    d.getReference().update("status", newStatus)
+                            .addOnSuccessListener(x -> {
+                                AuditLogger.log("review.status", d.getId(), newStatus);
+                                Toast.makeText(this, R.string.status_updated, Toast.LENGTH_SHORT).show();
+                                loadData();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(this,
+                                    getString(R.string.update_error, e.getMessage()),
+                                    Toast.LENGTH_LONG).show());
+                })
+                .setNegativeButton(R.string.btn_close, null)
+                .show();
+    }
+
+    private void promptReviewReply(DocumentSnapshot d) {
+        EditText input = new EditText(this);
+        input.setHint(R.string.hint_admin_reply);
+        input.setText(DocUtils.str(d, "adminReply"));
+        input.setMinLines(3);
+        input.setGravity(android.view.Gravity.TOP);
+
+        FrameLayout wrap = new FrameLayout(this);
+        int pad = (int) (20 * getResources().getDisplayMetrics().density);
+        wrap.setPadding(pad, pad / 2, pad, 0);
+        wrap.addView(input);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.btn_reply_review)
+                .setView(wrap)
+                .setPositiveButton(R.string.btn_save, (dialog, which) -> {
+                    String reply = input.getText().toString().trim();
+                    Map<String, Object> patch = new java.util.HashMap<>();
+                    patch.put("adminReply", reply);
+                    patch.put("repliedAt", com.google.firebase.firestore.FieldValue.serverTimestamp());
+                    // Neu reply thi approve luon
+                    patch.put("status", "APPROVED");
+
+                    d.getReference().update(patch)
+                            .addOnSuccessListener(x -> {
+                                AuditLogger.log("review.reply", d.getId(), reply);
+                                Toast.makeText(this, R.string.review_replied_ok, Toast.LENGTH_SHORT).show();
+                                loadData();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(this,
+                                    getString(R.string.update_error, e.getMessage()),
+                                    Toast.LENGTH_LONG).show());
+                })
+                .setNegativeButton(R.string.btn_close, null)
+                .show();
     }
 
     /**
@@ -307,8 +449,9 @@ public class ModuleListActivity extends AppCompatActivity {
                 neuAction = () -> confirmCancel(d, id);
                 break;
             case "shipped":
-                posLabel = getString(R.string.btn_mark_delivered);
-                posAction = () -> updateStatus(d, id, "delivered");
+                // Đã giao cho đơn vị vận chuyển, chờ khách xác nhận đã nhận hàng
+                posLabel = "Chờ khách xác nhận";
+                posAction = () -> Toast.makeText(this, "Đơn hàng đang trên đường giao, vui lòng chờ khách hàng xác nhận đã nhận hàng.", Toast.LENGTH_LONG).show();
                 break;
             default:
                 break;
@@ -355,7 +498,15 @@ public class ModuleListActivity extends AppCompatActivity {
 
     private void updateStatus(DocumentSnapshot d, String orderId, String newStatus) {
         String old = DocUtils.str(d, "status");
-        d.getReference().update("status", newStatus)
+        Map<String, Object> patch = new java.util.HashMap<>();
+        patch.put("status", newStatus);
+        patch.put("updatedAt", com.google.firebase.firestore.FieldValue.serverTimestamp());
+        
+        if ("delivered".equalsIgnoreCase(newStatus) || "DELIVERED".equalsIgnoreCase(newStatus)) {
+            patch.put("isPaid", true);
+        }
+
+        d.getReference().update(patch)
                 .addOnSuccessListener(x -> {
                     AuditLogger.log("order.status", orderId, old + " → " + newStatus);
                     Toast.makeText(this, R.string.status_updated, Toast.LENGTH_SHORT).show();
@@ -363,6 +514,21 @@ public class ModuleListActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(this,
                         getString(R.string.update_error, e.getMessage()), Toast.LENGTH_LONG).show());
+    }
+
+    private void autoConfirmOverdueOrders() {
+        long twoMinsAgo = System.currentTimeMillis() - (2 * 60 * 1000);
+        db.collection("orders")
+            .whereEqualTo("status", "SHIPPED")
+            .get()
+            .addOnSuccessListener(snap -> {
+                for (DocumentSnapshot d : snap) {
+                    com.google.firebase.Timestamp ts = d.getTimestamp("updatedAt");
+                    if (ts != null && ts.toDate().getTime() < twoMinsAgo) {
+                        updateStatus(d, d.getId(), "DELIVERED");
+                    }
+                }
+            });
     }
 
     private void confirmCancel(DocumentSnapshot d, String orderId) {

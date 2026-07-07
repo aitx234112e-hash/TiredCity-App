@@ -1,6 +1,13 @@
 package com.tiredcity.app.data.network;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,6 +25,17 @@ public class AuthInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            try {
+                // Fetch fresh token synchronously (with timeout)
+                GetTokenResult result = Tasks.await(user.getIdToken(false), 10, TimeUnit.SECONDS);
+                token = result.getToken();
+            } catch (ExecutionException | InterruptedException | TimeoutException e) {
+                // Fallback to existing token if refresh fails
+            }
+        }
+
         Request original = chain.request();
 
         if (token == null || token.isEmpty()) {

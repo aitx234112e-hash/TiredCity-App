@@ -49,6 +49,7 @@
                     android:paddingBottom="@dimen/tc_space_xl">
 
                     <TextView
+                        android:id="@+id/tv_hero_eyebrow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/ed_hero_eyebrow"
@@ -59,6 +60,7 @@
                         android:letterSpacing="0.14" />
 
                     <TextView
+                        android:id="@+id/tv_hero_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tc_space_xs"
@@ -74,6 +76,7 @@
                         android:shadowRadius="6" />
 
                     <TextView
+                        android:id="@+id/tv_hero_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tc_space_micro"
@@ -147,6 +150,7 @@
                                 android:textAllCaps="true" />
 
                             <TextView
+                                android:id="@+id/tv_fact_time_value"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="1dp"
@@ -196,6 +200,7 @@
                                 android:textAllCaps="true" />
 
                             <TextView
+                                android:id="@+id/tv_fact_place_value"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="1dp"
@@ -327,6 +332,7 @@
                     android:layout_marginBottom="@dimen/tc_space_sm" />
 
                 <TextView
+                    android:id="@+id/tv_about_body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ed_about_body"

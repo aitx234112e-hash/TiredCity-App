@@ -269,12 +269,14 @@ export class BlogManagement implements OnInit {
     this.saving = true;
     const payload = {
       title: this.blogForm.title.trim(),
+      slug: this.slugify(this.blogForm.title),
       excerpt: this.blogForm.excerpt.trim(),
       content: this.blogForm.content,
       thumbnail: this.blogForm.thumbnail,
       authorId: this.blogForm.authorId || undefined,
       authorName: this.blogForm.authorName || 'Admin',
       status,
+      views: this.isEditing ? undefined : 0,
       publishedAt: status === 'published'
         ? (this.blogForm.publishedAt ? new Date(this.blogForm.publishedAt) : new Date())
         : null,
@@ -392,6 +394,18 @@ export class BlogManagement implements OnInit {
     const offset = date.getTimezoneOffset();
     const local = new Date(date.getTime() - offset * 60000);
     return local.toISOString().slice(0, 16);
+  }
+
+  private slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[đĐ]/g, 'd')
+      .replace(/([^0-9a-z-\s])/g, '')
+      .replace(/(\s+)/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 
 }

@@ -18,7 +18,7 @@ public final class DevTools {
      *   false → giữ nguyên dữ liệu như bình thường.
      * ➜ Khi test xong, đổi về false (hoặc build bản release — release luôn bỏ qua).
      */
-    public static final boolean RESET_ON_LAUNCH = true;
+    public static final boolean RESET_ON_LAUNCH = false;
 
     /** Các file SharedPreferences mà app đang dùng. */
     private static final String[] PREF_FILES = {

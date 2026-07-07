@@ -48,7 +48,7 @@ public final class ModuleForm {
 
     public static boolean canDelete(AdminModule m) {
         switch (m) {
-            case PRODUCTS: case VOUCHERS: case EVENTS: case SHIPPING: case BLOGS: case USERS: case FEEDBACK:
+            case PRODUCTS: case VOUCHERS: case EVENTS: case SHIPPING: case BLOGS: case USERS: case FEEDBACK: case REVIEWS:
                 return true;
             default:
                 return false;
@@ -68,7 +68,7 @@ public final class ModuleForm {
                         new String[]{"Áo dài", "Nhật bình", "Áo tấc", "Giao lĩnh", "Yếm đào", "Phụ kiện", "Việt phục"},
                         new String[]{"ao-dai", "nhat-binh", "ao-tac", "giao-linh", "yem-dao", "phu-kien", "viet-phuc"})
                         .value(s(d, "product_dept")));
-                f.add(new FormField("unit_price", "Giá bán (₫)", FormField.Type.NUMBER, true)
+                f.add(new FormField("unit_price", "Giá bán (₫)", FormField.Type.MONEY, true)
                         .value(n(d, "unit_price")));
                 f.add(new FormField("discount", "Giảm giá (%)", FormField.Type.NUMBER, false)
                         .value(n(d, "discount")));
@@ -93,24 +93,81 @@ public final class ModuleForm {
                         .value(firstImage(d)).hint("Dán URL ảnh sản phẩm"));
                 break;
 
-            case VOUCHERS:
+            case VOUCHERS: {
+                boolean isEdit = d != null;
+                
+                // Sau khi tao, chi cho phep sua dung 1 lan.
+                long editCount = isEdit ? (long) DocUtils.num(d, "editCount") : 0;
+                boolean alreadyEdited = editCount >= 1;
+
                 f.add(new FormField("code", "Mã voucher", FormField.Type.TEXT, true)
                         .value(s(d, "code")).hint("VD: TIREDCITY10"));
+                // Cho phep sua ma voucher
+                f.get(f.size() - 1).enabled = true;
+
+                f.add(new FormField("isActive", "Đang hoạt động", FormField.Type.SWITCH, false)
+                        .value(d != null && Boolean.FALSE.equals(d.getBoolean("isActive")) ? "false" : "true"));
+                // Cho phep admin bat/tat trang thai ngay ca khi dang sua
+                f.get(f.size() - 1).enabled = true;
+
+                f.add(new FormField("isHidden", "Ẩn voucher", FormField.Type.SWITCH, false)
+                        .value(d != null && Boolean.TRUE.equals(d.getBoolean("isHidden")) ? "true" : "false")
+                        .hint("Chỉ hiện nếu khách hàng nhập đúng mã"));
+                f.get(f.size() - 1).enabled = true;
+
+                f.add(new FormField("target", "Đối tượng áp dụng", FormField.Type.SELECT, true,
+                        new String[]{"Tất cả khách hàng", "Người mới tải app", "Khách hàng thân thiết", "Khác (Tự nhập)..."},
+                        new String[]{"all", "new_user", "loyal", "custom"})
+                        .value(s(d, "target").isEmpty() ? "all" : s(d, "target")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("type", "Loại giảm", FormField.Type.SELECT, true,
                         new String[]{"Giảm theo %", "Giảm tiền (VND)"},
                         new String[]{"percent", "fixed"})
                         .value(s(d, "type").isEmpty() ? "percent" : s(d, "type")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("value", "Giá trị giảm", FormField.Type.NUMBER, true)
                         .value(n(d, "value")));
-                f.add(new FormField("minOrder", "Đơn tối thiểu (₫)", FormField.Type.NUMBER, false)
+                f.get(f.size() - 1).enabled = !isEdit;
+
+                f.add(new FormField("minOrder", "Đơn tối thiểu (₫)", FormField.Type.MONEY, false)
                         .value(n(d, "minOrder")));
-                f.add(new FormField("expiry", "Hạn sử dụng", FormField.Type.DATE, false)
+                f.get(f.size() - 1).enabled = !isEdit;
+                
+                f.add(new FormField("startDate", "Ngày bắt đầu", FormField.Type.DATE, false)
+                        .value(isoDate(d, "startDate")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("startTime", "Giờ bắt đầu", FormField.Type.TIME, false)
+                        .value(s(d, "startTime")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("expiry", "Ngày kết thúc", FormField.Type.DATE, false)
                         .value(isoDate(d, "expiry")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("endTime", "Giờ kết thúc", FormField.Type.TIME, false)
+                        .value(s(d, "endTime")));
+                f.get(f.size() - 1).enabled = !alreadyEdited;
+
+                f.add(new FormField("usageLimit", "Tổng lượt dùng tối đa", FormField.Type.NUMBER, false)
+                        .value(n(d, "usageLimit")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
+                f.add(new FormField("limitPerUser", "Lượt dùng/người", FormField.Type.NUMBER, false)
+                        .value(n(d, "limitPerUser")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("description", "Mô tả / điều kiện", FormField.Type.TEXTAREA, false)
                         .value(s(d, "description")));
+                f.get(f.size() - 1).enabled = !isEdit;
+
                 f.add(new FormField("image", "Link ảnh (URL)", FormField.Type.TEXT, false)
                         .value(s(d, "image")));
+                f.get(f.size() - 1).enabled = !isEdit;
                 break;
+            }
 
             case EVENTS:
                 f.add(new FormField("title", "Tên sự kiện", FormField.Type.TEXT, true)
@@ -119,6 +176,8 @@ public final class ModuleForm {
                         .value(isoDate(d, "date")));
                 f.add(new FormField("location", "Địa điểm", FormField.Type.TEXT, false)
                         .value(s(d, "location")));
+                f.add(new FormField("isOnline", "Sự kiện Online", FormField.Type.SWITCH, false)
+                        .value(d != null && Boolean.TRUE.equals(d.getBoolean("isOnline")) ? "true" : "false"));
                 f.add(new FormField("description", "Mô tả", FormField.Type.TEXTAREA, false)
                         .value(s(d, "description")));
                 f.add(new FormField("image", "Link ảnh (URL)", FormField.Type.TEXT, false)
@@ -128,7 +187,7 @@ public final class ModuleForm {
             case SHIPPING:
                 f.add(new FormField("name", "Tên phương thức / đơn vị", FormField.Type.TEXT, true)
                         .value(s(d, "name")));
-                f.add(new FormField("fee", "Phí vận chuyển (₫)", FormField.Type.NUMBER, false)
+                f.add(new FormField("fee", "Phí vận chuyển (₫)", FormField.Type.MONEY, false)
                         .value(n(d, "fee")).hint("0 = miễn phí"));
                 f.add(new FormField("estimatedTime", "Thời gian dự kiến", FormField.Type.TEXT, false)
                         .value(s(d, "estimatedTime")).hint("VD: 2-3 ngày"));
@@ -141,6 +200,10 @@ public final class ModuleForm {
             case BLOGS:
                 f.add(new FormField("title", "Tiêu đề", FormField.Type.TEXT, true)
                         .value(s(d, "title")));
+                f.add(new FormField("category", "Danh mục", FormField.Type.SELECT, false,
+                        new String[]{"Tin tức", "Văn hoá", "Sự kiện", "Sản phẩm", "Nghệ nhân"},
+                        new String[]{"news", "culture", "event", "product", "artisan"})
+                        .value(s(d, "category")));
                 f.add(new FormField("excerpt", "Mô tả ngắn", FormField.Type.TEXTAREA, false)
                         .value(s(d, "excerpt")));
                 f.add(new FormField("content", "Nội dung", FormField.Type.TEXTAREA, true)
@@ -224,21 +287,37 @@ public final class ModuleForm {
             }
             case VOUCHERS:
                 p.put("code", val(v, "code").toUpperCase(Locale.ROOT));
+                p.put("isActive", "true".equals(val(v, "isActive")));
+                p.put("isHidden", "true".equals(val(v, "isHidden")));
+                p.put("target", val(v, "target"));
                 p.put("type", val(v, "type"));
                 p.put("value", toLong(v, "value"));
                 p.put("minOrder", toLong(v, "minOrder"));
+                p.put("startDate", val(v, "startDate"));
+                p.put("startTime", val(v, "startTime"));
                 p.put("expiry", val(v, "expiry"));
+                p.put("endTime", val(v, "endTime"));
+                p.put("usageLimit", toLong(v, "usageLimit"));
+                p.put("limitPerUser", toLong(v, "limitPerUser"));
                 p.put("description", val(v, "description"));
                 p.put("image", val(v, "image"));
-                if (isCreate) p.put("createdAt", nowIso());
+                if (isCreate) {
+                    p.put("usedCount", 0L);
+                    p.put("editCount", 0L);
+                    p.put("createdAt", nowIso());
+                } else {
+                    p.put("editCount", com.google.firebase.firestore.FieldValue.increment(1));
+                }
                 break;
 
             case EVENTS:
                 p.put("title", val(v, "title"));
                 p.put("date", val(v, "date"));
                 p.put("location", val(v, "location"));
+                p.put("isOnline", "true".equals(val(v, "isOnline")));
                 p.put("description", val(v, "description"));
                 p.put("image", val(v, "image"));
+                p.put("updatedAt", nowIso());
                 if (isCreate) p.put("createdAt", nowIso());
                 break;
 
@@ -255,7 +334,11 @@ public final class ModuleForm {
                 String status = val(v, "status");
                 if (status.isEmpty()) status = "draft";
                 String author = val(v, "authorName");
-                p.put("title", val(v, "title"));
+                String title = val(v, "title");
+                p.put("title", title);
+                p.put("titleVi", title); // dong bo voi model app
+                p.put("slug", slugify(title));
+                p.put("category", val(v, "category"));
                 p.put("excerpt", val(v, "excerpt"));
                 p.put("content", val(v, "content"));
                 p.put("thumbnail", val(v, "thumbnail"));
@@ -263,7 +346,10 @@ public final class ModuleForm {
                 p.put("status", status);
                 p.put("publishedAt", "published".equals(status) ? nowIso() : null);
                 p.put("updatedAt", nowIso());
-                if (isCreate) p.put("createdAt", nowIso());
+                if (isCreate) {
+                    p.put("views", 0L);
+                    p.put("createdAt", nowIso());
+                }
                 break;
             }
             case USERS: {
@@ -305,6 +391,7 @@ public final class ModuleForm {
             case BLOGS:    return "blog";
             case USERS:    return "user";
             case FEEDBACK: return "feedback";
+            case REVIEWS:  return "review";
             default:       return "record";
         }
     }
@@ -320,6 +407,7 @@ public final class ModuleForm {
             case BLOGS:    return firstNonEmpty(DocUtils.str(d, "title"), d.getId());
             case USERS:    return firstNonEmpty(DocUtils.str(d, "profileName", "fullName", "email"), d.getId());
             case FEEDBACK: return firstNonEmpty(DocUtils.str(d, "fullName", "email"), d.getId());
+            case REVIEWS:  return firstNonEmpty(DocUtils.str(d, "userName"), d.getId());
             default:       return d.getId();
         }
     }
@@ -418,5 +506,17 @@ public final class ModuleForm {
         SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         iso.setTimeZone(TimeZone.getTimeZone("UTC"));
         return iso.format(new Date());
+    }
+
+    private static String slugify(String text) {
+        if (text == null || text.isEmpty()) return "";
+        String normalized = java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD);
+        String result = normalized.replaceAll("[̀-ͯ]", "")
+                .replace("đ", "d").replace("Đ", "D")
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9\\s]", "")
+                .replaceAll("\\s+", "-")
+                .trim();
+        return result;
     }
 }

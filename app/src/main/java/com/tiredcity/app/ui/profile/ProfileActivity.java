@@ -3,11 +3,15 @@ package com.tiredcity.app.ui.profile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.ApiResponse;
 import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.network.ApiService;
+import com.tiredcity.app.data.repository.AuthRepository;
 import com.tiredcity.app.databinding.ActivityProfileBinding;
 import com.tiredcity.app.ui.auth.LoginActivity;
 import com.tiredcity.app.ui.base.BaseActivity;
@@ -30,6 +34,7 @@ public class ProfileActivity extends BaseActivity {
 
     private ActivityProfileBinding binding;
     private ApiService apiService;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class ProfileActivity extends BaseActivity {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
 
         apiService = ApiClient.getApiService(preferenceManager.getToken());
+        authRepository = new AuthRepository(apiService, preferenceManager);
 
         // Header (avatar + tên) → chỉnh sửa hồ sơ
         binding.layoutAccountHeader.setOnClickListener(v -> openEditProfile());
@@ -93,11 +99,18 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void loadProfile() {
-        // Try cached profile first
+        // 1. Dùng cache cục bộ trước để hiện ngay UI
         UserProfile cached = preferenceManager.getUser();
         if (cached != null) bindProfile(cached);
 
-        // Then fetch fresh from server
+        // 2. Đồng bộ từ Firestore (Cloud) - tin cậy hơn nếu Backend API chưa sẵn sàng
+        authRepository.syncAccount(cached, profile -> {
+            if (profile != null) {
+                runOnUiThread(() -> bindProfile(profile));
+            }
+        });
+
+        // 3. Gọi Backend API (nếu có)
         apiService.getProfile().enqueue(new Callback<ApiResponse<UserProfile>>() {
             @Override
             public void onResponse(Call<ApiResponse<UserProfile>> call, Response<ApiResponse<UserProfile>> response) {
@@ -119,8 +132,36 @@ public class ProfileActivity extends BaseActivity {
         binding.tvUserName.setText(profile.getDisplayName());
         binding.tvUserEmail.setText(profile.getEmail());
 
-        // Menh badge
-        String menh = preferenceManager.getMenh();
+        // Kiểm tra email đã xác thực chưa
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && !user.isEmailVerified()) {
+            binding.tvUserEmail.append(" (Chưa xác thực)");
+            binding.tvUserEmail.setTextColor(getResources().getColor(R.color.tc_red, getTheme()));
+            
+            // Cho phép nhấn vào email để gửi lại mã xác thực
+            binding.tvUserEmail.setOnClickListener(v -> resendVerificationEmail(user));
+        } else {
+            binding.tvUserEmail.setTextColor(getResources().getColor(R.color.tc_on_red_secondary, getTheme()));
+            binding.tvUserEmail.setOnClickListener(null);
+        }
+
+        // TỰ ĐỘNG TÍNH LẠI MỆNH ĐỂ SỬA DỮ LIỆU CŨ SAI LỆCH
+        int birthYear = profile.getBirthYear();
+        String currentMenh = profile.getMenh();
+        String menh = currentMenh;
+        
+        if (birthYear > 0) {
+            String corrected = MenhCalculator.tinhMenh(birthYear);
+            if (!corrected.equals(currentMenh)) {
+                menh = corrected;
+                profile.setMenh(menh);
+                // Cập nhật lại local và cloud để đảm bảo đồng bộ triệt để
+                preferenceManager.setMenh(menh);
+                preferenceManager.saveUser(profile);
+                authRepository.syncUserProfileToFirestore(profile);
+            }
+        }
+
         if (menh != null) {
             String emoji = MenhCalculator.getEmojiMenh(menh);
             binding.tvMenhBadge.setText(emoji + " " + getString(
@@ -130,6 +171,23 @@ public class ProfileActivity extends BaseActivity {
 
         // Avatar: ảnh đã chọn nếu có, ngược lại logo gà TiredCity
         com.tiredcity.app.utils.AvatarUtils.load(this, binding.ivAvatar);
+    }
+
+    private void resendVerificationEmail(com.google.firebase.auth.FirebaseUser user) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Xác thực Email")
+                .setMessage("Bạn có muốn gửi lại email xác thực đến địa chỉ " + user.getEmail() + " không?")
+                .setPositiveButton("Gửi lại", (d, w) -> {
+                    user.sendEmailVerification().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(this, "Đã gửi email xác thực thành công!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Lỗi: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Đóng", null)
+                .show();
     }
 
     private void openEditProfile() {
@@ -145,8 +203,17 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void logout() {
-        preferenceManager.clearToken();
-        startActivity(new Intent(this, LoginActivity.class));
-        finishAffinity();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất khỏi tài khoản này?")
+                .setPositiveButton("Đăng xuất", (d, w) -> {
+                    com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
+                    preferenceManager.clearToken();
+                    preferenceManager.clearCredentials();
+                    startActivity(new Intent(this, LoginActivity.class));
+                    finishAffinity();
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 }

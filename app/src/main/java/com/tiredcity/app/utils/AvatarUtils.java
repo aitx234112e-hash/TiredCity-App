@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.tiredcity.app.R;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,14 +16,42 @@ import java.io.InputStream;
 public final class AvatarUtils {
     private AvatarUtils() {}
 
-    /** Hiển thị avatar: ảnh người dùng đã chọn nếu có, ngược lại dùng logo gà. */
+    /** Hiển thị avatar: ưu tiên URL từ profile, sau đó đến file cục bộ, cuối cùng là logo gà. */
     public static void load(Context ctx, ImageView target) {
-        String path = new PreferenceManager(ctx).getAvatarPath();
-        if (path != null && !path.isEmpty() && new File(path).exists()) {
+        PreferenceManager pm = new PreferenceManager(ctx);
+        String path = pm.getAvatarPath(); // Local path
+        
+        com.tiredcity.app.data.model.UserProfile user = pm.getUser();
+        if (user != null && user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+            // Ưu tiên ảnh từ Cloud
+            Glide.with(ctx).load(user.getAvatar()).circleCrop().into(target);
+        } else if (path != null && !path.isEmpty() && new File(path).exists()) {
+            // Dùng ảnh cục bộ nếu chưa có Cloud URL
             Glide.with(ctx).load(new File(path)).circleCrop().into(target);
         } else {
             Glide.with(ctx).load(R.drawable.ic_tc_logo).into(target);
         }
+    }
+
+    /** Tải ảnh lên Firebase Storage và trả về URL. */
+    public static void uploadToCloud(Context ctx, Uri uri, OnUploadListener listener) {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) return;
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference()
+                .child("avatars/" + uid + ".jpg");
+
+        ref.putFile(uri)
+                .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl()
+                        .addOnSuccessListener(downloadUri -> {
+                            listener.onSuccess(downloadUri.toString());
+                        }))
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    public interface OnUploadListener {
+        void onSuccess(String url);
+        void onError(String message);
     }
 
     /** Copy ảnh từ Uri (thư viện) vào bộ nhớ trong của app, trả về đường dẫn đã lưu. */
