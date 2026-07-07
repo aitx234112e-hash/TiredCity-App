@@ -12,6 +12,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.tiredcity.app.adapter.OrderAdapter;
 import com.tiredcity.app.data.model.Order;
 import com.tiredcity.app.data.model.OrderItemPreview;
+import com.tiredcity.app.data.repository.OrderRepository;
 import com.tiredcity.app.databinding.ActivityOrderHistoryBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.OrderTrackingActivity;
@@ -33,14 +34,18 @@ import java.util.TimeZone;
 public class OrderHistoryActivity extends BaseActivity {
 
     private ActivityOrderHistoryBinding binding;
+    private OrderRepository orderRepository;
+    private OrderAdapter orderAdapter;
     private final List<Order> allOrders = new ArrayList<>();
-    private int selectedTab = 0;
+    private String currentStatusFilter = null; // null = "Tất cả"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityOrderHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        orderRepository = new OrderRepository(null);
 
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -52,18 +57,36 @@ public class OrderHistoryActivity extends BaseActivity {
         binding.swipeRefresh.setColorSchemeColors(
                 getResources().getColor(com.tiredcity.app.R.color.tc_red, getTheme()));
 
+        binding.btnShopNow.setOnClickListener(v -> goShopping());
+
+        setupTabs();
+
+        loadOrders();
+    }
+
+    private void setupTabs() {
+        // Khởi tạo filter dựa trên tab đang chọn ban đầu
+        updateFilterFromTab(binding.tabLayout.getSelectedTabPosition());
+
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override public void onTabSelected(TabLayout.Tab tab) {
-                selectedTab = tab.getPosition();
-                renderList();
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                updateFilterFromTab(tab.getPosition());
+                filterAndDisplay();
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
+    }
 
-        binding.btnShopNow.setOnClickListener(v -> goShopping());
-
-        loadOrders();
+    private void updateFilterFromTab(int position) {
+        switch (position) {
+            case 0: currentStatusFilter = null; break; // Tất cả
+            case 1: currentStatusFilter = Constants.ORDER_PENDING; break; // Chờ xử lý
+            case 2: currentStatusFilter = Constants.ORDER_SHIPPING; break; // Đang giao
+            case 3: currentStatusFilter = Constants.ORDER_DELIVERED; break; // Đã nhận
+            case 4: currentStatusFilter = Constants.ORDER_CANCELLED; break; // Đã hủy
+        }
     }
 
     private void loadOrders() {
@@ -98,13 +121,70 @@ public class OrderHistoryActivity extends BaseActivity {
                         return Long.compare(tb, ta);
                     });
                     binding.swipeRefresh.setRefreshing(false);
-                    renderList();
+                    filterAndDisplay();
                 })
                 .addOnFailureListener(e -> {
                     binding.swipeRefresh.setRefreshing(false);
                     allOrders.clear();
-                    renderList();
+                    filterAndDisplay();
                 });
+    }
+
+    private void filterAndDisplay() {
+        List<Order> filtered;
+        if (currentStatusFilter == null) {
+            filtered = allOrders;
+        } else {
+            filtered = new ArrayList<>();
+            for (Order o : allOrders) {
+                String status = o.getStatus() != null ? o.getStatus().toUpperCase(Locale.US) : "";
+
+                // Xử lý bộ lọc cho tab "Đang giao" (chấp nhận cả SHIPPING và SHIPPED)
+                if (Constants.ORDER_SHIPPING.equals(currentStatusFilter)) {
+                    if (status.equals("SHIPPING") || status.equals("SHIPPED")) {
+                        filtered.add(o);
+                    }
+                }
+                // Xử lý bộ lọc cho tab "Chờ xử lý" (bao gồm cả PENDING, CONFIRMED, PROCESSING)
+                else if (Constants.ORDER_PENDING.equals(currentStatusFilter)) {
+                    if (status.equals("PENDING") || status.equals("CONFIRMED") || status.equals("PROCESSING")) {
+                        filtered.add(o);
+                    }
+                }
+                else if (currentStatusFilter.equalsIgnoreCase(o.getStatus())) {
+                    filtered.add(o);
+                }
+            }
+        }
+        displayOrders(filtered);
+    }
+
+    /** Cập nhật danh sách / trạng thái rỗng theo kết quả đã lọc. */
+    private void displayOrders(List<Order> orders) {
+        if (orders.isEmpty()) {
+            binding.layoutEmpty.setVisibility(View.VISIBLE);
+            binding.swipeRefresh.setVisibility(View.GONE);
+        } else {
+            binding.layoutEmpty.setVisibility(View.GONE);
+            binding.swipeRefresh.setVisibility(View.VISIBLE);
+            orderAdapter = new OrderAdapter(orders, new OrderAdapter.OnOrderClickListener() {
+                @Override
+                public void onOrderClick(Order order) {
+                    openOrderTracking(order);
+                }
+
+                @Override
+                public void onConfirmReceived(Order order) {
+                    confirmReceived(order);
+                }
+
+                @Override
+                public void onReviewOrder(Order order) {
+                    openReviewDialog(order);
+                }
+            });
+            binding.rvOrders.setAdapter(orderAdapter);
+        }
     }
 
     /** Map 1 document Firestore → model Order (chỉ các field cần cho danh sách). */
@@ -184,33 +264,29 @@ public class OrderHistoryActivity extends BaseActivity {
         }
     }
 
-    /** Áp bộ lọc theo tab đang chọn rồi cập nhật danh sách / trạng thái rỗng. */
-    private void renderList() {
-        List<Order> filtered = new ArrayList<>();
-        for (Order o : allOrders) {
-            if (matchesTab(o.getStatus(), selectedTab)) filtered.add(o);
-        }
-
-        if (filtered.isEmpty()) {
-            binding.layoutEmpty.setVisibility(View.VISIBLE);
-            binding.swipeRefresh.setVisibility(View.GONE);
-        } else {
-            binding.layoutEmpty.setVisibility(View.GONE);
-            binding.swipeRefresh.setVisibility(View.VISIBLE);
-            binding.rvOrders.setAdapter(new OrderAdapter(filtered, this::openOrderTracking));
-        }
+    private void confirmReceived(Order order) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Xác nhận đã nhận hàng")
+            .setMessage("Bạn chắc chắn đã nhận được hàng và hài lòng với sản phẩm?")
+            .setPositiveButton("Xác nhận", (dialog, which) -> {
+                binding.swipeRefresh.setRefreshing(true);
+                orderRepository.updateOrderStatusInFirestore(order.getId(), "DELIVERED", "Khách hàng xác nhận đã nhận hàng", (success, error) -> {
+                    binding.swipeRefresh.setRefreshing(false);
+                    if (success) {
+                        android.widget.Toast.makeText(this, "Cảm ơn bạn đã xác nhận!", android.widget.Toast.LENGTH_SHORT).show();
+                        loadOrders(); // Tải lại danh sách
+                    } else {
+                        android.widget.Toast.makeText(this, "Lỗi: " + error, android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                });
+            })
+            .setNegativeButton("Đóng", null)
+            .show();
     }
 
-    /** tab: 0 Tất cả · 1 Chờ xử lý · 2 Đang giao · 3 Đã nhận · 4 Đã hủy */
-    private boolean matchesTab(String status, int tab) {
-        switch (tab) {
-            case 1: return Constants.ORDER_PENDING.equals(status)
-                        || Constants.ORDER_CONFIRMED.equals(status);
-            case 2: return Constants.ORDER_SHIPPING.equals(status);
-            case 3: return Constants.ORDER_DELIVERED.equals(status);
-            case 4: return Constants.ORDER_CANCELLED.equals(status);
-            default: return true;
-        }
+    private void openReviewDialog(Order order) {
+        // Đơn hàng có thể có nhiều sản phẩm. Mở chi tiết đơn để người dùng chọn sản phẩm đánh giá.
+        openOrderTracking(order);
     }
 
     private void openOrderTracking(Order order) {

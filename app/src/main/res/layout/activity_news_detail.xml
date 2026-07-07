@@ -49,6 +49,7 @@
                     android:paddingBottom="@dimen/tc_space_xl">
 
                     <TextView
+                        android:id="@+id/tv_hero_eyebrow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/nd_hero_eyebrow"
@@ -59,6 +60,7 @@
                         android:letterSpacing="0.14" />
 
                     <TextView
+                        android:id="@+id/tv_hero_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tc_space_xs"
@@ -75,6 +77,7 @@
                         android:shadowRadius="6" />
 
                     <TextView
+                        android:id="@+id/tv_hero_subtitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tc_space_sm"
@@ -103,6 +106,7 @@
 
             <!-- ═══ ĐOẠN DẪN (lead) ═══ -->
             <TextView
+                android:id="@+id/tv_lead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/nd_lead"
@@ -123,6 +127,7 @@
                 android:paddingBottom="@dimen/tc_space_lg">
 
                 <TextView
+                    android:id="@+id/tv_sec1_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/nd_sec1_title"
@@ -133,6 +138,7 @@
                     android:layout_marginBottom="@dimen/tc_space_sm" />
 
                 <TextView
+                    android:id="@+id/tv_sec1_body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/nd_sec1_body"

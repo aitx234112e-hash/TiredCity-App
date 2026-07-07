@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nút "Xem tất cả kết quả" cuối danh sách Sản phẩm đề xuất — nền be nhạt, bo góc mềm. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/bg_subtle" />
+    <corners android:radius="@dimen/tc_radius_md" />
+</shape>

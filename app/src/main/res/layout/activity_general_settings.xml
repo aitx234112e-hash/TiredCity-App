@@ -58,6 +58,9 @@
                 android:id="@+id/row_security" />
             <View style="@style/SettingsRowDivider" />
             <include layout="@layout/item_settings_nav_row"
+                android:id="@+id/row_password" />
+            <View style="@style/SettingsRowDivider" />
+            <include layout="@layout/item_settings_nav_row"
                 android:id="@+id/row_app_info" />
             <View style="@style/SettingsRowDivider" />
             <include layout="@layout/item_settings_nav_row"

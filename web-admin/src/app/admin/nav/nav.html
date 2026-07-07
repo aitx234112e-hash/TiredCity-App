@@ -3,91 +3,103 @@
 <div [ngClass]="{ show: isSidebarOpen }" class="sidebar d-flex flex-column p-3">
 
     <div class="sidebar-logo mb-4">
-        <img src="/assets/tc_logo.png" alt="TiredCity" class="img-fluid" routerLink="/admin/mainpage">
+        <img src="/assets/tc_logo.png" alt="TiredCity" class="img-fluid" routerLink="/admin/mainpage" style="cursor: pointer;">
     </div>
 
     <ul class="nav flex-column">
 
         <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/mainpage">
+            <a class="nav-link" routerLink="/admin/mainpage" routerLinkActive="active">
                 <i class="fa fa-home me-2"></i> Trang chủ
             </a>
         </li>
 
         <!-- XÁC THỰC -->
-
-        <li class="nav-item">
-            <a class="nav-link dropdown-toggle"
-                data-bs-toggle="collapse"
-                data-bs-target="#authMenu">
-
-                Xác thực
-            </a>
-
-            <ul class="collapse list-unstyled" id="authMenu">
+        <li class="nav-item mt-3">
+            <h6 class="nav-header text-uppercase text-muted small px-3 mb-2">Xác thực</h6>
+            <ul class="list-unstyled">
                 <li>
-                    <a class="nav-link ms-3" routerLink="/admin/user-adm">
-                        Tài khoản
+                    <a class="nav-link" routerLink="/admin/users" routerLinkActive="active">
+                        <i class="fa fa-users me-2"></i> Tài khoản
                     </a>
                 </li>
-
+                <li>
+                    <a class="nav-link" routerLink="/admin/reviews" routerLinkActive="active">
+                        <i class="fa fa-star me-2"></i> Đánh giá
+                    </a>
+                </li>
             </ul>
         </li>
 
         <!-- CHỨC NĂNG -->
-
-        <li class="nav-item">
-
-            <a class="nav-link dropdown-toggle"
-                data-bs-toggle="collapse"
-                data-bs-target="#mainMenu">
-
-                Chức năng
-            </a>
-
-            <ul class="collapse list-unstyled" id="mainMenu">
-
+        <li class="nav-item mt-3">
+            <h6 class="nav-header text-uppercase text-muted small px-3 mb-2">Chức năng</h6>
+            <ul class="list-unstyled">
                 <li>
-                    <a class="nav-link ms-3" routerLink="/admin/product-adm">
-                        Sản phẩm
+                    <a class="nav-link" routerLink="/admin/products" routerLinkActive="active">
+                        <i class="fa fa-tag me-2"></i> Sản phẩm
                     </a>
                 </li>
-
                 <li>
-                    <a class="nav-link ms-3" routerLink="/admin">
-                        Danh mục
+                    <a class="nav-link" routerLink="/admin/orders" routerLinkActive="active">
+                        <i class="fa fa-shopping-cart me-2"></i> Đơn hàng
                     </a>
                 </li>
-
                 <li>
-                    <a class="nav-link ms-3" routerLink="/admin">
-                        Liên hệ
+                    <a class="nav-link" routerLink="/admin/vouchers" routerLinkActive="active">
+                        <i class="fa fa-ticket me-2"></i> Mã giảm giá
                     </a>
                 </li>
-
                 <li>
-                    <a class="nav-link ms-3" routerLink="/admin/order-adm">
-                        Đơn hàng
+                    <a class="nav-link" routerLink="/admin/events" routerLinkActive="active">
+                        <i class="fa fa-calendar me-2"></i> Sự kiện
                     </a>
                 </li>
-
                 <li>
-                    <a class="nav-link ms-3" routerLink="/admin">
-                        Blogs
+                    <a class="nav-link" routerLink="/admin/shipping" routerLinkActive="active">
+                        <i class="fa fa-truck me-2"></i> Vận chuyển
                     </a>
                 </li>
-
                 <li>
-                    <a class="nav-link ms-3" routerLink="/admin">
-                        Giảm giá
+                    <a class="nav-link" routerLink="/admin/blogs" routerLinkActive="active">
+                        <i class="fa fa-file-text me-2"></i> Bài viết (Blogs)
                     </a>
                 </li>
-
+                <li>
+                    <a class="nav-link" routerLink="/admin/feedbacks" routerLinkActive="active">
+                        <i class="fa fa-comment me-2"></i> Liên hệ
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" routerLink="/admin/revenue" routerLinkActive="active">
+                        <i class="fa fa-bar-chart me-2"></i> Doanh thu
+                    </a>
+                </li>
             </ul>
+        </li>
 
+        <!-- HỆ THỐNG -->
+        <li class="nav-item mt-3">
+            <h6 class="nav-header text-uppercase text-muted small px-3 mb-2">Hệ thống</h6>
+            <ul class="list-unstyled">
+                <li>
+                    <a class="nav-link" routerLink="/admin/audit-logs" routerLinkActive="active">
+                        <i class="fa fa-list-alt me-2"></i> Nhật ký (Audit)
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" routerLink="/admin/reports" routerLinkActive="active">
+                        <i class="fa fa-pie-chart me-2"></i> Báo cáo
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" routerLink="/admin/chatbot" routerLinkActive="active">
+                        <i class="fa fa-android me-2"></i> AI Chatbot
+                    </a>
+                </li>
+            </ul>
         </li>
 
     </ul>
 
 </div>
-

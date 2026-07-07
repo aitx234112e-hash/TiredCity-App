@@ -1,43 +1,59 @@
-# Built application files
-*.apk
-*.aar
-*.ap_
-*.aab
-
-# Files for the ART/Dalvik VM
-*.dex
-
-# Java class files
-*.class
-
-# Generated files
-bin/
-gen/
-out/
-release/
-
-# Gradle files
-.gradle/
-build/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Android Studio / IntelliJ
+# --- IDE & System ---
 .idea/
+.vscode/
 *.iml
-.navigation/
-captures/
-.externalNativeBuild/
-.cxx/
-
-# Keystore files
-*.jks
-*.keystore
-
-# OS files
 .DS_Store
 Thumbs.db
+*.log
+build_log.txt
+build_log2.txt
+TiredCity.code-workspace
+.claude/
+.verify-shots/
+
+# --- Android & Gradle (General) ---
+.gradle/
+build/
+captures/
+gradle-app.setting
+!gradle-wrapper.jar
+.navigation/
+local.properties
+.externalNativeBuild
+.cxx/
+*.pyc
+output.json
+
+# --- Main App Module (:app) ---
+/app/build/
+/app/release/
+/app/google-services.json
+
+# --- Admin App Module (app-admin) ---
+/app-admin/.gradle/
+/app-admin/app/build/
+/app-admin/local.properties
+/app-admin/app/google-services.json
+
+# --- Backend (NestJS / Prisma / Node) ---
+/backend/node_modules/
+/backend/dist/
+/backend/.env
+/backend/prisma/dev.db
+/backend/prisma/dev.db-journal
+/backend/serviceAccountKey.json
+/backend/npm-debug.log*
+
+# --- Web Admin (Angular / Node) ---
+/web-admin/node_modules/
+/web-admin/dist/
+/web-admin/.angular/
+/web-admin/.env
+/web-admin/src/environments/environment.prod.ts
+/web-admin/npm-debug.log*
+
+# --- Project Specific ---
+MONOREPO.md
 
 # Claude Code local settings (may chua log lenh cuc bo, khong commit)
 .claude/settings.local.json

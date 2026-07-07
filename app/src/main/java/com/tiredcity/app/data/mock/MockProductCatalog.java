@@ -12,12 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Dữ liệu Việt phục mẫu dùng cho xem trước offline khi chưa có API/backend trả về
- * (xem {@link com.tiredcity.app.ui.shop.CategoryActivity}). Dùng chung một nguồn duy nhất
- * để {@link com.tiredcity.app.ui.shop.ProductDetailActivity} có thể tra cứu lại đúng sản phẩm
- * bằng id khi backend không nhận diện được id mẫu (xem {@link #findById(Context, String)}).
- * Toàn bộ nội dung hiển thị (tên, chất liệu, mô tả,…) lấy từ string resource để đổi được
- * ngôn ngữ Anh/Việt — chỉ id và các khoá phân loại (danh mục, nhóm màu) giữ nguyên tiếng Việt.
+ * Dữ liệu Việt phục mẫu dùng cho xem trước offline khi chưa có API/backend trả về.
  */
 public final class MockProductCatalog {
 
@@ -25,9 +20,6 @@ public final class MockProductCatalog {
             "ÁO DÀI", "NHẬT BÌNH", "ÁO TẤC", "GIAO LĨNH", "YẾM ĐÀO", "PHỤ KIỆN"
     };
 
-    // Ảnh trang phục THẬT (trích từ thư mục TRANG PHỤC, xem StylingFragment.CAROUSEL_IMAGES) —
-    // gán xoay vòng cho sản phẩm mẫu theo đúng danh mục để "Có thể bạn cũng thích" không còn ô
-    // ảnh trống (dữ liệu mẫu trước đây không có images[] nên ProductAdapter không có gì để tải).
     private static final String[] IMAGES_AO_DAI    = {"carousel_aodai_1", "carousel_aodai_2", "carousel_aodai_3", "carousel_aodai_4", "carousel_aodai_5"};
     private static final String[] IMAGES_NHAT_BINH = {"carousel_nhatbinh_1", "carousel_nhatbinh_2", "carousel_nhatbinh_3", "carousel_nhatbinh_4", "carousel_nhatbinh_5"};
     private static final String[] IMAGES_AO_TAC    = {"carousel_aotac_1", "carousel_aotac_2", "carousel_aotac_3", "carousel_aotac_4", "carousel_aotac_5"};
@@ -38,6 +30,14 @@ public final class MockProductCatalog {
     private MockProductCatalog() {}
 
     public static List<Product> getProducts(Context context, String categoryId) {
+        if ("ALL".equals(categoryId)) {
+            List<Product> all = new ArrayList<>();
+            for (String cat : ALL_CATEGORY_IDS) {
+                all.addAll(getProducts(context, cat));
+            }
+            return all;
+        }
+
         List<Product> list;
         String[] imagePool;
         if ("ÁO DÀI".equals(categoryId))         { list = buildAoDai(context);    imagePool = IMAGES_AO_DAI; }
@@ -58,13 +58,10 @@ public final class MockProductCatalog {
         return list;
     }
 
-    /** Gán 1 ảnh trang phục THẬT (drawable local) cho sản phẩm mẫu qua URI "android.resource://"
-     *  — Glide tải được thẳng từ chuỗi này giống hệt tải ảnh mạng, không cần đổi ProductAdapter. */
     private static void setLocalImage(Context ctx, Product p, String drawableName) {
         p.setImages(Collections.singletonList("android.resource://" + ctx.getPackageName() + "/drawable/" + drawableName));
     }
 
-    /** Tìm một sản phẩm mẫu theo id, quét qua toàn bộ danh mục. Trả về null nếu không có. */
     public static Product findById(Context context, String id) {
         if (id == null) return null;
         for (String categoryId : ALL_CATEGORY_IDS) {
@@ -84,27 +81,17 @@ public final class MockProductCatalog {
         return null;
     }
 
-    /**
-     * Sản phẩm mẫu cho khối "Gợi ý cho bạn" (recommended = true) / "Đang thịnh hành"
-     * (recommended = false) ở màn Trang chủ. Id đặt tiền tố riêng để không trùng với
-     * id sản phẩm theo danh mục ở trên khi {@link #findById(Context, String)} tra cứu.
-     */
     public static List<Product> getHomeHighlights(Context context, boolean recommended) {
-        String prefix = recommended ? "home-r" : "home-h";
+        String prefix = recommended ? "AD" : "NB";
         Object[][] data = {
-            {"1", R.string.mock_home1_name, R.string.material_lua_to_tam,  850000.0,  10, 4.8},
-            {"2", R.string.mock_home2_name, R.string.material_gam_theu,    1200000.0, 15, 4.9},
-            {"3", R.string.mock_home3_name, R.string.material_dui_to,      650000.0,  0,  4.5},
-            {"4", R.string.mock_home4_name, R.string.material_lua_mem,     250000.0,  5,  4.3},
-            {"5", R.string.mock_home5_name, R.string.material_lua_cao_cap, 2500000.0, 20, 5.0},
+            {"01", R.string.mock_home1_name, R.string.material_lua_to_tam,  850000.0,  10, 4.8, "h_1"},
+            {"02", R.string.mock_home2_name, R.string.material_gam_theu,    1200000.0, 15, 4.9, "h_2"},
+            {"03", R.string.mock_home3_name, R.string.material_dui_to,      650000.0,  0,  4.5, "onboarding_3"},
+            {"04", R.string.mock_home4_name, R.string.material_lua_mem,     250000.0,  5,  4.3, "onboarding_4"},
+            {"05", R.string.mock_home5_name, R.string.material_lua_cao_cap, 2500000.0, 20, 5.0, "onboarding_5"},
         };
 
-        // Trộn ảnh từ nhiều danh mục cho khối nổi bật ở Trang chủ (không riêng 1 loại trang phục).
-        String[] highlightPool = {
-                "carousel_aodai_1", "carousel_nhatbinh_1", "carousel_aotac_1",
-                "carousel_giaolinh_1", "carousel_yemdao_1"
-        };
-
+        String[] highlightPool = {"carousel_aodai_1", "carousel_nhatbinh_1", "carousel_aotac_1", "carousel_giaolinh_1", "carousel_yemdao_1"};
         List<Product> list = new ArrayList<>();
         int index = 0;
         for (Object[] row : data) {
@@ -115,6 +102,9 @@ public final class MockProductCatalog {
             p.setPrice((double) row[3]);
             p.setDiscount((int) row[4]);
             p.setRating((double) row[5]);
+            p.setImage((String) row[6]);
+            p.setImages(Arrays.asList((String) row[6], "onboarding_1", "onboarding_2"));
+            p.setColors(Arrays.asList("Trắng", "Xanh", "Vàng", "Hồng"));
             p.setStock(20);
             p.setNew(recommended);
             applyGenericDetail(context, p);
@@ -125,71 +115,54 @@ public final class MockProductCatalog {
         return list;
     }
 
-    // ── Áo Dài ────────────────────────────────────────────────────────────────
-
     private static List<Product> buildAoDai(Context ctx) {
         List<Product> list = new ArrayList<>();
-        Product khoiTrang = mockProduct(ctx, "ad1", R.string.mock_ad1_name, "ÁO DÀI", 2890000, "Trắng");
+        Product khoiTrang = mockProduct(ctx, "AD01", R.string.mock_ad1_name, "ÁO DÀI", 2890000, "Trắng");
         khoiTrang.setDescription(ctx.getString(R.string.desc_ad1));
         khoiTrang.setStory(ctx.getString(R.string.story_ad1));
-        khoiTrang.setCareInstructions(Arrays.asList(
-                ctx.getString(R.string.care_hand_wash_cold_strict),
-                ctx.getString(R.string.care_no_bleach),
-                ctx.getString(R.string.care_iron_low),
-                ctx.getString(R.string.care_store_dry)));
-        khoiTrang.setSpecifications(specs(ctx,
-                ctx.getString(R.string.color_bucket_trang),
-                ctx.getString(R.string.mock_style_ao_dai_truyen_thong),
-                ctx.getString(R.string.spec_occasion_default),
-                ctx.getString(R.string.default_origin)));
+        khoiTrang.setCareInstructions(Arrays.asList(ctx.getString(R.string.care_hand_wash_cold_strict), ctx.getString(R.string.care_no_bleach), ctx.getString(R.string.care_iron_low), ctx.getString(R.string.care_store_dry)));
+        khoiTrang.setSpecifications(specs(ctx, ctx.getString(R.string.color_bucket_trang), ctx.getString(R.string.mock_style_ao_dai_truyen_thong), ctx.getString(R.string.spec_occasion_default), ctx.getString(R.string.default_origin)));
         khoiTrang.setStock(12);
         list.add(khoiTrang);
 
-        list.add(mockProduct(ctx, "ad2", R.string.mock_ad2_name, "ÁO DÀI", 1590000, "Xanh"));
-        list.add(mockProduct(ctx, "ad3", R.string.mock_ad3_name, "ÁO DÀI", 1750000, "Vàng"));
-        list.add(mockProduct(ctx, "ad4", R.string.mock_ad4_name, "ÁO DÀI", 1290000, "Hồng"));
-        list.add(mockProduct(ctx, "ad5", R.string.mock_ad5_name, "ÁO DÀI", 1450000, "Xanh", "Hồng"));
-        list.add(mockProduct(ctx, "ad6", R.string.mock_ad6_name, "ÁO DÀI", 1350000, "Hồng"));
+        list.add(mockProduct(ctx, "AD02", R.string.mock_ad2_name, "ÁO DÀI", 1590000, "Xanh"));
+        list.add(mockProduct(ctx, "AD03", R.string.mock_ad3_name, "ÁO DÀI", 1750000, "Vàng"));
+        list.add(mockProduct(ctx, "AD04", R.string.mock_ad4_name, "ÁO DÀI", 1290000, "Hồng"));
+        list.add(mockProduct(ctx, "AD05", R.string.mock_ad5_name, "ÁO DÀI", 1450000, "Xanh", "Hồng"));
+        list.add(mockProduct(ctx, "AD06", R.string.mock_ad6_name, "ÁO DÀI", 1350000, "Hồng"));
 
-        Product phanHoa = mockProduct(ctx, "ad7", R.string.mock_ad7_name, "ÁO DÀI", 1200000, "Trắng");
+        Product phanHoa = mockProduct(ctx, "AD07", R.string.mock_ad7_name, "ÁO DÀI", 1200000, "Trắng");
         phanHoa.setDescription(ctx.getString(R.string.desc_ad7));
         phanHoa.setStock(0);
         list.add(phanHoa);
-
         return list;
     }
-
-    // ── Nhật Bình ────────────────────────────────────────────────────────────
 
     private static List<Product> buildNhatBinh(Context ctx) {
         List<Product> list = new ArrayList<>();
-        list.add(mockProduct(ctx, "nb1",  R.string.mock_nb1_name,  "NHẬT BÌNH", 3490000, "Trắng"));
-        list.add(mockProduct(ctx, "nb2",  R.string.mock_nb2_name,  "NHẬT BÌNH", 3290000, "Xanh lá"));
-        list.add(mockProduct(ctx, "nb3",  R.string.mock_nb3_name,  "NHẬT BÌNH", 2890000, "Xanh lá"));
-        list.add(mockProduct(ctx, "nb4",  R.string.mock_nb4_name,  "NHẬT BÌNH", 2190000, "Xanh"));
-        list.add(mockProduct(ctx, "nb5",  R.string.mock_nb5_name,  "NHẬT BÌNH", 2690000, "Đỏ"));
-        list.add(mockProduct(ctx, "nb6",  R.string.mock_nb6_name,  "NHẬT BÌNH", 2990000, "Xanh"));
-        list.add(mockProduct(ctx, "nb7",  R.string.mock_nb7_name,  "NHẬT BÌNH", 2750000, "Xanh lá"));
-        list.add(mockProduct(ctx, "nb8",  R.string.mock_nb8_name,  "NHẬT BÌNH", 2450000, "Vàng"));
-        list.add(mockProduct(ctx, "nb9",  R.string.mock_nb9_name,  "NHẬT BÌNH", 2150000, "Vàng"));
-        list.add(mockProduct(ctx, "nb10", R.string.mock_nb10_name, "NHẬT BÌNH", 1890000, "Vàng"));
+        list.add(mockProduct(ctx, "NB01", R.string.mock_nb1_name, "NHẬT BÌNH", 3490000, "Trắng"));
+        list.add(mockProduct(ctx, "NB02", R.string.mock_nb2_name, "NHẬT BÌNH", 3290000, "Xanh lá"));
+        list.add(mockProduct(ctx, "NB03", R.string.mock_nb3_name, "NHẬT BÌNH", 2890000, "Xanh lá"));
+        list.add(mockProduct(ctx, "NB04", R.string.mock_nb4_name, "NHẬT BÌNH", 2190000, "Xanh"));
+        list.add(mockProduct(ctx, "NB05", R.string.mock_nb5_name, "NHẬT BÌNH", 2690000, "Đỏ"));
+        list.add(mockProduct(ctx, "NB06", R.string.mock_nb6_name, "NHẬT BÌNH", 2990000, "Xanh"));
+        list.add(mockProduct(ctx, "NB07", R.string.mock_nb7_name, "NHẬT BÌNH", 2750000, "Xanh lá"));
+        list.add(mockProduct(ctx, "NB08", R.string.mock_nb8_name, "NHẬT BÌNH", 2450000, "Vàng"));
+        list.add(mockProduct(ctx, "NB09", R.string.mock_nb9_name, "NHẬT BÌNH", 2150000, "Vàng"));
+        list.add(mockProduct(ctx, "NB10", R.string.mock_nb10_name, "NHẬT BÌNH", 1890000, "Vàng"));
         return list;
     }
-
-    // ── Áo Tấc ───────────────────────────────────────────────────────────────
 
     private static List<Product> buildAoTac(Context ctx) {
         List<Product> list = new ArrayList<>();
-        list.add(mockProduct(ctx, "at1", R.string.mock_at1_name, "ÁO TẤC", 1590000, "Xanh"));
-        list.add(mockProduct(ctx, "at2", R.string.mock_at2_name, "ÁO TẤC", 1890000, "Trắng"));
-        list.add(mockProduct(ctx, "at3", R.string.mock_at3_name, "ÁO TẤC", 1290000, "Cam"));
-        list.add(mockProduct(ctx, "at4", R.string.mock_at4_name, "ÁO TẤC", 1450000, "Xanh lá"));
-        list.add(mockProduct(ctx, "at5", R.string.mock_at5_name, "ÁO TẤC", 1690000, "Xanh"));
-        list.add(mockProduct(ctx, "at6", R.string.mock_at6_name, "ÁO TẤC", 1750000, "Trắng"));
+        list.add(mockProduct(ctx, "AT01", R.string.mock_at1_name, "ÁO TẤC", 1590000, "Xanh"));
+        list.add(mockProduct(ctx, "AT02", R.string.mock_at2_name, "ÁO TẤC", 1890000, "Trắng"));
+        list.add(mockProduct(ctx, "AT03", R.string.mock_at3_name, "ÁO TẤC", 1290000, "Cam"));
+        list.add(mockProduct(ctx, "AT04", R.string.mock_at4_name, "ÁO TẤC", 1450000, "Xanh lá"));
+        list.add(mockProduct(ctx, "AT05", R.string.mock_at5_name, "ÁO TẤC", 1690000, "Xanh"));
+        list.add(mockProduct(ctx, "AT06", R.string.mock_at6_name, "ÁO TẤC", 1750000, "Trắng"));
         return list;
     }
-
-    // ── Giao Lĩnh ────────────────────────────────────────────────────────────
 
     private static List<Product> buildGiaoLinh(Context ctx) {
         List<Product> list = new ArrayList<>();
@@ -202,8 +175,6 @@ public final class MockProductCatalog {
         return list;
     }
 
-    // ── Yếm Đào ──────────────────────────────────────────────────────────────
-
     private static List<Product> buildYemDao(Context ctx) {
         List<Product> list = new ArrayList<>();
         list.add(mockProduct(ctx, "yd1", R.string.mock_yd1_name, "YẾM ĐÀO", 2290000, "Đỏ"));
@@ -214,8 +185,6 @@ public final class MockProductCatalog {
         list.add(mockProduct(ctx, "yd6", R.string.mock_yd6_name, "YẾM ĐÀO", 2890000, "Hồng", "Xanh lá"));
         return list;
     }
-
-    // ── Phụ kiện ─────────────────────────────────────────────────────────────
 
     private static List<Product> buildPhuKien(Context ctx) {
         List<Product> list = new ArrayList<>();
@@ -230,8 +199,6 @@ public final class MockProductCatalog {
         list.add(mockProduct(ctx, "pk9", R.string.mock_pk9_name, "PHỤ KIỆN", 550000, "Ô che"));
         return list;
     }
-
-    // ── Việt phục chung (fallback khi danh mục không khớp 6 nhóm trên) ─────────
 
     private static List<Product> buildGeneric(Context ctx) {
         Object[][] data = {
@@ -259,8 +226,6 @@ public final class MockProductCatalog {
         return list;
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-
     private static Product mockProduct(Context ctx, String id, int nameRes, String category, double price, String... colors) {
         Product p = new Product();
         p.setId(id);
@@ -269,8 +234,26 @@ public final class MockProductCatalog {
         p.setColors(Arrays.asList(colors));
         p.setMaterial(ctx.getString("PHỤ KIỆN".equals(category) ? R.string.material_theu_tay : R.string.material_lua_to_tam));
         p.setPrice(price);
-        p.setRating(4.7);
+        p.setRating(4.8);
         p.setStock(20);
+
+        String mainImg = "onboarding_1";
+        if (id.contains("02")) mainImg = "onboarding_2";
+        else if (id.contains("03")) mainImg = "onboarding_3";
+        else if (id.contains("04")) mainImg = "onboarding_4";
+        else if (id.contains("05")) mainImg = "onboarding_5";
+        else if (id.contains("06")) mainImg = "h_1";
+        else if (id.contains("07")) mainImg = "onboarding_2";
+
+        List<String> imgs = new ArrayList<>();
+        imgs.add(mainImg);
+        imgs.add("onboarding_5");
+        imgs.add("onboarding_1");
+
+        p.setImage(mainImg);
+        p.setImages(imgs);
+
+        applyGenericDetail(ctx, p);
         return p;
     }
 
@@ -283,8 +266,6 @@ public final class MockProductCatalog {
         return spec;
     }
 
-    // Tên biến thể mô tả/câu chuyện theo danh mục — mỗi danh mục có 3 biến thể xoay vòng
-    // theo id sản phẩm để các sản phẩm liền kề không đọc giống hệt nhau.
     private static final Map<String, int[]> DESC_TEMPLATES_BY_CATEGORY = new LinkedHashMap<>();
     private static final Map<String, int[]> STORY_TEMPLATES_BY_CATEGORY = new LinkedHashMap<>();
     static {
@@ -303,26 +284,24 @@ public final class MockProductCatalog {
         STORY_TEMPLATES_BY_CATEGORY.put("PHỤ KIỆN", new int[]{R.string.story_tmpl_phu_kien_1, R.string.story_tmpl_phu_kien_2, R.string.story_tmpl_phu_kien_3});
     }
 
-    // Phụ kiện dạng vải (khăn/vấn) cần bảo quản như hàng dệt; phụ kiện cứng (mũ/quạt/ô) cần
-    // tránh ẩm và lau khô thay vì giặt.
     private static final List<String> FABRIC_ACCESSORY_TYPES = Arrays.asList("Khăn đội đầu");
-
-    // Mô tả rập khuôn do admin để mặc định khi tạo sản phẩm trên Firestore (chưa kịp viết nội
-    // dung riêng) — xem như "còn thiếu" để sinh nội dung thay vì hiển thị nguyên câu này.
     private static final String GENERIC_PLACEHOLDER_DESC = "Sản phẩm Việt Phục TiredCity cao cấp.";
 
     private static boolean isSparse(String s) {
         return s == null || s.trim().isEmpty() || s.trim().equalsIgnoreCase(GENERIC_PLACEHOLDER_DESC);
     }
 
-    /** Điền phần mô tả/câu chuyện/bảo quản/thông số còn thiếu (hoặc còn sơ sài — ví dụ mô tả
-     *  mặc định do admin chưa kịp viết) bằng nội dung hợp lý theo danh mục — mỗi sản phẩm nhận
-     *  1 trong 3 biến thể xoay vòng (chèn tên + màu/loại + chất liệu riêng) thay vì lặp lại đúng
-     *  1 câu mẫu cho mọi sản phẩm. Gọi cho MỌI sản phẩm bất kể nguồn dữ liệu (mẫu offline, REST
-     *  hay Firestore) để mục 01/02/03 ở Chi tiết sản phẩm không bao giờ trống hay quá sơ sài. */
     public static void applyGenericDetail(Context ctx, Product p) {
         if (p.getOrigin() == null) p.setOrigin(ctx.getString(R.string.default_origin));
 
+        if (p.getColors() == null || p.getColors().isEmpty()) {
+            p.setColors(Arrays.asList("Trắng", "Xanh", "Vàng"));
+        }
+
+        if (p.getDescription() == null) {
+            p.setDescription(ctx.getString(R.string.desc_template_default,
+                    p.getName(), p.getMaterial() != null ? p.getMaterial().toLowerCase(Locale.getDefault()) : ""));
+        }
         String category = p.getCategory();
         int variant = Math.abs((p.getId() != null ? p.getId() : p.getName()).hashCode()) % 3;
         String colorOrType = (p.getColors() != null && !p.getColors().isEmpty())
@@ -346,25 +325,11 @@ public final class MockProductCatalog {
         if (p.getCareInstructions() == null) {
             boolean isFabricAccessory = p.getColors() != null && !Collections.disjoint(p.getColors(), FABRIC_ACCESSORY_TYPES);
             if ("PHỤ KIỆN".equals(category) && !isFabricAccessory) {
-                // Mũ/quạt/ô: chất liệu cứng hoặc bán cứng, không giặt được — lau khô + tránh ẩm/nắng.
-                p.setCareInstructions(Arrays.asList(
-                        ctx.getString(R.string.care_wipe_soft_cloth),
-                        ctx.getString(R.string.care_avoid_moisture),
-                        ctx.getString(R.string.care_avoid_direct_sun),
-                        ctx.getString(R.string.care_store_box)));
+                p.setCareInstructions(Arrays.asList(ctx.getString(R.string.care_wipe_soft_cloth), ctx.getString(R.string.care_avoid_moisture), ctx.getString(R.string.care_avoid_direct_sun), ctx.getString(R.string.care_store_box)));
             } else if ("PHỤ KIỆN".equals(category)) {
-                // Khăn/vấn: vải mềm, giặt nhẹ được nhưng vẫn cần tránh nắng gắt khi phơi.
-                p.setCareInstructions(Arrays.asList(
-                        ctx.getString(R.string.care_hand_wash_cold_gentle),
-                        ctx.getString(R.string.care_no_bleach),
-                        ctx.getString(R.string.care_avoid_direct_sun),
-                        ctx.getString(R.string.care_store_box)));
+                p.setCareInstructions(Arrays.asList(ctx.getString(R.string.care_hand_wash_cold_gentle), ctx.getString(R.string.care_no_bleach), ctx.getString(R.string.care_avoid_direct_sun), ctx.getString(R.string.care_store_box)));
             } else {
-                p.setCareInstructions(Arrays.asList(
-                        ctx.getString(R.string.care_hand_wash_cold_gentle),
-                        ctx.getString(R.string.care_no_bleach),
-                        ctx.getString(R.string.care_iron_low_cloth),
-                        ctx.getString(R.string.care_store_dry)));
+                p.setCareInstructions(Arrays.asList(ctx.getString(R.string.care_hand_wash_cold_gentle), ctx.getString(R.string.care_no_bleach), ctx.getString(R.string.care_iron_low_cloth), ctx.getString(R.string.care_store_dry)));
             }
         }
         if (p.getSpecifications() == null || p.getSpecifications().isEmpty()) {

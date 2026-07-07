@@ -42,8 +42,8 @@ public class FirestoreBlogRepository {
                         list.add(map(d));
                     }
                     Collections.sort(list, (a, b) -> {
-                        long ta = a.getPublishedAt() != null ? a.getPublishedAt().getTime() : 0;
-                        long tb = b.getPublishedAt() != null ? b.getPublishedAt().getTime() : 0;
+                        long ta = a.getPublishedDate() != null ? a.getPublishedDate().getTime() : 0;
+                        long tb = b.getPublishedDate() != null ? b.getPublishedDate().getTime() : 0;
                         return Long.compare(tb, ta); // giảm dần: mới nhất trước
                     });
                     cb.onResult(list);
@@ -57,7 +57,7 @@ public class FirestoreBlogRepository {
         String title = str(d, "title");
         a.setTitle(title);
         a.setTitleVi(title);
-        a.setSummary(str(d, "excerpt"));
+        a.setExcerpt(str(d, "excerpt"));
         a.setContent(str(d, "content"));
         a.setImageUrl(str(d, "thumbnail"));
         a.setAuthor(str(d, "authorName"));

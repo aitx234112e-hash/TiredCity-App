@@ -145,6 +145,12 @@
     color: var(--tc-red);
 }
 
+.ev-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.ev-edit,
 .ev-del {
     background: none;
     border: none;
@@ -156,8 +162,31 @@
     display: flex;
 }
 
+.ev-edit svg,
 .ev-del svg { width: 18px; height: 18px; }
+
+.ev-edit:hover { color: var(--c-blue); background: var(--c-blue-bg); }
 .ev-del:hover { color: var(--tc-red); background: var(--tc-red-soft); }
+
+.field-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.field-checkbox input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.field-checkbox span {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
 
 .ev-title {
     margin: 0 0 12px;

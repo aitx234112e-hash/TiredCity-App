@@ -1544,6 +1544,7 @@
                         android:letterSpacing="0.16" />
 
                     <TextView
+                        android:id="@+id/tv_home_events_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -1582,6 +1583,7 @@
                 android:foreground="?attr/selectableItemBackground">
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_event_banner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="false"
@@ -1629,6 +1631,7 @@
                         android:letterSpacing="0.16" />
 
                     <TextView
+                        android:id="@+id/tv_home_news_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -1667,6 +1670,7 @@
                 android:foreground="?attr/selectableItemBackground">
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_news_banner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="false"

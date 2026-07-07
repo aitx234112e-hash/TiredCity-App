@@ -19,39 +19,48 @@
 
   <!-- Stats Row -->
   <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-icon">
-        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#fff" stroke-width="1.7"/><path d="M8 12h8M8 8h8M8 16h4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div class="stat-card" (click)="setStatusFilter('')" style="cursor: pointer;">
+      <div class="stat-icon icon-primary">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="stat-info">
-        <span class="stat-value">{{ totalOrders }}</span>
-        <span class="stat-label">Tổng đơn hàng</span>
+        <span class="stat-value">{{ totalRevenue | number }} đ</span>
+        <span class="stat-label">Doanh thu (Đã giao)</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('DELIVERED')" style="cursor: pointer;">
       <div class="stat-icon icon-success">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/></svg>
       </div>
       <div class="stat-info">
-        <span class="stat-value">{{ countByStatus('delivered') }}</span>
+        <span class="stat-value">{{ countByStatus('DELIVERED') }}</span>
         <span class="stat-label">Hoàn thành</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('PROCESSING_GROUP')" style="cursor: pointer;">
       <div class="stat-icon icon-warning">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
       <div class="stat-info">
-        <span class="stat-value">{{ countByStatus('pending') }}</span>
-        <span class="stat-label">Chờ xử lý</span>
+        <span class="stat-value">{{ countByStatus('PENDING') + countByStatus('CONFIRMED') + countByStatus('PROCESSING') }}</span>
+        <span class="stat-label">Đang xử lý</span>
       </div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="setStatusFilter('SHIPPING_GROUP')" style="cursor: pointer;">
+      <div class="stat-icon icon-info">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M1 3h15v13H1z" stroke="#fff" stroke-width="1.5"/><path d="M16 8h4l3 4v5h-7V8z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ countByStatus('SHIPPING') + countByStatus('SHIPPED') }}</span>
+        <span class="stat-label">Đang giao</span>
+      </div>
+    </div>
+    <div class="stat-card" (click)="setStatusFilter('CANCELLED')" style="cursor: pointer;">
       <div class="stat-icon icon-danger">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
       <div class="stat-info">
-        <span class="stat-value">{{ countByStatus('cancelled') }}</span>
+        <span class="stat-value">{{ countByStatus('CANCELLED') }}</span>
         <span class="stat-label">Đã hủy</span>
       </div>
     </div>
@@ -64,20 +73,37 @@
         <svg class="search-icon" width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="#9AA1AD" stroke-width="2"/><path d="M20 20l-4-4" stroke="#9AA1AD" stroke-width="2" stroke-linecap="round"/></svg>
         <input type="text" placeholder="Tìm kiếm đơn hàng..." [(ngModel)]="searchText" (input)="filterOrders()" />
       </div>
+
+      <!-- Date Filter -->
+      <div class="date-filter-group">
+        <input type="date" class="filter-select date-input" [(ngModel)]="startDate" (change)="filterOrders()" title="Từ ngày" />
+        <span class="date-sep">→</span>
+        <input type="date" class="filter-select date-input" [(ngModel)]="endDate" (change)="filterOrders()" title="Đến ngày" />
+      </div>
+
       <select class="filter-select" [(ngModel)]="filterOption" (change)="filterOrders()">
         <option value="orderId">Mã đơn</option>
-        <option value="user">Khách hàng</option>
+        <option value="user">Tên / SĐT / Email</option>
       </select>
       <select class="filter-select" [(ngModel)]="selectedStatus" (change)="filterOrders()">
         <option value="">Tất cả trạng thái</option>
-        <option value="pending">Chờ xác nhận</option>
-        <option value="processing">Đang chuẩn bị</option>
-        <option value="shipped">Đang giao</option>
-        <option value="delivered">Đã giao</option>
-        <option value="cancelled">Đã hủy</option>
+        <option value="PROCESSING_GROUP">Đang xử lý (Chờ/Chuẩn bị)</option>
+        <option value="SHIPPING_GROUP">Đang giao (Tất cả)</option>
+        <option value="PENDING">Chờ xác nhận</option>
+        <option value="CONFIRMED">Đang chuẩn bị</option>
+        <option value="SHIPPING">Đang giao</option>
+        <option value="DELIVERED">Đã giao</option>
+        <option value="CANCELLED">Đã hủy</option>
       </select>
     </div>
-    <span class="toolbar-count">{{ filteredOrders.length }} đơn hàng</span>
+
+    <div class="toolbar-right">
+      <button class="btn-export-all" (click)="exportToExcel()" title="Xuất danh sách đang hiển thị">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Xuất Excel
+      </button>
+      <span class="toolbar-count">{{ filteredOrders.length }} đơn hàng</span>
+    </div>
   </div>
 
   <!-- Bulk action bar (A3) -->
@@ -128,7 +154,9 @@
             <td class="td-check">
               <input type="checkbox" [checked]="isSelected(order)" (change)="toggleSelect(order)" />
             </td>
-            <td class="order-id-cell" [title]="order.orderID || order._id || order.id">{{ order.orderID || order._id || order.id }}</td>
+            <td class="order-id-cell" [title]="order.orderCode || order._id">
+              {{ order.orderCode || order._id }}
+            </td>
             <td>
               <div class="customer-cell">
                 <div class="customer-avatar">{{ (order.userName || 'G')[0] | uppercase }}</div>
@@ -214,8 +242,12 @@
           <span class="detail-value">{{ selectedOrder.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">Trạng thái</span>
-          <span class="status-pill status-{{ selectedOrder.status }}">{{ getStatusLabel(selectedOrder.status) }}</span>
+          <span class="detail-label">Phương thức thanh toán</span>
+          <span class="detail-value">{{ selectedOrder.paymentMethod }}</span>
+        </div>
+        <div class="detail-item full-width" *ngIf="selectedOrder.note">
+          <span class="detail-label">Ghi chú từ khách hàng</span>
+          <span class="detail-value note-text">"{{ selectedOrder.note }}"</span>
         </div>
       </div>
 
@@ -260,12 +292,12 @@
       <div class="order-actions-section">
 
         <!-- Bước 1: Chờ xác nhận → Xác nhận đơn hàng -->
-        <div class="action-block confirm-block" *ngIf="selectedOrder.status === 'pending'">
+        <div class="action-block confirm-block" *ngIf="selectedOrder.status === 'PENDING'">
           <div class="action-icon">
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/></svg>
           </div>
           <div class="action-info">
-            <span class="action-title">Đơn hàng đang chờ xác nhận</span>
+            <span class="action-title">Đon hàng đang chờ xác nhận</span>
             <span class="action-desc">Xác nhận để bắt đầu chuẩn bị hàng</span>
           </div>
           <button class="btn-action btn-confirm" (click)="confirmOrder()">
@@ -274,7 +306,7 @@
         </div>
 
         <!-- Bước 2: Đang chuẩn bị → Nhập mã vận đơn SPX + Gửi hàng -->
-        <div class="action-block ship-block" *ngIf="selectedOrder.status === 'processing'">
+        <div class="action-block ship-block" *ngIf="selectedOrder.status === 'CONFIRMED'">
           <div class="ship-block-top">
             <div class="action-icon ship-icon">
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M1 3h15v13H1z" stroke="#fff" stroke-width="1.5"/><path d="M16 8h4l3 4v5h-7V8z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><circle cx="5.5" cy="18.5" r="2.5" stroke="#fff" stroke-width="1.5"/><circle cx="18.5" cy="18.5" r="2.5" stroke="#fff" stroke-width="1.5"/></svg>
@@ -292,8 +324,22 @@
           </div>
         </div>
 
-        <!-- Bước 3: Đã giao -->
-        <div class="action-block delivered-done-block" *ngIf="selectedOrder.status === 'delivered'">
+        <!-- Bước 3: Đang giao → Xác nhận đã giao -->
+        <div class="action-block delivered-block" *ngIf="selectedOrder.status === 'SHIPPING'">
+          <div class="action-icon ship-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M1 3h15v13H1z" stroke="#fff" stroke-width="1.5"/><path d="M16 8h4l3 4v5h-7V8z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><circle cx="5.5" cy="18.5" r="2.5" stroke="#fff" stroke-width="1.5"/><circle cx="18.5" cy="18.5" r="2.5" stroke="#fff" stroke-width="1.5"/></svg>
+          </div>
+          <div class="action-info">
+            <span class="action-title">Đang giao hàng</span>
+            <span class="action-desc">Mã vận đơn: {{ selectedOrder.shipping?.trackingCode || trackingCodeInput }}</span>
+          </div>
+          <button class="btn-action btn-confirm" (click)="markDelivered()">
+            Xác nhận đã giao
+          </button>
+        </div>
+
+        <!-- Bước 4: Đã giao -->
+        <div class="action-block delivered-done-block" *ngIf="selectedOrder.status === 'DELIVERED'">
           <div class="action-icon done-icon">
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/></svg>
           </div>
@@ -306,7 +352,7 @@
         </div>
 
         <!-- Đã hủy -->
-        <div class="action-block cancelled-block" *ngIf="selectedOrder.status === 'cancelled'">
+        <div class="action-block cancelled-block" *ngIf="selectedOrder.status === 'CANCELLED'">
           <div class="action-icon cancel-icon">
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
@@ -314,7 +360,22 @@
             <span class="action-title">Đơn hàng đã bị hủy</span>
           </div>
         </div>
+      </div>
 
+      <!-- Nhật ký đơn hàng -->
+      <div class="history-section" *ngIf="selectedOrder.history && selectedOrder.history.length > 0">
+        <h4>Lịch sử xử lý</h4>
+        <div class="history-timeline">
+          <div class="history-item" *ngFor="let log of selectedOrder.history.slice().reverse()">
+            <div class="history-dot"></div>
+            <div class="history-content">
+              <span class="history-time">{{ log.time | date:'dd/MM/yyyy HH:mm' }} — <strong>{{ log.actor || 'Hệ thống' }}</strong></span>
+              <span class="history-desc">
+                <strong class="history-status">{{ getStatusLabel(log.status) }}:</strong> {{ log.note }}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

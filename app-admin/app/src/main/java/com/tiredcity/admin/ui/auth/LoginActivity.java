@@ -97,7 +97,14 @@ public class LoginActivity extends AppCompatActivity {
 
         setLoading(true);
         auth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(result -> checkRoleAndEnter(result.getUser().getUid(), true))
+                .addOnSuccessListener(result -> {
+                    if (result.getUser() != null) {
+                        checkRoleAndEnter(result.getUser().getUid(), true);
+                    } else {
+                        setLoading(false);
+                        Toast.makeText(this, R.string.error_wrong_credentials, Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .addOnFailureListener(e -> {
                     setLoading(false);
                     Toast.makeText(this, R.string.error_wrong_credentials, Toast.LENGTH_SHORT).show();
@@ -117,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
     private void onProfileLoaded(DocumentSnapshot snap) {
         setLoading(false);
         String role = snap.exists() ? String.valueOf(snap.get("role")) : "user";
-        boolean disabled = snap.exists() && Boolean.TRUE.equals(snap.getBoolean("disabled"));
+        boolean disabled = snap.exists() && java.util.Objects.equals(snap.getBoolean("disabled"), true);
 
         if (disabled) {
             auth.signOut();
@@ -125,13 +132,18 @@ public class LoginActivity extends AppCompatActivity {
             bailIfNoForm();
             return;
         }
-        if ("admin".equals(role) || "superadmin".equals(role)) {
-            startActivity(new Intent(this, DashboardActivity.class));
-            finish();
-        } else {
-            auth.signOut();
-            Toast.makeText(this, R.string.error_no_admin_access, Toast.LENGTH_SHORT).show();
-            bailIfNoForm();
+
+        switch (role) {
+            case "admin":
+            case "superadmin":
+                startActivity(new Intent(this, DashboardActivity.class));
+                finish();
+                break;
+            default:
+                auth.signOut();
+                Toast.makeText(this, R.string.error_no_admin_access, Toast.LENGTH_SHORT).show();
+                bailIfNoForm();
+                break;
         }
     }
 

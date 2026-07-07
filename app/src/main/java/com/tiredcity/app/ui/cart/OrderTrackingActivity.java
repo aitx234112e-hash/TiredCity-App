@@ -41,6 +41,22 @@ public class OrderTrackingActivity extends BaseActivity {
 
     private void loadOrder(String orderId) {
         if (orderId == null) { finish(); return; }
+        
+        orderRepository.getOrderByIdFromFirestore(orderId, new OrderRepository.OnOrderLoadedListener() {
+            @Override
+            public void onSuccess(Order order) {
+                bindOrder(order);
+            }
+
+            @Override
+            public void onError(String message) {
+                // Fallback to API
+                loadOrderFromApi(orderId);
+            }
+        });
+    }
+
+    private void loadOrderFromApi(String orderId) {
         orderRepository.getOrderById(orderId).enqueue(new Callback<ApiResponse<Order>>() {
             @Override
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
@@ -59,20 +75,108 @@ public class OrderTrackingActivity extends BaseActivity {
     }
 
     private void bindOrder(Order order) {
-        binding.tvOrderId.setText("#" + order.getId());
+        String displayId = order.getOrderCode() != null ? order.getOrderCode() : "#" + order.getId();
+        binding.tvOrderId.setText(displayId);
         binding.tvOrderDate.setText(DateUtils.formatDisplay(order.getCreatedAt()));
         binding.tvOrderTotal.setText(PriceUtils.format(order.getTotalPrice()));
         binding.tvShippingAddress.setText(order.getShippingAddress());
-        updateTrackingSteps(order.getStatus());
+        
+        // Setup Cancel Button - Only allow cancel if PENDING
+        if (Constants.ORDER_PENDING.equalsIgnoreCase(order.getStatus())) {
+            binding.btnCancelOrder.setVisibility(android.view.View.VISIBLE);
+            binding.btnCancelOrder.setOnClickListener(v -> confirmCancelOrder(order.getId()));
+        } else {
+            binding.btnCancelOrder.setVisibility(android.view.View.GONE);
+        }
+
+        // Setup Confirm Received Button
+        String status = order.getStatus() != null ? order.getStatus().toUpperCase() : "";
+        if (status.equals("SHIPPING") || status.equals("SHIPPED") || status.equals("PROCESSING")) {
+            binding.btnConfirmReceived.setVisibility(android.view.View.VISIBLE);
+            binding.btnConfirmReceived.setOnClickListener(v -> confirmReceived(order));
+        } else {
+            binding.btnConfirmReceived.setVisibility(android.view.View.GONE);
+        }
+
+        // Bind items to RecyclerView
+        java.util.List<com.tiredcity.app.data.model.CartItem> items = order.getItems();
+        if (items != null) {
+            binding.rvOrderItems.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
+            
+            boolean canReview = Constants.ORDER_DELIVERED.equalsIgnoreCase(order.getStatus());
+            binding.rvOrderItems.setAdapter(new com.tiredcity.app.adapter.CheckoutItemAdapter(items, canReview, item -> {
+                if (item.getProduct() != null) {
+                    android.content.Intent intent = new android.content.Intent(this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+                    intent.putExtra(Constants.EXTRA_PRODUCT_ID, item.getProduct().getId());
+                    intent.putExtra(Constants.EXTRA_ACTION_REVIEW, true); // Chuyển sang màn hình chi tiết và tự mở dialog
+                    startActivity(intent);
+                }
+            }));
+        }
+
+        if (Constants.ORDER_CANCELLED.equals(order.getStatus())) {
+            binding.stepDelivered.tvStepTitle.setText("ĐÃ HỦY");
+            binding.stepDelivered.tvStepTitle.setTextColor(getResources().getColor(android.R.color.holo_red_dark, getTheme()));
+            binding.stepDelivered.vStepDot.setBackgroundResource(R.drawable.tc_bg_circle_red);
+        } else {
+            updateTrackingSteps(order.getStatus());
+        }
+    }
+
+    private void confirmCancelOrder(String orderId) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Xác nhận hủy đơn")
+            .setMessage("Bạn có chắc chắn muốn hủy đơn hàng này không? Hành động này không thể hoàn tác.")
+            .setPositiveButton("Hủy đơn", (dialog, which) -> {
+                binding.btnCancelOrder.setEnabled(false);
+                binding.btnCancelOrder.setText("Đang xử lý...");
+                
+                orderRepository.cancelOrderInFirestore(orderId, "Khách hàng tự hủy", (success, error) -> {
+                    if (success) {
+                        Toast.makeText(this, "Đã hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                        loadOrder(orderId); // Reload UI
+                    } else {
+                        binding.btnCancelOrder.setEnabled(true);
+                        binding.btnCancelOrder.setText("Hủy đơn hàng");
+                        Toast.makeText(this, "Lỗi: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
+            })
+            .setNegativeButton("Quay lại", null)
+            .show();
+    }
+
+    private void confirmReceived(Order order) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Xác nhận đã nhận hàng")
+            .setMessage("Bạn chắc chắn đã nhận được hàng và hài lòng với sản phẩm?")
+            .setPositiveButton("Xác nhận", (dialog, which) -> {
+                binding.btnConfirmReceived.setEnabled(false);
+                binding.btnConfirmReceived.setText("Đang xử lý...");
+                
+                orderRepository.updateOrderStatusInFirestore(order.getId(), "DELIVERED", "Khách hàng xác nhận đã nhận hàng", (success, error) -> {
+                    if (success) {
+                        Toast.makeText(this, "Cảm ơn bạn đã xác nhận!", Toast.LENGTH_SHORT).show();
+                        loadOrder(order.getId()); // Reload UI
+                    } else {
+                        binding.btnConfirmReceived.setEnabled(true);
+                        binding.btnConfirmReceived.setText("Đã nhận được hàng");
+                        Toast.makeText(this, "Lỗi: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
+            })
+            .setNegativeButton("Đóng", null)
+            .show();
     }
 
     private void updateTrackingSteps(String status) {
         // Status progression: PENDING → CONFIRMED → SHIPPING → DELIVERED
         boolean isPending   = true;
-        boolean isConfirmed = !Constants.ORDER_PENDING.equals(status);
-        boolean isShipping  = Constants.ORDER_SHIPPING.equals(status)
-                              || Constants.ORDER_DELIVERED.equals(status);
-        boolean isDelivered = Constants.ORDER_DELIVERED.equals(status);
+        boolean isConfirmed = !status.equalsIgnoreCase("PENDING");
+        boolean isShipping  = status.equalsIgnoreCase("SHIPPING") 
+                              || status.equalsIgnoreCase("SHIPPED")
+                              || status.equalsIgnoreCase("DELIVERED");
+        boolean isDelivered = status.equalsIgnoreCase("DELIVERED");
 
         applyStep(binding.stepPlaced,    getString(R.string.track_step_placed),    isPending);
         applyStep(binding.stepConfirmed, getString(R.string.track_step_confirmed), isConfirmed);

@@ -79,6 +79,14 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.VH> {
             }
             h.badge.setTextColor(color);
         }
+
+        if (!isEmpty(r.actionLabel) && r.onActionClick != null) {
+            h.btnAction.setVisibility(View.VISIBLE);
+            h.btnAction.setText(r.actionLabel);
+            h.btnAction.setOnClickListener(v -> r.onActionClick.run());
+        } else {
+            h.btnAction.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -95,7 +103,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.VH> {
     }
 
     static class VH extends RecyclerView.ViewHolder {
-        final TextView title, subtitle, meta, badge;
+        final TextView title, subtitle, meta, badge, btnAction;
 
         VH(@NonNull View v) {
             super(v);
@@ -103,6 +111,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.VH> {
             subtitle = v.findViewById(R.id.tvSubtitle);
             meta = v.findViewById(R.id.tvMeta);
             badge = v.findViewById(R.id.tvBadge);
+            btnAction = v.findViewById(R.id.btnAction);
         }
     }
 }

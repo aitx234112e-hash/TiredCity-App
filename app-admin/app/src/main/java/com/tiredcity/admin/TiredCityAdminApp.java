@@ -23,7 +23,7 @@ public class TiredCityAdminApp extends Application {
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setProjectId("tiredcity-daf1e")
                     .setApplicationId("1:683649996737:android:73368172de04155a4dc140")
-                    .setApiKey("AIzaSyAFKXern20RnlEdF_qbgp8n18q7KD2c4gc")
+                    .setApiKey("AIzaSyDgcGnd8hwcrKO5OmKDdOplDuRD_Wd_PQc")
                     .setGcmSenderId("683649996737")
                     .setStorageBucket("tiredcity-daf1e.firebasestorage.app")
                     .build();

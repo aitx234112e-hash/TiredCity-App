@@ -1,5 +1,6 @@
 package com.tiredcity.app.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,19 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
+    /** Chiều cao ảnh (dp) theo số cột đang hiển thị — thẻ càng hẹp thì ảnh càng thấp. */
+    private static final int IMAGE_HEIGHT_DP_1_COL = 300;
+    private static final int IMAGE_HEIGHT_DP_2_COL = 200;
+    private static final int IMAGE_HEIGHT_DP_3_COL = 150;
+
     private List<Product>           products;
     private OnProductClickListener  listener;
-    private boolean                 fillWidth = false;
+    private int                     spanCount = 2;
 
     public interface OnProductClickListener {
         void onProductClick(Product product);
         void onSaveToggle(Product product, boolean saved);
+        void onAddToCartClick(Product product);
     }
 
     public ProductAdapter(List<Product> products) {
@@ -34,12 +41,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         this.listener = l;
     }
 
-    /**
-     * Khi bật, thẻ sản phẩm sẽ giãn đầy ô lưới (MATCH_PARENT) thay vì giữ bề rộng
-     * cố định trong XML — dùng cho lưới đổi 1/2/3 cột (CategoryActivity).
-     */
-    public void setFillWidth(boolean fill) {
-        this.fillWidth = fill;
+    /** Số cột đang hiển thị (1/2/3) — quyết định chiều cao ảnh poster full-bleed của thẻ. */
+    public void setSpanCount(int spanCount) {
+        if (this.spanCount == spanCount) return;
+        this.spanCount = spanCount;
         notifyDataSetChanged();
     }
 
@@ -59,24 +64,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemProductBinding b = ItemProductBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false);
-        if (fillWidth) {
-            android.view.ViewGroup.LayoutParams lp = b.getRoot().getLayoutParams();
-            if (lp != null) {
-                lp.width = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-                b.getRoot().setLayoutParams(lp);
-            }
-        }
         return new ViewHolder(b);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(products.get(position), listener);
+        holder.bind(products.get(position), listener, spanCount);
     }
 
     @Override
     public int getItemCount() {
         return products != null ? products.size() : 0;
+    }
+
+    private static int imageHeightDp(int spanCount) {
+        if (spanCount <= 1) return IMAGE_HEIGHT_DP_1_COL;
+        if (spanCount == 2) return IMAGE_HEIGHT_DP_2_COL;
+        return IMAGE_HEIGHT_DP_3_COL;
     }
 
     // ── ViewHolder ────────────────────────────────────────────────────────────
@@ -92,7 +96,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             this.favoritesStore = new FavoritesLocalStore(binding.getRoot().getContext());
         }
 
-        void bind(Product product, OnProductClickListener listener) {
+        void bind(Product product, OnProductClickListener listener, int spanCount) {
+            Context context = itemView.getContext();
+
+            ViewGroup.LayoutParams lp = b.flImage.getLayoutParams();
+            lp.height = Math.round(imageHeightDp(spanCount) * context.getResources().getDisplayMetrics().density);
+            b.flImage.setLayoutParams(lp);
+
             b.tvProductName.setText(product.getName());
             b.tvProductMaterial.setText(product.getMaterial() != null ? product.getMaterial() : "");
             b.tvProductPrice.setText(PriceUtils.formatVnd(product.getEffectivePrice()));
@@ -101,7 +111,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             // Tag màu (Áo Dài) hoặc loại phụ kiện (Phụ Kiện) — cùng lấy từ product.getColors().
             String colorTag = ColorTaxonomy.primaryTag(product.getColors());
             if (colorTag != null) {
-                colorTag = ColorTaxonomy.displayName(itemView.getContext(), colorTag);
+                colorTag = ColorTaxonomy.displayName(context, colorTag);
             } else if (product.getColors() != null && !product.getColors().isEmpty()) {
                 colorTag = product.getColors().get(0);
             }
@@ -123,12 +133,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             // Product image via Glide
             String imageUrl = product.getFirstImage();
             if (!imageUrl.isEmpty()) {
+                Object loadTarget = imageUrl;
+                // Nếu là tên resource (không phải URL), chuyển thành resource ID để Glide nạp offline
+                if (!imageUrl.startsWith("http") && !imageUrl.startsWith("content")) {
+                    int resId = b.ivProductImage.getContext().getResources().getIdentifier(
+                            imageUrl, "drawable", b.ivProductImage.getContext().getPackageName());
+                    if (resId != 0) loadTarget = resId;
+                }
+
                 Glide.with(b.ivProductImage.getContext())
                         .load(imageUrl)
                         // Ảnh sản phẩm có thể nặng (PNG vài MB) → nới timeout để không bị
                         // huỷ tải giữa chừng (mặc định Glide chỉ 2500ms).
                         .timeout(30000)
+                        .load(loadTarget)
                         .centerCrop()
+                        .override(400, 500) // Optimize size for grid
+                        .thumbnail(0.1f)    // Load small thumbnail first
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .placeholder(R.color.bg_subtle)
                         .error(R.color.bg_subtle)
@@ -146,6 +167,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 boolean nowSaved = favoritesStore.toggleFavorite(product);
                 b.ibSave.setSaved(nowSaved, true);
                 if (listener != null) listener.onSaveToggle(product, nowSaved);
+            });
+
+            // Quick add to cart
+            b.btnQuickAdd.setOnClickListener(v -> {
+                if (listener != null) listener.onAddToCartClick(product);
             });
 
             b.getRoot().setOnClickListener(v -> {

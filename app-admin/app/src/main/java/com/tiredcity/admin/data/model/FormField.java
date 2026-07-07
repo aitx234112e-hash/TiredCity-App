@@ -11,7 +11,9 @@ public class FormField {
         TEXTAREA,  // nhieu dong
         NUMBER,    // so nguyen
         DECIMAL,   // so thap phan
+        MONEY,     // so co dinh dang tien VND
         DATE,      // yyyy-MM-dd (mo DatePicker)
+        TIME,      // HH:mm (mo TimePicker)
         SELECT,    // chon 1 trong danh sach (options / optionValues song song)
         SWITCH     // boolean
     }
@@ -28,6 +30,8 @@ public class FormField {
     public String value;
     /** Goi y nhap (hint), co the null. */
     public String hint;
+    /** Cho phep nhap lieu hay chi xem (dung cho logic han che sua). */
+    public boolean enabled = true;
 
     public FormField(String key, String label, Type type, boolean required) {
         this(key, label, type, required, null, null);

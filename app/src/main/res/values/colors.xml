@@ -210,4 +210,20 @@
     <color name="tc_swatch_tim">#6B4A7A</color>
     <color name="tc_swatch_xanh_la">#4A7A4E</color>
     <color name="tc_swatch_cam">#C9752E</color>
+
+    <!-- ─── Màu riêng theo mệnh (trang AI Styling — tiêu đề section + từ khoá highlight) ─── -->
+    <color name="tc_menh_kim">#96805F</color>   <!-- be -->
+    <color name="tc_menh_moc">#124D1C</color>  <!-- xanh lá -->
+    <color name="tc_menh_thuy">#2F5F8A</color> <!-- xanh lam -->
+    <color name="tc_menh_hoa">#A80D15</color>  <!-- đỏ -->
+    <color name="tc_menh_tho">#8C5A1E</color>  <!-- vàng đất đậm -->
+
+    <!-- ─── Nền nhạt riêng theo mệnh (lớp nền phía sau mục "Sắc màu bản mệnh", "Điểm xuyết đúng
+         mệnh", "Hoạ tiết truyền đời" và thẻ "Lời khuyên phong cách") — cùng tông với tc_menh_* ở
+         trên nhưng nhạt hẳn để làm nền. ─── -->
+    <color name="tc_menh_kim_bg">#F3ECDD</color>   <!-- be nhạt -->
+    <color name="tc_menh_moc_bg">#D6E0C8</color>  <!-- xanh rêu nhạt, cùng tông với tc_menh_moc (#124D1C) -->
+    <color name="tc_menh_thuy_bg">#DEE8F3</color> <!-- xanh lam nhạt -->
+    <color name="tc_menh_hoa_bg">#FBE1DE</color>  <!-- đỏ nhạt -->
+    <color name="tc_menh_tho_bg">#F6E4C6</color>  <!-- vàng đất nhạt -->
 </resources>

@@ -170,6 +170,12 @@
     font-family: 'Montserrat', monospace;
 }
 
+.vc-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.vc-edit,
 .vc-del {
     background: none;
     border: none;
@@ -181,7 +187,10 @@
     display: flex;
 }
 
+.vc-edit svg,
 .vc-del svg { width: 17px; height: 17px; }
+
+.vc-edit:hover { color: var(--c-blue); background: var(--c-blue-bg); }
 .vc-del:hover { color: var(--tc-red); background: var(--tc-red-soft); }
 
 .vc-meta { display: flex; flex-direction: column; gap: 4px; }
@@ -203,11 +212,13 @@
     letter-spacing: 0.4px;
     padding: 3px 10px;
     border-radius: 20px;
-    background: var(--c-green-bg);
-    color: var(--c-green);
+    background: var(--bg-hover);
+    color: var(--text-muted);
 }
 
-.vc-status.expired { background: var(--bg-hover); color: var(--text-muted); }
+.vc-status[data-status="Hoạt động"] { background: var(--c-green-bg); color: var(--c-green); }
+.vc-status[data-status="Hết hạn"], .vc-status[data-status="Hết lượt"] { background: var(--tc-red-soft); color: var(--tc-red); }
+.vc-status[data-status="Đã tắt"] { background: var(--bg-hover); color: var(--text-muted); }
 
 /* Modal */
 .modal-overlay {
@@ -229,9 +240,11 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     width: 100%;
-    max-width: 480px;
+    max-width: 500px; /* Thu hẹp lại một chút để không bị tràn ngang */
     box-shadow: var(--shadow-md);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-head {
@@ -256,11 +269,42 @@
 
 .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
 
-.modal-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+.modal-body {
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 65vh; /* Giới hạn chiều cao vừa đủ lướt xuống */
+    overflow-y: auto;
+    overflow-x: hidden; /* Chặn tuyệt đối lướt ngang */
+}
 
-.field { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+/* Tùy chỉnh thanh cuộn cho gọn */
+.modal-body::-webkit-scrollbar { width: 5px; }
+.modal-body::-webkit-scrollbar-track { background: transparent; }
+.modal-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; width: 100%; }
 .field > span { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
-.field-row { display: flex; gap: 14px; }
+.field-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap; /* Tự động xuống dòng nếu khung quá hẹp */
+}
+
+.sub-row { display: flex; gap: 8px; width: 100%; }
+.sub-row input { flex: 1; min-width: 0; } /* min-width 0 giúp flex-shrink hoạt động chuẩn */
+
+.field-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 0;
+}
+.field-switch span { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+.field-switch input { width: 18px; height: 18px; cursor: pointer; }
 
 .field input,
 .field select,

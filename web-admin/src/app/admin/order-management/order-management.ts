@@ -24,22 +24,26 @@ export class OrderManagement implements OnInit {
   selectedStatus: string = '';
   filterOption = 'orderId';
 
+  startDate: string = '';
+  endDate: string = '';
+
   currentPage = 1;
   pageSize = 5;
 
   totalOrders = 0;
   totalPages = 1;
+  totalRevenue = 0;
 
   loading = true;
   successMsg = '';
   errorMsg = '';
 
   statusOptions = [
-    { value: 'pending', label: 'Chờ xác nhận' },
-    { value: 'processing', label: 'Đang chuẩn bị' },
-    { value: 'shipped', label: 'Đang giao' },
-    { value: 'delivered', label: 'Đã giao' },
-    { value: 'cancelled', label: 'Đã hủy' }
+    { value: 'PENDING', label: 'Chờ xác nhận' },
+    { value: 'CONFIRMED', label: 'Đang chuẩn bị' },
+    { value: 'SHIPPING', label: 'Đang giao' },
+    { value: 'DELIVERED', label: 'Đã giao' },
+    { value: 'CANCELLED', label: 'Đã hủy' }
   ];
 
   // --- Bulk update (A3) ---
@@ -59,7 +63,10 @@ export class OrderManagement implements OnInit {
   }
 
   countByStatus(status: string): number {
-    return this.orders.filter(o => o.status === status).length;
+    if (!this.orders) return 0;
+    return this.orders.filter(o =>
+      (o.status || '').toString().toUpperCase() === status.toUpperCase()
+    ).length;
   }
 
   private clearMsg() {
@@ -67,14 +74,21 @@ export class OrderManagement implements OnInit {
   }
 
   loadOrders(): void {
-
     this.orderService.getOrders().subscribe({
       next: (data: any[]) => {
-        this.orders = [...data];
-        this.filteredOrders = [...data];
+        // Sort by date descending
+        this.orders = data.sort((a, b) => {
+          const dateA = new Date(a.createdAt || 0).getTime();
+          const dateB = new Date(b.createdAt || 0).getTime();
+          return dateB - dateA;
+        });
+
+        this.filteredOrders = [...this.orders];
         this.totalOrders = this.orders.length;
         this.totalPages = Math.ceil(this.totalOrders / this.pageSize);
-        // compute subtotal and total for orders that don't include them
+
+        // compute subtotal, total and total revenue
+        this.totalRevenue = 0;
         this.orders.forEach(o => {
           try {
             const items = o.orderItems || (o as any).items || [];
@@ -86,6 +100,11 @@ export class OrderManagement implements OnInit {
             if (o.subTotal == null) o.subTotal = sub;
             if (o.shippingFee == null && (o as any).shipping_fee != null) o.shippingFee = (o as any).shipping_fee;
             if (o.totalPrice == null) o.totalPrice = (Number(o.subTotal || 0) || 0) + (Number(o.shippingFee || 0) || 0);
+
+            const s = (o.status || '').toString().toUpperCase();
+            if (s === 'DELIVERED') {
+              this.totalRevenue += Number(o.totalPrice || 0);
+            }
           } catch (e) {}
         });
 
@@ -96,6 +115,11 @@ export class OrderManagement implements OnInit {
       }
     });
     this.loading = false;
+  }
+
+  setStatusFilter(status: string): void {
+    this.selectedStatus = status;
+    this.filterOrders();
   }
 
   filterOrders(): void {
@@ -116,7 +140,9 @@ export class OrderManagement implements OnInit {
       } else {
 
         result = result.filter(order =>
-          order.userName?.toLowerCase().includes(text)
+          order.userName?.toLowerCase().includes(text) ||
+          order.customerInfo?.phone?.toLowerCase().includes(text) ||
+          order.customerInfo?.email?.toLowerCase().includes(text)
         );
 
       }
@@ -125,11 +151,47 @@ export class OrderManagement implements OnInit {
 
     // filter status
     if (this.selectedStatus) {
+      const filterS = this.selectedStatus.toUpperCase();
 
-      result = result.filter(order =>
-        order.status === this.selectedStatus
-      );
+      result = result.filter(order => {
+        const orderS = (order.status || '').toString().toUpperCase();
 
+        // Logic lọc thông minh: Gộp các trạng thái tương đương
+        if (filterS === 'PROCESSING_GROUP') {
+          return orderS === 'PENDING' || orderS === 'CONFIRMED' || orderS === 'PROCESSING';
+        }
+        if (filterS === 'SHIPPING_GROUP') {
+          return orderS === 'SHIPPING' || orderS === 'SHIPPED';
+        }
+
+        if (filterS === 'CONFIRMED' || filterS === 'PROCESSING') {
+          return orderS === 'CONFIRMED' || orderS === 'PROCESSING';
+        }
+        if (filterS === 'SHIPPING' || filterS === 'SHIPPED') {
+          return orderS === 'SHIPPING' || orderS === 'SHIPPED';
+        }
+
+        return orderS === filterS;
+      });
+    }
+
+    // filter date
+    if (this.startDate) {
+      const start = new Date(this.startDate).getTime();
+      result = result.filter(order => {
+        const orderTime = new Date(order.createdAt).getTime();
+        return orderTime >= start;
+      });
+    }
+
+    if (this.endDate) {
+      const end = new Date(this.endDate);
+      end.setHours(23, 59, 59, 999);
+      const endTime = end.getTime();
+      result = result.filter(order => {
+        const orderTime = new Date(order.createdAt).getTime();
+        return orderTime <= endTime;
+      });
     }
 
     this.filteredOrders = result;
@@ -141,9 +203,20 @@ export class OrderManagement implements OnInit {
 
   }
 
-  updateOrderStatus(order: any, status: string): void {
+  private getCurrentActorName(): string {
+    try {
+      const raw = localStorage.getItem('user');
+      if (!raw) return 'Admin';
+      const u = JSON.parse(raw);
+      return u.profileName || u.email || 'Admin';
+    } catch {
+      return 'Admin';
+    }
+  }
 
-    this.orderService.updateOrderStatus(order._id, status)
+  updateOrderStatus(order: any, status: string): void {
+    const actor = this.getCurrentActorName();
+    this.orderService.updateOrderStatus(order._id, status, '', actor)
       .subscribe({
 
         next: (updated: any) => {
@@ -186,7 +259,8 @@ export class OrderManagement implements OnInit {
 
   cancelOrder(order: any): void {
     if (order.status === 'cancelled') return;
-    this.orderService.cancelOrder(order._id).subscribe({
+    const actor = this.getCurrentActorName();
+    this.orderService.cancelOrder(order._id, 'Admin hủy', actor).subscribe({
       next: () => {
         order.status = 'cancelled';
         this.audit.log('order.cancel', order.orderID || order._id, '');
@@ -235,8 +309,9 @@ export class OrderManagement implements OnInit {
     if (!confirm(`Cập nhật ${ids.length} đơn sang "${this.getStatusLabel(this.bulkStatus)}"?`)) return;
 
     this.bulkProcessing = true;
+    const actor = this.getCurrentActorName();
     const calls = ids.map((id) =>
-      this.orderService.updateOrderStatus(id, this.bulkStatus).pipe(catchError(() => of(null)))
+      this.orderService.updateOrderStatus(id, this.bulkStatus, 'Cập nhật hàng loạt', actor).pipe(catchError(() => of(null)))
     );
 
     forkJoin(calls).subscribe({
@@ -351,7 +426,8 @@ export class OrderManagement implements OnInit {
   // Xác nhận đơn hàng: pending → processing
   confirmOrder() {
     if (!this.selectedOrder) return;
-    this.orderService.updateOrderStatus(this.selectedOrder._id, 'processing').subscribe({
+    const actor = this.getCurrentActorName();
+    this.orderService.updateOrderStatus(this.selectedOrder._id, 'CONFIRMED', '', actor).subscribe({
       next: (updated: any) => {
         if (updated) {
           this.selectedOrder.status = updated.status;
@@ -400,7 +476,8 @@ export class OrderManagement implements OnInit {
   // Xác nhận đã giao: shipped → delivered
   markDelivered() {
     if (!this.selectedOrder) return;
-    this.orderService.updateOrderStatus(this.selectedOrder._id, 'delivered').subscribe({
+    const actor = this.getCurrentActorName();
+    this.orderService.updateOrderStatus(this.selectedOrder._id, 'DELIVERED', '', actor).subscribe({
       next: (updated: any) => {
         if (updated) {
           this.selectedOrder.status = updated.status;
@@ -425,19 +502,57 @@ export class OrderManagement implements OnInit {
   saveShipping() {}
 
   getStatusLabel(status: string): string {
+    const s = (status || '').toString().toUpperCase();
     const map: {[k: string]: string} = {
-      'pending': 'Chờ xác nhận',
-      'processing': 'Đang chuẩn bị hàng',
-      'shipped': 'Đang giao hàng',
-      'delivered': 'Đã giao hàng',
-      'cancelled': 'Đã hủy'
+      'PENDING': 'Chờ xác nhận',
+      'PROCESSING': 'Đang chuẩn bị hàng',
+      'CONFIRMED': 'Đang chuẩn bị hàng',
+      'SHIPPED': 'Đang giao hàng',
+      'SHIPPING': 'Đang giao hàng',
+      'DELIVERED': 'Đã giao hàng',
+      'CANCELLED': 'Đã hủy'
     };
-    return map[status] || status;
+    return map[s] || status;
   }
 
   exportInvoice(order: any) {
-    this.successMsg = 'Chức năng xuất hóa đơn sẽ được phát triển!';
+    this.successMsg = 'Đang tạo hóa đơn...';
+    // Logic tạo file CSV đơn giản cho một đơn
+    this.downloadCSV([order], `HoaDon_${order.orderCode || order._id}.csv`);
     this.clearMsg();
+  }
+
+  exportToExcel() {
+    if (this.filteredOrders.length === 0) return;
+    this.successMsg = `Đang xuất ${this.filteredOrders.length} đơn hàng...`;
+    this.downloadCSV(this.filteredOrders, `DanhSachDonHang_${new Date().toLocaleDateString()}.csv`);
+    this.clearMsg();
+  }
+
+  private downloadCSV(data: any[], fileName: string) {
+    const headers = ['Ma Don', 'Khach Hang', 'SDT', 'Email', 'Tong Tien', 'Trang Thai', 'Ngay Dat', 'Thanh Toan', 'Dia Chi'];
+    const rows = data.map(o => [
+      o.orderCode || o._id,
+      o.userName || 'Guest',
+      o.phone || o.customerInfo?.phone || '',
+      o.userEmail || o.customerInfo?.email || '',
+      o.totalPrice,
+      this.getStatusLabel(o.status),
+      new Date(o.createdAt).toLocaleString('vi-VN'),
+      o.isPaid ? 'Da thanh toan' : 'Chua thanh toan',
+      (o.shippingAddress || '').replace(/,/g, '-')
+    ]);
+
+    const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   // Return true when order payment method indicates COD/cash
