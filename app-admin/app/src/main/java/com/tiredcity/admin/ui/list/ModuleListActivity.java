@@ -60,6 +60,7 @@ public class ModuleListActivity extends AppCompatActivity {
     private final List<DocumentSnapshot> allDocs = new ArrayList<>();
     /** Danh sach doc dang hien thi, song song 1-1 voi rows cua adapter. */
     private final List<DocumentSnapshot> shownDocs = new ArrayList<>();
+    private String statusFilter = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +86,28 @@ public class ModuleListActivity extends AppCompatActivity {
         binding.tvTitle.setText(module.title);
         binding.tvCount.setText(module.desc);
 
+        if (module == AdminModule.ORDERS) {
+            binding.etSearch.setHint("Nhập mã đơn TC-..., tên khách, SĐT...");
+            binding.scrollFilters.setVisibility(View.VISIBLE);
+            binding.chipGroupStatus.setOnCheckedStateChangeListener((group, checkedIds) -> {
+                if (checkedIds.isEmpty()) statusFilter = "";
+                else {
+                    int id = checkedIds.get(0);
+                    if (id == R.id.chipPending) statusFilter = "pending";
+                    else if (id == R.id.chipProcessing) statusFilter = "processing";
+                    else if (id == R.id.chipShipping) statusFilter = "shipped";
+                    else if (id == R.id.chipDelivered) statusFilter = "delivered";
+                    else if (id == R.id.chipCancelled) statusFilter = "cancelled";
+                    else statusFilter = "";
+                }
+                applyFilter();
+            });
+        }
+
         binding.btnBack.setOnClickListener(v -> finish());
 
         if (module == AdminModule.PRODUCTS) {
+            binding.etSearch.setHint("Tìm tên sản phẩm, danh mục, chất liệu...");
             // Grid the san pham — mirror giao dien card ben web-admin
             productAdapter = new ProductCardAdapter(this::openDetail);
             binding.rvRows.setLayoutManager(new GridLayoutManager(this, 2));
@@ -153,6 +173,12 @@ public class ModuleListActivity extends AppCompatActivity {
         shownDocs.clear();
         List<Row> rows = new ArrayList<>();
         for (DocumentSnapshot d : allDocs) {
+            // Loc theo trang thai (neu module la ORDERS)
+            if (module == AdminModule.ORDERS && !statusFilter.isEmpty()) {
+                String s = DocUtils.str(d, "status").toLowerCase(Locale.ROOT);
+                if (!s.equals(statusFilter)) continue;
+            }
+
             Row r = RowFormatter.formatOne(this, module, d);
             
             // Them nut "Dung" cho Voucher dang hoat dong (chua het han/het luot)
@@ -193,7 +219,8 @@ public class ModuleListActivity extends AppCompatActivity {
 
     private static boolean matches(Row r, String q) {
         return contains(r.title, q) || contains(r.subtitle, q)
-                || contains(r.meta, q) || contains(r.badge, q);
+                || contains(r.meta, q) || contains(r.badge, q)
+                || contains(r.searchData, q);
     }
 
     private static boolean contains(String s, String q) {
@@ -286,30 +313,20 @@ public class ModuleListActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Lien he: xem chi tiet + danh dau da phan hoi (mirror markReplied) + ghi chu + xoa. */
+    /** Lien he: xem chi tiet + phan hoi cho khach hang + xoa. */
     private void showFeedbackDetail(DocumentSnapshot d) {
         boolean replied = Boolean.TRUE.equals(d.getBoolean("replied"));
         DetailDialog.show(this, getString(module.title),
                 DetailFormatter.format(this, module, d),
-                replied ? "Sửa ghi chú" : getString(R.string.btn_mark_replied),
-                () -> {
-                    if (!replied) {
-                        d.getReference().update("replied", true)
-                                .addOnSuccessListener(x -> {
-                                    Toast.makeText(this, R.string.feedback_marked, Toast.LENGTH_SHORT).show();
-                                    promptFeedbackNote(d);
-                                });
-                    } else {
-                        promptFeedbackNote(d);
-                    }
-                },
+                replied ? "Sửa phản hồi" : "Gửi phản hồi",
+                () -> promptFeedbackReply(d),
                 getString(R.string.btn_delete), () -> confirmDelete(d));
     }
 
-    private void promptFeedbackNote(DocumentSnapshot d) {
+    private void promptFeedbackReply(DocumentSnapshot d) {
         EditText input = new EditText(this);
-        input.setHint("Nhập ghi chú xử lý liên hệ này...");
-        input.setText(DocUtils.str(d, "adminNote"));
+        input.setHint("Nhập nội dung phản hồi cho khách hàng...");
+        input.setText(DocUtils.str(d, "adminReply", "adminNote"));
         input.setMinLines(3);
         input.setGravity(android.view.Gravity.TOP);
 
@@ -319,13 +336,17 @@ public class ModuleListActivity extends AppCompatActivity {
         wrap.addView(input);
 
         new AlertDialog.Builder(this)
-                .setTitle("Ghi chú Admin")
+                .setTitle("Phản hồi khách hàng")
                 .setView(wrap)
-                .setPositiveButton(R.string.btn_save, (dialog, which) -> {
-                    String note = input.getText().toString().trim();
-                    d.getReference().update("adminNote", note)
+                .setPositiveButton("Gửi", (dialog, which) -> {
+                    String reply = input.getText().toString().trim();
+                    if (reply.isEmpty()) return;
+                    Map<String, Object> patch = new java.util.HashMap<>();
+                    patch.put("replied", true);
+                    patch.put("adminReply", reply);
+                    d.getReference().update(patch)
                             .addOnSuccessListener(x -> {
-                                Toast.makeText(this, "Đã lưu ghi chú", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Đã gửi phản hồi thành công!", Toast.LENGTH_SHORT).show();
                                 loadData();
                             });
                 })

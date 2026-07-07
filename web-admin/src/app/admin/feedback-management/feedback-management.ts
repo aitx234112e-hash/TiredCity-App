@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { FeedbackApiService } from '../../feedback-api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,12 +30,17 @@ export class FeedbackManagement implements OnInit {
   // Detail modal
   showDetail = false;
   selectedFeedback: any = null;
+  adminReply = '';
 
   // Delete confirm modal
   showDeleteConfirm = false;
   deletingFeedback: any = null;
 
-  constructor(private api: FeedbackApiService) {}
+  constructor(
+    private api: FeedbackApiService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadFeedback();
@@ -45,28 +50,27 @@ export class FeedbackManagement implements OnInit {
     this.loading = true;
     this.errorMsg = '';
 
-    // Thêm timeout 10s để tránh loading vô tận nếu mất kết nối Firebase
-    const timeoutMsg = setTimeout(() => {
-      if (this.loading && this.feedbacks.length === 0) {
-        this.loading = false;
-        this.errorMsg = 'Quá thời gian tải dữ liệu. Vui lòng kiểm tra kết nối mạng hoặc quyền truy cập Firebase.';
-      }
-    }, 10000);
-
     this.api.getFeedback().subscribe({
       next: (res) => {
-        clearTimeout(timeoutMsg);
-        this.feedbacks = res as any[];
-        this.applyFilter();
-        this.loading = false;
+        this.zone.run(() => {
+          // Sắp xếp local theo thời gian mới nhất
+          this.feedbacks = (res as any[]).sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0).getTime();
+            const dateB = new Date(b.createdAt || 0).getTime();
+            return dateB - dateA;
+          });
+          this.applyFilter();
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => {
-        clearTimeout(timeoutMsg);
-        this.loading = false;
-        console.error('Feedback Load Error:', err);
-        this.errorMsg = err.code === 'permission-denied'
-          ? 'Bạn không có quyền truy cập dữ liệu phản hồi (Rules expired?).'
-          : `Lỗi tải dữ liệu: ${err.message || err.status || 'Unknown error'}`;
+        this.zone.run(() => {
+          this.loading = false;
+          console.error('Feedback Load Error:', err);
+          this.errorMsg = 'Lỗi tải dữ liệu phản hồi từ Firestore.';
+          this.cdr.detectChanges();
+        });
       }
     });
   }
@@ -80,6 +84,8 @@ export class FeedbackManagement implements OnInit {
 
       const matchKeyword = !keyword ||
         (f.fullName || '').toLowerCase().includes(keyword) ||
+        (f.name || '').toLowerCase().includes(keyword) ||
+        (f.userName || '').toLowerCase().includes(keyword) ||
         (f.email || '').toLowerCase().includes(keyword) ||
         (f.phone || '').toLowerCase().includes(keyword) ||
         (f.message || '').toLowerCase().includes(keyword);
@@ -115,13 +121,22 @@ export class FeedbackManagement implements OnInit {
 
   // ── Mark replied (saves to backend) ──
   markReplied(f: any) {
-    if (!f || f.replied) return;
-    this.api.updateFeedback(f._id, { replied: true }).subscribe({
+    if (!f) return;
+    const reply = this.adminReply.trim();
+    if (!reply) {
+      this.errorMsg = 'Vui lòng nhập nội dung phản hồi.';
+      this.clearMsg();
+      return;
+    }
+
+    this.api.updateFeedback(f._id, { replied: true, adminReply: reply }).subscribe({
       next: () => {
         f.replied = true;
-        this.successMsg = `Đã đánh dấu phản hồi của ${f.fullName} là đã xử lý.`;
+        f.adminReply = reply;
+        this.successMsg = `Đã gửi phản hồi đến khách hàng.`;
         this.clearMsg();
         this.applyFilter();
+        this.closeDetail();
       },
       error: () => {
         this.errorMsg = 'Không thể cập nhật trạng thái. Vui lòng thử lại.';
@@ -133,6 +148,7 @@ export class FeedbackManagement implements OnInit {
   // ── Detail modal ──
   openDetail(f: any) {
     this.selectedFeedback = f;
+    this.adminReply = f.adminReply || '';
     this.showDetail = true;
   }
 

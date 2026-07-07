@@ -17,6 +17,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  collectionData,
 } from '@angular/fire/firestore';
 import { Account } from '../app/models/Account';
 
@@ -104,7 +105,12 @@ export class UserApiService {
     const { _id, ...rest } = data;
     return from(updateDoc(doc(this.firestore, 'users', id), rest)).pipe(
       map(() => ({ _id: id, ...rest }) as Account),
-      tap((updated) => this.setUser(updated))
+      tap((updated) => {
+          // Chỉ cập nhật currentUser nếu UID khớp với user đang đăng nhập
+          if (this.currentUser.value && this.currentUser.value._id === id) {
+              this.setUser(updated);
+          }
+      })
     );
   }
 
@@ -144,8 +150,8 @@ export class UserApiService {
   }
 
   getUsers(): Observable<Account[]> {
-    return from(getDocs(this.col)).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) }) as Account))
+    return collectionData(this.col, { idField: '_id' }).pipe(
+      map(list => (list || []) as Account[])
     );
   }
 

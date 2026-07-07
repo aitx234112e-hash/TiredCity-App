@@ -159,8 +159,8 @@
             </td>
             <td>
               <div class="customer-cell">
-                <div class="customer-avatar">{{ (order.userName || 'G')[0] | uppercase }}</div>
-                <span>{{ order.userName || 'Guest' }}</span>
+                <div class="customer-avatar">{{ (order.userName || order.fullName || order.name || 'G')[0] | uppercase }}</div>
+                <span>{{ order.userName || order.fullName || order.name || 'Guest' }}</span>
               </div>
             </td>
             <td class="price-cell">{{ order.totalPrice | number }} đ</td>
@@ -226,7 +226,7 @@
         </div>
         <div class="detail-item">
           <span class="detail-label">Khách hàng</span>
-          <span class="detail-value">{{ selectedOrder.userName || 'Guest' }}</span>
+          <span class="detail-value">{{ selectedOrder.userName || selectedOrder.fullName || selectedOrder.name || 'Guest' }}</span>
         </div>
         <div class="detail-item full-width">
           <span class="detail-label">Địa chỉ giao hàng</span>

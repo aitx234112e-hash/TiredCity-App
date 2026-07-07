@@ -641,7 +641,12 @@ public class PaymentActivity extends BaseActivity {
             return;
         }
 
-        // Dung item + subtotal
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String datePrefix = new SimpleDateFormat("yyMMdd", Locale.US).format(new Date());
+        // Tạo 4 số cuối ngẫu nhiên từ 1000-9999 để đảm bảo luôn có 4 chữ số
+        int randomSuffix = (int)(Math.random() * 9000) + 1000;
+        String orderCode = "TC-" + datePrefix + "-" + randomSuffix;
+
         double subtotal = 0;
         List<Map<String, Object>> itemList = new ArrayList<>();
         for (CartItem item : items) {

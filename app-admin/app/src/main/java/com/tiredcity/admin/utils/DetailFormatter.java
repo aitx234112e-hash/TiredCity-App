@@ -27,7 +27,7 @@ public final class DetailFormatter {
                 f.add(new DetailField("Mô tả", DocUtils.str(d, "short_description", "description")));
                 break;
             case USERS:
-                f.add(new DetailField("Họ tên", DocUtils.str(d, "fullName", "profileName")));
+                f.add(new DetailField("Họ tên", DocUtils.str(d, "fullName", "profileName", "name")));
                 f.add(new DetailField("Email", DocUtils.str(d, "email")));
                 f.add(new DetailField("SĐT", DocUtils.str(d, "phone")));
                 f.add(new DetailField("Giới tính", DocUtils.str(d, "gender")));
@@ -73,15 +73,15 @@ public final class DetailFormatter {
                 f.add(new DetailField("Mô tả", DocUtils.str(d, "description")));
                 break;
             case FEEDBACK:
-                f.add(new DetailField("Họ tên", DocUtils.str(d, "fullName")));
+                f.add(new DetailField("Họ tên", DocUtils.str(d, "fullName", "name")));
                 f.add(new DetailField("Email", DocUtils.str(d, "email")));
                 f.add(new DetailField("SĐT", DocUtils.str(d, "phone")));
                 f.add(new DetailField("Nội dung", DocUtils.str(d, "message")));
                 f.add(new DetailField("Trạng thái", Boolean.TRUE.equals(d.getBoolean("replied")) ? "Đã phản hồi" : "Chờ xử lý"));
-                f.add(new DetailField("Ghi chú admin", DocUtils.str(d, "adminNote")));
+                f.add(new DetailField("Phản hồi admin", DocUtils.str(d, "adminReply", "adminNote")));
                 break;
             case REVIEWS:
-                f.add(new DetailField("Khách hàng", DocUtils.str(d, "userName")));
+                f.add(new DetailField("Khách hàng", DocUtils.str(d, "userName", "fullName", "name")));
                 f.add(new DetailField("Sản phẩm", DocUtils.str(d, "productId")));
                 f.add(new DetailField("Đánh giá", (long) DocUtils.num(d, "rating") + " ★"));
                 f.add(new DetailField("Nội dung", DocUtils.str(d, "comment")));

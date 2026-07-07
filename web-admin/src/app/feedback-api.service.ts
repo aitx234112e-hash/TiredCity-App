@@ -7,8 +7,6 @@ import {
   addDoc,
   deleteDoc,
   updateDoc,
-  query,
-  orderBy,
   collectionData,
 } from '@angular/fire/firestore';
 
@@ -26,8 +24,8 @@ export class FeedbackApiService {
   }
 
   getFeedback(): Observable<any[]> {
-    const q = query(this.col, orderBy('createdAt', 'desc'));
-    return collectionData(q, { idField: '_id' }).pipe(
+    // Không dùng query orderBy để tránh lỗi thiếu Index trên Firestore
+    return collectionData(this.col, { idField: '_id' }).pipe(
       map(list => list || [])
     );
   }

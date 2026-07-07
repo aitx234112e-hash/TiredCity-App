@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminApiService } from '../admin-api.service';
 
@@ -27,18 +27,28 @@ export class Revenue implements OnInit {
   months: MonthBar[] = [];
   topOrders: any[] = [];
 
-  constructor(private adminApi: AdminApiService) {}
+  constructor(
+    private adminApi: AdminApiService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.compute([]); // dựng khung 6 tháng ngay để biểu đồ luôn hiển thị
     this.adminApi.getOrders().subscribe({
       next: (orders) => {
-        this.compute(orders || []);
-        this.loading = false;
+        this.zone.run(() => {
+          this.compute(orders || []);
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       },
       error: () => {
-        this.compute([]);
-        this.loading = false;
+        this.zone.run(() => {
+          this.compute([]);
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       },
     });
   }

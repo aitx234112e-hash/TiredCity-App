@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderApiService } from '../../order-api.service';
@@ -55,7 +55,8 @@ export class OrderManagement implements OnInit {
     private orderService: OrderApiService,
     private addressService: AddressService,
     private audit: AuditService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -74,47 +75,54 @@ export class OrderManagement implements OnInit {
   }
 
   loadOrders(): void {
+    this.loading = true;
     this.orderService.getOrders().subscribe({
       next: (data: any[]) => {
-        // Sort by date descending
-        this.orders = data.sort((a, b) => {
-          const dateA = new Date(a.createdAt || 0).getTime();
-          const dateB = new Date(b.createdAt || 0).getTime();
-          return dateB - dateA;
+        this.zone.run(() => {
+          // Sort by date descending
+          this.orders = data.sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0).getTime();
+            const dateB = new Date(b.createdAt || 0).getTime();
+            return dateB - dateA;
+          });
+
+          this.filteredOrders = [...this.orders];
+          this.totalOrders = this.orders.length;
+          this.totalPages = Math.ceil(this.totalOrders / this.pageSize);
+
+          // compute subtotal, total and total revenue
+          this.totalRevenue = 0;
+          this.orders.forEach(o => {
+            try {
+              const items = o.orderItems || (o as any).items || [];
+              const sub = items.reduce((acc: number, it: any) => {
+                const p = Number(it.price || it.unit_price || 0) || 0;
+                const q = Number(it.qty || it.quantity || it.qtyOrdered || 0) || 0;
+                return acc + p * q;
+              }, 0);
+              if (o.subTotal == null) o.subTotal = sub;
+              if (o.shippingFee == null && (o as any).shipping_fee != null) o.shippingFee = (o as any).shipping_fee;
+              if (o.totalPrice == null) o.totalPrice = (Number(o.subTotal || 0) || 0) + (Number(o.shippingFee || 0) || 0);
+
+              const s = (o.status || '').toString().toUpperCase();
+              if (s === 'DELIVERED') {
+                this.totalRevenue += Number(o.totalPrice || 0);
+              }
+            } catch (e) {}
+          });
+
+          this.loading = false;
+          this.cdr.detectChanges();
         });
-
-        this.filteredOrders = [...this.orders];
-        this.totalOrders = this.orders.length;
-        this.totalPages = Math.ceil(this.totalOrders / this.pageSize);
-
-        // compute subtotal, total and total revenue
-        this.totalRevenue = 0;
-        this.orders.forEach(o => {
-          try {
-            const items = o.orderItems || (o as any).items || [];
-            const sub = items.reduce((acc: number, it: any) => {
-              const p = Number(it.price || it.unit_price || 0) || 0;
-              const q = Number(it.qty || it.quantity || it.qtyOrdered || 0) || 0;
-              return acc + p * q;
-            }, 0);
-            if (o.subTotal == null) o.subTotal = sub;
-            if (o.shippingFee == null && (o as any).shipping_fee != null) o.shippingFee = (o as any).shipping_fee;
-            if (o.totalPrice == null) o.totalPrice = (Number(o.subTotal || 0) || 0) + (Number(o.shippingFee || 0) || 0);
-
-            const s = (o.status || '').toString().toUpperCase();
-            if (s === 'DELIVERED') {
-              this.totalRevenue += Number(o.totalPrice || 0);
-            }
-          } catch (e) {}
-        });
-
       },
       error: (err) => {
-        console.error('Lỗi tải đơn hàng:', err);
-        this.loading = false;
+        this.zone.run(() => {
+          console.error('Lỗi tải đơn hàng:', err);
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       }
     });
-    this.loading = false;
   }
 
   setStatusFilter(status: string): void {
@@ -140,9 +148,13 @@ export class OrderManagement implements OnInit {
       } else {
 
         result = result.filter(order =>
-          order.userName?.toLowerCase().includes(text) ||
-          order.customerInfo?.phone?.toLowerCase().includes(text) ||
-          order.customerInfo?.email?.toLowerCase().includes(text)
+          (order.userName || '').toLowerCase().includes(text) ||
+          (order.fullName || '').toLowerCase().includes(text) ||
+          (order.name || '').toLowerCase().includes(text) ||
+          (order.customerInfo?.phone || '').toLowerCase().includes(text) ||
+          (order.customerInfo?.email || '').toLowerCase().includes(text) ||
+          (order.phone || '').toLowerCase().includes(text) ||
+          (order.userEmail || '').toLowerCase().includes(text)
         );
 
       }

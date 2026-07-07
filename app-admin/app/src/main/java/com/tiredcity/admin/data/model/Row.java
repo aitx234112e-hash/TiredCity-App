@@ -14,6 +14,7 @@ public class Row {
     @ColorRes public final int badgeColor;
     public String actionLabel;     // nhan nut bam (vd: "Dừng")
     public Runnable onActionClick; // callback khi bam nut
+    public String searchData;      // Du lieu an de tim kiem (vd: ID day du, SĐT, Email...)
 
     public Row(String title, String subtitle, String meta, String badge, @ColorRes int badgeColor) {
         this.title = title;
@@ -30,6 +31,11 @@ public class Row {
     public Row withAction(String label, Runnable callback) {
         this.actionLabel = label;
         this.onActionClick = callback;
+        return this;
+    }
+
+    public Row withSearchData(String data) {
+        this.searchData = data;
         return this;
     }
 }

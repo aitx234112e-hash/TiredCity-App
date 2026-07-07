@@ -4,10 +4,10 @@ import {
   Firestore,
   collection,
   doc,
-  getDocs,
   addDoc,
   updateDoc,
   deleteDoc,
+  collectionData
 } from '@angular/fire/firestore';
 
 @Injectable({
@@ -17,7 +17,6 @@ export class BlogApiService {
   private firestore = inject(Firestore);
   private col = collection(this.firestore, 'blogs');
 
-  /** Chuẩn hoá Date -> ISO string để đồng nhất với model (string dates) */
   private normalize(data: any): any {
     const out: any = {};
     for (const [k, v] of Object.entries(data)) {
@@ -28,8 +27,9 @@ export class BlogApiService {
   }
 
   getBlogs(): Observable<any[]> {
-    return from(getDocs(this.col)).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
+    // Không dùng orderBy để tránh lỗi Index
+    return collectionData(this.col, { idField: '_id' }).pipe(
+      map(list => list || [])
     );
   }
 
@@ -50,11 +50,10 @@ export class BlogApiService {
     );
   }
 
-  deleteBlog(id: string): Observable<any> {
+  deleteBlog(id: string): Observable<void> {
     return from(deleteDoc(doc(this.firestore, 'blogs', id)));
   }
 
-  /** Chưa dùng Storage — mã hoá ảnh thành data URL (base64) */
   uploadImage(file: File): Observable<{ imageUrl: string }> {
     return new Observable((observer) => {
       const reader = new FileReader();
