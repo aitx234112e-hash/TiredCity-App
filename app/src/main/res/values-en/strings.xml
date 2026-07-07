@@ -23,7 +23,6 @@
     <string name="see_all">See All</string>
     <string name="home_eyebrow_recommended">RECOMMENDED</string>
     <string name="home_eyebrow_hot">TRENDING</string>
-    <string name="home_eyebrow_categories">BROWSE</string>
     <string name="footer_tagline">Vietnamese attire for a new generation</string>
     <string name="footer_cities">HÀ NỘI • SÀI GÒN</string>
 
@@ -45,9 +44,6 @@
     <string name="home_eyebrow_categories">CATEGORIES</string>
 
     <!-- Menh banner -->
-    <string name="menh_label">%s Element</string>
-    <string name="zodiac_label">%s Zodiac</string>
-    <string name="menh_tap_hint">Tap for styling suggestions</string>
     <string name="menh_label">Element: %s</string>
     <string name="zodiac_label">Sign: %s</string>
     <string name="menh_tap_hint">Tap to see outfit recommendations</string>
@@ -451,8 +447,6 @@
     <string name="phukien_oche_desc">Traditional parasols and umbrellas,…</string>
     <string name="phukien_mudoidau_title">Ceremonial Headpiece</string>
     <string name="phukien_mudoidau_desc">Modernized hats and headpieces,…</string>
-    <string name="admin_app_not_installed">Admin app not installed.</string>
-    <string name="google_signin_failed">Google Sign-in failed</string>
     <string name="brand_tagline">TRADITIONAL VIET ATTIRE</string>
 
     <!-- Profile -->
@@ -651,6 +645,8 @@
     <string name="barcode_online_title">Online purchase: </string>
     <string name="barcode_online_desc">Enter this promo code at checkout in the TiredCity app or on www.tiredcity.com</string>
     <string name="barcode_code">39TRIAN0626O1VW1WCQXZ</string>
+    <string name="barcode_code_birthday">39SINHNHAT0626O1VW1WCQXZ</string>
+    <string name="barcode_code_tri_an">39TRIAN0626O1VW1WCQXZ</string>
     <string name="barcode_copy">Copy</string>
     <string name="barcode_copied">Offer code copied</string>
 
@@ -676,9 +672,6 @@
 
     <string name="store_2_name">2. TiredCity 97 Hàng Gai</string>
     <string name="store_2_details">Address: 97 Hàng Gai St, Hàng Trống, Hoàn Kiếm, Hanoi. View map\nOpening hours: 9:00 - 22:30 (Mon - Sun)\nEmail: hello@tiredcity.com\nMobile: 024 6296 0306</string>
-
-    <!-- Language toggle -->
-    <string name="switch_to_other_lang">VI</string>
 
     <!-- Policies Detail Content -->
     <string name="policy_subtitle">Learn about TiredCity\'s policies and terms to ensure a safe and meaningful shopping experience.</string>
@@ -798,10 +791,6 @@
         <p>We may update these terms from time to time. Continued use of the app implies acceptance of those changes.</p>
         ]]>
     </string>
-
-    <!-- Store Locator -->
-    <string name="title_store_locator">STORE LOCATOR</string>
-    <string name="link_view_map">View map</string>
 
     <!-- Header buttons -->
     <string name="cd_cart">Cart</string>

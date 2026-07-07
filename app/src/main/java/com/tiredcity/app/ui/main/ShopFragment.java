@@ -6,31 +6,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
+import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.SearchAdapter;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.search.EventItem;
 import com.tiredcity.app.data.model.search.ProductItem;
 import com.tiredcity.app.data.model.search.PromotionItem;
 import com.tiredcity.app.data.model.search.SearchItem;
-import com.tiredcity.app.data.repository.FirestoreProductRepository;
-import com.tiredcity.app.adapter.ProductAdapter;
-import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.network.ApiClient;
+import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.FragmentShopBinding;
-import com.tiredcity.app.ui.reward.VoucherDetailActivity;
-import com.tiredcity.app.ui.shop.ProductDetailActivity;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.shop.ProductDetailActivity;
 import com.tiredcity.app.ui.shop.SearchActivity;
 import com.tiredcity.app.utils.Constants;
-import java.util.ArrayList;
 import com.tiredcity.app.utils.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,10 +45,7 @@ public class ShopFragment extends Fragment {
     private ProductAdapter productAdapter;
     private SearchAdapter suggestionAdapter;
 
-    /** Số sản phẩm thật hiển thị trong "Gợi ý cho bạn". */
     private static final int SUGGESTION_PRODUCT_COUNT = 4;
-
-    // Các thẻ tìm kiếm phổ biến.
     private static final int[] POPULAR_TAGS = {
         R.string.tag_ao_dai,
         R.string.tag_nhat_binh,
@@ -56,9 +54,7 @@ public class ShopFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentShopBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -73,7 +69,6 @@ public class ShopFragment extends Fragment {
         setupPopularTags();
         setupSuggestions();
         loadSuggestedProducts();
-        setupProductGrid();
     }
 
     @Override
@@ -98,35 +93,13 @@ public class ShopFragment extends Fragment {
         }
     }
 
-    // ─── "Gợi ý cho bạn" — mixed-type discovery list ───────────────────
     private void setupSuggestions() {
         suggestionAdapter = new SearchAdapter(buildStaticSuggestions());
         suggestionAdapter.setOnItemClickListener(item -> {
-            if (item instanceof PromotionItem) {
-                openVoucherDetail((PromotionItem) item);
-            } else if (item instanceof ProductItem) {
+            if (item instanceof ProductItem) {
                 openProductDetail(((ProductItem) item).getProduct());
             } else {
                 openSearch(null);
-    private void setupProductGrid() {
-        productAdapter = new ProductAdapter(new ArrayList<>());
-        productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Product product) {
-                Intent intent = new Intent(requireContext(), com.tiredcity.app.ui.shop.ProductDetailActivity.class);
-                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
-                startSmoothActivity(intent);
-            }
-            @Override
-            public void onSaveToggle(Product product, boolean saved) {}
-
-            @Override
-            public void onAddToCartClick(Product product) {
-                // Bắt buộc chọn size -> Mở màn hình chi tiết
-                Intent intent = new Intent(requireContext(), com.tiredcity.app.ui.shop.ProductDetailActivity.class);
-                intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
-                startSmoothActivity(intent);
-                Toast.makeText(requireContext(), "Vui lòng chọn Size trước khi mua", Toast.LENGTH_SHORT).show();
             }
         });
         binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -134,71 +107,25 @@ public class ShopFragment extends Fragment {
         binding.rvSuggestions.setAdapter(suggestionAdapter);
     }
 
-    /** Ưu đãi + sự kiện (nội dung tĩnh) — luôn đứng đầu danh sách gợi ý. */
     private List<SearchItem> buildStaticSuggestions() {
         List<SearchItem> items = new ArrayList<>();
-        items.add(new PromotionItem(R.string.search_promo_birthday,
-                                    R.drawable.banner_1,
-                                    R.string.reward_voucher_birthday_title,
-                                    R.string.reward_voucher_birthday_subtitle));
-        items.add(new EventItem(R.string.search_event_coach_title,
-                                R.string.search_event_coach_time, 0));
+        items.add(new PromotionItem(R.string.search_promo_birthday, R.drawable.banner_1, R.string.reward_voucher_birthday_title, R.string.reward_voucher_birthday_subtitle));
+        items.add(new EventItem(R.string.search_event_coach_title, R.string.search_event_coach_time, 0));
         return items;
     }
 
-    /** Tải vài sản phẩm thật từ Firestore rồi bơm vào cuối danh sách gợi ý. */
     private void loadSuggestedProducts() {
         new FirestoreProductRepository().getProducts(products -> {
-            if (binding == null || products == null) return;   // fragment đã bị huỷ
+            if (binding == null || products == null) return;
             List<SearchItem> combined = buildStaticSuggestions();
             int count = Math.min(SUGGESTION_PRODUCT_COUNT, products.size());
             for (int i = 0; i < count; i++) {
                 combined.add(new ProductItem(products.get(i)));
             }
-            suggestionAdapter.updateItems(combined);
-        });
-    }
-
-        binding.rvSuggestions.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-        binding.rvSuggestions.setHasFixedSize(true);
-        binding.rvSuggestions.setAdapter(productAdapter);
-
-        // CHỈ DÙNG DỮ LIỆU TỪ FIREBASE THẬT
-        productRepository.getProductsFromFirestore(new ProductRepository.OnProductsLoadedListener() {
-            @Override
-            public void onSuccess(List<Product> products) {
-                if (isAdded() && products != null) {
-                    productAdapter.updateData(products);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                android.util.Log.e("ShopFragment", "Firebase Error: " + message);
+            if (suggestionAdapter != null) {
+                suggestionAdapter.updateItems(combined);
             }
         });
-    }
-
-    private List<Product> buildMockProducts() {
-        String[][] data = {
-            {"1", "Khói Trắng Kết Duyên", "Trắng", "2890000", "0", "4.8", "onboarding_1"},
-            {"2", "Lam Lụa Cố Trạch", "Xanh lam", "1590000", "0", "4.9", "onboarding_2"},
-            {"3", "Kim Vũ Phong Hoa", "Vàng", "1750000", "0", "4.5", "onboarding_3"},
-            {"4", "Hồng Trần Mộc Dược", "Hồng", "1290000", "0", "4.3", "onboarding_4"}
-        };
-        List<Product> list = new ArrayList<>();
-        for (String[] row : data) {
-            Product p = new Product();
-            p.setId(row[0]);
-            p.setName(row[1]);
-            p.setMaterial(row[2]);
-            p.setPrice(Double.parseDouble(row[3]));
-            p.setDiscount(Integer.parseInt(row[4]));
-            p.setRating(Double.parseDouble(row[5]));
-            p.setImage(row[6]);
-            list.add(p);
-        }
-        return list;
     }
 
     private void openProductDetail(Product product) {

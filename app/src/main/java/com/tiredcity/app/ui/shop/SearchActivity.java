@@ -6,17 +6,18 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.SearchAdapter;
-import com.tiredcity.app.data.local.CartLocalStore;
-import com.tiredcity.app.data.model.ApiListResponse;
-import com.tiredcity.app.data.model.CartItem;
+import com.tiredcity.app.data.local.FavoritesLocalStore;
+import com.tiredcity.app.data.mock.MockProductCatalog;
 import com.tiredcity.app.data.model.Product;
-import com.tiredcity.app.data.model.search.EventItem;
 import com.tiredcity.app.data.model.search.ProductItem;
 import com.tiredcity.app.data.model.search.PromotionItem;
 import com.tiredcity.app.data.model.search.SearchItem;
@@ -25,6 +26,7 @@ import com.tiredcity.app.databinding.ActivitySearchBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.reward.VoucherDetailActivity;
 import com.tiredcity.app.utils.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,66 +34,43 @@ import java.util.Locale;
 public class SearchActivity extends BaseActivity {
 
     public static final String EXTRA_QUERY = "extra_query";
-
-    /** Số sản phẩm thật hiển thị trong "Gợi ý cho bạn". */
     private static final int SUGGESTION_PRODUCT_COUNT = 4;
 
     private ActivitySearchBinding binding;
     private FirestoreProductRepository firestoreRepository;
     private ProductAdapter productAdapter;
     private SearchAdapter suggestionAdapter;
-
-    /** Toàn bộ sản phẩm tải một lần từ Firestore, dùng cho cả gợi ý lẫn lọc tìm kiếm. */
     private List<Product> allProducts = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         firestoreRepository = new FirestoreProductRepository();
 
-        productAdapter = new ProductAdapter(null);
+        binding.btnBack.setOnClickListener(v -> finishSmoothly());
+        binding.btnClear.setOnClickListener(v -> binding.etSearch.setText(""));
+
+        setupSuggestions();
+
+        productAdapter = new ProductAdapter(new ArrayList<>());
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Product product) {
-                openProductDetail(product);
-            }
-
-            @Override
-            public void onSaveToggle(Product product, boolean saved) {}
-
-            @Override
-            public void onAddToCartClick(Product product) {
-                // Bắt buộc chọn size -> Mở màn hình chi tiết
-                Intent intent = new Intent(SearchActivity.this, ProductDetailActivity.class);
-                intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
-                startActivity(intent);
-                Toast.makeText(SearchActivity.this, "Vui lòng chọn Size trước khi mua", Toast.LENGTH_SHORT).show();
-            }
+            @Override public void onProductClick(Product p) { openProductDetail(p); }
+            @Override public void onSaveToggle(Product p, boolean saved) { new FavoritesLocalStore(SearchActivity.this).toggleFavorite(p); }
+            @Override public void onAddToCartClick(Product p) { openProductDetail(p); }
         });
         binding.rvResults.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvResults.setAdapter(productAdapter);
 
-        // Back button
-        binding.btnBack.setOnClickListener(v -> finish());
-
-        // Clear button
         binding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 binding.btnClear.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
                 if (s.length() == 0) showRecentState();
             }
-        });
-
-        binding.btnClear.setOnClickListener(v -> {
-            binding.etSearch.setText("");
-            showRecentState();
+            @Override public void afterTextChanged(Editable s) {}
         });
 
         binding.etSearch.setOnEditorActionListener((v, actionId, event) -> {
@@ -102,39 +81,28 @@ public class SearchActivity extends BaseActivity {
             return false;
         });
 
-        binding.swipeRefresh.setOnRefreshListener(() ->
-            performSearch(binding.etSearch.getText().toString().trim()));
+        addPopularChip("Áo Dài");
+        addPopularChip("Nhật Bình");
+        addPopularChip("Phụ Kiện");
+        addPopularChip("Lụa");
 
-        // Phần 2 — "Được tìm kiếm nhiều nhất" tags
-        addPopularChip(getString(R.string.tag_ao_dai));
-        addPopularChip(getString(R.string.tag_nhat_binh));
-        addPopularChip(getString(R.string.tag_phu_kien));
-
-        // Phần 3 & 4 — "Gợi ý cho bạn" mixed-type suggestion list
-        setupSuggestions();
-
-        // Tải sản phẩm thật từ Firestore (dùng chung cho gợi ý + tìm kiếm)
-        loadProducts();
-
-        // Pre-filled query (e.g. tapped tag/product on the Shop tab) → search now
         String initialQuery = getIntent().getStringExtra(EXTRA_QUERY);
-        if (initialQuery != null && !initialQuery.trim().isEmpty()) {
+        if (initialQuery != null) {
             binding.etSearch.setText(initialQuery);
-            binding.etSearch.setSelection(initialQuery.length());
-            performSearch(initialQuery.trim());
+            performSearch(initialQuery);
         } else {
-            binding.etSearch.requestFocus();
+            showRecentState();
         }
+
+        loadProducts();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
-        productAdapter.notifyDataSetChanged();
+        if (productAdapter != null) productAdapter.notifyDataSetChanged();
     }
 
-    /** Tải toàn bộ sản phẩm một lần rồi bơm vào phần gợi ý. */
     private void loadProducts() {
         firestoreRepository.getProducts(products -> {
             allProducts = products != null ? products : new ArrayList<>();
@@ -142,64 +110,40 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
-    // ── Gợi ý cho bạn ───────────────────────────────────────────────────────────
-
-    /** Builds the multi-view-type discovery list (promotion + event + product). */
     private void setupSuggestions() {
         suggestionAdapter = new SearchAdapter(buildStaticSuggestions());
         suggestionAdapter.setOnItemClickListener(item -> {
-            if (item instanceof PromotionItem) {
-                openVoucherDetail((PromotionItem) item);
-            } else if (item instanceof ProductItem) {
-                // Sản phẩm → mở trang chi tiết sản phẩm thật.
-                openProductDetail(((ProductItem) item).getProduct());
-                performSearch(getString(((ProductItem) item).getBrandResId()));
-            }
+            if (item instanceof PromotionItem) openVoucherDetail((PromotionItem) item);
+            else if (item instanceof ProductItem) openProductDetail(((ProductItem) item).getProduct());
         });
         binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
-        binding.rvSuggestions.setNestedScrollingEnabled(false);
         binding.rvSuggestions.setAdapter(suggestionAdapter);
     }
 
-    /** Ưu đãi + sự kiện (nội dung tĩnh) — luôn đứng đầu danh sách gợi ý. */
     private List<SearchItem> buildStaticSuggestions() {
         List<SearchItem> items = new ArrayList<>();
-        items.add(new PromotionItem(R.string.search_promo_birthday,
-                                    R.drawable.banner_1,
-                                    R.string.reward_voucher_birthday_title,
-                                    R.string.reward_voucher_birthday_subtitle));
-        items.add(new EventItem(R.string.search_event_coach_title,
-                                R.string.search_event_coach_time, 0));
+        // Static items can be added here
         return items;
     }
 
-    /** Ghép ưu đãi/sự kiện với vài sản phẩm thật đầu tiên từ Firestore. */
     private void refreshSuggestionProducts() {
-        List<SearchItem> combined = buildStaticSuggestions();
+        List<SearchItem> items = buildStaticSuggestions();
         int count = Math.min(SUGGESTION_PRODUCT_COUNT, allProducts.size());
         for (int i = 0; i < count; i++) {
-            combined.add(new ProductItem(allProducts.get(i)));
+            items.add(new ProductItem(allProducts.get(i)));
         }
-        suggestionAdapter.updateItems(combined);
+        suggestionAdapter.updateItems(items);
     }
 
     private void openVoucherDetail(PromotionItem item) {
-        Intent intent = new Intent(this, VoucherDetailActivity.class);
-        intent.putExtra(VoucherDetailActivity.EXTRA_TITLE, getString(item.getVoucherTitleResId()));
-        intent.putExtra(VoucherDetailActivity.EXTRA_SUBTITLE, getString(item.getVoucherSubtitleResId()));
-        intent.putExtra(VoucherDetailActivity.EXTRA_BANNER, item.getBannerRes());
-        intent.putExtra(VoucherDetailActivity.EXTRA_CODE, getString(R.string.barcode_code));
-        startActivity(intent);
+        startActivity(new Intent(this, VoucherDetailActivity.class));
     }
 
     private void openProductDetail(Product product) {
-        if (product == null || product.getId() == null) return;
         Intent intent = new Intent(this, ProductDetailActivity.class);
         intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
-        startActivity(intent);
+        startSmoothActivity(intent);
     }
-
-    // ── Tìm kiếm ────────────────────────────────────────────────────────────────
 
     private void performSearch(String keyword) {
         if (keyword.isEmpty()) { showRecentState(); return; }
@@ -208,34 +152,7 @@ public class SearchActivity extends BaseActivity {
         binding.swipeRefresh.setRefreshing(true);
         binding.tvResultCount.setText(getString(R.string.search_searching));
 
-        productRepository.getProducts(1, 40, null, keyword)
-            .enqueue(new Callback<ApiListResponse<Product>>() {
-                @Override
-                public void onResponse(Call<ApiListResponse<Product>> call, Response<ApiListResponse<Product>> response) {
-                    binding.swipeRefresh.setRefreshing(false);
-                    List<Product> results = null;
-                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        results = response.body().getData();
-                    }
-
-                    // FALLBACK: Search in Mock Catalog if API returns nothing
-                    if (results == null || results.isEmpty()) {
-                        results = searchInMockCatalog(keyword);
-                    }
-
-                    if (results == null || results.isEmpty()) {
-                        showEmptyState(keyword);
-                    } else {
-                        binding.tvResultCount.setText(getString(
-                                R.string.search_result_count, results.size()));
-                        productAdapter.updateData(results);
-                    }
-                }
-        binding.tvResultCount.setText(getString(R.string.search_searching));
-
-        // Nếu chưa tải xong danh sách sản phẩm thì tải rồi lọc; ngược lại lọc ngay.
         if (allProducts.isEmpty()) {
-            binding.swipeRefresh.setRefreshing(true);
             firestoreRepository.getProducts(products -> {
                 allProducts = products != null ? products : new ArrayList<>();
                 refreshSuggestionProducts();
@@ -243,21 +160,22 @@ public class SearchActivity extends BaseActivity {
                 showFilteredResults(keyword);
             });
         } else {
+            binding.swipeRefresh.setRefreshing(false);
             showFilteredResults(keyword);
         }
     }
 
-    /** Lọc client-side theo tên / danh mục / chất liệu / màu. */
     private void showFilteredResults(String keyword) {
         String q = keyword.toLowerCase(Locale.getDefault());
         List<Product> results = new ArrayList<>();
         for (Product p : allProducts) {
-            if (contains(p.getName(), q)
-                    || contains(p.getCategory(), q)
-                    || contains(p.getMaterial(), q)
-                    || colorsContain(p, q)) {
+            if (contains(p.getName(), q) || contains(p.getCategory(), q) || contains(p.getMaterial(), q) || colorsContain(p, q)) {
                 results.add(p);
             }
+        }
+
+        if (results.isEmpty()) {
+            results = searchInMockCatalog(keyword);
         }
 
         if (results.isEmpty()) {
@@ -268,44 +186,27 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
-    private static boolean contains(String value, String lowerQuery) {
+    private boolean contains(String value, String lowerQuery) {
         return value != null && value.toLowerCase(Locale.getDefault()).contains(lowerQuery);
     }
 
-                @Override
-                public void onFailure(Call<ApiListResponse<Product>> call, Throwable t) {
-                    binding.swipeRefresh.setRefreshing(false);
-                    List<Product> results = searchInMockCatalog(keyword);
-                    if (results.isEmpty()) {
-                        showEmptyState(keyword);
-                    } else {
-                        productAdapter.updateData(results);
-                    }
-                }
-            });
-    private static boolean colorsContain(Product p, String lowerQuery) {
+    private boolean colorsContain(Product p, String query) {
         if (p.getColors() == null) return false;
         for (String c : p.getColors()) {
-            if (contains(c, lowerQuery)) return true;
+            if (c.toLowerCase(Locale.getDefault()).contains(query)) return true;
         }
         return false;
     }
 
     private List<Product> searchInMockCatalog(String keyword) {
-        List<Product> allMock = com.tiredcity.app.data.mock.MockProductCatalog.getProducts(this, "ALL");
-        List<Product> filtered = new java.util.ArrayList<>();
-        String query = keyword.toLowerCase().trim();
+        List<Product> allMock = MockProductCatalog.getProducts(this, "ALL");
+        List<Product> results = new ArrayList<>();
+        String q = keyword.toLowerCase(Locale.getDefault());
         for (Product p : allMock) {
-            if (p.getName().toLowerCase().contains(query) ||
-                (p.getCategory() != null && p.getCategory().toLowerCase().contains(query)) ||
-                (p.getId() != null && p.getId().toLowerCase().contains(query))) {
-                filtered.add(p);
-            }
+            if (contains(p.getName(), q) || contains(p.getCategory(), q)) results.add(p);
         }
-        return filtered;
+        return results;
     }
-
-    // ── Trạng thái hiển thị ─────────────────────────────────────────────────────
 
     private void showRecentState() {
         binding.layoutRecent.setVisibility(View.VISIBLE);
@@ -326,13 +227,12 @@ public class SearchActivity extends BaseActivity {
         binding.tvEmptyMessage.setText(getString(R.string.search_not_found, keyword));
     }
 
-    private void addPopularChip(String label) {
-        com.google.android.material.chip.Chip chip = new com.google.android.material.chip.Chip(this);
-        chip.setText(label);
+    private void addPopularChip(String text) {
+        Chip chip = new Chip(this);
+        chip.setText(text);
         chip.setOnClickListener(v -> {
-            binding.etSearch.setText(label);
-            binding.etSearch.setSelection(label.length());
-            performSearch(label);
+            binding.etSearch.setText(text);
+            performSearch(text);
         });
         binding.chipGroupPopular.addView(chip);
     }

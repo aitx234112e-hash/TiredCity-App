@@ -154,6 +154,14 @@ public class ModuleListActivity extends AppCompatActivity {
         List<Row> rows = new ArrayList<>();
         for (DocumentSnapshot d : allDocs) {
             Row r = RowFormatter.formatOne(this, module, d);
+            
+            // Them nut "Dung" cho Voucher dang hoat dong (chua het han/het luot)
+            if (module == AdminModule.VOUCHERS) {
+                if ("Hoạt động".equals(r.badge)) {
+                    r.withAction("Dừng", () -> stopVoucher(d));
+                }
+            }
+
             if (q.isEmpty() || matches(r, q)) {
                 shownDocs.add(d);
                 rows.add(r);
@@ -166,6 +174,21 @@ public class ModuleListActivity extends AppCompatActivity {
         }
         binding.tvEmpty.setVisibility(rows.isEmpty() ? View.VISIBLE : View.GONE);
         binding.tvCount.setText(getString(R.string.list_count_fmt, rows.size()));
+    }
+
+    private void stopVoucher(DocumentSnapshot d) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Dừng voucher")
+                .setMessage("Bạn có chắc muốn dừng mã giảm giá này? Khách hàng sẽ không thể sử dụng mã được nữa.")
+                .setPositiveButton("Dừng ngay", (dialog, which) -> {
+                    d.getReference().update("isActive", false)
+                            .addOnSuccessListener(aVoid -> {
+                                android.widget.Toast.makeText(this, "Đã dừng voucher", android.widget.Toast.LENGTH_SHORT).show();
+                                loadData(); // Reload de cap nhat UI
+                            });
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private static boolean matches(Row r, String q) {
@@ -206,13 +229,23 @@ public class ModuleListActivity extends AppCompatActivity {
      * Chi tiet ban ghi co CRUD: nut Sua (mo form) + nut Xoa (mirror edit/delete ben web-admin).
      */
     private void showEntityDetail(DocumentSnapshot d) {
-        String posLabel = null, neuLabel = null;
-        DetailDialog.OnAction posAction = null, neuAction = null;
+        String posLabel = null, neuLabel = null, negLabel = null;
+        DetailDialog.OnAction posAction = null, neuAction = null, negAction = null;
 
         if (ModuleForm.canEdit(module)) {
             posLabel = getString(R.string.btn_edit);
             posAction = () -> openForm(d.getId());
         }
+        
+        // Nut "Dung" cho Voucher dang hoat dong
+        if (module == AdminModule.VOUCHERS) {
+            boolean isActive = !Boolean.FALSE.equals(d.getBoolean("isActive"));
+            if (isActive) {
+                negLabel = "Dừng voucher";
+                negAction = () -> stopVoucher(d);
+            }
+        }
+
         if (ModuleForm.canDelete(module)) {
             neuLabel = getString(R.string.btn_delete);
             neuAction = () -> confirmDelete(d);
@@ -220,7 +253,7 @@ public class ModuleListActivity extends AppCompatActivity {
 
         DetailDialog.show(this, getString(module.title),
                 DetailFormatter.format(this, module, d),
-                posLabel, posAction, neuLabel, neuAction);
+                posLabel, posAction, neuLabel, neuAction, negLabel, negAction);
     }
 
     /** Mo man hinh them (docId == null) hoac sua ban ghi. */

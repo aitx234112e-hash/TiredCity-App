@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from '../admin-api.service';
+import { AuditService } from '../audit.service';
 
 @Component({
   selector: 'app-events',
@@ -17,10 +18,22 @@ export class Events implements OnInit {
   showForm = false;
   saving = false;
   errorMsg = '';
+  editingId: string | null = null;
 
-  form = { title: '', date: '', location: '', description: '', image: '' };
+  form = {
+    title: '',
+    date: '',
+    location: '',
+    description: '',
+    image: '',
+    isOnline: false
+  };
 
-  constructor(private adminApi: AdminApiService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private adminApi: AdminApiService,
+    private audit: AuditService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -44,8 +57,21 @@ export class Events implements OnInit {
     });
   }
 
-  openForm(): void {
-    this.form = { title: '', date: '', location: '', description: '', image: '' };
+  openForm(ev: any = null): void {
+    if (ev) {
+      this.editingId = ev._id;
+      this.form = {
+        title: ev.title || '',
+        date: ev.date || '',
+        location: ev.location || '',
+        description: ev.description || '',
+        image: ev.image || '',
+        isOnline: !!ev.isOnline
+      };
+    } else {
+      this.editingId = null;
+      this.form = { title: '', date: '', location: '', description: '', image: '', isOnline: false };
+    }
     this.errorMsg = '';
     this.showForm = true;
   }
@@ -82,28 +108,50 @@ export class Events implements OnInit {
     }
     this.saving = true;
     this.errorMsg = '';
-    this.adminApi
-      .addEvent({
-        title: this.form.title.trim(),
-        date: this.form.date,
-        location: this.form.location.trim(),
-        description: this.form.description.trim(),
-        image: this.form.image || '',
-        createdAt: new Date().toISOString(),
-      })
-      .subscribe({
-        next: (id) => {
-          this.events.unshift({ _id: id, ...this.form });
+
+    const payload = {
+      ...this.form,
+      title: this.form.title.trim(),
+      location: this.form.location.trim(),
+      description: this.form.description.trim(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (this.editingId) {
+      this.adminApi.updateEvent(this.editingId, payload).subscribe({
+        next: () => {
+          this.audit.log('event.update', this.form.title, 'Updated via Web Admin');
+          this.load();
           this.saving = false;
           this.showForm = false;
           this.cdr.detectChanges();
         },
         error: () => {
           this.saving = false;
-          this.errorMsg = 'Không thể lưu sự kiện (kiểm tra quyền Firestore).';
+          this.errorMsg = 'Không thể cập nhật sự kiện.';
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      const createPayload = {
+        ...payload,
+        createdAt: new Date().toISOString()
+      };
+      this.adminApi.addEvent(createPayload).subscribe({
+        next: (id) => {
+          this.audit.log('event.create', this.form.title, 'Created via Web Admin');
+          this.events.unshift({ _id: id, ...createPayload });
+          this.saving = false;
+          this.showForm = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.saving = false;
+          this.errorMsg = 'Không thể lưu sự kiện.';
           this.cdr.detectChanges();
         },
       });
+    }
   }
 
   remove(ev: any): void {
@@ -111,6 +159,7 @@ export class Events implements OnInit {
     if (!confirm(`Xoá sự kiện "${ev.title}"?`)) return;
     this.adminApi.deleteEvent(ev._id).subscribe({
       next: () => {
+        this.audit.log('event.delete', ev.title, 'Deleted via Web Admin');
         this.events = this.events.filter((e) => e._id !== ev._id);
         this.cdr.detectChanges();
       },

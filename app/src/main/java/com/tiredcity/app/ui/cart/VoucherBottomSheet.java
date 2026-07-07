@@ -72,6 +72,13 @@ public class VoucherBottomSheet extends BottomSheetDialogFragment {
 
         binding.btnClose.setOnClickListener(v -> dismiss());
 
+        // Cập nhật danh sách ngay khi gõ (để "hiện" mã nếu khớp)
+        binding.etCode.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { renderList(); }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        });
+
         // Nhập tay + Áp dụng: áp ngay mã đã gõ.
         binding.btnApplyCode.setOnClickListener(v -> {
             String code = binding.etCode.getText() != null
@@ -109,7 +116,97 @@ public class VoucherBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void renderList() {
-        List<Voucher> all = CheckoutPriceCalculator.getAvailableVouchers();
+        final String input = binding.etCode.getText() != null
+                ? binding.etCode.getText().toString().trim() : "";
+
+        List<Voucher> staticVouchers = CheckoutPriceCalculator.getAvailableVouchers();
+        
+        com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("vouchers")
+                .whereEqualTo("isActive", true)
+                .get()
+                .addOnSuccessListener(query -> {
+                    if (binding == null) return;
+                    
+                    List<Voucher> all = new ArrayList<>(staticVouchers); // Luôn hiện các mã mặc định
+                    
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : query.getDocuments()) {
+                        String code = doc.getString("code");
+                        if (code == null) continue;
+                        
+                        // 1. Không hiện mã đã hết hạn
+                        if (isExpired(doc.getString("expiry"))) continue;
+
+                        // 2. Mã bí mật (Ẩn voucher): Chỉ hiện nếu nhập đúng mã HOẶC đang áp dụng
+                        boolean isHidden = Boolean.TRUE.equals(doc.getBoolean("isHidden"));
+                        if (isHidden) {
+                            if (!code.equalsIgnoreCase(input) && !code.equalsIgnoreCase(currentCode)) {
+                                continue; 
+                            }
+                        }
+
+                        // Tránh trùng mã mặc định
+                        boolean exists = false;
+                        for (Voucher v : staticVouchers) { if (v.code.equalsIgnoreCase(code)) { exists = true; break; } }
+                        if (exists) continue;
+
+                        String title = doc.getString("title");
+                        if (title == null) title = code;
+                        String desc = doc.getString("description");
+                        if (desc == null) desc = "Mã giảm giá từ hệ thống";
+
+                        String typeStr = doc.getString("type");
+                        if (typeStr == null) typeStr = doc.contains("discount") ? "PERCENT" : "FLAT";
+                        
+                        double val = 0;
+                        if (doc.contains("value")) {
+                            Double dv = doc.getDouble("value");
+                            if (dv != null) val = dv;
+                        } else if (doc.contains("discount")) {
+                            Double dd = doc.getDouble("discount");
+                            if (dd != null) val = dd;
+                        }
+                        
+                        double min = 0;
+                        if (doc.contains("minOrder")) {
+                            Double dm = doc.getDouble("minOrder");
+                            if (dm != null) min = dm;
+                        } else if (doc.contains("minSpend")) {
+                            Double ds = doc.getDouble("minSpend");
+                            if (ds != null) min = ds;
+                        }
+
+                        try {
+                            VoucherType type = VoucherType.valueOf(typeStr.toUpperCase(Locale.ROOT));
+                            all.add(new Voucher(code, title, desc, type, val, 0, min));
+                        } catch (Exception ignored) {}
+                    }
+                    
+                    displayVouchers(all);
+                })
+                .addOnFailureListener(e -> {
+                    if (binding == null) return;
+                    displayVouchers(staticVouchers);
+                });
+    }
+
+    private boolean isExpired(String dateStr) {
+        if (TextUtils.isEmpty(dateStr)) return false;
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            java.util.Date date = sdf.parse(dateStr);
+            if (date == null) return false;
+            
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.setTime(date);
+            cal.set(java.util.Calendar.HOUR_OF_DAY, 23);
+            cal.set(java.util.Calendar.MINUTE, 59);
+            cal.set(java.util.Calendar.SECOND, 59);
+            
+            return new java.util.Date().after(cal.getTime());
+        } catch (Exception e) { return false; }
+    }
+
+    private void displayVouchers(List<Voucher> all) {
         List<Voucher> filtered = new ArrayList<>();
         for (Voucher v : all) {
             if (activeFilter == null || v.type == activeFilter) filtered.add(v);

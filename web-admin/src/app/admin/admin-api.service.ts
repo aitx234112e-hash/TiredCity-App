@@ -78,6 +78,10 @@ export class AdminApiService {
     );
   }
 
+  updateEvent(id: string, data: any): Observable<void> {
+    return this.inCtx(() => updateDoc(doc(this.firestore, 'events', id), data));
+  }
+
   deleteEvent(id: string): Observable<void> {
     return this.inCtx(() => deleteDoc(doc(this.firestore, 'events', id)));
   }

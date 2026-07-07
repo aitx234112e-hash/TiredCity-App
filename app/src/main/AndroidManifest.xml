@@ -226,11 +226,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".ui.support.TermsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
         <!-- ── Settings (Cài đặt thông báo & Cài đặt chung) ──────────────── -->
         <activity
             android:name=".ui.settings.NotificationSettingsActivity"

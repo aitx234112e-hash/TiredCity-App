@@ -38,6 +38,12 @@ public class EventActivity extends BaseActivity {
         binding.rvEvents.setLayoutManager(new LinearLayoutManager(this));
         binding.rvEvents.setAdapter(adapter);
 
+        adapter.setOnEventClickListener(event -> {
+            android.content.Intent intent = new android.content.Intent(this, EventDetailActivity.class);
+            intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_EVENT_ID, event.getId());
+            startActivity(intent);
+        });
+
         binding.swipeRefresh.setColorSchemeColors(getColor(R.color.tc_red));
         binding.swipeRefresh.setOnRefreshListener(() -> viewModel.loadEvents());
 

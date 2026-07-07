@@ -24,6 +24,7 @@ public class Event {
     
     private boolean isOnline;
     private Object createdAt;
+    private Object updatedAt;
 
     public Event() {}
 
@@ -74,4 +75,7 @@ public class Event {
     
     public Object getCreatedAt() { return createdAt; }
     public void setCreatedAt(Object createdAt) { this.createdAt = createdAt; }
+
+    public Object getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Object updatedAt) { this.updatedAt = updatedAt; }
 }

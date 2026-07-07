@@ -432,8 +432,6 @@
     <string name="label_free_shipping_subtitle">Toàn quốc</string>
     <string name="label_easy_returns">7 ngày đổi trả</string>
     <string name="label_easy_returns_subtitle">Miễn phí</string>
-    <string name="label_free_shipping">Giao hàng nhanh\n(SPX Express)</string>
-    <string name="label_easy_returns">Đổi trả 14 ngày</string>
     <string name="label_secure_payment">Thanh toán an toàn</string>
     <string name="label_secure_payment_subtitle">Bảo mật 100%</string>
     <string name="label_premium_material">Chất liệu cao cấp</string>
@@ -841,6 +839,8 @@
     <string name="barcode_online_title">Mua hàng trực tuyến: </string>
     <string name="barcode_online_desc">Nhập mã khuyến mãi này khi thanh toán tại ứng dụng TiredCity hoặc website www.tiredcity.com</string>
     <string name="barcode_code">39TRIAN0626O1VW1WCQXZ</string>
+    <string name="barcode_code_birthday">39SINHNHAT0626O1VW1WCQXZ</string>
+    <string name="barcode_code_tri_an">39TRIAN0626O1VW1WCQXZ</string>
     <string name="barcode_copy">Copy</string>
     <string name="barcode_copied">Đã sao chép mã ưu đãi</string>
 
@@ -878,7 +878,6 @@
 
     <!-- Policies Detail Content -->
     <string name="policy_subtitle">Tìm hiểu các chính sách và điều khoản của TiredCity để có trải nghiệm mua sắm an toàn và ý nghĩa.</string>
-    <string name="policy_subtitle">Tìm hiểu về các chính sách và điều khoản của TiredCity để đảm bảo trải nghiệm mua sắm an toàn và ý nghĩa.</string>
 
     <string name="policy_purchase_title">Chính sách mua hàng</string>
     <string name="policy_purchase_content"><![CDATA[
@@ -947,7 +946,6 @@
     ]]></string>
 
     <string name="policy_shipping_title">Chính sách vận chuyển</string>
-    <string name="policy_shipping_title">Chính sách giao hàng</string>
     <string name="policy_shipping_content"><![CDATA[
         <b>Thời gian giao hàng</b><br/>
         • Nội thành: 01 – 03 ngày làm việc.<br/>
@@ -1076,7 +1074,6 @@
         • Yêu cầu dừng nhận thông tin quảng cáo.<br/>
         • Yêu cầu xóa dữ liệu cá nhân theo quy định hiện hành.
     ]]></string>
-    <string name="str_policy_term">CHÍNH SÁCH &amp; ĐIỀU KHOẢN</string>
 
     <string name="terms_4_title">4. Giá cả &amp; thanh toán</string>
     <string name="terms_4_content"><![CDATA[

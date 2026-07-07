@@ -169,8 +169,11 @@ public final class RowFormatter {
         String location = DocUtils.str(d, "location");
         String rawDate = DocUtils.str(d, "date");
         String date = DocUtils.date(d, "date");
+        boolean online = Boolean.TRUE.equals(d.getBoolean("isOnline"));
         boolean upcoming = isUpcoming(rawDate);
-        return new Row(title, location, date.isEmpty() ? "Chưa đặt ngày" : date,
+        
+        String loc = online ? "🌐 Online" : location;
+        return new Row(title, loc, date.isEmpty() ? "Chưa đặt ngày" : date,
                 upcoming ? "Sắp diễn ra" : "Đã qua", upcoming ? R.color.st_success : R.color.st_neutral);
     }
 

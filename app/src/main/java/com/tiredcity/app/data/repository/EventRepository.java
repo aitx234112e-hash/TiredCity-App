@@ -31,6 +31,23 @@ public class EventRepository {
             });
     }
 
+    public void getEventById(String id, OnEventLoadedListener listener) {
+        db.collection("events").document(id).get()
+            .addOnSuccessListener(d -> {
+                if (d.exists()) {
+                    listener.onSuccess(d.toObject(Event.class));
+                } else {
+                    listener.onError("Event not found");
+                }
+            })
+            .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    public interface OnEventLoadedListener {
+        void onSuccess(Event event);
+        void onError(String message);
+    }
+
     public interface OnEventsLoadedListener {
         void onSuccess(List<Event> events);
         void onError(String message);

@@ -44,6 +44,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    public static final int VIEW_MODE_GRID = 0;
+    public static final int VIEW_MODE_LIST = 1;
+
+    public void setViewMode(int mode) {
+        setFillWidth(mode == VIEW_MODE_LIST);
+    }
+
     public void updateProducts(List<Product> newProducts) {
         this.products = newProducts;
         notifyDataSetChanged();

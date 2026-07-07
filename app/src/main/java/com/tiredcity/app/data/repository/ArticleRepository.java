@@ -53,6 +53,23 @@ public class ArticleRepository {
                 .update("views", com.google.firebase.firestore.FieldValue.increment(1));
     }
 
+    public void getArticleById(String id, OnArticleLoadedListener listener) {
+        db.collection("blogs").document(id).get()
+            .addOnSuccessListener(d -> {
+                if (d.exists()) {
+                    listener.onSuccess(d.toObject(Article.class));
+                } else {
+                    listener.onError("Article not found");
+                }
+            })
+            .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    public interface OnArticleLoadedListener {
+        void onSuccess(Article article);
+        void onError(String message);
+    }
+
     public interface OnArticlesLoadedListener {
         void onSuccess(List<Article> articles);
         void onError(String message);

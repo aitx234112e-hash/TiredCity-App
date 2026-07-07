@@ -2,41 +2,36 @@ package com.tiredcity.app.ui.shop;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
-import androidx.annotation.ColorInt;
+
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
+import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.mock.MockProductCatalog;
-import com.tiredcity.app.data.model.ApiListResponse;
-import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
-import com.tiredcity.app.data.network.ApiClient;
 import com.tiredcity.app.data.repository.FirestoreProductRepository;
-import com.tiredcity.app.data.repository.ProductRepository;
 import com.tiredcity.app.databinding.ActivityCategoryBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.CartActivity;
 import com.tiredcity.app.utils.ColorTaxonomy;
 import com.tiredcity.app.utils.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CategoryActivity extends BaseActivity {
 
-    public static final String EXTRA_CATEGORY_ID   = "category_id";
+    public static final String EXTRA_CATEGORY_ID = "category_id";
     public static final String EXTRA_CATEGORY_NAME = "category_name";
-    /** Nhóm màu (5 danh mục trang phục) hoặc phân loại phụ kiện (Phụ Kiện) — lọc client-side theo Product.getColors(). */
-    public static final String EXTRA_TAG_FILTER    = "tag_filter";
+    public static final String EXTRA_TAG_FILTER = "tag_filter";
 
     private ActivityCategoryBinding binding;
-    private ProductRepository productRepository;
     private FirestoreProductRepository firestoreRepository;
     private ProductAdapter productAdapter;
     private GridLayoutManager gridManager;
@@ -45,25 +40,25 @@ public class CategoryActivity extends BaseActivity {
     private int spanCount = 2;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         categoryId = getIntent().getStringExtra(EXTRA_CATEGORY_ID);
-        tagFilter = getIntent().getStringExtra(EXTRA_TAG_FILTER);
         String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
-        binding.tvTitle.setText(categoryName != null ? categoryName
-                : getString(R.string.category_default_title));
+        tagFilter = getIntent().getStringExtra(EXTRA_TAG_FILTER);
 
-        binding.btnBack.setOnClickListener(v -> finish());
-        binding.btnCart.setOnClickListener(v ->
-                startActivity(new Intent(this, CartActivity.class)));
+        binding.tvTitle.setText(categoryName != null ? categoryName : categoryId);
+        binding.btnBack.setOnClickListener(v -> finishSmoothly());
+        binding.btnCart.setOnClickListener(v -> startSmoothActivity(new Intent(this, CartActivity.class)));
 
+        firestoreRepository = new FirestoreProductRepository();
         setupProductGrid();
         setupViewModeToggle();
         setupFilter();
 
+        binding.swipeRefresh.setOnRefreshListener(this::loadProducts);
         loadProducts();
     }
 
@@ -71,46 +66,38 @@ public class CategoryActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         updateCartBadge();
-        // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
-        productAdapter.notifyDataSetChanged();
+        if (productAdapter != null) {
+            productAdapter.notifyDataSetChanged();
+        }
     }
 
-    // ── Lưới sản phẩm ──────────────────────────────────────────────────────────
-
     private void setupProductGrid() {
-        productAdapter = new ProductAdapter(null);
-        productAdapter.setFillWidth(true);
+        productAdapter = new ProductAdapter(new ArrayList<>());
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Product product) {
                 Intent intent = new Intent(CategoryActivity.this, ProductDetailActivity.class);
                 intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
-                startActivity(intent);
+                startSmoothActivity(intent);
             }
 
             @Override
-            public void onSaveToggle(Product product, boolean saved) {}
+            public void onSaveToggle(Product product, boolean saved) {
+                new FavoritesLocalStore(CategoryActivity.this).toggleFavorite(product);
+            }
 
             @Override
             public void onAddToCartClick(Product product) {
-                // Bắt buộc chọn size -> Mở màn hình chi tiết
                 Intent intent = new Intent(CategoryActivity.this, ProductDetailActivity.class);
                 intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
-                startActivity(intent);
-                Toast.makeText(CategoryActivity.this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
+                startSmoothActivity(intent);
             }
         });
 
         gridManager = new GridLayoutManager(this, spanCount);
         binding.rvProducts.setLayoutManager(gridManager);
         binding.rvProducts.setAdapter(productAdapter);
-
-        binding.swipeRefresh.setColorSchemeColors(
-                ContextCompat.getColor(this, R.color.tc_red));
-        binding.swipeRefresh.setOnRefreshListener(this::loadProducts);
     }
-
-    // ── Chế độ xem 1 / 2 / 3 cột ──────────────────────────────────────────────
 
     private void setupViewModeToggle() {
         binding.btnView1.setOnClickListener(v -> setSpanCount(1));
@@ -119,56 +106,44 @@ public class CategoryActivity extends BaseActivity {
         highlightViewMode();
     }
 
-    private void setSpanCount(int span) {
-        if (span == spanCount) return;
-        spanCount = span;
-        gridManager.setSpanCount(span);
-        productAdapter.notifyDataSetChanged();
+    private void setSpanCount(int count) {
+        if (spanCount == count) return;
+        spanCount = count;
+        gridManager.setSpanCount(spanCount);
+        productAdapter.setViewMode(spanCount == 1 ? ProductAdapter.VIEW_MODE_LIST : ProductAdapter.VIEW_MODE_GRID);
         highlightViewMode();
     }
 
     private void highlightViewMode() {
-        @ColorInt int active   = ContextCompat.getColor(this, R.color.tc_red);
-        @ColorInt int inactive = ContextCompat.getColor(this, R.color.tc_text_secondary);
+        int active = ContextCompat.getColor(this, R.color.tc_red);
+        int inactive = ContextCompat.getColor(this, R.color.tc_stroke);
         tint(binding.btnView1, spanCount == 1 ? active : inactive);
         tint(binding.btnView2, spanCount == 2 ? active : inactive);
         tint(binding.btnView3, spanCount == 3 ? active : inactive);
     }
 
-    private void tint(ImageButton button, @ColorInt int color) {
-        button.setColorFilter(color);
+    private void tint(ImageButton btn, int color) {
+        btn.setColorFilter(color);
     }
-
-    // ── Bộ lọc ─────────────────────────────────────────────────────────────────
 
     private void setupFilter() {
-        binding.btnFilter.setOnClickListener(v ->
-                Toast.makeText(this, R.string.filter_coming_soon, Toast.LENGTH_SHORT).show());
+        binding.btnFilter.setOnClickListener(v -> {
+            // Future implementation
+        });
     }
-
-    // ── Giỏ hàng badge ─────────────────────────────────────────────────────────
 
     private void updateCartBadge() {
-        int count = 0;
-        for (CartItem item : new CartLocalStore(this).getCartItems()) {
-            count += item.getQuantity();
-        }
-        if (count <= 0) {
-            binding.tvCartBadge.setVisibility(android.view.View.GONE);
+        int count = new CartLocalStore(this).getCartCount();
+        if (count > 0) {
+            binding.tvCartBadge.setVisibility(View.VISIBLE);
+            binding.tvCartBadge.setText(String.valueOf(count));
         } else {
-            binding.tvCartBadge.setVisibility(android.view.View.VISIBLE);
-            binding.tvCartBadge.setText(count > 9 ? getString(R.string.cart_badge_overflow) : String.valueOf(count));
+            binding.tvCartBadge.setVisibility(View.GONE);
         }
     }
-
-    // ── Tải sản phẩm ───────────────────────────────────────────────────────────
 
     private void loadProducts() {
         binding.swipeRefresh.setRefreshing(true);
-        if (firestoreRepository == null) firestoreRepository = new FirestoreProductRepository();
-        // Nguồn chính: Firestore (cùng dữ liệu + ảnh với admin). REST backend
-        // (tiredcity.vn/api) hiện chưa hoạt động nên không dùng nữa; nếu Firestore
-        // không có sản phẩm cho danh mục này thì mới hiển thị dữ liệu mẫu offline.
         firestoreRepository.getProducts(all -> {
             binding.swipeRefresh.setRefreshing(false);
             List<Product> inCategory = filterByCategory(all);
@@ -177,70 +152,30 @@ public class CategoryActivity extends BaseActivity {
             productAdapter.updateData(applyTagFilter(source));
         });
     }
-        productRepository = productRepository != null ? productRepository
-                : new ProductRepository(ApiClient.getApiService(preferenceManager.getToken()));
 
-        // CHUYỂN HẲN SANG DÙNG FIREBASE REALTIME
-        productRepository.getProductsFromFirestore(new com.tiredcity.app.data.repository.ProductRepository.OnProductsLoadedListener() {
-            @Override
-            public void onSuccess(List<Product> products) {
-                binding.swipeRefresh.setRefreshing(false);
-                if (products != null) {
-                    // Log for debugging
-                    android.util.Log.d("CategoryActivity", "Total products: " + products.size());
-
-                    List<Product> filteredByCategory = new ArrayList<>();
-                    if (categoryId == null || categoryId.isEmpty() ||
-                        "Tất cả".equalsIgnoreCase(categoryId) ||
-                        "ALL".equalsIgnoreCase(categoryId)) {
-                        filteredByCategory = products;
-                    } else {
-                        for (Product p : products) {
-                            String pCat = p.getCategory();
-                            if (pCat == null) continue;
-
-                            // Map user-friendly category names to possible Firestore values
-                            boolean match = categoryId.equalsIgnoreCase(pCat);
-                            if (!match) {
-                                if (categoryId.equalsIgnoreCase("Áo Dài")) match = pCat.contains("ao-dai") || pCat.equalsIgnoreCase("AO DAI");
-                                else if (categoryId.equalsIgnoreCase("Nhật Bình")) match = pCat.contains("nhat-binh") || pCat.equalsIgnoreCase("NHAT BINH");
-                                else if (categoryId.equalsIgnoreCase("Áo Tấc")) match = pCat.contains("ao-tac") || pCat.equalsIgnoreCase("AO TAC");
-                                else if (categoryId.equalsIgnoreCase("Phụ Kiện")) match = pCat.contains("phu-kien") || pCat.equalsIgnoreCase("PHU KIEN");
-                            }
-
-                            if (match) {
-                                filteredByCategory.add(p);
-                            }
-                        }
-                    }
-
-                    List<Product> finalResult = applyTagFilter(filteredByCategory);
-                    android.util.Log.d("CategoryActivity", "After filtering: " + finalResult.size());
-                    productAdapter.updateData(finalResult);
-                }
-            }
-
-    /** Giữ lại các sản phẩm thuộc đúng danh mục đang mở (so theo nhãn danh mục đã ánh xạ). */
     private List<Product> filterByCategory(List<Product> all) {
         if (all == null) return null;
-        if (categoryId == null) return all;
+        if (categoryId == null || "ALL".equalsIgnoreCase(categoryId) || "Tất cả".equalsIgnoreCase(categoryId)) return all;
+        
         List<Product> out = new ArrayList<>();
         for (Product p : all) {
-            if (categoryId.equals(p.getCategory())) out.add(p);
+            String pCat = p.getCategory();
+            if (pCat == null) continue;
+            
+            boolean match = categoryId.equalsIgnoreCase(pCat);
+            if (!match) {
+                if (categoryId.equalsIgnoreCase("Áo Dài")) match = pCat.contains("ao-dai") || pCat.equalsIgnoreCase("AO DAI");
+                else if (categoryId.equalsIgnoreCase("Nhật Bình")) match = pCat.contains("nhat-binh") || pCat.equalsIgnoreCase("NHAT BINH");
+                else if (categoryId.equalsIgnoreCase("Áo Tấc")) match = pCat.contains("ao-tac") || pCat.equalsIgnoreCase("AO TAC");
+                else if (categoryId.equalsIgnoreCase("Phụ Kiện")) match = pCat.contains("phu-kien") || pCat.equalsIgnoreCase("PHU KIEN");
+                else if (categoryId.equalsIgnoreCase("Giao Lĩnh")) match = pCat.contains("giao-linh") || pCat.equalsIgnoreCase("GIAO LINH");
+                else if (categoryId.equalsIgnoreCase("Yếm Đào")) match = pCat.contains("yem-dao") || pCat.equalsIgnoreCase("YEM DAO");
+            }
+            if (match) out.add(p);
         }
         return out;
-            @Override
-            public void onError(String message) {
-                binding.swipeRefresh.setRefreshing(false);
-                android.util.Log.e("CategoryActivity", "Firebase Error: " + message);
-            }
-        });
     }
 
-    /**
-     * Lọc theo nhóm màu (5 danh mục trang phục, qua {@link ColorTaxonomy}) hoặc theo phân loại
-     * phụ kiện (Phụ Kiện, so khớp trực tiếp) — cả hai đều dựa trên {@link Product#getColors()}.
-     */
     private List<Product> applyTagFilter(List<Product> products) {
         if (tagFilter == null || products == null) return products;
         boolean matchByColorBucket = !"PHỤ KIỆN".equals(categoryId);
@@ -255,5 +190,4 @@ public class CategoryActivity extends BaseActivity {
         }
         return filtered;
     }
-
 }

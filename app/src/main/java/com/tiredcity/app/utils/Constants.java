@@ -39,6 +39,8 @@ public final class Constants {
 
     // Intent extras
     public static final String EXTRA_PRODUCT_ID = "extra_product_id";
+    public static final String EXTRA_EVENT_ID   = "extra_event_id";
+    public static final String EXTRA_ARTICLE_ID = "extra_article_id";
     public static final String EXTRA_ORDER_ID   = "extra_order_id";
     public static final String EXTRA_CATEGORY   = "extra_category";
     public static final String EXTRA_ACTION_REVIEW = "extra_action_review";

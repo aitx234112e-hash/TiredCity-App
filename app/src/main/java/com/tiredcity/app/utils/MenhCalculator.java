@@ -12,75 +12,17 @@ public class MenhCalculator {
 
     /**
      * Tính Mệnh Ngũ Hành từ năm sinh (âm lịch) theo NẠP ÂM — Lục thập hoa giáp.
-     *
-     * <p>Ngũ hành bản mệnh KHÔNG suy ra được từ chữ số cuối của năm; nó phụ thuộc vào
-     * Thiên Can và Địa Chi (chu kỳ 60 năm). Công thức:
-     * <pre>
-     *   giá trị Can (Thiên Can theo năm % 10):
-     *     Giáp/Ất=1, Bính/Đinh=2, Mậu/Kỷ=3, Canh/Tân=4, Nhâm/Quý=5
-     *   giá trị Chi (Địa Chi theo năm % 12):
-     *     Tý/Sửu/Ngọ/Mùi=0, Dần/Mão/Thân/Dậu=1, Thìn/Tỵ/Tuất/Hợi=2
-     *   tổng = Can + Chi; nếu tổng > 5 thì trừ 5
-     *   1→Kim, 2→Thủy, 3→Hỏa, 4→Thổ, 5→Mộc
-     * </pre>
-     * Đã đối chiếu đúng với nhiều năm quen thuộc: 1984 Giáp Tý = Kim, 1990 Canh Ngọ = Thổ,
-     * 1995 Ất Hợi = Hỏa, 1988 Mậu Thìn = Mộc, 1996 Bính Tý = Thủy, 2000 Canh Thìn = Kim.
-     *
-     * <p>Lưu ý: dùng năm âm lịch. App chỉ có năm sinh dương lịch nên người sinh vào
-     * tháng 1 / đầu tháng 2 (trước Tết) về lý thuộc năm can-chi trước đó — đây là giản
-     * lược chấp nhận được khi không có ngày sinh đầy đủ.
-     * Tính Mệnh Ngũ Hành chính xác theo công thức dân gian: Can + Chi = Mệnh.
      * Giá trị Can: Giáp, Ất=1; Bính, Đinh=2; Mậu, Kỷ=3; Canh, Tân=4; Nhâm, Quý=5.
      * Giá trị Chi: Tý, Sửu, Ngọ, Mùi=0; Dần, Mão, Thân, Dậu=1; Thìn, Tỵ, Tuất, Hợi=2.
      * Giá trị Mệnh: Kim=1, Thủy=2, Hỏa=3, Thổ=4, Mộc=5. (Nếu > 5 thì trừ 5).
      */
     public static String tinhMenh(int year) {
-        // 1. Xác định Thiên Can (Can)
-        // Năm Giáp gần nhất là 2004, 1994, 1984... -> (year - 4) % 10
-        int offsetCan = (year - 4) % 10;
-        if (offsetCan < 0) offsetCan += 10;
-
-        int valueCan;
-        switch (offsetCan) {
-            case 0: case 1: valueCan = 1; break; // Giáp, Ất
-            case 2: case 3: valueCan = 2; break; // Bính, Đinh
-            case 4: case 5: valueCan = 3; break; // Mậu, Kỷ
-            case 6: case 7: valueCan = 4; break; // Canh, Tân
-            default:        valueCan = 5;        // Nhâm, Quý
-        }
-
-        // 2. Xác định Địa Chi (Chi)
-        // Dựa trên mảng con giáp chuẩn: 0:Thân, 1:Dậu, 2:Tuất, 3:Hợi, 4:Tý, 5:Sửu, 6:Dần, 7:Mão, 8:Thìn, 9:Tỵ, 10:Ngọ, 11:Mùi
-        int offsetChi = year % 12;
-
-        int valueChi;
-        if (offsetChi == 4 || offsetChi == 5 || offsetChi == 10 || offsetChi == 11) {
-            valueChi = 0; // Tý, Sửu, Ngọ, Mùi
-        } else if (offsetChi == 6 || offsetChi == 7 || offsetChi == 0 || offsetChi == 1) {
-            valueChi = 1; // Dần, Mão, Thân, Dậu
-        } else {
-            valueChi = 2; // Thìn, Tỵ, Tuất, Hợi
-        }
-
-        // 3. Tính Mệnh
-        int result = valueCan + valueChi;
-        if (result > 5) result -= 5;
-
-        switch (result) {
-            case 1:  return Constants.MENH_KIM;
-            case 2:  return Constants.MENH_THUY;
-            case 3:  return Constants.MENH_HOA;
-            case 4:  return Constants.MENH_THO;
-            case 5:  return Constants.MENH_MOC;
-            default: return Constants.MENH_KIM;
-    public static String tinhMenh(int namSinh) {
-        // Can theo năm % 10: bắt đầu từ Canh (0) … Kỷ (9).
+        // Can theo năm % 10: 0:Canh, 1:Tân, 2:Nhâm, 3:Quý, 4:Giáp, 5:Ất, 6:Bính, 7:Đinh, 8:Mậu, 9:Kỷ
         int[] canValue = {4, 4, 5, 5, 1, 1, 2, 2, 3, 3};
-        // Chi theo năm % 12: 0→Thân, 1→Dậu, 2→Tuất, 3→Hợi, 4→Tý, 5→Sửu,
-        //                    6→Dần, 7→Mão, 8→Thìn, 9→Tỵ, 10→Ngọ, 11→Mùi
+        // Chi theo năm % 12: 0:Thân, 1:Dậu, 2:Tuất, 3:Hợi, 4:Tý, 5:Sửu, 6:Dần, 7:Mão, 8:Thìn, 9:Tỵ, 10:Ngọ, 11:Mùi
         int[] chiValue = {1, 1, 2, 2, 0, 0, 1, 1, 2, 2, 0, 0};
 
-        int sum = canValue[namSinh % 10] + chiValue[namSinh % 12];
+        int sum = canValue[year % 10] + chiValue[year % 12];
         if (sum > 5) sum -= 5;
 
         switch (sum) {
@@ -89,13 +31,10 @@ public class MenhCalculator {
             case 3:  return Constants.MENH_HOA;
             case 4:  return Constants.MENH_THO;
             case 5:  return Constants.MENH_MOC;
-            default: return Constants.MENH_THO;
+            default: return Constants.MENH_KIM;
         }
     }
 
-    /**
-     * Trả về mảng màu sắc hợp mệnh cho mệnh truyền vào.
-     */
     public static String[] getMauHopMenh(String menh) {
         if (menh == null) return new String[0];
         switch (menh) {
@@ -104,13 +43,10 @@ public class MenhCalculator {
             case "Thủy": return new String[]{"Đen", "Xanh navy", "Tím"};
             case "Hỏa":  return new String[]{"Đỏ", "Hồng", "Cam", "Tím"};
             case "Thổ":  return new String[]{"Vàng đất", "Nâu", "Be", "Cam nhạt"};
-            default:     return new String[]{};
+            default:     return new String[0];
         }
     }
 
-    /**
-     * Tính cung hoàng đạo dựa theo ngày/tháng sinh (1-indexed).
-     */
     public static String tinhCungHoangDao(int month, int day) {
         if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) return "Bạch Dương";
         if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) return "Kim Ngưu";
@@ -126,34 +62,19 @@ public class MenhCalculator {
         return "Song Ngư";
     }
 
-    /**
-     * Tính con giáp (12 chi) theo năm sinh dương lịch.
-     * Công thức: (namSinh % 12) với 1900 = Tý (4).
-     */
-    public static String tinhConGiap(int namSinh) {
-        String[] conGiap = {
-            "Thân", "Dậu", "Tuất", "Hợi",
-            "Tý",   "Sửu", "Dần",  "Mão",
-            "Thìn", "Tỵ",  "Ngọ",  "Mùi"
-        };
-        return conGiap[namSinh % 12];
+    public static String tinhConGiap(int year) {
+        String[] conGiap = {"Thân", "Dậu", "Tuất", "Hợi", "Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi"};
+        return conGiap[year % 12];
     }
 
-    // ── Localization helpers ──────────────────────────────────────────────────
-    // Các giá trị mệnh / cung / màu được lưu dạng tiếng Việt (canonical).
-    // Những hàm dưới đây chuyển chúng sang chuỗi đa ngôn ngữ theo locale hiện tại.
-
-    /** Tên mệnh đã dịch theo ngôn ngữ ("Thủy" → "Water"). */
     public static String localizeMenh(Context ctx, String menh) {
         return localize(ctx, menhNameRes(menh), menh);
     }
 
-    /** Tên cung hoàng đạo đã dịch ("Cự Giải" → "Cancer"). */
     public static String localizeZodiac(Context ctx, String zodiac) {
         return localize(ctx, zodiacNameRes(zodiac), zodiac);
     }
 
-    /** Tên màu hợp mệnh đã dịch ("Đen" → "Black"). */
     public static String localizeColor(Context ctx, String color) {
         return localize(ctx, colorNameRes(color), color);
     }
@@ -220,10 +141,6 @@ public class MenhCalculator {
         }
     }
 
-    /**
-     * Tranh minh hoạ hero theo từng mệnh (dùng cho trang gợi ý phong cách).
-     * Trả về 0 nếu mệnh chưa có ảnh riêng — khi đó hero dùng nền gradient sơn mài.
-     */
     @DrawableRes
     public static int getMenhArtwork(String menh) {
         if (menh == null) return 0;
@@ -233,7 +150,6 @@ public class MenhCalculator {
         }
     }
 
-    /** Emoji đại diện cho mệnh. */
     public static String getEmojiMenh(String menh) {
         if (menh == null) return "✨";
         switch (menh) {

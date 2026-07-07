@@ -102,11 +102,18 @@ public final class ModuleForm {
 
                 f.add(new FormField("code", "Mã voucher", FormField.Type.TEXT, true)
                         .value(s(d, "code")).hint("VD: TIREDCITY10"));
-                f.get(f.size() - 1).enabled = !isEdit; // Cho phep nhap khi tao moi, khoa khi sua
+                // Cho phep sua ma voucher
+                f.get(f.size() - 1).enabled = true;
 
                 f.add(new FormField("isActive", "Đang hoạt động", FormField.Type.SWITCH, false)
                         .value(d != null && Boolean.FALSE.equals(d.getBoolean("isActive")) ? "false" : "true"));
-                f.get(f.size() - 1).enabled = !isEdit;
+                // Cho phep admin bat/tat trang thai ngay ca khi dang sua
+                f.get(f.size() - 1).enabled = true;
+
+                f.add(new FormField("isHidden", "Ẩn voucher", FormField.Type.SWITCH, false)
+                        .value(d != null && Boolean.TRUE.equals(d.getBoolean("isHidden")) ? "true" : "false")
+                        .hint("Chỉ hiện nếu khách hàng nhập đúng mã"));
+                f.get(f.size() - 1).enabled = true;
 
                 f.add(new FormField("target", "Đối tượng áp dụng", FormField.Type.SELECT, true,
                         new String[]{"Tất cả khách hàng", "Người mới tải app", "Khách hàng thân thiết", "Khác (Tự nhập)..."},
@@ -169,6 +176,8 @@ public final class ModuleForm {
                         .value(isoDate(d, "date")));
                 f.add(new FormField("location", "Địa điểm", FormField.Type.TEXT, false)
                         .value(s(d, "location")));
+                f.add(new FormField("isOnline", "Sự kiện Online", FormField.Type.SWITCH, false)
+                        .value(d != null && Boolean.TRUE.equals(d.getBoolean("isOnline")) ? "true" : "false"));
                 f.add(new FormField("description", "Mô tả", FormField.Type.TEXTAREA, false)
                         .value(s(d, "description")));
                 f.add(new FormField("image", "Link ảnh (URL)", FormField.Type.TEXT, false)
@@ -279,6 +288,7 @@ public final class ModuleForm {
             case VOUCHERS:
                 p.put("code", val(v, "code").toUpperCase(Locale.ROOT));
                 p.put("isActive", "true".equals(val(v, "isActive")));
+                p.put("isHidden", "true".equals(val(v, "isHidden")));
                 p.put("target", val(v, "target"));
                 p.put("type", val(v, "type"));
                 p.put("value", toLong(v, "value"));
@@ -304,8 +314,10 @@ public final class ModuleForm {
                 p.put("title", val(v, "title"));
                 p.put("date", val(v, "date"));
                 p.put("location", val(v, "location"));
+                p.put("isOnline", "true".equals(val(v, "isOnline")));
                 p.put("description", val(v, "description"));
                 p.put("image", val(v, "image"));
+                p.put("updatedAt", nowIso());
                 if (isCreate) p.put("createdAt", nowIso());
                 break;
 
