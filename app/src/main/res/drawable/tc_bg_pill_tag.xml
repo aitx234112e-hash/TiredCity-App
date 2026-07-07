@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nhãn nhỏ dạng viên thuốc, màu nền được tô lại bằng code theo màu nhấn của từng mệnh
+     (xem AiStylingActivity — setTint trên background này). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_red" />
+    <corners android:radius="@dimen/tc_radius_pill" />
+</shape>

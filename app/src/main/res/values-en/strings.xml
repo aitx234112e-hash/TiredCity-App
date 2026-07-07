@@ -12,7 +12,6 @@
 
     <!-- Bottom navigation -->
     <string name="nav_home">HOME</string>
-    <string name="nav_shop">PRODUCTS</string>
     <string name="nav_styling">STYLING</string>
     <string name="nav_explore">EXPLORE</string>
     <string name="nav_about">ABOUT US</string>
@@ -22,7 +21,7 @@
 
     <!-- Bottom nav (short labels) -->
     <string name="nav_short_home">Home</string>
-    <string name="nav_short_shop">Shop</string>
+    <string name="nav_short_shop">Search</string>
     <string name="nav_short_styling">Styling</string>
     <string name="nav_short_explore">Explore</string>
     <string name="nav_short_about">About</string>
@@ -486,15 +485,33 @@
 
     <!-- Shop / Search / Category -->
     <string name="nav_back">Back</string>
-    <string name="search_hint">Search for attire…</string>
+    <string name="search_screen_title">Search</string>
+    <string name="search_hint">Search attire, accessories…</string>
     <string name="search_recent">Recent searches</string>
     <string name="search_clear_all">Clear all</string>
     <string name="search_popular">Popular searches</string>
+    <string name="search_suggested_keywords_title">Suggested keywords</string>
+    <string name="search_suggested_products_title">Suggested products</string>
+    <string name="search_view_all_results">View all results</string>
+    <string-array name="search_recent_seed_keywords">
+        <item>Silk áo dài</item>
+        <item>Hand-embroidered Nhật Bình</item>
+        <item>Hair accessories</item>
+    </string-array>
     <string name="search_empty_title">No results found</string>
     <string name="search_empty_desc">Try a different keyword</string>
     <string name="search_searching">Searching…</string>
     <string name="search_result_count">%1$d results found</string>
     <string name="search_not_found">No results for \"%1$s\"</string>
+
+    <string-array name="search_suggested_keywords">
+        <item>White áo dài</item>
+        <item>Brocade áo dài</item>
+        <item>Men\'s áo tấc</item>
+        <item>Imperial Nhật Bình</item>
+        <item>Embroidered Giao Lĩnh</item>
+        <item>Traditional fan</item>
+    </string-array>
     <string name="sort_popular">Popular</string>
     <string name="sort_newest">Newest</string>
     <string name="sort_price_asc">Price: Low to High</string>
@@ -602,14 +619,131 @@
     <string name="about_hours">09:00 – 21:00 (Monday – Sunday)</string>
 
     <!-- AI Styling -->
-    <string name="aistyle_palette">🎨  Colors for your element</string>
+    <string name="menh_prefix">FIVE ELEMENTS</string>
+
+    <string name="aistyle_menh_title_kim">Metal Element</string>
+    <string name="aistyle_menh_title_moc">Wood Element</string>
+    <string name="aistyle_menh_title_thuy">Water Element</string>
+    <string name="aistyle_menh_title_hoa">Fire Element</string>
+    <string name="aistyle_menh_title_tho">Earth Element</string>
+
+    <string name="aistyle_menh_desc_kim">Elegant and refined, in shades of white, cream, beige and metallic sheen.</string>
+    <string name="aistyle_menh_desc_moc">Fresh and full of life, in shades of green, moss and natural wood tones.</string>
+    <string name="aistyle_menh_desc_thuy">Deep and fluid, in shades of mysterious black, navy and dark purple.</string>
+    <string name="aistyle_menh_desc_hoa">Warm and magnetic, in shades of vivid red, amber orange and bright pink.</string>
+    <string name="aistyle_menh_desc_tho">Grounded and warm, in shades of ochre, deep brown and gentle beige.</string>
+
+    <string name="aistyle_colors_title">Your Element\'s Colors</string>
+    <string name="aistyle_colors_text_kim">Those of the Metal element pair well with pristine white, gilded gold, gleaming silver and elegant gray. These are colors of understated luxury, quiet yet magnetic. Let white anchor your look, add touches of bronze or silver for refinement, and avoid fiery red or orange, since Fire overcomes Metal.</string>
+    <string name="aistyle_colors_text_moc">Those of the Wood element pair well with fresh green, soft blue and mossy tones. These are colors of vitality and endless growth. Let green lead the look, balance it with moss tones, and avoid icy white or silver, since Metal overcomes Wood.</string>
+    <string name="aistyle_colors_text_thuy">Those of the Water element pair well with mysterious black, deep navy and subtle purple. These are colors of wisdom and fluidity. Let navy or black anchor the look, add a touch of purple for depth, and avoid earthy yellow or brown, since Earth overcomes Water.</string>
+    <string name="aistyle_colors_text_hoa">Those of the Fire element pair well with vivid red, bright pink, warm orange and passionate purple. These are colors of energy and desire. Let red or orange stand out, soften it with a touch of pink, and avoid heavy black or navy, since Water overcomes Fire.</string>
+    <string name="aistyle_colors_text_tho">Those of the Earth element pair well with warm ochre, deep brown, soft beige and gentle light orange. These are colors of stability and endurance. Let ochre or brown anchor the look, soften it with beige, and avoid deep green, since Wood overcomes Earth.</string>
+
+    <string-array name="aistyle_colors_keywords_kim">
+        <item>pristine white</item>
+        <item>gilded gold</item>
+        <item>gleaming silver</item>
+        <item>elegant gray</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_moc">
+        <item>fresh green</item>
+        <item>soft blue</item>
+        <item>mossy tones</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_thuy">
+        <item>mysterious black</item>
+        <item>deep navy</item>
+        <item>subtle purple</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_hoa">
+        <item>vivid red</item>
+        <item>bright pink</item>
+        <item>warm orange</item>
+        <item>passionate purple</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_tho">
+        <item>warm ochre</item>
+        <item>deep brown</item>
+        <item>soft beige</item>
+        <item>gentle light orange</item>
+    </string-array>
+
+    <string name="aistyle_accessories_title">Accents That Fit</string>
+    <string name="aistyle_accessories_text_kim">For the Metal element, choose accessories with a metallic sheen: silver earrings, white-gold necklaces, silver-faced watches or minimalist hairpins. Glossy materials and clean lines highlight your natural refinement.</string>
+    <string name="aistyle_accessories_text_moc">For the Wood element, accessories in wood, rattan or jade are ideal, like a sandalwood bracelet, a woven bag, or a hairpin carved with leaf motifs. Natural materials nurture Wood\'s growing energy.</string>
+    <string name="aistyle_accessories_text_thuy">For the Water element, black or navy accessories in soft materials like silk, pearl or obsidian add an air of mystery and depth. A pearl bracelet or a small silk scarf is a subtle, essential touch.</string>
+    <string name="aistyle_accessories_text_hoa">For the Fire element, choose accessories in red, fiery orange or copper tones, like a red quartz bracelet, statement earrings or a bold leather belt. Bold details channel your fiery energy.</string>
+    <string name="aistyle_accessories_text_tho">For the Earth element, accessories in ceramic, terracotta or warm brown leather add a grounded, dependable air. A leather bag or a rustic ceramic bangle suits your steady character perfectly.</string>
+
+    <string-array name="aistyle_accessories_keywords_kim">
+        <item>silver earrings</item>
+        <item>white-gold necklaces</item>
+        <item>silver-faced watches</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_moc">
+        <item>sandalwood bracelet</item>
+        <item>woven bag</item>
+        <item>hairpin carved with leaf motifs</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_thuy">
+        <item>pearl bracelet</item>
+        <item>silk scarf</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_hoa">
+        <item>red quartz bracelet</item>
+        <item>statement earrings</item>
+        <item>bold leather belt</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_tho">
+        <item>leather bag</item>
+        <item>rustic ceramic bangle</item>
+    </string-array>
+
+    <string name="aistyle_patterns_title">Heritage Motifs</string>
+    <string name="aistyle_patterns_text_kim">Stylized clouds, wave motifs or minimalist geometry with a metallic sheen suit the Metal element beautifully, classic yet refined. Sharp, clean lines highlight the precision in your taste.</string>
+    <string name="aistyle_patterns_text_moc">Leaf motifs, floral branches or lush forest scenes suit the Wood element, evoking freshness and vitality. Soft, flowing curves echo the way plants grow and bend.</string>
+    <string name="aistyle_patterns_text_thuy">Wave patterns, cloud motifs or gently flowing lines suit the Water element, symbols of adaptability and endless change. Deep tones paired with fluid lines highlight your inner depth.</string>
+    <string name="aistyle_patterns_text_hoa">Phoenix motifs, stylized flames or richly layered patterns are the perfect accent for the Fire element. Bold, energetic lines mirror the passion burning within you.</string>
+    <string name="aistyle_patterns_text_tho">Geometric blocks, terracotta patterns or large warm color fields suit the Earth element, evoking stability and endurance. Rustic, nature-close details highlight your grounded warmth.</string>
+
+    <string-array name="aistyle_patterns_keywords_kim">
+        <item>Stylized clouds</item>
+        <item>wave motifs</item>
+        <item>minimalist geometry with a metallic sheen</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_moc">
+        <item>Leaf motifs</item>
+        <item>floral branches</item>
+        <item>lush forest scenes</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_thuy">
+        <item>Wave patterns</item>
+        <item>cloud motifs</item>
+        <item>gently flowing lines</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_hoa">
+        <item>Phoenix motifs</item>
+        <item>stylized flames</item>
+        <item>richly layered patterns</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_tho">
+        <item>Geometric blocks</item>
+        <item>terracotta patterns</item>
+        <item>large warm color fields</item>
+    </string-array>
+
     <string name="aistyle_suggestions">✨  Outfit suggestions</string>
     <string name="aistyle_refresh">Refresh</string>
-    <string name="aistyle_tips">💡  Styling tips</string>
-    <string name="aistyle_color_desc">White, yellow, silver and gray bring good fortune to those of the Metal element.</string>
-    <string name="aistyle_tip_desc">Those of the Metal element should choose light-toned garments with refined tailoring. A white or bronze silk áo dài is perfect for formal occasions.</string>
+    <string name="aistyle_see_more">See more</string>
+    <string name="aistyle_tips">Styling tips</string>
+    <string name="aistyle_tip_desc_kim">Those of the Metal element should choose light-toned garments with refined tailoring. A white or bronze silk áo dài is perfect for formal occasions.</string>
+    <string name="aistyle_tip_desc_moc">Those of the Wood element should choose fresh green tones in natural fabrics like silk, linen or ramie. A moss-green áo dài or one with leaf motifs is ideal for occasions that call for freshness and warmth.</string>
+    <string name="aistyle_tip_desc_thuy">Those of the Water element should choose black or mysterious navy tones in soft, flowing fabrics like silk or chiffon. A jet-black áo dài or a navy one with wave motifs highlights your depth and quiet allure.</string>
+    <string name="aistyle_tip_desc_hoa">Those of the Fire element should choose vivid red or fiery orange tones with bold, striking tailoring. A vibrant red áo dài or a copper-orange one is perfect for standing out on important occasions.</string>
+    <string name="aistyle_tip_desc_tho">Those of the Earth element should choose warm ochre or deep brown tones in sturdy fabrics like brocade or thổ cẩm. An ochre or brown áo dài with terracotta motifs highlights your grounded, dependable character.</string>
     <string name="aistyle_tip_loading">✨ Crafting personalized style advice for you…</string>
-    <string name="aistyle_menh_tagline">Style suggestions based on your Five-Element destiny</string>
+    <string name="aistyle_your_menh_tag">YOUR ELEMENT</string>
 
     <!-- Profile -->
     <string name="label_my_orders">My Orders</string>

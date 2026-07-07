@@ -1,16 +1,23 @@
 package com.tiredcity.app.ui.shop;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
+import com.tiredcity.app.adapter.BannerAdapter;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.adapter.SearchAdapter;
+import com.tiredcity.app.data.local.RecentSearchStore;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.model.search.EventItem;
 import com.tiredcity.app.data.model.search.ProductItem;
@@ -19,9 +26,12 @@ import com.tiredcity.app.data.model.search.SearchItem;
 import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.databinding.ActivitySearchBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.cart.CartActivity;
+import com.tiredcity.app.ui.explore.EventDetailActivity;
 import com.tiredcity.app.ui.reward.VoucherDetailActivity;
 import com.tiredcity.app.utils.Constants;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,13 +40,19 @@ public class SearchActivity extends BaseActivity {
     /** Optional pre-filled query, e.g. from a tapped tag on the Shop tab. */
     public static final String EXTRA_QUERY = "extra_query";
 
-    /** Số sản phẩm thật hiển thị trong "Gợi ý cho bạn". */
+    /** Số sản phẩm thật hiển thị trong "Gợi ý cho bạn" (sau ưu đãi + sự kiện, dạng hàng ngang). */
     private static final int SUGGESTION_PRODUCT_COUNT = 4;
+
+    private static final long BANNER_AUTO_SCROLL_INTERVAL_MS = 4000L;
 
     private ActivitySearchBinding binding;
     private FirestoreProductRepository firestoreRepository;
+    private RecentSearchStore recentSearchStore;
     private ProductAdapter productAdapter;
     private SearchAdapter suggestionAdapter;
+    private BannerAdapter searchBannerAdapter;
+    private final Handler bannerAutoScrollHandler = new Handler(Looper.getMainLooper());
+    private final Runnable bannerAutoScrollRunnable = this::advanceBanner;
 
     /** Toàn bộ sản phẩm tải một lần từ Firestore, dùng cho cả gợi ý lẫn lọc tìm kiếm. */
     private List<Product> allProducts = new ArrayList<>();
@@ -48,6 +64,9 @@ public class SearchActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         firestoreRepository = new FirestoreProductRepository();
+        recentSearchStore = new RecentSearchStore(this);
+        recentSearchStore.seedDefaultsIfNeeded(
+                Arrays.asList(getResources().getStringArray(R.array.search_recent_seed_keywords)));
 
         // Setup results RecyclerView
         productAdapter = new ProductAdapter(null);
@@ -83,6 +102,9 @@ public class SearchActivity extends BaseActivity {
             showRecentState();
         });
 
+        binding.btnCartShortcut.setOnClickListener(v ->
+                startActivity(new Intent(this, CartActivity.class)));
+
         binding.etSearch.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 performSearch(binding.etSearch.getText().toString().trim());
@@ -94,13 +116,17 @@ public class SearchActivity extends BaseActivity {
         binding.swipeRefresh.setOnRefreshListener(() ->
             performSearch(binding.etSearch.getText().toString().trim()));
 
-        // Phần 2 — "Được tìm kiếm nhiều nhất" tags
-        addPopularChip(getString(R.string.tag_ao_dai));
-        addPopularChip(getString(R.string.tag_nhat_binh));
-        addPopularChip(getString(R.string.tag_phu_kien));
+        binding.btnClearRecent.setOnClickListener(v -> {
+            recentSearchStore.clearAll();
+            refreshRecentSearches();
+        });
 
-        // Phần 3 & 4 — "Gợi ý cho bạn" mixed-type suggestion list
+        binding.btnViewAllResults.setOnClickListener(v -> showAllProductsAsResults());
+
+        setupSearchBannerCarousel();
+        setupSuggestedKeywords();
         setupSuggestions();
+        refreshRecentSearches();
 
         // Tải sản phẩm thật từ Firestore (dùng chung cho gợi ý + tìm kiếm)
         loadProducts();
@@ -121,6 +147,13 @@ public class SearchActivity extends BaseActivity {
         super.onResume();
         // Trạng thái yêu thích có thể đã đổi ở màn hình khác (chi tiết sản phẩm, tủ đồ...)
         productAdapter.notifyDataSetChanged();
+        bannerAutoScrollHandler.postDelayed(bannerAutoScrollRunnable, BANNER_AUTO_SCROLL_INTERVAL_MS);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        bannerAutoScrollHandler.removeCallbacks(bannerAutoScrollRunnable);
     }
 
     /** Tải toàn bộ sản phẩm một lần rồi bơm vào phần gợi ý. */
@@ -131,34 +164,120 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
+    // ── Carousel banner danh mục ─────────────────────────────────────────────────
+
+    /** 5 ảnh danh mục đẹp nhất trong bộ tư liệu, mỗi ảnh bấm vào sẽ mở đúng danh mục đó. */
+    private void setupSearchBannerCarousel() {
+        List<BannerAdapter.BannerItem> items = new ArrayList<>();
+        items.add(new BannerAdapter.BannerItem(
+                R.drawable.search_banner_ao_dai_trang_bach_ngoc, getString(R.string.cat_ao_dai)));
+        items.add(new BannerAdapter.BannerItem(
+                R.drawable.search_banner_nhat_binh_xanh_lam_ngoc_bich, getString(R.string.cat_nhat_binh)));
+        items.add(new BannerAdapter.BannerItem(
+                R.drawable.search_banner_giao_linh_xanh_luc_bao, getString(R.string.cat_tab_giao_linh)));
+        items.add(new BannerAdapter.BannerItem(
+                R.drawable.search_banner_yem_dao_hong_thach_anh, getString(R.string.cat_tab_yem_dao)));
+        items.add(new BannerAdapter.BannerItem(
+                R.drawable.search_banner_ao_tac_xanh_lam_ngoc_bich, getString(R.string.cat_ao_tac)));
+
+        searchBannerAdapter = new BannerAdapter(items);
+        searchBannerAdapter.setOnBannerClickListener((position, item) -> {
+            Intent intent = new Intent(this, CategoryActivity.class);
+            intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, item.title);
+            intent.putExtra(CategoryActivity.EXTRA_CATEGORY_NAME, item.title);
+            startActivity(intent);
+        });
+        binding.vpSearchBanner.setAdapter(searchBannerAdapter);
+        binding.dotsSearchBanner.attachTo(binding.vpSearchBanner);
+    }
+
+    /** Tự động lướt sang banner kế tiếp mỗi vài giây, quay lại đầu khi hết danh sách. */
+    private void advanceBanner() {
+        if (searchBannerAdapter == null || searchBannerAdapter.getItemCount() == 0) return;
+        int next = (binding.vpSearchBanner.getCurrentItem() + 1) % searchBannerAdapter.getItemCount();
+        binding.vpSearchBanner.setCurrentItem(next, true);
+        bannerAutoScrollHandler.postDelayed(bannerAutoScrollRunnable, BANNER_AUTO_SCROLL_INTERVAL_MS);
+    }
+
+    // ── Tìm kiếm gần đây ────────────────────────────────────────────────────────
+
+    /** Đọc lại lịch sử tìm kiếm và vẽ lại các chip; ẩn cả khối nếu chưa có lịch sử. */
+    private void refreshRecentSearches() {
+        List<String> recent = recentSearchStore.getAll();
+        binding.layoutRecentSection.setVisibility(recent.isEmpty() ? View.GONE : View.VISIBLE);
+
+        binding.chipGroupRecent.removeAllViews();
+        for (String query : recent) {
+            Chip chip = createDarkChip(query);
+            chip.setCloseIconVisible(true);
+            chip.setCloseIconTint(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
+            chip.setOnClickListener(v -> {
+                binding.etSearch.setText(query);
+                binding.etSearch.setSelection(query.length());
+                performSearch(query);
+            });
+            chip.setOnCloseIconClickListener(v -> {
+                recentSearchStore.remove(query);
+                refreshRecentSearches();
+            });
+            binding.chipGroupRecent.addView(chip);
+        }
+    }
+
+    // ── Gợi ý từ khóa ───────────────────────────────────────────────────────────
+
+    private void setupSuggestedKeywords() {
+        for (String keyword : getResources().getStringArray(R.array.search_suggested_keywords)) {
+            Chip chip = createDarkChip(keyword);
+            chip.setOnClickListener(v -> {
+                binding.etSearch.setText(keyword);
+                binding.etSearch.setSelection(keyword.length());
+                performSearch(keyword);
+            });
+            binding.chipGroupKeywords.addView(chip);
+        }
+    }
+
+    /** Chip nền nâu than, chữ trắng in hoa — dùng cho cả chip "gần đây" lẫn "gợi ý từ khóa". */
+    private Chip createDarkChip(String text) {
+        Chip chip = new Chip(this);
+        chip.setText(text);
+        chip.setAllCaps(true);
+        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.tc_espresso)));
+        chip.setTextColor(ContextCompat.getColor(this, R.color.white));
+        chip.setChipStrokeWidth(0f);
+        return chip;
+    }
+
     // ── Gợi ý cho bạn ───────────────────────────────────────────────────────────
 
-    /** Builds the multi-view-type discovery list (promotion + event + product). */
+    /** Danh sách hàng ngang gộp ưu đãi + sự kiện + sản phẩm (multiple view types). */
     private void setupSuggestions() {
         suggestionAdapter = new SearchAdapter(buildStaticSuggestions());
         suggestionAdapter.setOnItemClickListener(item -> {
             if (item instanceof PromotionItem) {
-                // Ưu đãi → mở trang chi tiết voucher tương ứng.
                 openVoucherDetail((PromotionItem) item);
+            } else if (item instanceof EventItem) {
+                openEventDetail();
             } else if (item instanceof ProductItem) {
-                // Sản phẩm → mở trang chi tiết sản phẩm thật.
                 openProductDetail(((ProductItem) item).getProduct());
             }
         });
-        binding.rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
-        binding.rvSuggestions.setNestedScrollingEnabled(false);
-        binding.rvSuggestions.setAdapter(suggestionAdapter);
+        binding.rvSuggestedProducts.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvSuggestedProducts.setNestedScrollingEnabled(false);
+        binding.rvSuggestedProducts.setAdapter(suggestionAdapter);
     }
 
-    /** Ưu đãi + sự kiện (nội dung tĩnh) — luôn đứng đầu danh sách gợi ý. */
+    /** Ưu đãi + sự kiện (nội dung tĩnh) — luôn đứng đầu danh sách "Gợi ý cho bạn". */
     private List<SearchItem> buildStaticSuggestions() {
         List<SearchItem> items = new ArrayList<>();
-        items.add(new PromotionItem(R.string.search_promo_birthday,
-                                    R.drawable.banner_1,
-                                    R.string.reward_voucher_birthday_title,
-                                    R.string.reward_voucher_birthday_subtitle));
-        items.add(new EventItem(R.string.search_event_coach_title,
-                                R.string.search_event_coach_time, 0));
+        items.add(new PromotionItem(R.string.search_promo_ao_dai_lua,
+                                    R.drawable.search_suggestion_promo_banner,
+                                    R.string.search_promo_ao_dai_lua_title,
+                                    R.string.search_promo_ao_dai_lua_subtitle));
+        items.add(new EventItem(R.string.search_event_dan_toc_tu_hao_title,
+                                R.string.search_event_dan_toc_tu_hao_time,
+                                R.drawable.search_suggestion_event_banner));
         return items;
     }
 
@@ -182,6 +301,18 @@ public class SearchActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    /** Mở trang chi tiết sự kiện được bấm. */
+    private void openEventDetail() {
+        startActivity(new Intent(this, EventDetailActivity.class));
+    }
+
+    /** Hiển thị toàn bộ sản phẩm ở trạng thái kết quả, không gắn với một từ khóa cụ thể. */
+    private void showAllProductsAsResults() {
+        showResultsState();
+        binding.tvResultCount.setText(getString(R.string.search_result_count, allProducts.size()));
+        productAdapter.updateData(allProducts);
+    }
+
     private void openProductDetail(Product product) {
         if (product == null || product.getId() == null) return;
         Intent intent = new Intent(this, ProductDetailActivity.class);
@@ -194,6 +325,7 @@ public class SearchActivity extends BaseActivity {
     private void performSearch(String keyword) {
         if (keyword.isEmpty()) { showRecentState(); return; }
 
+        recentSearchStore.add(keyword);
         showResultsState();
         binding.tvResultCount.setText(getString(R.string.search_searching));
 
@@ -247,6 +379,7 @@ public class SearchActivity extends BaseActivity {
     // ── Trạng thái hiển thị ─────────────────────────────────────────────────────
 
     private void showRecentState() {
+        refreshRecentSearches();
         binding.layoutRecent.setVisibility(View.VISIBLE);
         binding.layoutResults.setVisibility(View.GONE);
         binding.layoutEmpty.setVisibility(View.GONE);
@@ -263,16 +396,5 @@ public class SearchActivity extends BaseActivity {
         binding.layoutResults.setVisibility(View.GONE);
         binding.layoutEmpty.setVisibility(View.VISIBLE);
         binding.tvEmptyMessage.setText(getString(R.string.search_not_found, keyword));
-    }
-
-    private void addPopularChip(String label) {
-        com.google.android.material.chip.Chip chip = new com.google.android.material.chip.Chip(this);
-        chip.setText(label);
-        chip.setOnClickListener(v -> {
-            binding.etSearch.setText(label);
-            binding.etSearch.setSelection(label.length());
-            performSearch(label);
-        });
-        binding.chipGroupPopular.addView(chip);
     }
 }

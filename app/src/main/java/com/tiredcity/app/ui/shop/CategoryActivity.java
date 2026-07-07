@@ -79,7 +79,7 @@ public class CategoryActivity extends BaseActivity {
 
     private void setupProductGrid() {
         productAdapter = new ProductAdapter(null);
-        productAdapter.setFillWidth(true);
+        productAdapter.setSpanCount(spanCount);
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Product product) {
@@ -114,7 +114,7 @@ public class CategoryActivity extends BaseActivity {
         if (span == spanCount) return;
         spanCount = span;
         gridManager.setSpanCount(span);
-        productAdapter.notifyDataSetChanged();
+        productAdapter.setSpanCount(span);
         highlightViewMode();
     }
 

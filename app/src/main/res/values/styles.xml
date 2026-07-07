@@ -238,6 +238,7 @@
         <item name="cornerSizeBottomRight">12dp</item>
     </style>
 
+
     <style name="ShapeAppearance.TC.BottomSheet" parent="">
         <item name="cornerSizeTopLeft">@dimen/tc_radius_sheet</item>
         <item name="cornerSizeTopRight">@dimen/tc_radius_sheet</item>

@@ -27,7 +27,10 @@ public class MainActivity extends BaseActivity {
                 .findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
-        binding.navShop.setOnClickListener(v -> navigateTab(R.id.shopFragment));
+        // Icon "tìm kiếm" ở bottom nav mở thẳng màn Tìm kiếm đầy đủ (SearchActivity) thay vì
+        // chuyển tab — giống cách navProfile mở ProfileActivity riêng, không phải nav destination.
+        binding.navShop.setOnClickListener(v -> startActivity(
+                new Intent(this, com.tiredcity.app.ui.shop.SearchActivity.class)));
         binding.navStyling.setOnClickListener(v -> navigateTab(R.id.stylingFragment));
         binding.navHome.setOnClickListener(v -> navigateTab(R.id.homeFragment));
         binding.navExplore.setOnClickListener(v -> navigateTab(R.id.exploreFragment));
@@ -54,11 +57,10 @@ public class MainActivity extends BaseActivity {
 
     /** Tab đang chọn: icon đỏ đậm + nền pill sáng; còn lại đỏ nhạt. */
     private void updateSelected(int destId) {
-        setIcon(binding.navShopIcon, destId == R.id.shopFragment);
         setIcon(binding.navStylingIcon, destId == R.id.stylingFragment);
         setIcon(binding.navHomeIcon, destId == R.id.homeFragment);
         setIcon(binding.navExploreIcon, destId == R.id.exploreFragment);
-        // navProfile là Activity riêng, không có trạng thái chọn.
+        // navShop (mở SearchActivity) và navProfile là Activity riêng, không có trạng thái chọn.
     }
 
     private void setIcon(ImageView icon, boolean active) {
