@@ -1,9 +1,28 @@
 package com.tiredcity.app.ui.styling;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductPhotoCardAdapter;
 import com.tiredcity.app.data.model.Product;
@@ -26,10 +45,31 @@ import retrofit2.Response;
 
 public class AiStylingActivity extends BaseActivity {
 
+    /** Chặn trên kích thước decode ảnh (px) cho 3 dải màu/phụ kiện/hoạ tiết hợp mệnh — ảnh nguồn
+     *  trong các thư mục "banner cung mệnh" có kích thước rất khác nhau (có file lên tới vài nghìn
+     *  px hoặc GIF nhiều khung hình); nếu không giới hạn, Glide có thể giải mã ở kích thước gốc và
+     *  gây OutOfMemoryError khi vào trang (đã gặp thực tế với 1 GIF 2917×2917px ở mệnh Mộc). Việc
+     *  ép width lẫn height về mốc này (dùng cùng FitCenter) buộc Glide luôn downsample bất kể ảnh
+     *  nguồn to cỡ nào. */
+    private static final int MAX_IMAGE_DECODE_PX = 1440;
+
     private ActivityAiStylingBinding binding;
     private ApiService apiService;
     private final FirestoreProductRepository firestoreRepository = new FirestoreProductRepository();
     private ProductPhotoCardAdapter recommendedAdapter;
+
+    /** Handler tự trượt dải "Phụ kiện hợp mệnh" trái ⇄ phải (xem
+     *  {@link #startAccessoriesAutoScroll()}) — dừng ở onPause để tránh rò rỉ. */
+    private final Handler accessoriesScrollHandler = new Handler(Looper.getMainLooper());
+    private Runnable accessoriesScrollRunnable;
+    private int accessoriesScrollDir = 1;
+
+    /** Animator bồng bềnh lên ⇅ xuống của từng ảnh trong dải "Hoạ tiết hợp mệnh" — huỷ ở onPause. */
+    private final List<ObjectAnimator> patternAnimators = new ArrayList<>();
+
+    /** Mệnh thật của người dùng, tính từ ngày sinh (xem {@link MenhCalculator#tinhMenh}) — quyết
+     *  định toàn bộ nội dung trang (banner/màu/phụ kiện/hoạ tiết/lời khuyên/gợi ý). */
+    private String realMenh = "Kim";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,29 +83,58 @@ public class AiStylingActivity extends BaseActivity {
 
         apiService = ApiClient.getApiService(preferenceManager.getToken());
 
+        applyHeroAspectRatio();
+
         recommendedAdapter = new ProductPhotoCardAdapter(null);
         binding.rvSuggestions.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvSuggestions.setAdapter(recommendedAdapter);
         binding.rvSuggestions.setNestedScrollingEnabled(false);
         recommendedAdapter.setOnProductClickListener(product -> {
             if (product.getId() == null) return;
-            android.content.Intent i = new android.content.Intent(
-                    AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
+            Intent i = new Intent(AiStylingActivity.this, com.tiredcity.app.ui.shop.ProductDetailActivity.class);
             i.putExtra(com.tiredcity.app.utils.Constants.EXTRA_PRODUCT_ID, product.getId());
             startActivity(i);
         });
 
-        binding.btnRefreshSuggestions.setOnClickListener(v -> loadUserProfileAndRecommend());
+        binding.btnRefreshSuggestions.setOnClickListener(v -> openSeeMoreSuggestions());
+    }
 
+    /** "Xem thêm" — mở lưới sản phẩm đầy đủ, lọc theo màu hợp mệnh đang xem hiện tại (không giới
+     *  hạn danh mục, không giới hạn số lượng như 6 gợi ý ở đây). */
+    private void openSeeMoreSuggestions() {
+        String[] buckets = menhColorBuckets(realMenh);
+        Intent intent = new Intent(this, com.tiredcity.app.ui.shop.CategoryActivity.class);
+        intent.putExtra(com.tiredcity.app.ui.shop.CategoryActivity.EXTRA_CATEGORY_NAME,
+                getString(R.string.aistyle_suggestions).replace("✨", "").trim());
+        if (buckets.length > 0) {
+            intent.putExtra(com.tiredcity.app.ui.shop.CategoryActivity.EXTRA_TAG_FILTER, buckets[0]);
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Tải lại mỗi lần màn hình được hiện ra (kể cả lần đầu, vì onResume luôn chạy sau
+        // onCreate) — để nếu người dùng vừa đổi ngày sinh ở Hồ sơ rồi quay lại đây, mệnh/gợi ý
+        // đổi theo ngay, không cần thoát vào lại app.
         loadUserProfileAndRecommend();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Màn hình không còn hiển thị — dừng hẳn animation/auto-scroll, tránh chạy ngầm vô ích.
+        // onResume sẽ tự dựng lại qua loadUserProfileAndRecommend() -> updateMenhAccessories/Patterns.
+        stopAccessoriesAutoScroll();
+        stopPatternAnimations();
     }
 
     private void loadUserProfileAndRecommend() {
         // Luôn hiển thị một mệnh ngay lập tức để giao diện không trống:
         // ưu tiên mệnh đã lưu → tính từ hồ sơ cache → mặc định "Kim".
-        String menh = resolveMenh();
-        setupMenhUI(menh);
-        loadRecommendedProducts(menh);
+        realMenh = resolveMenh();
+        showMenhScreen(realMenh);
 
         // Nếu chưa lưu mệnh, thử lấy hồ sơ từ server để tính lại chính xác.
         if (preferenceManager.getMenh() != null) return;
@@ -80,14 +149,37 @@ public class AiStylingActivity extends BaseActivity {
                     if (birthYear <= 0) return;
                     String refined = MenhCalculator.tinhMenh(birthYear);
                     preferenceManager.setMenh(refined);
-                    setupMenhUI(refined);
-                    loadRecommendedProducts(refined);
+                    realMenh = refined;
+                    showMenhScreen(refined);
                 }
             }
 
             @Override
             public void onFailure(Call<com.tiredcity.app.data.model.ApiResponse<UserProfile>> call, Throwable t) {}
         });
+    }
+
+    /** Dựng lại TOÀN BỘ nội dung trang theo đúng mệnh thật của người dùng: banner, nhãn/phụ đề,
+     *  màu/phụ kiện/hoạ tiết hợp mệnh, gợi ý trang phục + lời khuyên phong cách — gọi mỗi khi mệnh
+     *  được tính lại (mở màn hình, hoặc vừa đổi ngày sinh ở Hồ sơ). */
+    private void showMenhScreen(String menh) {
+        loadHeroBanner(menh);
+        updateMenhHeaderUi(menh);
+        updateMenhColors(menh);
+        updateMenhAccessories(menh);
+        updateMenhPatterns(menh);
+        updateTipsCardTheme(menh);
+        loadRecommendedProducts(menh);
+    }
+
+    /** Tô nền thẻ + tiêu đề "Lời khuyên phong cách" theo đúng mệnh — tách riêng khỏi
+     *  {@link #loadAiStylingTip} (chạy sau khi Firestore trả dữ liệu, có độ trễ mạng) để card đổi
+     *  màu ngay lập tức khi chuyển mệnh, không đợi gợi ý trang phục tải xong. */
+    private void updateTipsCardTheme(String menh) {
+        int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
+        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
+        binding.cardTips.setCardBackgroundColor(panelBg);
+        binding.tvTipsTitle.setTextColor(accent);
     }
 
     /** Ưu tiên tính lại từ năm sinh (nạp âm đúng, chữa lành cache cũ) → mệnh đã lưu → "Kim". */
@@ -102,93 +194,243 @@ public class AiStylingActivity extends BaseActivity {
         return saved != null ? saved : "Kim";
     }
 
-    private void setupMenhUI(String menh) {
-        binding.tvMenhTitle.setText(getString(R.string.menh_label, menh));
-        binding.tvMenhEmoji.setText(MenhCalculator.getEmojiMenh(menh));
+    /** Tải banner thương hiệu đúng mệnh thật của người dùng (xem {@link MenhCalculator#getMenhBanner}). */
+    private void loadHeroBanner(String menh) {
+        Glide.with(this)
+                .load(MenhCalculator.getMenhBanner(menh))
+                .into(binding.ivMenhHero);
+    }
 
-        // Tranh hero theo mệnh — nếu chưa có ảnh riêng thì ẩn ImageView,
-        // để lộ nền gradient sơn mài đỏ của khung hero.
-        int artwork = MenhCalculator.getMenhArtwork(menh);
-        if (artwork != 0) {
-            binding.imgMenhHero.setImageResource(artwork);
-            binding.imgMenhHero.setVisibility(View.VISIBLE);
-        } else {
-            binding.imgMenhHero.setVisibility(View.GONE);
+    /** Tô lại tiêu đề lớn "Mệnh {tên}" (tô màu nhấn), câu mô tả và nhãn "mệnh của bạn" theo đúng
+     *  mệnh thật của người dùng. Dùng chung màu nhấn với 3 mục màu/phụ kiện/hoạ tiết bên dưới để
+     *  đồng bộ toàn màn hình. */
+    private void updateMenhHeaderUi(String menh) {
+        int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
+
+        binding.tvMenhTitle.setText(MenhCalculator.getMenhTitleText(this, menh));
+        binding.tvMenhTitle.setTextColor(accent);
+        binding.tvMenhSubtitle.setText(MenhCalculator.getMenhDescText(this, menh));
+
+        binding.tvYourMenhTag.setVisibility(View.VISIBLE);
+        binding.tvYourMenhTag.getBackground().mutate().setTint(accent);
+    }
+
+    /** "Phụ kiện hợp mệnh" — dải ảnh CAO BẰNG NHAU (rộng tự do theo đúng tỉ lệ gốc mỗi ảnh), tự
+     *  trượt trái ⇄ phải liên tục + đôi lời riêng theo mệnh đang xem. Mệnh chưa có ảnh (xem
+     *  {@link MenhCalculator#getMenhAccessoryPhotos}) thì ẩn cả mục. */
+    private void updateMenhAccessories(String menh) {
+        int[] photos = MenhCalculator.getMenhAccessoryPhotos(menh);
+        stopAccessoriesAutoScroll();
+        if (photos.length == 0) {
+            binding.sectionMenhAccessories.setVisibility(View.GONE);
+            return;
         }
+        binding.sectionMenhAccessories.setVisibility(View.VISIBLE);
+        int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
+        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
+        binding.sectionMenhAccessories.getBackground().mutate().setTint(panelBg);
+        binding.tvAccessoriesTitle.setTextColor(accent);
+        setHighlightedText(binding.tvAccessoriesText, MenhCalculator.getMenhAccessoryText(this, menh),
+                MenhCalculator.getMenhAccessoryKeywords(this, menh), accent);
 
-        // Zodiac subtitle — nếu chưa có cung hoàng đạo thì hiển thị mô tả ngũ hành.
-        String zodiac = preferenceManager.getZodiac();
-        binding.tvMenhSubtitle.setText(
-                (zodiac != null && !zodiac.isEmpty()) ? zodiac : getString(R.string.aistyle_menh_tagline));
-
-        // Color swatches — vòng tròn màu thực + nhãn
-        binding.layoutColors.removeAllViews();
+        binding.layoutMenhAccessories.removeAllViews();
         float density = getResources().getDisplayMetrics().density;
-        int dotSize = (int) (32 * density);
-        int strokeColor = getResources().getColor(R.color.tc_stroke, getTheme());
-        String[] colorNames = MenhCalculator.getMauHopMenh(menh);
-        for (String colorName : colorNames) {
-            LinearLayout swatch = new LinearLayout(this);
-            swatch.setOrientation(LinearLayout.VERTICAL);
-            swatch.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-            LinearLayout.LayoutParams swatchLp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            swatchLp.setMarginEnd((int) (16 * density));
-            swatch.setLayoutParams(swatchLp);
-
-            android.graphics.drawable.GradientDrawable dot =
-                    new android.graphics.drawable.GradientDrawable();
-            dot.setShape(android.graphics.drawable.GradientDrawable.OVAL);
-            dot.setColor(hexForColorName(colorName));
-            dot.setStroke((int) (1 * density), strokeColor);
-
-            View dotView = new View(this);
-            dotView.setLayoutParams(new LinearLayout.LayoutParams(dotSize, dotSize));
-            dotView.setBackground(dot);
-            swatch.addView(dotView);
-
-            android.widget.TextView label = new android.widget.TextView(this);
-            label.setText(MenhCalculator.localizeColor(this, colorName));
-            label.setTextSize(11);
-            // Nhãn nằm trên nền đen tuyền của thẻ → dùng màu kem sáng cho nổi bật.
-            label.setTextColor(getResources().getColor(R.color.tc_text_on_dark, getTheme()));
-            label.setGravity(android.view.Gravity.CENTER);
-            LinearLayout.LayoutParams labelLp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            labelLp.topMargin = (int) (5 * density);
-            label.setLayoutParams(labelLp);
-            swatch.addView(label);
-
-            binding.layoutColors.addView(swatch);
+        int cardHeight = (int) (260 * density);
+        int radius = (int) (16 * density);
+        int marginEnd = (int) (12 * density);
+        for (int photo : photos) {
+            ImageView image = new ImageView(this);
+            // Chiều cao cố định + chiều rộng WRAP_CONTENT + adjustViewBounds → mọi ảnh cao bằng
+            // nhau, rộng khác nhau tuỳ tỉ lệ gốc, không ảnh nào bị cắt xén.
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, cardHeight);
+            lp.setMarginEnd(marginEnd);
+            image.setLayoutParams(lp);
+            image.setAdjustViewBounds(true);
+            image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            Glide.with(this)
+                    .load(photo)
+                    .override(MAX_IMAGE_DECODE_PX, MAX_IMAGE_DECODE_PX)
+                    .transform(new FitCenter(), new RoundedCorners(radius))
+                    .into(image);
+            binding.layoutMenhAccessories.addView(image);
+        }
+        // Chỉ đáng tự trượt khi có từ 2 ảnh trở lên (1 ảnh thì không có gì để trượt qua lại).
+        if (photos.length > 1) {
+            binding.scrollMenhAccessories.post(this::startAccessoriesAutoScroll);
         }
     }
 
-    /** Ánh xạ tên màu hợp mệnh sang mã màu hiển thị cho swatch. */
-    private int hexForColorName(String name) {
-        String hex;
-        switch (name) {
-            case "Trắng":     hex = "#FFFFFF"; break;
-            case "Vàng":      hex = "#F4C430"; break;
-            case "Bạc":       hex = "#CDD1D4"; break;
-            case "Xám":       hex = "#9E9E9E"; break;
-            case "Xanh lá":   hex = "#4CAF50"; break;
-            case "Xanh lam":  hex = "#2196F3"; break;
-            case "Xanh rêu":  hex = "#6B8E23"; break;
-            case "Đen":       hex = "#1A1208"; break;
-            case "Xanh navy": hex = "#1A2F5A"; break;
-            case "Tím":       hex = "#7E57C2"; break;
-            case "Đỏ":        hex = "#A80D15"; break;
-            case "Hồng":      hex = "#E91E63"; break;
-            case "Cam":       hex = "#FF7043"; break;
-            case "Vàng đất":  hex = "#C9A45C"; break;
-            case "Nâu":       hex = "#6D4C41"; break;
-            case "Be":        hex = "#E8DCC6"; break;
-            case "Cam nhạt":  hex = "#FFB74D"; break;
-            default:          hex = "#C9A45C"; break;
+    /** Tự trượt {@link com.tiredcity.app.databinding.ActivityAiStylingBinding#scrollMenhAccessories}
+     *  qua lại kiểu "ping-pong" — trượt phải đến hết dải ảnh rồi quay lại, lặp vô hạn cho đến khi
+     *  {@link #stopAccessoriesAutoScroll()} được gọi (onPause / dựng lại dải ảnh mới). */
+    private void startAccessoriesAutoScroll() {
+        stopAccessoriesAutoScroll();
+        if (binding == null) return;
+        HorizontalScrollView scrollView = binding.scrollMenhAccessories;
+        View content = binding.layoutMenhAccessories;
+        accessoriesScrollRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (binding == null) return;
+                int maxScroll = content.getWidth() - scrollView.getWidth();
+                if (maxScroll <= 0) {
+                    accessoriesScrollHandler.postDelayed(this, 800);
+                    return;
+                }
+                int next = scrollView.getScrollX() + accessoriesScrollDir * ACCESSORIES_SCROLL_STEP_PX;
+                if (next >= maxScroll) {
+                    next = maxScroll;
+                    accessoriesScrollDir = -1;
+                } else if (next <= 0) {
+                    next = 0;
+                    accessoriesScrollDir = 1;
+                }
+                scrollView.scrollTo(next, 0);
+                accessoriesScrollHandler.postDelayed(this, ACCESSORIES_SCROLL_INTERVAL_MS);
+            }
+        };
+        accessoriesScrollHandler.postDelayed(accessoriesScrollRunnable, 1200);
+    }
+
+    private void stopAccessoriesAutoScroll() {
+        if (accessoriesScrollRunnable != null) {
+            accessoriesScrollHandler.removeCallbacks(accessoriesScrollRunnable);
         }
-        return android.graphics.Color.parseColor(hex);
+    }
+
+    private static final int ACCESSORIES_SCROLL_STEP_PX = 2;
+    private static final long ACCESSORIES_SCROLL_INTERVAL_MS = 30;
+
+    /** "Hoạ tiết hợp mệnh" — dải ảnh xếp DỌC từ trên xuống (không kéo ngang), mỗi ảnh tự bồng bềnh
+     *  lên ⇅ xuống liên tục để vẫn có chuyển động. Mệnh chưa có ảnh thì ẩn cả mục. */
+    private void updateMenhPatterns(String menh) {
+        int[] photos = MenhCalculator.getMenhPatternPhotos(menh);
+        stopPatternAnimations();
+        if (photos.length == 0) {
+            binding.sectionMenhPatterns.setVisibility(View.GONE);
+            return;
+        }
+        binding.sectionMenhPatterns.setVisibility(View.VISIBLE);
+        int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
+        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
+        binding.sectionMenhPatterns.getBackground().mutate().setTint(panelBg);
+        binding.tvPatternsTitle.setTextColor(accent);
+        setHighlightedText(binding.tvPatternsText, MenhCalculator.getMenhPatternText(this, menh),
+                MenhCalculator.getMenhPatternKeywords(this, menh), accent);
+
+        binding.layoutMenhPatterns.removeAllViews();
+        float density = getResources().getDisplayMetrics().density;
+        int radius = (int) (16 * density);
+        float bobDistance = 8 * density;
+        // Khoảng đệm trên/dưới mỗi ảnh: vừa là khoảng cách giữa các ảnh xếp dọc, vừa chừa chỗ để
+        // ảnh bồng bềnh (translationY) không bị cắt bởi khung cha.
+        int bobBuffer = (int) bobDistance;
+        int verticalGap = (int) (16 * density) + bobBuffer;
+        for (int i = 0; i < photos.length; i++) {
+            ImageView image = new ImageView(this);
+            // Rộng hết cỡ (MATCH_PARENT) + xếp dọc từng ảnh một, không còn dải cuộn ngang.
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.topMargin = bobBuffer;
+            lp.bottomMargin = verticalGap;
+            image.setLayoutParams(lp);
+            image.setAdjustViewBounds(true);
+            image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            Glide.with(this)
+                    .load(photos[i])
+                    .override(MAX_IMAGE_DECODE_PX, MAX_IMAGE_DECODE_PX)
+                    .transform(new FitCenter(), new RoundedCorners(radius))
+                    .into(image);
+            binding.layoutMenhPatterns.addView(image);
+
+            ObjectAnimator bob = ObjectAnimator.ofFloat(image, View.TRANSLATION_Y, -bobDistance, bobDistance);
+            bob.setDuration(1500 + (i % 3) * 200L);
+            bob.setStartDelay(i * 150L);
+            bob.setRepeatCount(ValueAnimator.INFINITE);
+            bob.setRepeatMode(ValueAnimator.REVERSE);
+            bob.setInterpolator(new AccelerateDecelerateInterpolator());
+            bob.start();
+            patternAnimators.add(bob);
+        }
+    }
+
+    private void stopPatternAnimations() {
+        for (ObjectAnimator anim : patternAnimators) anim.cancel();
+        patternAnimators.clear();
+    }
+
+    /** "Màu hợp mệnh" — ảnh minh hoạ nguyên khổ (không cắt xén, giữ đúng tỉ lệ gốc) + bài viết
+     *  riêng theo mệnh đang xem. Mệnh chưa có ảnh thì ẩn cả mục. */
+    private void updateMenhColors(String menh) {
+        int[] photos = MenhCalculator.getMenhColorPhotos(menh);
+        if (photos.length == 0) {
+            binding.sectionMenhColors.setVisibility(View.GONE);
+            return;
+        }
+        binding.sectionMenhColors.setVisibility(View.VISIBLE);
+        int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
+        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
+        binding.sectionMenhColors.getBackground().mutate().setTint(panelBg);
+        binding.tvColorsTitle.setTextColor(accent);
+        setHighlightedText(binding.tvColorsText, MenhCalculator.getMenhColorText(this, menh),
+                MenhCalculator.getMenhColorKeywords(this, menh), accent);
+
+        binding.layoutMenhColors.removeAllViews();
+        float density = getResources().getDisplayMetrics().density;
+        int radius = (int) (16 * density);
+        int marginBottom = (int) (10 * density);
+        for (int i = 0; i < photos.length; i++) {
+            ImageView image = new ImageView(this);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            if (i < photos.length - 1) lp.bottomMargin = marginBottom;
+            image.setLayoutParams(lp);
+            image.setAdjustViewBounds(true);
+            image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            Glide.with(this)
+                    .load(photos[i])
+                    .override(MAX_IMAGE_DECODE_PX, MAX_IMAGE_DECODE_PX)
+                    .transform(new FitCenter(), new RoundedCorners(radius))
+                    .into(image);
+            binding.layoutMenhColors.addView(image);
+        }
+    }
+
+    /** Gán {@code fullText} lên {@code tv}, in đậm + tô màu {@code accent} lên MỌI lần xuất hiện
+     *  của từng từ khoá trong {@code keywords} — dùng chung cho 3 mục màu/phụ kiện/hoạ tiết hợp
+     *  mệnh, mỗi mục chỉ đổi màu nhấn + bộ từ khoá theo đúng mệnh đang xem. */
+    private void setHighlightedText(TextView tv, String fullText, String[] keywords, int accent) {
+        if (keywords == null || keywords.length == 0) {
+            tv.setText(fullText);
+            return;
+        }
+        SpannableString spannable = new SpannableString(fullText);
+        for (String keyword : keywords) {
+            if (keyword == null || keyword.isEmpty()) continue;
+            int start = fullText.indexOf(keyword);
+            while (start >= 0) {
+                int end = start + keyword.length();
+                spannable.setSpan(new ForegroundColorSpan(accent), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannable.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                start = fullText.indexOf(keyword, end);
+            }
+        }
+        tv.setText(spannable);
+    }
+
+    /** Tỉ lệ thật (px) của banner mệnh — dùng để khoá chiều cao khung banner, đảm bảo ảnh
+     *  không bao giờ bị cắt (xem {@link #applyHeroAspectRatio()}). */
+    private static final int HERO_BANNER_W = 1774;
+    private static final int HERO_BANNER_H = 887;
+
+    /** Khoá chiều cao khung banner đúng theo tỉ lệ ảnh gốc (gọi 1 lần trong onCreate). */
+    private void applyHeroAspectRatio() {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int heroHeight = Math.round(screenWidth * (HERO_BANNER_H / (float) HERO_BANNER_W));
+        ViewGroup.LayoutParams lp = binding.heroMenh.getLayoutParams();
+        lp.height = heroHeight;
+        binding.heroMenh.setLayoutParams(lp);
     }
 
     /** Số gợi ý hiển thị mỗi lần, và cỡ nhóm liên quan để "Làm mới" đổi được món. */
@@ -229,9 +471,9 @@ public class AiStylingActivity extends BaseActivity {
     private void loadAiStylingTip(String menh, List<Product> products) {
         if (binding == null) return;
 
-        // Chưa cấu hình khoá Gemini → giữ nguyên lời khuyên mặc định, không hiện "đang tạo".
+        // Chưa cấu hình khoá Gemini → giữ nguyên lời khuyên tĩnh theo mệnh, không hiện "đang tạo".
         if (!GeminiStylist.isConfigured()) {
-            binding.tvStylingTip.setText(getString(R.string.aistyle_tip_desc));
+            binding.tvStylingTip.setText(MenhCalculator.getMenhTipFallback(this, menh));
             return;
         }
 
@@ -256,7 +498,7 @@ public class AiStylingActivity extends BaseActivity {
             @Override
             public void onError() {
                 runOnUiThread(() -> {
-                    if (binding != null) binding.tvStylingTip.setText(getString(R.string.aistyle_tip_desc));
+                    if (binding != null) binding.tvStylingTip.setText(MenhCalculator.getMenhTipFallback(AiStylingActivity.this, menh));
                 });
             }
         });
@@ -277,14 +519,17 @@ public class AiStylingActivity extends BaseActivity {
         return sortByRelevance(out);
     }
 
-    /** Nhóm màu chuẩn (ColorTaxonomy) tương ứng với màu hợp từng mệnh. */
+    /** Nhóm màu chuẩn (ColorTaxonomy) tương ứng với màu hợp từng mệnh — đúng 1-1 với tag màu hiển
+     *  thị trên thẻ sản phẩm (xem color_bucket_* trong strings.xml): Kim ↔ "Trắng Bạch Ngọc", Mộc
+     *  ↔ "Xanh Lục Bảo", Thủy ↔ "Xanh Lam Ngọc Bích", Hỏa ↔ "Đỏ Cẩm Thạch", Thổ ↔ "Vàng Hổ Phách"
+     *  / "Cam Hổ Phách". */
     private static String[] menhColorBuckets(String menh) {
         if (menh == null) return new String[0];
         switch (menh) {
-            case "Kim":  return new String[]{ColorTaxonomy.TRANG, ColorTaxonomy.VANG};
-            case "Mộc":  return new String[]{ColorTaxonomy.XANH_LA, ColorTaxonomy.XANH};
-            case "Thủy": return new String[]{ColorTaxonomy.DEN, ColorTaxonomy.XANH, ColorTaxonomy.TIM};
-            case "Hỏa":  return new String[]{ColorTaxonomy.DO, ColorTaxonomy.HONG, ColorTaxonomy.CAM, ColorTaxonomy.TIM};
+            case "Kim":  return new String[]{ColorTaxonomy.TRANG};
+            case "Mộc":  return new String[]{ColorTaxonomy.XANH_LA};
+            case "Thủy": return new String[]{ColorTaxonomy.XANH};
+            case "Hỏa":  return new String[]{ColorTaxonomy.DO};
             case "Thổ":  return new String[]{ColorTaxonomy.VANG, ColorTaxonomy.CAM};
             default:     return new String[0];
         }

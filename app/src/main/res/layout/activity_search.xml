@@ -1,61 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary">
+    android:background="@color/white">
 
-    <!-- Search header -->
+    <!-- Hero đỏ: nút quay lại đè lên góc trái + rooster mark + wordmark TIREDCITY — cùng bản sắc
+         thương hiệu với hero đỏ ở màn Danh mục (fragment_styling.xml) / Chi tiết sản phẩm
+         (activity_product_detail.xml). -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@color/tc_red"
         android:gravity="center_vertical"
-        android:paddingHorizontal="8dp"
-        android:background="@color/bg_primary"
-        android:elevation="4dp">
+        android:paddingHorizontal="@dimen/tc_space_md"
+        android:paddingTop="28dp"
+        android:paddingBottom="@dimen/tc_space_md">
 
         <ImageButton
             android:id="@+id/btn_back"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back"
-            app:tint="@color/tc_espresso"
-            android:padding="10dp"
+            app:tint="@color/tc_on_red"
+            android:scaleType="centerInside"
+            android:padding="8dp"
             android:contentDescription="@string/nav_back" />
 
-        <EditText
-            android:id="@+id/et_search"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="44dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/tc_bg_search"
-            android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="8dp"
-            android:hint="@string/search_hint"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:paddingHorizontal="14dp"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_hint"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif"
-            android:layout_marginHorizontal="8dp" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-        <ImageButton
-            android:id="@+id/btn_clear"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_close"
-            android:padding="12dp"
-            android:visibility="gone"
-            android:contentDescription="@string/search_clear_all" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_tc_logo"
+                app:tint="@color/tc_on_red"
+                android:contentDescription="@string/app_name" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginTop="@dimen/tc_space_sm"
+                android:scaleType="centerCrop"
+                android:src="@drawable/logo_main"
+                android:contentDescription="@string/app_name" />
+        </LinearLayout>
+
+        <!-- Spacer để cân bằng bề rộng nút quay lại, giữ wordmark ở giữa -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="1dp" />
     </LinearLayout>
 
-    <!-- Discovery page (shown when no query): most-searched tags + suggestions -->
+    <!-- Ô tìm kiếm + giỏ hàng — nền đen, thẻ trắng bo tròn nổi bật với icon tìm kiếm đỏ, cùng
+         khuôn với hero đen ở màn Danh mục (fragment_styling.xml). -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/tc_noir"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="@dimen/tc_radius_pill"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/bg_surface"
+            app:rippleColor="@color/tc_red_pale">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/tc_red"
+                    android:contentDescription="@null" />
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/search_hint"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"
+                    android:maxLines="1"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/tc_input_hint"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif" />
+
+                <ImageButton
+                    android:id="@+id/btn_clear"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_close"
+                    android:padding="7dp"
+                    android:visibility="gone"
+                    android:contentDescription="@string/search_clear_all" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <FrameLayout
+            android:id="@+id/btn_cart_shortcut"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/tc_bg_circle_red"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/cd_cart">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_cart"
+                android:contentDescription="@null" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Discovery page (shown when no query): lịch sử + gợi ý từ khóa + sản phẩm đề xuất -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/layout_recent"
         android:layout_width="match_parent"
@@ -68,13 +156,97 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Phần 2: Được tìm kiếm nhiều nhất -->
+            <!-- Carousel banner danh mục — nền đen liền mạch với ô tìm kiếm phía trên -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/tc_noir"
+                android:paddingTop="4dp"
+                android:paddingBottom="20dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_search_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginHorizontal="20dp" />
+
+                <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                    android:id="@+id/dots_search_banner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    app:dotsColor="@color/tc_sand_light"
+                    app:selectedDotColor="@color/tc_red"
+                    app:dotsSize="6dp"
+                    app:dotsSpacing="4dp" />
+            </LinearLayout>
+
+            <!-- Tìm kiếm gần đây (ẩn nếu chưa có lịch sử) -->
+            <LinearLayout
+                android:id="@+id/layout_recent_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/search_recent"
+                        android:textAllCaps="true"
+                        android:textColor="@color/tc_red"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.02"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <TextView
+                        android:id="@+id/btn_clear_recent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:text="@string/search_clear_all"
+                        android:textColor="@color/tc_red"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_recent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    app:chipSpacingHorizontal="10dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/tc_stroke" />
+            </LinearLayout>
+
+            <!-- Gợi ý từ khóa -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/most_searched_title"
+                android:text="@string/search_suggested_keywords_title"
                 android:textAllCaps="true"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/tc_red"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.02"
@@ -84,7 +256,7 @@
                 android:paddingBottom="12dp" />
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_popular"
+                android:id="@+id/chip_group_keywords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp"
@@ -97,30 +269,42 @@
                 android:layout_marginTop="20dp"
                 android:background="@color/tc_stroke" />
 
-            <!-- Phần 3: Gợi ý cho bạn -->
+            <!-- Gợi ý cho bạn: ưu đãi + sự kiện + sản phẩm, dạng hàng ngang -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/suggested_for_you"
                 android:textAllCaps="true"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/tc_red"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.02"
                 android:fontFamily="sans-serif-medium"
                 android:paddingHorizontal="20dp"
                 android:paddingTop="20dp"
-                android:paddingBottom="4dp" />
+                android:paddingBottom="12dp" />
 
-            <!-- Phần 4: Danh sách tổng hợp (multiple view types) -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_suggestions"
+                android:id="@+id/rv_suggested_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp"
-                android:paddingBottom="20dp"
                 android:nestedScrollingEnabled="false"
                 android:clipToPadding="false" />
+
+            <TextView
+                android:id="@+id/btn_view_all_results"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/tc_bg_view_all_pill"
+                android:gravity="center"
+                android:padding="14dp"
+                android:text="@string/search_view_all_results"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -141,8 +325,7 @@
             android:textSize="13sp"
             android:paddingHorizontal="20dp"
             android:paddingVertical="12dp"
-            tools:text="Tìm thấy 12 kết quả"
-            xmlns:tools="http://schemas.android.com/tools" />
+            tools:text="Tìm thấy 12 kết quả" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
@@ -154,7 +337,6 @@
                 android:id="@+id/rv_results"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingHorizontal="8dp"
                 android:clipToPadding="false" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>

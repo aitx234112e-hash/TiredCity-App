@@ -11,7 +11,6 @@
 
     <!-- Bottom navigation (English All-Caps for Menu Bar) -->
     <string name="nav_home">HOME</string>
-    <string name="nav_shop">PRODUCTS</string>
     <string name="nav_styling">STYLING</string>
     <string name="nav_explore">EXPLORE</string>
     <string name="nav_about">ABOUT US</string>
@@ -21,7 +20,7 @@
 
     <!-- Bottom nav (nhãn ngắn) -->
     <string name="nav_short_home">Trang chủ</string>
-    <string name="nav_short_shop">Cửa hàng</string>
+    <string name="nav_short_shop">Tìm kiếm</string>
     <string name="nav_short_styling">Phối đồ</string>
     <string name="nav_short_explore">Khám phá</string>
     <string name="nav_short_about">Giới thiệu</string>
@@ -487,15 +486,33 @@
 
     <!-- Shop / Search / Category -->
     <string name="nav_back">Quay lại</string>
-    <string name="search_hint">Tìm kiếm trang phục…</string>
+    <string name="search_screen_title">Tìm kiếm</string>
+    <string name="search_hint">Tìm kiếm trang phục, phụ kiện…</string>
     <string name="search_recent">Tìm kiếm gần đây</string>
     <string name="search_clear_all">Xóa tất cả</string>
     <string name="search_popular">Tìm kiếm phổ biến</string>
+    <string name="search_suggested_keywords_title">Gợi ý từ khóa</string>
+    <string name="search_suggested_products_title">Sản phẩm đề xuất</string>
+    <string name="search_view_all_results">Xem tất cả kết quả</string>
+    <string-array name="search_recent_seed_keywords">
+        <item>Áo dài lụa tơ tằm</item>
+        <item>Nhật bình thêu tay</item>
+        <item>Phụ kiện tóc</item>
+    </string-array>
     <string name="search_empty_title">Không tìm thấy kết quả</string>
     <string name="search_empty_desc">Thử tìm kiếm với từ khóa khác</string>
     <string name="search_searching">Đang tìm…</string>
     <string name="search_result_count">Tìm thấy %1$d kết quả</string>
     <string name="search_not_found">Không tìm thấy \"%1$s\"</string>
+
+    <string-array name="search_suggested_keywords">
+        <item>Áo dài trắng</item>
+        <item>Áo dài gấm</item>
+        <item>Áo tấc nam</item>
+        <item>Nhật bình cung đình</item>
+        <item>Giao lĩnh thêu hoa</item>
+        <item>Quạt truyền thống</item>
+    </string-array>
     <string name="sort_popular">Phổ biến</string>
     <string name="sort_newest">Mới nhất</string>
     <string name="sort_price_asc">Giá tăng dần</string>
@@ -708,9 +725,11 @@
     <string name="tag_phu_kien">Phụ Kiện</string>
 
     <!-- Search suggestions -->
-    <string name="search_promo_birthday">Voucher Sinh nhật tháng 07.2026</string>
-    <string name="search_event_coach_title">COACH | CAPTURE THE MOMENT WITH COACH</string>
-    <string name="search_event_coach_time">Từ 01/07/2026 - Đến 31/07/2026</string>
+    <string name="search_promo_ao_dai_lua">Giảm 30% toàn bộ áo dài lụa</string>
+    <string name="search_promo_ao_dai_lua_title">Ưu Đãi Đặc Biệt</string>
+    <string name="search_promo_ao_dai_lua_subtitle">Giảm 30% Toàn Bộ Áo Dài Lụa</string>
+    <string name="search_event_dan_toc_tu_hao_title">Trưng bày tháng 9 | DÂN TỘC TỰ HÀO</string>
+    <string name="search_event_dan_toc_tu_hao_time">Lễ khai mạc: 16:00 - 21/09</string>
 
     <!-- Styling / Chatbot / Explore / About -->
     <string name="styling_title">Phong cách của bạn</string>
@@ -755,14 +774,131 @@
     <string name="about_hours">09:00 – 21:00 (Thứ 2 – Chủ nhật)</string>
 
     <!-- AI Styling -->
-    <string name="aistyle_palette">🎨  Bảng màu hợp mệnh</string>
+    <string name="menh_prefix">NGŨ HÀNH BẢN MỆNH</string>
+
+    <string name="aistyle_menh_title_kim">Mệnh Kim</string>
+    <string name="aistyle_menh_title_moc">Mệnh Mộc</string>
+    <string name="aistyle_menh_title_thuy">Mệnh Thủy</string>
+    <string name="aistyle_menh_title_hoa">Mệnh Hỏa</string>
+    <string name="aistyle_menh_title_tho">Mệnh Thổ</string>
+
+    <string name="aistyle_menh_desc_kim">Thanh lịch, tinh tế với sắc trắng, kem, be và ánh kim.</string>
+    <string name="aistyle_menh_desc_moc">Tươi mới, tràn đầy sức sống với sắc xanh lá, xanh rêu và nâu gỗ tự nhiên.</string>
+    <string name="aistyle_menh_desc_thuy">Sâu lắng, uyển chuyển với sắc đen huyền bí, xanh navy và tím trầm.</string>
+    <string name="aistyle_menh_desc_hoa">Nồng nhiệt, cuốn hút với sắc đỏ rực, cam ấm và hồng tươi.</string>
+    <string name="aistyle_menh_desc_tho">Vững chãi, ấm áp với sắc vàng đất, nâu trầm và be nhẹ nhàng.</string>
+
+    <string name="aistyle_colors_title">Sắc màu bản mệnh</string>
+    <string name="aistyle_colors_text_kim">Người mệnh Kim hợp với sắc trắng tinh khôi, vàng ánh kim, bạc lấp lánh và xám thanh lịch. Đây là những gam màu của sự sang trọng tối giản, không phô trương mà vẫn cuốn hút. Hãy để trắng làm nền, điểm thêm ánh vàng đồng hay bạc để tôn dáng vẻ quý phái, và hạn chế đỏ cam rực vì Hỏa khắc Kim.</string>
+    <string name="aistyle_colors_text_moc">Người mệnh Mộc hợp với sắc xanh lá tươi mát, xanh lam dịu nhẹ và xanh rêu trầm ấm. Đây là những gam màu của sức sống và sự vươn lên không ngừng. Hãy lấy xanh lá làm chủ đạo, điểm thêm xanh rêu để cân bằng, và hạn chế trắng bạc quá lạnh vì Kim khắc Mộc.</string>
+    <string name="aistyle_colors_text_thuy">Người mệnh Thủy hợp với sắc đen huyền bí, xanh navy sâu lắng và tím trầm tinh tế. Đây là những gam màu của trí tuệ và sự linh hoạt. Hãy lấy xanh navy hoặc đen làm nền, điểm nhấn bằng chút tím để thêm chiều sâu, và hạn chế vàng đất, nâu vì Thổ khắc Thủy.</string>
+    <string name="aistyle_colors_text_hoa">Người mệnh Hỏa hợp với sắc đỏ rực rỡ, hồng tươi, cam ấm và tím nồng nàn. Đây là những gam màu của nhiệt huyết và đam mê. Hãy chọn đỏ hoặc cam làm điểm nhấn nổi bật, cân bằng bằng chút hồng nhẹ, và hạn chế đen, xanh navy quá trầm vì Thủy khắc Hỏa.</string>
+    <string name="aistyle_colors_text_tho">Người mệnh Thổ hợp với sắc vàng đất ấm, nâu trầm, be nhẹ nhàng và cam nhạt dịu dàng. Đây là những gam màu của sự vững chãi và bền bỉ. Hãy lấy vàng đất hoặc nâu làm nền, điểm thêm be để mềm mại hơn, và hạn chế xanh lá đậm vì Mộc khắc Thổ.</string>
+
+    <string-array name="aistyle_colors_keywords_kim">
+        <item>trắng tinh khôi</item>
+        <item>vàng ánh kim</item>
+        <item>bạc lấp lánh</item>
+        <item>xám thanh lịch</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_moc">
+        <item>xanh lá tươi mát</item>
+        <item>xanh lam dịu nhẹ</item>
+        <item>xanh rêu trầm ấm</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_thuy">
+        <item>đen huyền bí</item>
+        <item>xanh navy sâu lắng</item>
+        <item>tím trầm tinh tế</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_hoa">
+        <item>đỏ rực rỡ</item>
+        <item>hồng tươi</item>
+        <item>cam ấm</item>
+        <item>tím nồng nàn</item>
+    </string-array>
+    <string-array name="aistyle_colors_keywords_tho">
+        <item>vàng đất ấm</item>
+        <item>nâu trầm</item>
+        <item>be nhẹ nhàng</item>
+        <item>cam nhạt dịu dàng</item>
+    </string-array>
+
+    <string name="aistyle_accessories_title">Điểm xuyết đúng mệnh</string>
+    <string name="aistyle_accessories_text_kim">Với mệnh Kim, hãy chọn phụ kiện ánh kim loại: khuyên tai bạc, dây chuyền vàng trắng, đồng hồ mặt bạc hay trâm cài tối giản. Chất liệu sáng bóng, đường nét sắc gọn sẽ tôn lên khí chất sang trọng vốn có của bạn.</string>
+    <string name="aistyle_accessories_text_moc">Với mệnh Mộc, phụ kiện từ gỗ, mây tre hay đá ngọc xanh là lựa chọn lý tưởng, như vòng gỗ trầm, túi cói, hay trâm cài khắc hoạ tiết lá cây. Chất liệu tự nhiên giúp nuôi dưỡng đúng năng lượng sinh sôi của mệnh Mộc.</string>
+    <string name="aistyle_accessories_text_thuy">Với mệnh Thủy, phụ kiện màu đen hoặc xanh navy, chất liệu mềm mại như lụa, ngọc trai hay đá obsidian sẽ tôn thêm nét bí ẩn, sâu sắc. Một vòng ngọc trai hay chiếc khăn lụa nhỏ là điểm nhấn tinh tế không thể thiếu.</string>
+    <string name="aistyle_accessories_text_hoa">Với mệnh Hỏa, hãy chọn phụ kiện sắc đỏ, cam rực hoặc ánh đồng, như vòng đá thạch anh đỏ, hoa tai bản to hay thắt lưng da nổi bật. Những chi tiết táo bạo này sẽ khơi đúng nguồn năng lượng nhiệt huyết trong bạn.</string>
+    <string name="aistyle_accessories_text_tho">Với mệnh Thổ, phụ kiện từ gốm, đất nung hay da thuộc tông nâu vàng ấm sẽ tôn thêm nét chững chạc, đáng tin cậy. Một chiếc túi da hay vòng gốm mộc mạc chính là điểm nhấn vừa vặn với khí chất vững chãi của bạn.</string>
+
+    <string-array name="aistyle_accessories_keywords_kim">
+        <item>khuyên tai bạc</item>
+        <item>dây chuyền vàng trắng</item>
+        <item>đồng hồ mặt bạc</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_moc">
+        <item>vòng gỗ trầm</item>
+        <item>túi cói</item>
+        <item>trâm cài khắc hoạ tiết lá cây</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_thuy">
+        <item>vòng ngọc trai</item>
+        <item>khăn lụa</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_hoa">
+        <item>vòng đá thạch anh đỏ</item>
+        <item>hoa tai bản to</item>
+        <item>thắt lưng da nổi bật</item>
+    </string-array>
+    <string-array name="aistyle_accessories_keywords_tho">
+        <item>túi da</item>
+        <item>vòng gốm mộc mạc</item>
+    </string-array>
+
+    <string name="aistyle_patterns_title">Hoạ tiết truyền đời</string>
+    <string name="aistyle_patterns_text_kim">Hoạ tiết mây, sóng nước cách điệu hay hình học tối giản ánh kim tuyến là lựa chọn đẹp cho mệnh Kim, vừa cổ điển vừa sang trọng. Đường nét sắc sảo, rõ ràng sẽ tôn lên sự tinh xảo vốn có trong gu thẩm mỹ của bạn.</string>
+    <string name="aistyle_patterns_text_moc">Hoạ tiết lá cây, cành hoa hay khung cảnh rừng núi xanh mát rất hợp với mệnh Mộc, gợi cảm giác tươi mới, tràn đầy sức sống. Những đường cong mềm mại, uyển chuyển như cây lá vươn mình là điểm nhấn tự nhiên nhất cho bạn.</string>
+    <string name="aistyle_patterns_text_thuy">Hoạ tiết sóng nước, vân mây hay các đường uốn lượn mềm mại là lựa chọn rất hợp mệnh Thủy, tượng trưng cho sự linh hoạt, biến hoá không ngừng. Gam màu trầm cùng đường nét uyển chuyển sẽ làm nổi bật chiều sâu nội tâm của bạn.</string>
+    <string name="aistyle_patterns_text_hoa">Hoạ tiết phượng hoàng, ngọn lửa cách điệu hay hoa văn rực rỡ nhiều lớp là điểm nhấn hoàn hảo cho mệnh Hỏa. Những đường nét bùng nổ, giàu năng lượng sẽ phản chiếu đúng ngọn lửa đam mê bên trong bạn.</string>
+    <string name="aistyle_patterns_text_tho">Hoạ tiết hình khối vuông vắn, hoa văn đất nung hay các mảng màu lớn trầm ấm rất hợp với mệnh Thổ, gợi sự chắc chắn, bền vững. Những chi tiết mộc mạc, gần gũi thiên nhiên sẽ tôn lên nét đằm thắm của bạn.</string>
+
+    <string-array name="aistyle_patterns_keywords_kim">
+        <item>Hoạ tiết mây</item>
+        <item>sóng nước cách điệu</item>
+        <item>hình học tối giản ánh kim tuyến</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_moc">
+        <item>Hoạ tiết lá cây</item>
+        <item>cành hoa</item>
+        <item>khung cảnh rừng núi xanh mát</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_thuy">
+        <item>Hoạ tiết sóng nước</item>
+        <item>vân mây</item>
+        <item>đường uốn lượn mềm mại</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_hoa">
+        <item>Hoạ tiết phượng hoàng</item>
+        <item>ngọn lửa cách điệu</item>
+        <item>hoa văn rực rỡ nhiều lớp</item>
+    </string-array>
+    <string-array name="aistyle_patterns_keywords_tho">
+        <item>Hoạ tiết hình khối vuông vắn</item>
+        <item>hoa văn đất nung</item>
+        <item>mảng màu lớn trầm ấm</item>
+    </string-array>
+
     <string name="aistyle_suggestions">✨  Gợi ý trang phục</string>
     <string name="aistyle_refresh">Làm mới</string>
-    <string name="aistyle_tips">💡  Lời khuyên phong cách</string>
-    <string name="aistyle_color_desc">Màu trắng, vàng, bạc và xám mang lại vận khí tốt cho người mệnh Kim.</string>
-    <string name="aistyle_tip_desc">Người mệnh Kim nên chọn những trang phục có gam màu sáng, đường cắt may tinh tế. Áo dài lụa trắng hoặc vàng đồng là lựa chọn hoàn hảo cho các dịp lễ trang trọng.</string>
+    <string name="aistyle_see_more">Xem thêm</string>
+    <string name="aistyle_tips">Lời khuyên phong cách</string>
+    <string name="aistyle_tip_desc_kim">Người mệnh Kim nên chọn những trang phục có gam màu sáng, đường cắt may tinh tế. Áo dài lụa trắng hoặc vàng đồng là lựa chọn hoàn hảo cho các dịp lễ trang trọng.</string>
+    <string name="aistyle_tip_desc_moc">Người mệnh Mộc nên chọn trang phục tông xanh lá tươi mát, chất liệu tự nhiên như lụa, đũi hay lanh. Áo dài xanh rêu hoặc hoạ tiết lá cây là lựa chọn lý tưởng cho những dịp cần sự tươi mới, gần gũi.</string>
+    <string name="aistyle_tip_desc_thuy">Người mệnh Thủy nên chọn trang phục tông đen, xanh navy huyền bí, chất liệu mềm rủ như lụa, voan. Áo dài đen tuyền hoặc xanh navy điểm hoạ tiết sóng nước sẽ tôn lên vẻ sâu lắng, cuốn hút của bạn.</string>
+    <string name="aistyle_tip_desc_hoa">Người mệnh Hỏa nên chọn trang phục tông đỏ, cam rực rỡ, đường cắt may táo bạo, nổi bật. Áo dài đỏ tươi hoặc cam ánh đồng là lựa chọn hoàn hảo để toả sáng trong các dịp quan trọng.</string>
+    <string name="aistyle_tip_desc_tho">Người mệnh Thổ nên chọn trang phục tông vàng đất, nâu trầm ấm áp, chất liệu bền chắc như gấm, thổ cẩm. Áo dài vàng đất hoặc nâu điểm hoạ tiết đất nung sẽ tôn lên nét chững chạc, đáng tin cậy của bạn.</string>
     <string name="aistyle_tip_loading">✨ Đang tạo lời khuyên phong cách riêng cho bạn…</string>
-    <string name="aistyle_menh_tagline">Gợi ý phong cách theo ngũ hành bản mệnh</string>
+    <string name="aistyle_your_menh_tag">MỆNH CỦA BẠN</string>
 
     <!-- Profile -->
     <string name="label_my_orders">Đơn hàng của tôi</string>

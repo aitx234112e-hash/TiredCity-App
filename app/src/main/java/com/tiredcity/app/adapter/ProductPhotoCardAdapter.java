@@ -3,23 +3,26 @@ package com.tiredcity.app.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.tiredcity.app.R;
-import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.databinding.ItemProductPhotoCardBinding;
-import com.tiredcity.app.utils.ColorTaxonomy;
-import com.tiredcity.app.utils.PriceUtils;
 import java.util.List;
 
-/** Thẻ "gợi ý trang phục" cho màn AI Styling (gợi ý theo Ngũ Hành) — ảnh không bị cắt (fitCenter)
- *  ở trên, thông tin đầy đủ (tên, chất liệu, màu, giá) trên nền kem bên dưới, cộng huy hiệu lưu
- *  yêu thích hình ngôi sao nền đỏ đè góc ảnh. Tách riêng khỏi ProductAdapter/item_product.xml vì
- *  layout ảnh khác (không cắt cứng 180dp) và không cần rating/2 dòng chữ mô tả như thẻ thường. */
+/** Thẻ "gợi ý trang phục" cho màn AI Styling (gợi ý theo Ngũ Hành) — ảnh phủ kín cả thẻ, lớp phủ
+ *  tối dần đáy, chỉ hiện tên sản phẩm (chữ trắng in hoa) + nút mũi tên tròn góc dưới-phải, giống
+ *  kiểu thẻ "poster" dùng chung với item_related_product.xml/item_styling_category.xml. Không tag
+ *  màu/giá/sao đánh giá. Mỗi thẻ có vệt sáng chéo "tráng gương" lướt 1 lần khi hiện ra. */
 public class ProductPhotoCardAdapter extends RecyclerView.Adapter<ProductPhotoCardAdapter.ViewHolder> {
+
+    private static final long SHIMMER_DURATION = 950L;
+    private static final long SHIMMER_DELAY = 160L;
+    private static final long SHIMMER_STAGGER_STEP = 45L;
+    private static final int SHIMMER_STAGGER_MAX_STEPS = 6;
 
     public interface OnProductClickListener {
         void onProductClick(Product product);
@@ -52,6 +55,25 @@ public class ProductPhotoCardAdapter extends RecyclerView.Adapter<ProductPhotoCa
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(products.get(position), listener);
+        playShine(holder, position);
+    }
+
+    /** Vệt sáng chéo lướt 1 lần từ ngoài-trái sang ngoài-phải ảnh, so le theo vị trí thẻ. */
+    private void playShine(ViewHolder holder, int position) {
+        View shine = holder.b.shineProductImage;
+        shine.animate().cancel();
+        long delay = Math.min(position, SHIMMER_STAGGER_MAX_STEPS) * SHIMMER_STAGGER_STEP;
+        shine.post(() -> {
+            int width = holder.b.getRoot().getWidth();
+            if (width <= 0) return;
+            shine.setTranslationX(-width * 0.6f);
+            shine.animate()
+                    .translationX(width * 1.3f)
+                    .setStartDelay(delay + SHIMMER_DELAY)
+                    .setDuration(SHIMMER_DURATION)
+                    .setInterpolator(new LinearInterpolator())
+                    .start();
+        });
     }
 
     @Override
@@ -61,38 +83,14 @@ public class ProductPhotoCardAdapter extends RecyclerView.Adapter<ProductPhotoCa
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final ItemProductPhotoCardBinding b;
-        private final FavoritesLocalStore favoritesStore;
 
         ViewHolder(ItemProductPhotoCardBinding binding) {
             super(binding.getRoot());
             this.b = binding;
-            this.favoritesStore = new FavoritesLocalStore(binding.getRoot().getContext());
         }
 
         void bind(Product product, OnProductClickListener listener) {
             b.tvProductName.setText(product.getName());
-            b.tvProductMaterial.setText(product.getMaterial() != null ? product.getMaterial() : "");
-            b.tvProductPrice.setText(PriceUtils.formatVnd(product.getEffectivePrice()));
-
-            String colorTag = ColorTaxonomy.primaryTag(product.getColors());
-            if (colorTag != null) {
-                colorTag = ColorTaxonomy.displayName(itemView.getContext(), colorTag);
-            } else if (product.getColors() != null && !product.getColors().isEmpty()) {
-                colorTag = product.getColors().get(0);
-            }
-            if (colorTag != null) {
-                b.tvColorTag.setVisibility(View.VISIBLE);
-                b.tvColorTag.setText(colorTag);
-            } else {
-                b.tvColorTag.setVisibility(View.GONE);
-            }
-
-            if (product.getDiscount() > 0) {
-                b.tvDiscount.setVisibility(View.VISIBLE);
-                b.tvDiscount.setText("-" + product.getDiscount() + "%");
-            } else {
-                b.tvDiscount.setVisibility(View.GONE);
-            }
 
             String imageUrl = product.getFirstImage();
             if (!imageUrl.isEmpty()) {
@@ -109,13 +107,6 @@ public class ProductPhotoCardAdapter extends RecyclerView.Adapter<ProductPhotoCa
                         b.ivProductImage.getContext().getColor(R.color.bg_subtle));
                 b.ivProductImage.setImageDrawable(null);
             }
-
-            b.ibSave.setSaved(favoritesStore.isFavorite(product.getId()), false);
-            b.ibSave.setOnClickListener(v -> {
-                if (product.getId() == null) return;
-                boolean nowSaved = favoritesStore.toggleFavorite(product);
-                b.ibSave.setSaved(nowSaved, true);
-            });
 
             b.getRoot().setOnClickListener(v -> {
                 if (listener != null) listener.onProductClick(product);

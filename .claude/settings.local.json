@@ -424,7 +424,30 @@
       "Bash(MSYS_NO_PATHCONV=1 /c/Users/Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe shell screencap -p /sdcard/u3.png)",
       "Bash(MSYS_NO_PATHCONV=1 /c/Users/Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe pull /sdcard/u3.png C:/Users/Acer/AppData/Local/Temp/claude/D--TiredCity-App-main-TiredCity-App-main/a7d6d5d5-14de-4860-84b2-d0e118dc23bb/scratchpad/u3.png)",
       "Bash(MSYS_NO_PATHCONV=1 /c/Users/Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe shell screencap -p /sdcard/u5.png)",
-      "Bash(MSYS_NO_PATHCONV=1 /c/Users/Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe pull /sdcard/u5.png C:/Users/Acer/AppData/Local/Temp/claude/D--TiredCity-App-main-TiredCity-App-main/a7d6d5d5-14de-4860-84b2-d0e118dc23bb/scratchpad/u5.png)"
+      "Bash(MSYS_NO_PATHCONV=1 /c/Users/Acer/AppData/Local/Android/Sdk/platform-tools/adb.exe pull /sdcard/u5.png C:/Users/Acer/AppData/Local/Temp/claude/D--TiredCity-App-main-TiredCity-App-main/a7d6d5d5-14de-4860-84b2-d0e118dc23bb/scratchpad/u5.png)",
+      "Bash(ls \"/c/Users/ADMIN/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj/gradle-9.4.1/bin\" 2>&1)",
+      "Bash(ls \"/c/Program Files/Android/Android Studio/jbr\" 2>&1)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/25d5d516-4b7c-4702-ac86-abb9ec237d17.png\" menh_kim_gallery_1.png)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/8deb73246325165.69c249b8b86e8.jpg\" menh_kim_gallery_2.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/ffd6d2158271851.638863e458fe3.jpg\" menh_kim_gallery_3.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/fecc1d146668787.62b459e3e6f5d.jpg\" menh_kim_gallery_4.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/pattern1.jpg\" menh_kim_patterns_1.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/pattern2.jpg\" menh_kim_patterns_2.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/25d5d516-4b7c-4702-ac86-abb9ec237d17.png\" menh_kim_accessories_1.png)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/8deb73246325165.69c249b8b86e8.jpg\" menh_kim_accessories_2.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh kim/fecc1d146668787.62b459e3e6f5d.jpg\" menh_kim_accessories_3.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh thổ/color.jpg\" menh_tho_colors_1.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh thổ/color1.jpg\" menh_tho_colors_2.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh thổ/f8b689158425359.638b4b0ceee1b.jpg\" menh_tho_accessories_1.jpg)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh thổ/c7ffe5125951713.6123dd793766e.png\" menh_tho_accessories_2.png)",
+      "Bash(cp \"D:/banner cung mệnh/mệnh thổ/8e9ca8125951713.6123dd777860b.jpg\" menh_tho_patterns_1.jpg)",
+      "Bash(python -c \"import PIL; print\\(PIL.__version__\\)\")",
+      "Bash(PYTHONIOENCODING=utf-8 python -)",
+      "Bash(rm -f menh_thuy_patterns_4.gif)",
+      "Bash(cp '__TRACKED_VAR__/mệnh thuỷ/pattern.gif' menh_thuy_patterns_4.gif)",
+      "Bash(./gradlew :app:compileDebugJavaWithJavac -q)",
+      "Bash(python -c \"import json; json.load\\(open\\('.claude/settings.local.json', encoding='utf-8'\\)\\); print\\('JSON OK'\\)\")",
+      "Bash(git checkout *)"
     ]
   }
 }
