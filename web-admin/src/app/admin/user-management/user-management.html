@@ -104,9 +104,9 @@
           <!-- Normal view -->
           <td *ngIf="editingUserId !== user._id">
             <div class="user-cell">
-              <div class="user-avatar">{{ user.profileName?.charAt(0)?.toUpperCase() }}</div>
+              <div class="user-avatar">{{ (user.profileName || user.fullName || user.name || 'U').charAt(0).toUpperCase() }}</div>
               <div class="user-info">
-                <span class="user-name">{{ user.profileName }}</span>
+                <span class="user-name">{{ user.profileName || user.fullName || user.name || user.email || 'Chưa đặt tên' }}</span>
               </div>
             </div>
           </td>

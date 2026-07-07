@@ -49,21 +49,21 @@ public final class RowFormatter {
         double discount = DocUtils.num(d, "discount");
         String subtitle = (dept.isEmpty() ? "" : dept + " • ") + "Tồn: " + (long) stock;
         String badge = discount > 0 ? "-" + (long) discount + "%" : null;
-        return new Row(name.isEmpty() ? "(Chưa đặt tên)" : name, subtitle, DocUtils.money(price), badge, R.color.st_danger);
+        return new Row(name.isEmpty() ? "(Chưa đặt tên)" : name, subtitle, DocUtils.money(price), badge, R.color.st_danger)
+                .withSearchData(d.getId() + " " + DocUtils.str(d, "product_dept", "material", "description"));
     }
 
     private static Row order(Context ctx, DocumentSnapshot d) {
-        String orderId = DocUtils.str(d, "orderID", "id");
-        String shortId = (orderId.isEmpty() ? d.getId() : orderId);
-        if (shortId.length() > 8) shortId = shortId.substring(shortId.length() - 8);
-        String userName = DocUtils.str(d, "userName");
+        String orderId = DocUtils.str(d, "orderID", "id", "orderCode");
+        String userName = DocUtils.str(d, "userName", "fullName", "name");
         String date = DocUtils.date(d, "createdAt");
         double total = DocUtils.num(d, "totalPrice", "total", "amount");
         String status = DocUtils.str(d, "status");
 
-        String title = "Đơn #" + shortId;
+        String title = "Đơn " + (orderId.startsWith("TC-") ? orderId : "#" + (orderId.length() > 8 ? orderId.substring(orderId.length() - 8) : orderId));
         String subtitle = (userName.isEmpty() ? "Khách hàng" : userName) + (date.isEmpty() ? "" : " • " + date);
-        return new Row(title, subtitle, DocUtils.money(total), orderStatusLabel(ctx, status), orderStatusColor(status));
+        return new Row(title, subtitle, DocUtils.money(total), orderStatusLabel(ctx, status), orderStatusColor(status))
+                .withSearchData(d.getId() + " " + orderId + " " + DocUtils.str(d, "phone", "email", "trackingCode", "shippingAddress", "note"));
     }
 
     public static String orderStatusLabel(Context ctx, String status) {
@@ -91,7 +91,7 @@ public final class RowFormatter {
     }
 
     private static Row user(Context ctx, DocumentSnapshot d) {
-        String name = DocUtils.str(d, "fullName", "profileName", "email");
+        String name = DocUtils.str(d, "fullName", "profileName", "email", "name");
         String email = DocUtils.str(d, "email");
         String phone = DocUtils.str(d, "phone");
         String role = DocUtils.str(d, "role");
@@ -100,7 +100,8 @@ public final class RowFormatter {
         String subtitle = email + (phone.isEmpty() ? "" : " • " + phone);
         int color = "superadmin".equals(role) ? R.color.st_danger
                 : "admin".equals(role) ? R.color.st_info : R.color.st_neutral;
-        return new Row(name.isEmpty() ? "(Chưa đặt tên)" : name, subtitle, "", role, color);
+        return new Row(name.isEmpty() ? "(Chưa đặt tên)" : name, subtitle, "", role, color)
+                .withSearchData(d.getId() + " " + email + " " + phone);
     }
 
     private static Row voucher(Context ctx, DocumentSnapshot d) {
@@ -193,17 +194,27 @@ public final class RowFormatter {
     }
 
     private static Row feedback(Context ctx, DocumentSnapshot d) {
-        String name = DocUtils.str(d, "fullName");
-        String message = DocUtils.str(d, "message");
+        String name = DocUtils.str(d, "fullName", "name", "userName");
+        String email = DocUtils.str(d, "email");
         String phone = DocUtils.str(d, "phone");
+        String message = DocUtils.str(d, "message");
         boolean replied = Boolean.TRUE.equals(d.getBoolean("replied"));
-        return new Row(name.isEmpty() ? "(Ẩn danh)" : name, message, phone,
-                replied ? ctx.getString(R.string.feedback_replied) : ctx.getString(R.string.feedback_pending),
-                replied ? R.color.st_success : R.color.st_pending);
+
+        String title = name;
+        if (title.isEmpty()) title = email;
+        if (title.isEmpty()) title = "(Ẩn danh)";
+
+        String meta = phone;
+        if (meta.isEmpty() && !email.equals(title)) meta = email;
+
+        return new Row(title, message, meta,
+                replied ? "Đã phản hồi" : "Chờ xử lý",
+                replied ? R.color.st_success : R.color.st_pending)
+                .withSearchData(name + " " + email + " " + phone + " " + message + " " + DocUtils.str(d, "adminReply"));
     }
 
     private static Row review(Context ctx, DocumentSnapshot d) {
-        String name = DocUtils.str(d, "userName");
+        String name = DocUtils.str(d, "userName", "fullName", "name");
         String comment = DocUtils.str(d, "comment");
         String product = DocUtils.str(d, "productId");
         double rating = DocUtils.num(d, "rating");

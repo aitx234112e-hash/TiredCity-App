@@ -1,166 +1,135 @@
-import { Injectable, inject, Injector, runInInjectionContext } from '@angular/core';
+import { Injectable, inject, NgZone, Injector, runInInjectionContext } from '@angular/core';
 import { Observable, from, map } from 'rxjs';
-import { Firestore, collection, getDocs, getDoc, addDoc, deleteDoc, updateDoc, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, query, orderBy, limit, doc, addDoc, updateDoc, deleteDoc, getDoc, setDoc, onSnapshot } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class AdminApiService {
   private firestore = inject(Firestore);
+  private zone = inject(NgZone);
   private injector = inject(Injector);
 
-  /** Chạy lời gọi Firestore trong injection context để tránh destabilize change-detection */
   private inCtx<T>(fn: () => Promise<T>): Observable<T> {
     return from(runInInjectionContext(this.injector, fn));
   }
 
-  private count(name: string): Observable<number> {
-    return this.inCtx(() => getDocs(collection(this.firestore, name))).pipe(map((s) => s.size));
+  /** Luồng dữ liệu đơn hàng thời gian thực */
+  getOrders(): Observable<any[]> {
+    const col = collection(this.firestore, 'orders');
+    return collectionData(col, { idField: '_id' }).pipe(map(list => list || []));
   }
 
-  private ordersData(): Observable<any[]> {
-    return this.inCtx(() => getDocs(collection(this.firestore, 'orders'))).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
-    );
+  getOrdersRealtime(callback: (data: any[]) => void) {
+    return onSnapshot(collection(this.firestore, 'orders'), (snap) => {
+      this.zone.run(() => {
+        const list = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        callback(list);
+      });
+    });
+  }
+
+  getCollectionCount(path: string, callback: (count: number) => void) {
+    return onSnapshot(collection(this.firestore, path), (snap) => {
+      this.zone.run(() => callback(snap.size));
+    });
   }
 
   getUserCount(): Observable<{ count: number }> {
-    return this.count('users').pipe(map((count) => ({ count })));
+    return collectionData(collection(this.firestore, 'users')).pipe(map(s => ({ count: s.length })));
   }
 
   getOrderCount(): Observable<{ count: number }> {
-    return this.count('orders').pipe(map((count) => ({ count })));
+    return this.getOrders().pipe(map(s => ({ count: s.length })));
   }
 
   getProductCount(): Observable<{ count: number }> {
-    return this.count('products').pipe(map((count) => ({ count })));
+    return collectionData(collection(this.firestore, 'products')).pipe(map(s => ({ count: s.length })));
   }
 
   getRevenue(): Observable<{ revenue: number }> {
-    return this.ordersData().pipe(
-      map((orders) => ({
-        revenue: orders.reduce(
-          (sum, o) => sum + (Number(o.total ?? o.totalPrice ?? o.amount ?? 0) || 0),
-          0
-        ),
+    return this.getOrders().pipe(
+      map(orders => ({
+        revenue: orders
+          .filter(o => o.status === 'DELIVERED' || o.isPaid)
+          .reduce((sum, o) => sum + (Number(o.totalPrice || 0)), 0)
       }))
     );
   }
 
   getActivities(): Observable<Array<any>> {
-    return this.ordersData().pipe(
-      map((list) =>
-        list.slice(0, 6).map((o) => ({
-          timestamp: o.createdAt || o.created_at || new Date(),
-          description: `Order ${o._id || ''} status: ${o.status || '—'}`,
-        }))
-      )
+    return this.getOrders().pipe(
+      map(list => list.slice(0, 6).map(o => ({
+        timestamp: o.createdAt || new Date().toISOString(),
+        description: `Đơn hàng ${o.orderCode || o._id} — Trạng thái: ${o.status}`
+      })))
     );
   }
 
   getRecentOrders(): Observable<Array<any>> {
-    return this.ordersData().pipe(map((list) => list.slice(0, 8)));
+    const q = query(collection(this.firestore, 'orders'), orderBy('createdAt', 'desc'), limit(8));
+    return collectionData(q, { idField: '_id' });
   }
 
-  /** Toàn bộ đơn hàng (cho trang Doanh thu) */
-  getOrders(): Observable<any[]> {
-    return this.ordersData();
-  }
-
-  /** Danh sách sự kiện từ collection 'events' */
-  getEvents(): Observable<any[]> {
-    return this.inCtx(() => getDocs(collection(this.firestore, 'events'))).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
-    );
-  }
-
-  addEvent(data: any): Observable<string> {
-    return this.inCtx(() => addDoc(collection(this.firestore, 'events'), data)).pipe(
-      map((ref) => ref.id)
-    );
-  }
-
-  updateEvent(id: string, data: any): Observable<void> {
-    return this.inCtx(() => updateDoc(doc(this.firestore, 'events', id), data));
-  }
-
-  deleteEvent(id: string): Observable<void> {
-    return this.inCtx(() => deleteDoc(doc(this.firestore, 'events', id)));
-  }
-
-  /** Voucher / mã giảm giá — collection 'vouchers' */
-  getVouchers(): Observable<any[]> {
-    return this.inCtx(() => getDocs(collection(this.firestore, 'vouchers'))).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
-    );
-  }
-
-  addVoucher(data: any): Observable<string> {
-    return this.inCtx(() => addDoc(collection(this.firestore, 'vouchers'), data)).pipe(
-      map((ref) => ref.id)
-    );
-  }
-
-  updateVoucher(id: string, data: any): Observable<void> {
-    return this.inCtx(() => updateDoc(doc(this.firestore, 'vouchers', id), data));
-  }
-
-  deleteVoucher(id: string): Observable<void> {
-    return this.inCtx(() => deleteDoc(doc(this.firestore, 'vouchers', id)));
-  }
-
-  /** Chưa dùng Storage — mã hoá ảnh thành data URL (base64) lưu trực tiếp vào Firestore */
-  uploadImage(file: File): Observable<{ imageUrl: string }> {
-    return new Observable((observer) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        observer.next({ imageUrl: reader.result as string });
-        observer.complete();
-      };
-      reader.onerror = (err) => observer.error(err);
-      reader.readAsDataURL(file);
+  getRecentOrdersRealtime(callback: (data: any[]) => void) {
+    const q = query(collection(this.firestore, 'orders'), orderBy('createdAt', 'desc'), limit(8));
+    return onSnapshot(q, (snap) => {
+      this.zone.run(() => {
+        const list = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        callback(list);
+      });
     });
   }
 
-  /** Phương thức vận chuyển — collection 'shipping' */
-  getShippingMethods(): Observable<any[]> {
-    return this.inCtx(() => getDocs(collection(this.firestore, 'shipping'))).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
-    );
+  /** Khôi phục các hàm lấy danh sách User và Product cho Dashboard */
+  getUsers(): Observable<any[]> {
+    return collectionData(collection(this.firestore, 'users'), { idField: '_id' });
   }
 
-  addShippingMethod(data: any): Observable<string> {
-    return this.inCtx(() => addDoc(collection(this.firestore, 'shipping'), data)).pipe(
-      map((ref) => ref.id)
-    );
+  getProducts(): Observable<any[]> {
+    return collectionData(collection(this.firestore, 'products'), { idField: '_id' });
   }
 
-  updateShippingMethod(id: string, data: any): Observable<void> {
-    return this.inCtx(() => updateDoc(doc(this.firestore, 'shipping', id), data));
+  // --- Khôi phục các hàm bị thiếu ---
+  getEvents(): Observable<any[]> {
+    return collectionData(collection(this.firestore, 'events'), { idField: '_id' });
   }
-
-  deleteShippingMethod(id: string): Observable<void> {
-    return this.inCtx(() => deleteDoc(doc(this.firestore, 'shipping', id)));
+  addEvent(data: any): Observable<string> {
+    return from(addDoc(collection(this.firestore, 'events'), data)).pipe(map(ref => ref.id));
   }
-
-  /** Cấu hình SPX Express — collection 'shipping_configs', 3 doc id cố định: economy / standard / express */
+  updateEvent(id: string, data: any): Observable<void> {
+    return from(updateDoc(doc(this.firestore, 'events', id), data));
+  }
+  deleteEvent(id: string): Observable<void> {
+    return from(deleteDoc(doc(this.firestore, 'events', id)));
+  }
+  getVouchers(): Observable<any[]> {
+    return collectionData(collection(this.firestore, 'vouchers'), { idField: '_id' });
+  }
+  addVoucher(data: any): Observable<string> {
+    return from(addDoc(collection(this.firestore, 'vouchers'), data)).pipe(map(ref => ref.id));
+  }
+  updateVoucher(id: string, data: any): Observable<void> {
+    return from(updateDoc(doc(this.firestore, 'vouchers', id), data));
+  }
+  deleteVoucher(id: string): Observable<void> {
+    return from(deleteDoc(doc(this.firestore, 'vouchers', id)));
+  }
   getShippingConfigs(): Observable<any[]> {
-    return this.inCtx(() => getDocs(collection(this.firestore, 'shipping_configs'))).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) })))
-    );
+    return collectionData(collection(this.firestore, 'shipping_configs'), { idField: '_id' });
   }
-
-  /** Ghi đè 1 gói cước theo id cố định (merge để không xoá trường khác). */
   saveShippingConfig(id: string, data: any): Observable<void> {
-    return this.inCtx(() => setDoc(doc(this.firestore, 'shipping_configs', id), data, { merge: true }));
+    return from(setDoc(doc(this.firestore, 'shipping_configs', id), data, { merge: true }));
   }
-
-  /** Thiết lập chung vận chuyển — doc cố định 'shipping_settings/general' (kho lấy hàng, freeship, ghi chú shipper). */
   getShippingSettings(): Observable<any | null> {
-    return this.inCtx(() => getDoc(doc(this.firestore, 'shipping_settings', 'general'))).pipe(
-      map((snap) => (snap.exists() ? { ...(snap.data() as any) } : null))
-    );
+    return from(getDoc(doc(this.firestore, 'shipping_settings', 'general'))).pipe(map(s => s.exists() ? s.data() : null));
   }
-
   saveShippingSettings(data: any): Observable<void> {
-    return this.inCtx(() => setDoc(doc(this.firestore, 'shipping_settings', 'general'), data, { merge: true }));
+    return from(setDoc(doc(this.firestore, 'shipping_settings', 'general'), data, { merge: true }));
+  }
+  uploadImage(file: File): Observable<{ imageUrl: string }> {
+    return new Observable((observer) => {
+      const reader = new FileReader();
+      reader.onload = () => { observer.next({ imageUrl: reader.result as string }); observer.complete(); };
+      reader.readAsDataURL(file);
+    });
   }
 }

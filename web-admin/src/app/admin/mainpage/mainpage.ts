@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -17,7 +17,6 @@ export class Mainpage implements OnInit {
   profileName: string = '';
   today: string = '';
 
-  // Stats (loaded from admin APIs)
   totalUsers: number = 0;
   totalOrders: number = 0;
   totalProducts: number = 0;
@@ -29,7 +28,9 @@ export class Mainpage implements OnInit {
   constructor(
     private router: Router,
     private adminApi: AdminApiService,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -41,18 +42,42 @@ export class Mainpage implements OnInit {
   }
 
   loadAdminStats() {
-    this.adminApi.getUserCount().subscribe({ next: res => this.totalUsers = res?.count || 0, error: () => this.totalUsers = 0 });
-    this.adminApi.getOrderCount().subscribe({ next: res => this.totalOrders = res?.count || 0, error: () => this.totalOrders = 0 });
-    this.adminApi.getProductCount().subscribe({ next: res => this.totalProducts = res?.count || 0, error: () => this.totalProducts = 0 });
-    this.adminApi.getRevenue().subscribe({ next: res => this.revenue = res?.revenue || 0, error: () => this.revenue = 0 });
+    this.adminApi.getUsers().subscribe((users: any[]) => {
+      this.zone.run(() => { this.totalUsers = users.length; this.cdr.detectChanges(); });
+    });
+    this.adminApi.getProducts().subscribe((products: any[]) => {
+      this.zone.run(() => { this.totalProducts = products.length; this.cdr.detectChanges(); });
+    });
+    this.adminApi.getOrders().subscribe((orders: any[]) => {
+      this.zone.run(() => {
+        this.totalOrders = orders.length;
+        this.revenue = orders
+          .filter(o => o.status === 'DELIVERED' || o.isPaid === true)
+          .reduce((sum, o) => sum + (Number(o.totalPrice || 0)), 0);
+        this.cdr.detectChanges();
+      });
+    });
   }
 
   loadActivities() {
-    this.adminApi.getActivities().subscribe({ next: (a) => this.activities = a || [], error: () => this.activities = [] });
+    this.adminApi.getRecentOrders().subscribe((orders: any[]) => {
+      this.zone.run(() => {
+        this.activities = orders.slice(0, 6).map(o => ({
+          timestamp: o.createdAt || new Date().toISOString(),
+          description: `Đơn hàng ${o.orderCode || o._id.substring(0,8)} — Trạng thái: ${o.status}`
+        }));
+        this.cdr.detectChanges();
+      });
+    });
   }
 
   loadRecentOrders() {
-    this.adminApi.getRecentOrders().subscribe({ next: (o) => this.recentOrders = o || [], error: () => this.recentOrders = [] });
+    this.adminApi.getRecentOrders().subscribe((orders: any[]) => {
+      this.zone.run(() => {
+        this.recentOrders = orders;
+        this.cdr.detectChanges();
+      });
+    });
   }
 
   formatCurrency(v: number) {

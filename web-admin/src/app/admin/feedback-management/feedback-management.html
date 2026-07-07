@@ -101,10 +101,10 @@
           <td class="td-num">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
           <td class="td-customer">
             <div class="customer-cell">
-              <div class="customer-avatar">{{ f.fullName?.charAt(0)?.toUpperCase() }}</div>
+              <div class="customer-avatar">{{ (f.fullName || f.name || f.userName || f.email || 'A').charAt(0).toUpperCase() }}</div>
               <div class="customer-info">
-                <span class="customer-name">{{ f.fullName }}</span>
-                <span class="customer-email">{{ f.email }}</span>
+                <span class="customer-name">{{ f.fullName || f.name || f.userName || f.email || 'Ẩn danh' }}</span>
+                <span class="customer-email" *ngIf="f.email && (f.fullName || f.name || f.userName)">{{ f.email }}</span>
                 <span class="customer-phone" *ngIf="f.phone">{{ f.phone }}</span>
               </div>
             </div>
@@ -164,10 +164,10 @@
       </div>
       <div class="modal-body" *ngIf="selectedFeedback">
         <div class="detail-row">
-          <label>Họ tên</label>
-          <span>{{ selectedFeedback.fullName }}</span>
+          <label>Khách hàng</label>
+          <span>{{ selectedFeedback.fullName || selectedFeedback.name || selectedFeedback.userName || 'Ẩn danh' }}</span>
         </div>
-        <div class="detail-row">
+        <div class="detail-row" *ngIf="selectedFeedback.email">
           <label>Email</label>
           <span>{{ selectedFeedback.email }}</span>
         </div>
@@ -183,14 +183,19 @@
           </span>
         </div>
         <div class="detail-message">
-          <label>Nội dung phản hồi</label>
+          <label>Nội dung phản hồi từ khách hàng</label>
           <div class="message-content">{{ selectedFeedback.message }}</div>
+        </div>
+        <div class="detail-message" style="margin-top: 20px;">
+          <label>Phản hồi của Admin</label>
+          <textarea [(ngModel)]="adminReply" class="admin-reply-textarea"
+                    placeholder="Nhập nội dung phản hồi cho khách hàng..."></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-form btn-mark" *ngIf="!selectedFeedback?.replied" (click)="markReplied(selectedFeedback!)">
+        <button class="btn-form btn-mark" (click)="markReplied(selectedFeedback!)">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Đánh dấu đã phản hồi
+          {{ selectedFeedback?.replied ? 'Cập nhật phản hồi' : 'Gửi phản hồi' }}
         </button>
         <button class="btn-form btn-delete-modal" (click)="confirmDelete(selectedFeedback!)">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -211,7 +216,7 @@
         </div>
       </div>
       <div class="modal-body">
-        <p class="confirm-text">Bạn có chắc chắn muốn xóa phản hồi của <strong>{{ deletingFeedback?.fullName }}</strong>? Hành động này không thể hoàn tác.</p>
+        <p class="confirm-text">Bạn có chắc chắn muốn xóa phản hồi của <strong>{{ deletingFeedback?.fullName || deletingFeedback?.name || deletingFeedback?.email || 'khách hàng này' }}</strong>? Hành động này không thể hoàn tác.</p>
       </div>
       <div class="modal-footer">
         <button class="btn-form btn-delete-modal" (click)="doDelete()">

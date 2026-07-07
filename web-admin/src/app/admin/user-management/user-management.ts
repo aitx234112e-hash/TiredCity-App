@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserApiService } from '../../user-api.service';
@@ -46,9 +46,12 @@ export class UserManagement implements OnInit {
   constructor(
     private userService: UserApiService,
     private addressService: AddressService,
-    private audit: AuditService
+    private audit: AuditService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {}
 
+  // ... (giữ nguyên các hàm toggleDisable, countByRole, formatAddress)
   // Vô hiệu hoá / kích hoạt lại tài khoản
   toggleDisable(user: any) {
     const next = !user.disabled;
@@ -57,10 +60,13 @@ export class UserManagement implements OnInit {
 
     this.userService.updateUser(user._id, { ...user, disabled: next }).subscribe({
       next: () => {
-        user.disabled = next;
-        this.audit.log(next ? 'user.disable' : 'user.enable', user.profileName || user.email || user._id, '');
-        this.successMsg = next ? 'Đã vô hiệu hoá tài khoản.' : 'Đã kích hoạt lại tài khoản.';
-        this.clearMsg();
+        this.zone.run(() => {
+            user.disabled = next;
+            this.audit.log(next ? 'user.disable' : 'user.enable', user.profileName || user.email || user._id, '');
+            this.successMsg = next ? 'Đã vô hiệu hoá tài khoản.' : 'Đã kích hoạt lại tài khoản.';
+            this.clearMsg();
+            this.cdr.detectChanges();
+        });
       },
       error: () => {
         this.errorMsg = 'Thao tác thất bại. Vui lòng thử lại.';
@@ -77,7 +83,6 @@ export class UserManagement implements OnInit {
     return this.users.filter(u => (u.role || 'user') === role).length;
   }
 
-  // Template wrapper to format address consistently
   formatAddress(addr: any): string {
     return this.addressService.formatAddress(addr) || '-';
   }
@@ -87,54 +92,44 @@ export class UserManagement implements OnInit {
     this.loading = true;
     this.userService.getUsers().subscribe({
       next: (data: any) => {
-        this.users = data;
-      // for each user, attempt to fetch their address(es) from AddressService
-      // and attach a formatted address string to display in the table
-      (this.users || []).forEach((u: any) => {
-        if (!u) return;
-        try {
-          this.addressService.getAddressByUser(u._id).subscribe({
-            next: (addrRes: any) => {
-              // addrRes may be an array or single object
-              const addrObj = Array.isArray(addrRes) ? (addrRes[0] || null) : (addrRes || null);
-              u._shippingAddressObj = addrObj;
-              const formatted = this.addressService.formatAddress(addrObj);
-              u._formattedAddress = formatted || (u.address || '');
-            },
-            error: (err) => {
-              // fallback: keep existing user.address
+        this.zone.run(() => {
+          this.users = data;
+          (this.users || []).forEach((u: any) => {
+            if (!u) return;
+            try {
+              this.addressService.getAddressByUser(u._id).subscribe({
+                next: (addrRes: any) => {
+                  const addrObj = Array.isArray(addrRes) ? (addrRes[0] || null) : (addrRes || null);
+                  u._shippingAddressObj = addrObj;
+                  const formatted = this.addressService.formatAddress(addrObj);
+                  u._formattedAddress = formatted || (u.address || '');
+                  this.cdr.detectChanges();
+                },
+                error: () => {
+                  u._formattedAddress = u.address || '';
+                  this.cdr.detectChanges();
+                }
+              });
+            } catch (e) {
               u._formattedAddress = u.address || '';
             }
           });
-        } catch (e) {
-          u._formattedAddress = u.address || '';
-        }
-      });
-      // Debug: show sample of address-related fields so we can confirm shape
-      try {
-        console.log('UserManagement.loadUsers - users sample:', (data || []).slice(0,5).map((u: any) => ({
-          _id: u._id,
-          profileName: u.profileName,
-          address_field: u.address,
-          shippingAddress: (u as any).shippingAddress || null,
-          addresses: (u as any).addresses || null
-        })));
-      } catch (e) {
-        console.log('UserManagement.loadUsers - preview failed', e);
+
+          this.filteredUsers = [...this.users];
+          this.currentPage = 1;
+          this.totalPages = Math.ceil(this.filteredUsers.length / this.pageSize);
+          this.updatePagination();
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        this.zone.run(() => {
+          this.loading = false;
+          this.errorMsg = 'Lỗi tải dữ liệu người dùng.';
+          this.cdr.detectChanges();
+        });
       }
-      this.filteredUsers = [...this.users];
-      this.currentPage = 1;
-      this.totalPages = Math.ceil(this.filteredUsers.length / this.pageSize);
-      this.updatePagination();
-      this.loading = false;
-    },
-    error: (err) => {
-      this.loading = false;
-      this.errorMsg = err.status === 0
-        ? 'Không thể kết nối server.'
-        : `Lỗi tải dữ liệu (${err.status})`;
-      this.clearMsg();
-    }
     });
   }
 

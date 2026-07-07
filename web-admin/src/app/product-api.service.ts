@@ -1,16 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, BehaviorSubject, from, map } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 import {
   Firestore,
   collection,
   doc,
-  getDoc,
-  getDocs,
   addDoc,
   updateDoc,
   deleteDoc,
-  query,
-  where,
+  collectionData,
 } from '@angular/fire/firestore';
 import { Product } from './models/product';
 
@@ -21,24 +18,10 @@ export class ProductApiService {
   private firestore = inject(Firestore);
   private col = collection(this.firestore, 'products');
 
-  private currentProduct = new BehaviorSubject<any>(null);
-  currentProduct$ = this.currentProduct.asObservable();
-
+  /** Lấy danh sách sản phẩm thời gian thực */
   getProducts(): Observable<Product[]> {
-    return from(getDocs(this.col)).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) }) as Product))
-    );
-  }
-
-  getProduct(id: string): Observable<Product> {
-    return from(getDoc(doc(this.firestore, 'products', id))).pipe(
-      map((snap) => ({ _id: snap.id, ...(snap.data() as any) }) as Product)
-    );
-  }
-
-  getProductsByCategory(category: string): Observable<Product[]> {
-    return from(getDocs(query(this.col, where('product_dept', '==', category)))).pipe(
-      map((snap) => snap.docs.map((d) => ({ _id: d.id, ...(d.data() as any) }) as Product))
+    return collectionData(this.col, { idField: '_id' }).pipe(
+      map(list => (list || []) as Product[])
     );
   }
 
@@ -58,27 +41,11 @@ export class ProductApiService {
     return from(deleteDoc(doc(this.firestore, 'products', id)));
   }
 
-  /**
-   * Chưa dùng Firebase Storage — mã hoá ảnh thành data URL (base64) lưu trực tiếp vào Firestore.
-   * Nếu cần Storage thật, thay bằng uploadBytes + getDownloadURL của @angular/fire/storage.
-   */
   uploadImage(file: File): Observable<{ fileName: string; imageUrl: string }> {
     return new Observable((observer) => {
       const reader = new FileReader();
-      reader.onload = () => {
-        observer.next({ fileName: file.name, imageUrl: reader.result as string });
-        observer.complete();
-      };
-      reader.onerror = (err) => observer.error(err);
+      reader.onload = () => { observer.next({ fileName: file.name, imageUrl: reader.result as string }); observer.complete(); };
       reader.readAsDataURL(file);
     });
-  }
-
-  setCurrentProduct(product: any) {
-    this.currentProduct.next(product);
-  }
-
-  getCurrentProduct() {
-    return this.currentProduct$;
   }
 }
