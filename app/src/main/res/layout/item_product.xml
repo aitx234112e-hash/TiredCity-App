@@ -5,6 +5,7 @@
      Chiều cao ảnh do ProductAdapter set theo số cột đang chọn (setSpanCount). -->
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fl_image"
     android:layout_width="match_parent"
