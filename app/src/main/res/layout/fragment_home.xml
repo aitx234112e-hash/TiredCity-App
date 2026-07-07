@@ -20,6 +20,7 @@
 
         <!-- ═══════════ KHỐI MỞ MÀN — NỀN KEM (sáng) / ĐEN (tối), FULL-BLEED ═══════════ -->
         <LinearLayout
+            android:id="@+id/home_top_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

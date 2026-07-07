@@ -36,6 +36,7 @@ import com.tiredcity.app.data.model.UserProfile;
 import com.tiredcity.app.databinding.FragmentHomeBinding;
 import com.tiredcity.app.ui.styling.AiStylingActivity;
 import com.tiredcity.app.ui.styling.ChatBotActivity;
+import com.tiredcity.app.utils.EdgeToEdgeUtils;
 import com.tiredcity.app.utils.LocaleHelper;
 import com.tiredcity.app.utils.MenhCalculator;
 import com.tiredcity.app.utils.PreferenceManager;
@@ -106,6 +107,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         prefs = new PreferenceManager(requireContext());
 
+        EdgeToEdgeUtils.applyStatusBarTopPadding(binding.homeTopSection);
         setupGreeting();
         setupMenhBanner();
         setupBanner();

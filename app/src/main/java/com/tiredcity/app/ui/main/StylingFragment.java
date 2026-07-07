@@ -24,6 +24,7 @@ import com.tiredcity.app.ui.cart.CartActivity;
 import com.tiredcity.app.ui.shop.CategoryActivity;
 import com.tiredcity.app.ui.shop.SearchActivity;
 import com.tiredcity.app.utils.ColorTaxonomy;
+import com.tiredcity.app.utils.EdgeToEdgeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,10 +90,20 @@ public class StylingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        applyStatusBarInset();
         setupCategoryList();
         setupCarousel();
         setupTabs();
         setupHeader();
+    }
+
+    /**
+     * targetSdk 35 (Android 15+) buộc vẽ edge-to-edge và bỏ qua {@code android:statusBarColor},
+     * nên thanh header đen (ô tìm kiếm) sẽ chui LÊN dưới cục wifi/pin và cắt mất phần đầu chữ.
+     * Đệm thêm chiều cao status bar vào paddingTop của header để nó nằm hẳn dưới thanh trạng thái.
+     */
+    private void applyStatusBarInset() {
+        EdgeToEdgeUtils.applyStatusBarTopPadding(binding.headerBar);
     }
 
     @Override

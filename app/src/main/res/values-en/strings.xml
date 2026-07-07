@@ -514,7 +514,9 @@
     <string name="wardrobe_empty_title">Your wardrobe is empty</string>
     <string name="wardrobe_empty_desc">Save your favorite outfits\nto your wardrobe</string>
     <string name="wardrobe_explore">Explore now</string>
-    <string name="order_history_title">Order History</string>
+    <string name="order_history_title">My Purchases</string>
+    <string name="order_more_items">+ %1$d more items</string>
+    <string name="order_amount_label">Total</string>
     <string name="order_tab_all">All</string>
     <string name="order_tab_pending">Processing</string>
     <string name="order_tab_shipping">Shipping</string>

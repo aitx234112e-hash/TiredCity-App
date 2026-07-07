@@ -93,6 +93,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".ui.cart.QrPaymentActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.cart.OrderSuccessActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

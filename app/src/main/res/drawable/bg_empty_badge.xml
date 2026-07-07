@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vòng tròn nền nhạt cho biểu tượng ở trạng thái rỗng. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/tc_red_pale" />
+</shape>

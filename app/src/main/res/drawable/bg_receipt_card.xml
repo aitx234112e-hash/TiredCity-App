@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ biên lai TRẮNG bo tròn mềm, viền kem mảnh. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_bg_card" />
+    <corners android:radius="@dimen/tc_radius_lg" />
+    <stroke
+        android:width="@dimen/tc_stroke_w"
+        android:color="@color/tc_stroke" />
+</shape>

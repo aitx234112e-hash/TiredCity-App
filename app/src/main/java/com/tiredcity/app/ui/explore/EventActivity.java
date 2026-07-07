@@ -2,22 +2,16 @@ package com.tiredcity.app.ui.explore;
 
 import android.os.Bundle;
 import android.view.View;
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.EventAdapter;
-import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.Event;
-import com.tiredcity.app.data.network.ApiClient;
-import com.tiredcity.app.data.network.ApiService;
+import com.tiredcity.app.data.repository.FirestoreEventRepository;
 import com.tiredcity.app.databinding.ActivityEventBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /** Trang Sự kiện — danh sách sự kiện. Mở từ mục "Sự kiện" ở Trang chủ. */
 public class EventActivity extends BaseActivity {
@@ -44,26 +38,13 @@ public class EventActivity extends BaseActivity {
 
     private void loadEvents() {
         binding.swipeRefresh.setRefreshing(true);
-        ApiService api = ApiClient.getApiService(preferenceManager.getToken());
-        api.getEvents(1, 20).enqueue(new Callback<ApiListResponse<Event>>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiListResponse<Event>> call,
-                                   @NonNull Response<ApiListResponse<Event>> response) {
-                if (binding == null) return;
-                if (response.isSuccessful() && response.body() != null
-                        && response.body().isSuccess()
-                        && response.body().getData() != null
-                        && !response.body().getData().isEmpty()) {
-                    showEvents(response.body().getData());
-                } else {
-                    showEvents(buildMockEvents());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiListResponse<Event>> call, @NonNull Throwable t) {
-                if (binding == null) return;
-                // Không có backend → hiển thị dữ liệu mẫu để xem giao diện.
+        // Đọc thẳng Firestore (collection events) — cùng nguồn với admin.
+        new FirestoreEventRepository().getEvents(events -> {
+            if (binding == null) return;
+            if (events != null && !events.isEmpty()) {
+                showEvents(events);
+            } else {
+                // Firestore lỗi/rỗng → hiển thị dữ liệu mẫu để vẫn xem được giao diện.
                 showEvents(buildMockEvents());
             }
         });

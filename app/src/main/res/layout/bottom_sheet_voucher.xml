@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/tc_bg_bottom_sheet">
 
@@ -138,7 +138,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_vouchers"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:paddingHorizontal="20dp"
         android:paddingTop="6dp"
         android:clipToPadding="false"
@@ -169,9 +170,9 @@
             android:id="@+id/btn_apply"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:background="@drawable/tc_btn_red_pill"
+            android:background="@drawable/tc_btn_ghost_red"
             android:text="@string/voucher_sheet_apply"
-            android:textColor="@color/white"
+            android:textColor="@color/tc_red"
             android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.03"

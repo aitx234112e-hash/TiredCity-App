@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chip phương thức thanh toán trên trang QR — nền kem, bo tròn. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/bg_subtle" />
+    <corners android:radius="24dp" />
+</shape>

@@ -66,6 +66,11 @@
     <color name="tc_red_light">#C9282F</color>
     <color name="tc_red_pale">#F5DDDF</color>
 
+    <!-- ─── MoMo — bộ nhận diện ví MoMo (QR hồng) ──────────────────── -->
+    <color name="momo_pink">#A50064</color>        <!-- magenta chủ đạo, dùng cho ô QR -->
+    <color name="momo_pink_bright">#D82D8B</color> <!-- hồng sáng, viền/accent -->
+    <color name="momo_pink_pale">#FCE6F2</color>   <!-- nền hồng nhạt của thẻ QR -->
+
     <!-- ─── ĐỎ SƠN MÀI — gradient stops (chiều sâu) ─────────────────── -->
     <color name="tc_red_lacquer_top">#C21620</color>   <!-- đỉnh sáng -->
     <color name="tc_red_lacquer_mid">#A80D15</color>   <!-- thân -->

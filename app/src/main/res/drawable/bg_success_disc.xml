@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Đĩa xanh đặc bên trong huy hiệu — gradient nhẹ tạo chiều sâu + viền sáng. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:type="linear"
+        android:angle="270"
+        android:startColor="#5C7F45"
+        android:endColor="#3F5C32" />
+    <stroke
+        android:width="3dp"
+        android:color="#33FFFFFF" />
+</shape>

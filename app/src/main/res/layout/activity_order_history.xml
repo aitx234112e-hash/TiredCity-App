@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/bg_primary"
-        android:elevation="4dp"
         app:navigationIcon="@drawable/ic_back"
         app:title="@string/order_history_title"
         app:titleTextColor="@color/text_primary"
@@ -22,11 +21,18 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="46dp"
         android:background="@color/bg_primary"
         app:tabTextColor="@color/text_secondary"
         app:tabSelectedTextColor="@color/tc_red"
         app:tabIndicatorColor="@color/tc_red"
+        app:tabIndicatorHeight="3dp"
+        app:tabIndicatorFullWidth="false"
+        app:tabInlineLabel="true"
+        app:tabRippleColor="@color/tc_ripple_red_subtle"
+        app:tabTextAppearance="@style/TextAppearance.TiredCity.OrderTab"
+        app:tabPaddingStart="14dp"
+        app:tabPaddingEnd="14dp"
         app:tabMode="scrollable">
 
         <com.google.android.material.tabs.TabItem
@@ -55,6 +61,12 @@
             android:text="@string/order_tab_cancelled" />
     </com.google.android.material.tabs.TabLayout>
 
+    <!-- Đường phân cách mảnh dưới tabs -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/tc_stroke" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
@@ -65,8 +77,8 @@
             android:id="@+id/rv_orders"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="12dp"
-            android:paddingTop="12dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="20dp"
             android:clipToPadding="false" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -78,21 +90,31 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="center"
+        android:paddingHorizontal="40dp"
+        android:paddingBottom="40dp"
         android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📦"
-            android:textSize="64sp"
-            android:layout_marginBottom="16dp" />
+        <FrameLayout
+            android:layout_width="112dp"
+            android:layout_height="112dp"
+            android:background="@drawable/bg_empty_badge"
+            android:layout_marginBottom="22dp">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_cart"
+                app:tint="@color/tc_red"
+                android:contentDescription="@null" />
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/order_empty_title"
             android:textColor="@color/text_primary"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
             android:layout_marginBottom="8dp" />
@@ -102,16 +124,17 @@
             android:layout_height="wrap_content"
             android:text="@string/order_empty_desc"
             android:textColor="@color/text_secondary"
-            android:textSize="13sp"
+            android:textSize="13.5sp"
             android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:lineSpacingExtra="3dp"
+            android:layout_marginBottom="26dp" />
 
         <Button
             android:id="@+id/btn_shop_now"
             android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_height="48dp"
             android:background="@drawable/tc_btn_red_pill"
-            android:paddingHorizontal="28dp"
+            android:paddingHorizontal="34dp"
             android:text="@string/order_shop_now"
             android:textColor="@color/white"
             android:textSize="14sp"

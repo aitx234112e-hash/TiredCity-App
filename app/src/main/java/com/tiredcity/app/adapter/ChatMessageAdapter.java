@@ -58,8 +58,39 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
         void bind(ChatMessage message) {
             if (tvMessage != null) {
-                tvMessage.setText(message.getText());
+                String text = message.getText();
+                // Bot (vd Gemini qua n8n) doi luc tra markdown tho; chat box hien text thuan
+                // nen loc bo cho gon. Tin cua khach giu nguyen.
+                if (viewType == TYPE_BOT) text = cleanMarkdown(text);
+                tvMessage.setText(text);
             }
+        }
+
+        /** Loai bo markdown tho: **dam**, __dam__, `code`, # heading, * / - dau dong -> bullet. */
+        private static String cleanMarkdown(String s) {
+            if (s == null || s.isEmpty()) return s;
+            String out = s;
+            out = out.replaceAll("\\*\\*(.+?)\\*\\*", "$1");  // **dam** -> dam
+            out = out.replaceAll("__(.+?)__", "$1");          // __dam__ -> dam
+            out = out.replaceAll("`([^`]+)`", "$1");          // `code`  -> code
+
+            // Dau dong: "* "/"- " -> "• ", bo dau "#" cua heading.
+            StringBuilder sb = new StringBuilder();
+            String[] lines = out.split("\n", -1);
+            for (int i = 0; i < lines.length; i++) {
+                String t = lines[i].replaceFirst("^\\s+", "");
+                if (t.startsWith("* ") || t.startsWith("- ")) {
+                    t = "• " + t.substring(2);
+                } else if (t.startsWith("#")) {
+                    t = t.replaceFirst("^#+\\s*", "");
+                }
+                if (i > 0) sb.append("\n");
+                sb.append(t);
+            }
+            out = sb.toString();
+
+            out = out.replaceAll("\\*(.+?)\\*", "$1");         // *nghieng* con lai -> nghieng
+            return out;
         }
     }
 }

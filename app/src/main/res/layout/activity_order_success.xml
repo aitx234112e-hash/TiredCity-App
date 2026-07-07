@@ -12,39 +12,55 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:paddingHorizontal="24dp"
-        android:paddingTop="48dp"
+        android:paddingTop="52dp"
         android:paddingBottom="28dp">
 
-        <!-- Huy hiệu thành công -->
+        <!-- ─── Huy hiệu thành công (hào quang → đĩa xanh → dấu tích) ─── -->
         <FrameLayout
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:background="@drawable/bg_circle_success_pale">
+            android:layout_width="156dp"
+            android:layout_height="156dp"
+            android:background="@drawable/bg_success_halo">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottie_success"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="156dp"
+                android:layout_height="156dp"
                 android:layout_gravity="center" />
 
-            <ImageView
-                android:id="@+id/img_check_fallback"
-                android:layout_width="76dp"
-                android:layout_height="76dp"
+            <!-- Vòng xanh nhạt giữa -->
+            <View
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_check_circle"
-                app:tint="@color/tc_success"
-                android:contentDescription="@string/success_order" />
+                android:background="@drawable/bg_circle_success_pale" />
+
+            <!-- Đĩa xanh đặc -->
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_success_disc"
+                android:elevation="3dp">
+
+                <ImageView
+                    android:id="@+id/img_check_fallback"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_check_thin"
+                    app:tint="@color/white"
+                    android:contentDescription="@string/success_order" />
+            </FrameLayout>
         </FrameLayout>
 
-        <!-- Tiêu đề -->
+        <!-- ─── Tiêu đề ─── -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:text="@string/success_order"
             android:textColor="@color/text_primary"
-            android:textSize="24sp"
+            android:textSize="25sp"
             android:textStyle="bold"
             android:letterSpacing="0.01" />
 
@@ -58,26 +74,51 @@
             android:textStyle="bold"
             android:letterSpacing="0.02" />
 
+        <!-- ─── Hoạ tiết vàng kim ─── -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="1dp"
+                android:background="@color/tc_gold" />
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_gold_dot" />
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="1dp"
+                android:background="@color/tc_gold" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="14dp"
             android:gravity="center"
             android:text="@string/order_success_subtitle"
             android:textColor="@color/text_secondary"
             android:textSize="13.5sp"
             android:lineSpacingExtra="3dp" />
 
-        <!-- Thẻ biên lai -->
+        <!-- ─── Thẻ biên lai ─── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="26dp"
-            android:background="@drawable/bg_rounded_surface"
-            android:elevation="2dp"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="18dp">
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_receipt_card"
+            android:elevation="3dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="20dp">
 
             <!-- Mã đơn hàng -->
             <LinearLayout
@@ -113,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="14dp">
+                android:layout_marginTop="15dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -139,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="14dp">
+                android:layout_marginTop="15dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -165,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="14dp">
+                android:layout_marginTop="15dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -191,16 +232,19 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginVertical="16dp"
+                android:layout_marginVertical="18dp"
                 android:layerType="software"
                 android:background="@drawable/bg_dashed_line" />
 
-            <!-- Tổng thanh toán -->
+            <!-- Tổng thanh toán (panel nổi bật) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_total_panel"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="12dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -217,7 +261,7 @@
                     android:layout_height="wrap_content"
                     android:text="—"
                     android:textColor="@color/tc_red"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
@@ -228,7 +272,7 @@
             android:layout_weight="1"
             android:minHeight="24dp" />
 
-        <!-- Nút -->
+        <!-- ─── Nút ─── -->
         <Button
             android:id="@+id/btn_view_order"
             android:layout_width="match_parent"

@@ -2,22 +2,16 @@ package com.tiredcity.app.ui.explore;
 
 import android.os.Bundle;
 import android.view.View;
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ArticleAdapter;
-import com.tiredcity.app.data.model.ApiListResponse;
 import com.tiredcity.app.data.model.Article;
-import com.tiredcity.app.data.network.ApiClient;
-import com.tiredcity.app.data.network.ApiService;
+import com.tiredcity.app.data.repository.FirestoreBlogRepository;
 import com.tiredcity.app.databinding.ActivityArticleBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /** Trang Tin tức — danh sách bài viết. Mở từ mục "Tin tức" ở Trang chủ. */
 public class ArticleActivity extends BaseActivity {
@@ -44,26 +38,13 @@ public class ArticleActivity extends BaseActivity {
 
     private void loadArticles() {
         binding.swipeRefresh.setRefreshing(true);
-        ApiService api = ApiClient.getApiService(preferenceManager.getToken());
-        api.getArticles(1, 20).enqueue(new Callback<ApiListResponse<Article>>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiListResponse<Article>> call,
-                                   @NonNull Response<ApiListResponse<Article>> response) {
-                if (binding == null) return;
-                if (response.isSuccessful() && response.body() != null
-                        && response.body().isSuccess()
-                        && response.body().getData() != null
-                        && !response.body().getData().isEmpty()) {
-                    showArticles(response.body().getData());
-                } else {
-                    showArticles(buildMockArticles());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiListResponse<Article>> call, @NonNull Throwable t) {
-                if (binding == null) return;
-                // Không có backend → hiển thị dữ liệu mẫu để xem giao diện.
+        // Đọc thẳng Firestore (collection blogs) — cùng nguồn với admin.
+        new FirestoreBlogRepository().getArticles(articles -> {
+            if (binding == null) return;
+            if (articles != null && !articles.isEmpty()) {
+                showArticles(articles);
+            } else {
+                // Firestore lỗi/rỗng → hiển thị dữ liệu mẫu để vẫn xem được giao diện.
                 showArticles(buildMockArticles());
             }
         });

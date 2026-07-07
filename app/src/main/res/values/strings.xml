@@ -515,7 +515,9 @@
     <string name="wardrobe_empty_title">Tủ đồ trống</string>
     <string name="wardrobe_empty_desc">Lưu những trang phục yêu thích\nvào tủ đồ của bạn</string>
     <string name="wardrobe_explore">Khám phá ngay</string>
-    <string name="order_history_title">Lịch sử đơn hàng</string>
+    <string name="order_history_title">Đơn hàng đã mua</string>
+    <string name="order_more_items">+ %1$d sản phẩm khác</string>
+    <string name="order_amount_label">Thành tiền</string>
     <string name="order_tab_all">Tất cả</string>
     <string name="order_tab_pending">Chờ xử lý</string>
     <string name="order_tab_shipping">Đang giao</string>
@@ -542,6 +544,34 @@
     <string name="pay_method_bank">Chuyển khoản ngân hàng</string>
     <string name="pay_method_momo">Ví điện tử MoMo</string>
     <string name="pay_method_card">Thẻ tín dụng/ghi nợ</string>
+
+    <!-- ── Trang QR thanh toán ─────────────────────────────────────────── -->
+    <string name="qr_title">Quét mã thanh toán</string>
+    <string name="qr_amount_label">Số tiền cần thanh toán</string>
+    <string name="qr_merchant">TIREDCITY</string>
+    <string name="qr_merchant_sub">Cửa hàng chính hãng · Đã xác thực</string>
+    <string name="qr_ref_label">Nội dung / Mã đơn</string>
+    <string name="qr_expiry_label">Hiệu lực còn</string>
+    <string name="qr_expired">Hết hạn</string>
+    <string name="qr_expired_toast">Mã QR đã hết hạn. Vui lòng tạo mã mới để tiếp tục.</string>
+    <string name="qr_guide_title">Hướng dẫn thanh toán</string>
+    <string name="qr_secure_note">Giao dịch được bảo mật. Chỉ chuyển đúng số tiền và nội dung ở trên.</string>
+    <string name="qr_btn_paid">Tôi đã thanh toán</string>
+    <string name="qr_btn_change">Đổi phương thức khác</string>
+    <string name="qr_btn_retry">Tạo mã mới</string>
+    <string name="qr_verifying">Đang xác nhận…</string>
+
+    <!-- Các bước theo phương thức -->
+    <string name="qr_momo_step1">Mở ứng dụng MoMo và chọn "Quét mã".</string>
+    <string name="qr_momo_step2">Hướng camera vào mã QR ở trên để nhận thông tin đơn.</string>
+    <string name="qr_momo_step3">Kiểm tra số tiền rồi bấm xác nhận trong app MoMo.</string>
+    <string name="qr_bank_step1">Mở app ngân hàng và chọn "Quét mã QR".</string>
+    <string name="qr_bank_step2">Quét mã ở trên — thông tin người nhận sẽ tự điền.</string>
+    <string name="qr_bank_step3">Xác nhận đúng số tiền và nội dung rồi chuyển khoản.</string>
+    <string name="qr_card_step1">Mở ví/app ngân hàng liên kết thẻ và chọn "Quét mã".</string>
+    <string name="qr_card_step2">Quét mã QR ở trên để nạp thông tin thanh toán.</string>
+    <string name="qr_card_step3">Xác nhận giao dịch bằng thẻ để hoàn tất.</string>
+
     <string name="cart_total">Tổng thanh toán</string>
     <string name="recently_viewed_title">Đã xem gần đây</string>
     <string name="label_total">Tổng tiền</string>

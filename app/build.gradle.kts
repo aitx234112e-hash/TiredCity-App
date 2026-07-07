@@ -15,6 +15,9 @@ val claudeApiKey: String =
     localProps.getProperty("CLAUDE_API_KEY") ?: System.getenv("CLAUDE_API_KEY") ?: ""
 val geminiApiKey: String =
     localProps.getProperty("GEMINI_API_KEY") ?: System.getenv("GEMINI_API_KEY") ?: ""
+// URL webhook cua n8n AI Agent (vd https://xxx.app.n8n.cloud/webhook/tiredcity-agent).
+val n8nWebhookUrl: String =
+    localProps.getProperty("N8N_WEBHOOK_URL") ?: System.getenv("N8N_WEBHOOK_URL") ?: ""
 
 android {
     namespace  = "com.tiredcity.app"
@@ -30,6 +33,7 @@ android {
 
         buildConfigField("String", "CLAUDE_API_KEY", "\"$claudeApiKey\"")
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+        buildConfigField("String", "N8N_WEBHOOK_URL", "\"$n8nWebhookUrl\"")
     }
 
     buildTypes {
@@ -95,6 +99,9 @@ dependencies {
 
     // Lottie animations
     implementation("com.airbnb.android:lottie:6.4.0")
+
+    // ZXing core — tạo mã QR thanh toán (thư viện Java thuần, không kéo Android deps)
+    implementation("com.google.zxing:core:3.5.3")
 
     // Shimmer loading effect
     implementation("com.facebook.shimmer:shimmer:0.5.0")

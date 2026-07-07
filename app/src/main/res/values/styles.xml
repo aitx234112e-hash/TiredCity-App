@@ -187,6 +187,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <!-- Tab lọc trạng thái ở màn Lịch sử đơn hàng (không viết hoa, đậm vừa) -->
+    <style name="TextAppearance.TiredCity.OrderTab" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">13.5sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
     <!--
       ╔══════════════════════════════════════════════════════════════════╗
       ║  SHAPE APPEARANCES                                                 ║

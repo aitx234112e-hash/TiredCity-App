@@ -8,37 +8,10 @@
     android:orientation="vertical"
     android:background="@color/tc_bg_main">
 
-    <!-- ── Hero đỏ: rooster mark + wordmark TIREDCITY — cùng khuôn với section_hero ở màn Giới
-         thiệu (fragment_about.xml), cho trang Danh mục 1 mở đầu đồng bộ bản sắc thương hiệu. ── -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/tc_red"
-        android:paddingHorizontal="@dimen/tc_space_xl"
-        android:paddingTop="@dimen/tc_space_xl"
-        android:paddingBottom="@dimen/tc_space_lg"
-        android:gravity="center_horizontal">
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_tc_logo"
-            app:tint="@color/tc_on_red"
-            android:contentDescription="@string/app_name" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_marginTop="@dimen/tc_space_sm"
-            android:scaleType="centerCrop"
-            android:src="@drawable/logo_main"
-            android:contentDescription="@string/app_name" />
-    </LinearLayout>
-
-    <!-- ── Ô tìm kiếm + giỏ hàng — nền đen ngay dưới khối đỏ (đồng bộ với khối tab + carousel
+    <!-- ── Ô tìm kiếm + giỏ hàng — nền đen trên cùng (đồng bộ với khối tab + carousel
          bên dưới); giỏ hàng là nút tròn đỏ nổi bật như 1 CTA thay vì icon phẳng ── -->
     <LinearLayout
+        android:id="@+id/header_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -46,8 +19,8 @@
         android:background="@color/tc_noir"
         android:paddingStart="@dimen/tc_space_xl"
         android:paddingEnd="@dimen/tc_space_lg"
-        android:paddingTop="@dimen/tc_space_lg"
-        android:paddingBottom="@dimen/tc_space_md">
+        android:paddingTop="@dimen/tc_space_md"
+        android:paddingBottom="@dimen/tc_space_lg">
 
         <!-- Ô tìm kiếm — thẻ trắng nổi nhẹ (thay nền be phẳng cũ) để bật lên trên nền kem -->
         <com.google.android.material.card.MaterialCardView
@@ -60,6 +33,7 @@
             app:cardCornerRadius="@dimen/tc_radius_pill"
             app:cardElevation="3dp"
             app:cardBackgroundColor="@color/bg_surface"
+            app:contentPadding="0dp"
             app:rippleColor="@color/tc_red_pale">
 
             <LinearLayout
@@ -83,7 +57,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:text="@string/search_hint"
-                    android:textColor="@color/tc_input_hint"
+                    android:textColor="@color/tc_text_primary"
                     android:textSize="14sp"
                     android:maxLines="1"
                     android:ellipsize="end" />
@@ -149,6 +123,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/tc_noir"
+        android:paddingTop="@dimen/tc_space_sm"
         android:paddingBottom="@dimen/tc_space_md"
         app:tabMode="scrollable"
         app:tabGravity="start"
@@ -199,30 +174,6 @@
                     app:selectedDotColor="@color/tc_red"
                     app:dotsSize="8dp"
                     app:dotsSpacing="5dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="6dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginEnd="6dp"
-                        android:src="@drawable/ic_swipe_horizontal"
-                        app:tint="@color/tc_on_dark_secondary"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/cat_carousel_swipe_hint"
-                        android:textColor="@color/tc_on_dark_secondary"
-                        android:textSize="12sp" />
-                </LinearLayout>
             </LinearLayout>
 
             <!-- ── Danh sách danh mục màu — ảnh mẫu vải THẬT cho từng thẻ, lần lượt mờ+trượt vào

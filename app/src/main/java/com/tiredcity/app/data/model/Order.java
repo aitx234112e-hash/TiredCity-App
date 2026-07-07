@@ -15,6 +15,10 @@ public class Order {
     private String trackingNumber;
     private Date createdAt;
     private Date updatedAt;
+    /** Số dòng sản phẩm — dùng khi đọc từ Firestore không map đầy đủ items. */
+    private int itemCount;
+    /** Danh sách rút gọn để hiển thị ảnh + tên sản phẩm ở thẻ đơn hàng. */
+    private List<OrderItemPreview> previewItems;
 
     public Order() {}
 
@@ -40,4 +44,8 @@ public class Order {
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
     public Date getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public int getItemCount() { return items != null ? items.size() : itemCount; }
+    public void setItemCount(int itemCount) { this.itemCount = itemCount; }
+    public List<OrderItemPreview> getPreviewItems() { return previewItems; }
+    public void setPreviewItems(List<OrderItemPreview> previewItems) { this.previewItems = previewItems; }
 }

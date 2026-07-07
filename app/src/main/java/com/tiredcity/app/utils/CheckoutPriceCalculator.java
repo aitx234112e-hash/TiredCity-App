@@ -52,9 +52,33 @@ public class CheckoutPriceCalculator {
     }
     private static void put(Voucher v) { DEMO_VOUCHERS.put(v.code, v); }
 
+    /**
+     * Voucher nạp từ Firestore (collection {@code vouchers}) — CÙNG nguồn với admin.
+     * {@code null} khi chưa tải xong / tải lỗi → dùng {@link #DEMO_VOUCHERS} làm fallback.
+     * Xem {@link com.tiredcity.app.data.repository.FirestoreVoucherRepository}.
+     */
+    private static volatile LinkedHashMap<String, Voucher> loadedVouchers;
+
+    /** Nạp danh sách voucher lấy từ Firestore. list rỗng/null → về lại danh sách fallback. */
+    public static void setLoadedVouchers(List<Voucher> list) {
+        if (list == null || list.isEmpty()) {
+            loadedVouchers = null;
+            return;
+        }
+        LinkedHashMap<String, Voucher> map = new LinkedHashMap<>();
+        for (Voucher v : list) map.put(v.code, v);
+        loadedVouchers = map;
+    }
+
+    /** Bảng mã đang dùng: ưu tiên voucher Firestore, chưa có thì dùng danh sách cứng. */
+    private static LinkedHashMap<String, Voucher> activeVouchers() {
+        LinkedHashMap<String, Voucher> loaded = loadedVouchers;
+        return (loaded != null && !loaded.isEmpty()) ? loaded : DEMO_VOUCHERS;
+    }
+
     /** Danh sách mã có thể chọn trong bottom sheet. */
     public static List<Voucher> getAvailableVouchers() {
-        return new ArrayList<>(DEMO_VOUCHERS.values());
+        return new ArrayList<>(activeVouchers().values());
     }
 
     private double subtotal;
@@ -83,7 +107,7 @@ public class CheckoutPriceCalculator {
     /** @return true nếu mã hợp lệ (và đạt đơn tối thiểu) và đã được áp dụng. */
     public boolean applyVoucher(String code) {
         if (code == null) return false;
-        Voucher v = DEMO_VOUCHERS.get(code.trim().toUpperCase(Locale.ROOT));
+        Voucher v = activeVouchers().get(code.trim().toUpperCase(Locale.ROOT));
         if (v == null || subtotal < v.minSpend) return false;
         appliedVoucher = v;
         return true;

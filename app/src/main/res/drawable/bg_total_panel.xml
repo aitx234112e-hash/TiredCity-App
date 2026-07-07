@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Panel nổi bật cho dòng "Tổng thanh toán" (đỏ son rất nhạt). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_red_pale" />
+    <corners android:radius="@dimen/tc_radius_md" />
+</shape>

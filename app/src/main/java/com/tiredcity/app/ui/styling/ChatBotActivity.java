@@ -15,7 +15,10 @@ import com.tiredcity.app.adapter.ChatMessageAdapter;
 import com.tiredcity.app.data.model.ChatMessage;
 import com.tiredcity.app.data.model.ClaudeRequest;
 import com.tiredcity.app.data.model.ClaudeResponse;
+import com.tiredcity.app.data.model.N8nRequest;
+import com.tiredcity.app.data.model.N8nResponse;
 import com.tiredcity.app.data.network.ClaudeApiClient;
+import com.tiredcity.app.data.network.N8nAgentClient;
 import com.tiredcity.app.databinding.ActivityChatbotBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.utils.MenhCalculator;
@@ -141,10 +144,57 @@ public class ChatBotActivity extends BaseActivity {
     }
 
     /**
-     * Tra loi nguoi dung: uu tien goi Claude API; neu chua cau hinh key hoac
-     * loi mang thi dung bo tra loi rule-based lam phuong an du phong.
+     * Tra loi nguoi dung theo thu tu uu tien:
+     *   1) n8n AI Agent (biet goi tool lay don hang / gia / ton kho that)
+     *   2) Claude API (neu n8n chua cau hinh)
+     *   3) Bo tra loi rule-based (khi ca hai chua cau hinh hoac loi mang)
      */
     private void respond(String userText) {
+        if (N8nAgentClient.isConfigured()) {
+            askN8nAgent(userText);
+        } else {
+            askClaudeOrRule(userText);
+        }
+    }
+
+    /** Goi n8n AI Agent; loi/khong co reply thi lui ve Claude hoac rule-based. */
+    private void askN8nAgent(String userText) {
+        showTyping();
+        N8nRequest request = new N8nRequest(userText, sessionId(), "");
+
+        N8nAgentClient.get().ask(N8nAgentClient.url(), request)
+                .enqueue(new Callback<N8nResponse>() {
+                    @Override
+                    public void onResponse(Call<N8nResponse> call, Response<N8nResponse> resp) {
+                        hideTyping();
+                        String text = resp.isSuccessful() && resp.body() != null
+                                ? resp.body().text() : null;
+                        if (text != null) {
+                            receiveMessage(text);
+                        } else {
+                            askClaudeOrRule(userText); // du phong khi Agent loi
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<N8nResponse> call, Throwable t) {
+                        hideTyping();
+                        askClaudeOrRule(userText);
+                    }
+                });
+    }
+
+    /** Ngu canh phien theo tung khach de Agent nho hoi thoai (uid, hoac id thiet bi). */
+    private String sessionId() {
+        String uid = preferenceManager.getUserId();
+        if (uid != null && !uid.isEmpty()) return uid;
+        String androidId = android.provider.Settings.Secure.getString(
+                getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        return androidId != null ? "guest-" + androidId : "guest";
+    }
+
+    /** Luong cu: uu tien Claude API, du phong rule-based. */
+    private void askClaudeOrRule(String userText) {
         if (!ClaudeApiClient.isConfigured()) {
             receiveMessage(ruleBasedResponse(userText));
             return;

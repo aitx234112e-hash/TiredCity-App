@@ -8,6 +8,7 @@
 
     <!-- ── Search bar (tap → SearchActivity for typing) ────────────────── -->
     <LinearLayout
+        android:id="@+id/shop_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

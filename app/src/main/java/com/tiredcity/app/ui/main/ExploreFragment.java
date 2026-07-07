@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayout;
 import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.FragmentExploreBinding;
+import com.tiredcity.app.utils.EdgeToEdgeUtils;
 
 public class ExploreFragment extends Fragment {
 
@@ -27,6 +28,7 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EdgeToEdgeUtils.applyStatusBarTopPadding(binding.exploreHeader);
 
         // Lần đầu tạo view: nạp tab "Giới thiệu" (vị trí 0).
         if (savedInstanceState == null) {

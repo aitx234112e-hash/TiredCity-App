@@ -23,6 +23,31 @@ ChatBotActivity ◀──────── { reply } ──────── R
 
 ---
 
+## ⚡ Import nhanh (đỡ tạo node tay)
+
+Có sẵn file workflow: [`n8n-tiredcity-agent.workflow.json`](n8n-tiredcity-agent.workflow.json)
+(đã nhúng `project_id = tiredcity-daf1e`, đủ 6 node đã nối dây: Webhook → AI Agent +
+Gemini + Memory + 3 tool → Respond).
+
+1. n8n → **Workflows** → nút **⋯** (hoặc **Add workflow**) → **Import from File** → chọn file trên.
+2. Sau khi import, gắn credential (credential KHÔNG nằm trong file vì lý do bảo mật):
+   - Node **Google Gemini Chat Model** → chọn credential **Google Gemini (PaLM) API** (dán key mục 0.1).
+   - 3 node tool **get_order_status / get_product / escalate_to_human** (loại *HTTP Request Tool*):
+     ở **Credential Type** chọn **Google Service Account API** → **Create new credential**:
+     `Service Account Email` = `client_email`, `Private Key` = `private_key` (dán nguyên khối,
+     cả dòng BEGIN/END), bật **"Set up for use in HTTP Request node"**, ô **Scope** dán
+     `https://www.googleapis.com/auth/datastore`. Tạo 1 lần rồi **dùng chung cho cả 3 node**.
+     (Đừng dùng *OAuth2 API* — phải dựng OAuth client trên Google Cloud, rườm rà hơn.)
+3. **Activate** workflow → copy **Production URL** của node Webhook
+   (`https://<your>.app.n8n.cloud/webhook/tiredcity-agent`) → dán vào `local.properties`
+   dòng `N8N_WEBHOOK_URL=...` (xem Mục 5) rồi build lại app.
+
+> Ba tool gọi Firestore REST bằng `:runQuery` (đọc `orders`/`products`) và tạo document
+> (`support_tickets`). Nếu n8n báo lỗi 401/403 khi test → credential Firestore chưa gắn đúng
+> hoặc Service Account thiếu quyền. Muốn dựng tay từng node thì đọc tiếp các mục dưới.
+
+---
+
 ## 0) Chuẩn bị credentials (làm 1 lần)
 
 ### 0.1 Gemini API key
@@ -171,15 +196,26 @@ Khi cả 3 luồng chạy đúng → chuyển sang nối app (phần code, làm 
 
 ---
 
-## 5) Nối app (tóm tắt — sẽ code ở bước sau)
+## 5) Nối app ✅ (đã code)
 
-Trong [ChatBotActivity.java](../app/src/main/java/com/tiredcity/app/ui/styling/ChatBotActivity.java)
-hiện `respond()` đang gọi thẳng Claude. Ta sẽ:
-1. Thêm `N8nAgentClient` (Retrofit) trỏ tới webhook URL.
-2. `respond()` POST `{message, sessionId, orderId}` → nhận `{reply}` → hiển thị.
-3. Giữ nguyên `ruleBasedResponse()` làm fallback khi mạng lỗi (đã có sẵn).
+Phần app đã nối sẵn, chỉ cần **khai báo URL webhook** rồi build lại.
 
-> `sessionId` nên dùng userId/uid hiện có để Agent nhớ theo từng khách.
+**Việc duy nhất bạn phải làm:** mở `local.properties` (ở gốc repo, KHÔNG commit) thêm dòng:
+```properties
+N8N_WEBHOOK_URL=https://<your>.app.n8n.cloud/webhook/tiredcity-agent
+```
+Rồi build lại app. Xong — chat box khách sẽ tự gọi Agent.
+
+Đã cài đặt sẵn:
+- [N8nAgentClient.java](../app/src/main/java/com/tiredcity/app/data/network/N8nAgentClient.java) +
+  [N8nAgentService.java](../app/src/main/java/com/tiredcity/app/data/network/N8nAgentService.java) —
+  Retrofit POST tới `BuildConfig.N8N_WEBHOOK_URL` (nạp từ `local.properties`).
+- [ChatBotActivity.java](../app/src/main/java/com/tiredcity/app/ui/styling/ChatBotActivity.java)
+  `respond()` giờ theo thứ tự ưu tiên: **n8n Agent → Claude → rule-based** (tự lui về sau khi lỗi/chưa cấu hình).
+- Body gửi lên: `{ message, sessionId, orderId }`. `sessionId` = userId đang đăng nhập
+  (khách vãng lai thì dùng `guest-<ANDROID_ID>`) để Window Buffer Memory nhớ theo từng khách.
+
+> Chưa khai báo `N8N_WEBHOOK_URL`? App tự chạy như cũ (Claude/rule-based), không lỗi build.
 
 ---
 

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.tiredcity.app.R;
@@ -84,6 +85,21 @@ public class VoucherBottomSheet extends BottomSheetDialogFragment {
         binding.btnApply.setOnClickListener(v -> apply(adapter.getSelectedCode()));
 
         updateApplyLabel();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Ép sheet mở hết cỡ + cao match_parent để nút "Áp dụng" luôn hiện ở đáy (list tự cuộn bên trong).
+        View sheet = getView() != null ? (View) getView().getParent() : null;
+        if (sheet != null) {
+            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(sheet);
+            behavior.setSkipCollapsed(true);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            ViewGroup.LayoutParams lp = sheet.getLayoutParams();
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            sheet.setLayoutParams(lp);
+        }
     }
 
     private void setupTypeChips() {

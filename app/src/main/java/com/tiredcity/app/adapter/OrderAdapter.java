@@ -3,17 +3,27 @@ package com.tiredcity.app.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.tiredcity.app.R;
 import com.tiredcity.app.data.model.Order;
+import com.tiredcity.app.data.model.OrderItemPreview;
 import com.tiredcity.app.utils.Constants;
 import com.tiredcity.app.utils.DateUtils;
 import com.tiredcity.app.utils.PriceUtils;
+
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
+
+    /** Số dòng sản phẩm hiển thị tối đa trong 1 thẻ; phần dư gộp vào "+N sản phẩm khác". */
+    private static final int MAX_VISIBLE_ITEMS = 3;
 
     public interface OnOrderClickListener {
         void onOrderClick(Order order);
@@ -51,7 +61,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         private final TextView tvOrderStatus;
         private final TextView tvOrderDate;
         private final TextView tvOrderTotal;
-        private final TextView tvItemCount;
+        private final TextView tvMoreItems;
+        private final LinearLayout llProducts;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -59,35 +70,91 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             tvOrderStatus = itemView.findViewById(R.id.tv_order_status);
             tvOrderDate   = itemView.findViewById(R.id.tv_order_date);
             tvOrderTotal  = itemView.findViewById(R.id.tv_order_total);
-            tvItemCount   = itemView.findViewById(R.id.tv_order_items);
+            tvMoreItems   = itemView.findViewById(R.id.tv_more_items);
+            llProducts    = itemView.findViewById(R.id.ll_products);
         }
 
         void bind(Order order, OnOrderClickListener listener) {
-            if (tvOrderId != null)
-                tvOrderId.setText("#" + order.getId());
-            if (tvOrderDate != null)
-                tvOrderDate.setText(DateUtils.formatDisplay(order.getCreatedAt()));
-            if (tvOrderTotal != null)
-                tvOrderTotal.setText(PriceUtils.format(order.getTotalPrice()));
-            if (tvItemCount != null && order.getItems() != null)
-                tvItemCount.setText(order.getItems().size() + " sản phẩm");
+            tvOrderId.setText("#" + order.getId());
+            tvOrderDate.setText(DateUtils.formatDisplay(order.getCreatedAt()));
+            tvOrderTotal.setText(PriceUtils.format(order.getTotalPrice()));
 
-            if (tvOrderStatus != null) {
-                tvOrderStatus.setText(getStatusLabel(order.getStatus()));
-                int bgRes = getStatusBackground(order.getStatus());
-                tvOrderStatus.setBackgroundResource(bgRes);
-            }
+            tvOrderStatus.setText(getStatusLabel(order.getStatus()));
+            tvOrderStatus.setBackgroundResource(getStatusBackground(order.getStatus()));
+            tvOrderStatus.setTextColor(itemView.getResources().getColor(
+                    getStatusColor(order.getStatus()), itemView.getContext().getTheme()));
+
+            bindProducts(order.getPreviewItems());
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onOrderClick(order);
             });
         }
 
+        /** Đổ tối đa MAX_VISIBLE_ITEMS dòng sản phẩm vào container; phần dư → "+N sản phẩm khác". */
+        private void bindProducts(List<OrderItemPreview> items) {
+            llProducts.removeAllViews();
+            if (items == null || items.isEmpty()) {
+                tvMoreItems.setVisibility(View.GONE);
+                return;
+            }
+
+            int shown = Math.min(items.size(), MAX_VISIBLE_ITEMS);
+            LayoutInflater inflater = LayoutInflater.from(llProducts.getContext());
+            for (int i = 0; i < shown; i++) {
+                View row = inflater.inflate(R.layout.item_order_product, llProducts, false);
+                bindProductRow(row, items.get(i));
+                llProducts.addView(row);
+            }
+
+            int remaining = items.size() - shown;
+            if (remaining > 0) {
+                tvMoreItems.setVisibility(View.VISIBLE);
+                tvMoreItems.setText(itemView.getContext()
+                        .getString(R.string.order_more_items, remaining));
+            } else {
+                tvMoreItems.setVisibility(View.GONE);
+            }
+        }
+
+        private void bindProductRow(View row, OrderItemPreview item) {
+            ImageView ivImage  = row.findViewById(R.id.iv_product_image);
+            TextView tvName     = row.findViewById(R.id.tv_product_name);
+            TextView tvVariant  = row.findViewById(R.id.tv_product_variant);
+            TextView tvLine     = row.findViewById(R.id.tv_line_total);
+            TextView tvQuantity = row.findViewById(R.id.tv_quantity);
+
+            tvName.setText(item.getName() != null ? item.getName() : "");
+
+            String variant = item.variantLabel();
+            if (variant.isEmpty()) {
+                tvVariant.setVisibility(View.GONE);
+            } else {
+                tvVariant.setVisibility(View.VISIBLE);
+                tvVariant.setText(variant);
+            }
+
+            tvLine.setText(PriceUtils.format(item.getLineTotal()));
+            tvQuantity.setText("x" + item.getQuantity());
+
+            String url = item.getImage();
+            if (url != null && !url.isEmpty()) {
+                Glide.with(ivImage.getContext())
+                        .load(url)
+                        .centerCrop()
+                        .placeholder(R.color.bg_subtle)
+                        .error(R.color.bg_subtle)
+                        .into(ivImage);
+            } else {
+                ivImage.setImageResource(R.color.bg_subtle);
+            }
+        }
+
         private String getStatusLabel(String status) {
             if (status == null) return "Không rõ";
             switch (status) {
                 case Constants.ORDER_PENDING:   return "Chờ xử lý";
-                case Constants.ORDER_CONFIRMED: return "Đã xác nhận";
+                case Constants.ORDER_CONFIRMED: return "Đang chuẩn bị";
                 case Constants.ORDER_SHIPPING:  return "Đang giao";
                 case Constants.ORDER_DELIVERED: return "Đã nhận";
                 case Constants.ORDER_CANCELLED: return "Đã hủy";
@@ -102,6 +169,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                 case Constants.ORDER_SHIPPING:  return R.drawable.bg_status_shipping;
                 case Constants.ORDER_CANCELLED: return R.drawable.bg_status_cancelled;
                 default: return R.drawable.bg_status_pending;
+            }
+        }
+
+        private int getStatusColor(String status) {
+            if (status == null) return R.color.tc_warning;
+            switch (status) {
+                case Constants.ORDER_DELIVERED: return R.color.tc_success;
+                case Constants.ORDER_SHIPPING:  return R.color.tc_info;
+                case Constants.ORDER_CANCELLED: return R.color.tc_error;
+                default: return R.color.tc_warning;
             }
         }
     }

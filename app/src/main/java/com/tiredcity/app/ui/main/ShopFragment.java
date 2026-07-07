@@ -23,6 +23,7 @@ import com.tiredcity.app.ui.reward.VoucherDetailActivity;
 import com.tiredcity.app.ui.shop.ProductDetailActivity;
 import com.tiredcity.app.ui.shop.SearchActivity;
 import com.tiredcity.app.utils.Constants;
+import com.tiredcity.app.utils.EdgeToEdgeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class ShopFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EdgeToEdgeUtils.applyStatusBarTopPadding(binding.shopHeader);
         setupSearchBar();
         setupPopularTags();
         setupSuggestions();

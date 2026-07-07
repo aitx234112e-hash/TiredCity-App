@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
@@ -63,6 +65,18 @@ public class PaymentActivity extends BaseActivity {
     /** Adapter danh sách sản phẩm — giữ tham chiếu để bật/tắt "Xem tất cả". */
     private CheckoutItemAdapter checkoutItemAdapter;
 
+    /** Địa chỉ giao đang chờ — giữ lại để đặt hàng sau khi khách quét QR xong. */
+    private String pendingAddress;
+
+    /** Mở trang QR & nhận kết quả: thanh toán xong (RESULT_OK) → ghi đơn hàng. */
+    private final ActivityResultLauncher<Intent> qrLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && pendingAddress != null) {
+                    placeOrder(pendingAddress, selectedPaymentMethod);
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +92,13 @@ public class PaymentActivity extends BaseActivity {
         AddressData.init(this);
 
         priceCalculator.setShippingFee(DEFAULT_SHIPPING_FEE);
+
+        // Nạp voucher từ Firestore (cùng nguồn với admin); lỗi/rỗng → giữ danh sách fallback.
+        new com.tiredcity.app.data.repository.FirestoreVoucherRepository().getVouchers(vouchers -> {
+            if (vouchers != null && !vouchers.isEmpty()) {
+                CheckoutPriceCalculator.setLoadedVouchers(vouchers);
+            }
+        });
 
         setupOrderSummary();
         setupOrderItems();
@@ -97,8 +118,22 @@ public class PaymentActivity extends BaseActivity {
                 showEditRecipientDialog();
                 return;
             }
-            showSlideCaptcha(() -> placeOrder(address, selectedPaymentMethod));
+            pendingAddress = address;
+            showSlideCaptcha(() -> onVerified(address));
         });
+    }
+
+    /**
+     * Sau khi qua bước xác thực (captcha): COD ghi đơn luôn; phương thức online
+     * (MoMo / Chuyển khoản / Thẻ) mở trang QR để khách quét rồi mới ghi đơn.
+     */
+    private void onVerified(String address) {
+        if ("COD".equals(selectedPaymentMethod)) {
+            placeOrder(address, selectedPaymentMethod);
+        } else {
+            qrLauncher.launch(QrPaymentActivity.newIntent(
+                    this, priceCalculator.getTotal(), selectedPaymentMethod));
+        }
     }
 
     private void setupOrderSummary() {

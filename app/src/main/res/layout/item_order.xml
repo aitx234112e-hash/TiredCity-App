@@ -6,107 +6,126 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardBackgroundColor="@color/bg_surface"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="18dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/tc_stroke"
+    app:strokeWidth="1dp"
+    app:rippleColor="@color/tc_ripple_red_subtle">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="15dp">
 
-        <!-- Header row: Order ID + Status badge -->
+        <!-- Header: mã đơn + trạng thái -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="15dp"
+                android:layout_marginEnd="9dp"
+                android:background="@drawable/bg_order_accent" />
 
             <TextView
                 android:id="@+id/tv_order_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="middle"
+                android:singleLine="true"
                 android:textColor="@color/text_primary"
-                android:textSize="13sp"
+                android:textSize="13.5sp"
                 android:textStyle="bold"
+                android:letterSpacing="0.01"
                 tools:text="#DH2024001" />
 
             <TextView
                 android:id="@+id/tv_order_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10dp"
+                android:paddingHorizontal="11dp"
                 android:paddingVertical="4dp"
                 android:background="@drawable/bg_status_pending"
-                android:textColor="#E65100"
+                android:textColor="@color/tc_warning"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                tools:text="Chờ xác nhận" />
+                tools:text="Chờ xử lý" />
         </LinearLayout>
 
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/bg_subtle"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Date row -->
+        <!-- Ngày đặt -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="4dp">
+            android:gravity="center_vertical"
+            android:layout_marginTop="7dp"
+            android:layout_marginStart="12dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📅 "
-                android:textSize="13sp" />
+            <ImageView
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/text_hint"
+                android:contentDescription="@null" />
 
             <TextView
                 android:id="@+id/tv_order_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/text_hint"
                 android:textSize="12sp"
-                tools:text="25/05/2025 09:30" />
+                tools:text="07/07/2026" />
         </LinearLayout>
 
-        <!-- Item count row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🛍️ "
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tv_order_items"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                tools:text="2 sản phẩm" />
-        </LinearLayout>
-
-        <!-- Divider -->
+        <!-- Kẻ răng cưa -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/bg_subtle"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginVertical="12dp"
+            android:layerType="software"
+            android:background="@drawable/bg_dashed_line" />
 
-        <!-- Total price row -->
+        <!-- Danh sách sản phẩm (đổ động từ adapter) -->
+        <LinearLayout
+            android:id="@+id/ll_products"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <!-- "+ N sản phẩm khác" -->
+        <TextView
+            android:id="@+id/tv_more_items"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="2dp"
+            android:textColor="@color/tc_red"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="+ 2 sản phẩm khác"
+            tools:visibility="visible" />
+
+        <!-- Kẻ răng cưa -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:layerType="software"
+            android:background="@drawable/bg_dashed_line" />
+
+        <!-- Footer: thành tiền + mũi tên -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -114,22 +133,32 @@
             android:gravity="center_vertical">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/label_total"
+                android:text="@string/order_amount_label"
                 android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
+                android:textSize="12.5sp" />
 
             <TextView
                 android:id="@+id/tv_order_total"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
                 android:textColor="@color/tc_red"
-                android:textSize="15sp"
+                android:textSize="17sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
-                tools:text="1.700.000 ₫" />
+                tools:text="1.730.000 ₫" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="@color/tc_sand"
+                android:contentDescription="@null" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -8,6 +8,7 @@ import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.ActivityOrderSuccessBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.main.MainActivity;
+import com.tiredcity.app.ui.profile.OrderHistoryActivity;
 import com.tiredcity.app.utils.PriceUtils;
 
 public class OrderSuccessActivity extends BaseActivity {
@@ -39,16 +40,10 @@ public class OrderSuccessActivity extends BaseActivity {
         binding.btnContinue.setOnClickListener(v -> continueShopping());
     }
 
-    /** Chạy Lottie nếu có; nếu lỗi thì giữ ảnh check tĩnh làm dự phòng. */
+    /** Hiển thị huy hiệu tích ✓ tĩnh cho rõ ràng, gọn gàng. */
     private void setupSuccessAnimation() {
-        try {
-            binding.lottieSuccess.setAnimation("lottie_success.json");
-            binding.lottieSuccess.playAnimation();
-            binding.imgCheckFallback.setVisibility(View.GONE);
-        } catch (Exception e) {
-            binding.lottieSuccess.setVisibility(View.GONE);
-            binding.imgCheckFallback.setVisibility(View.VISIBLE);
-        }
+        binding.lottieSuccess.setVisibility(View.GONE);
+        binding.imgCheckFallback.setVisibility(View.VISIBLE);
     }
 
     private String paymentLabel(String method) {
@@ -63,9 +58,8 @@ public class OrderSuccessActivity extends BaseActivity {
     }
 
     private void viewOrder() {
-        Intent intent = new Intent(this, OrderTrackingActivity.class);
-        intent.putExtra("order_id", orderId);
-        startActivity(intent);
+        // Mở thẳng màn Lịch sử đơn hàng để khách thấy đơn vừa đặt trong danh sách.
+        startActivity(new Intent(this, OrderHistoryActivity.class));
         finish();
     }
 
