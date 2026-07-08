@@ -26,6 +26,9 @@ public class Event {
     private Object createdAt;
     private Object updatedAt;
 
+    /** Ảnh drawable nội bộ (ưu tiên hơn imageUrl khi > 0). Không lưu Firestore. */
+    private transient int localImageRes;
+
     public Event() {}
 
     public String getId() { return id; }
@@ -78,4 +81,7 @@ public class Event {
 
     public Object getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Object updatedAt) { this.updatedAt = updatedAt; }
+
+    public int getLocalImageRes() { return localImageRes; }
+    public void setLocalImageRes(int localImageRes) { this.localImageRes = localImageRes; }
 }

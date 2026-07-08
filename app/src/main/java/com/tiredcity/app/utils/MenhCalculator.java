@@ -186,8 +186,9 @@ public class MenhCalculator {
         }
     }
 
-    /** Màu riêng theo mệnh dùng cho tiêu đề + từ khoá highlight trong 3 mục "Sắc màu bản mệnh",
-     *  "Điểm xuyết đúng mệnh", "Hoạ tiết truyền đời" ở trang AI Styling. */
+    /** Màu riêng theo mệnh (Kim be, Mộc xanh lá, Thuỷ xanh lam, Hoả đỏ, Thổ vàng đất đậm) — dùng
+     *  cho tiêu đề, gạch chân và từ khoá highlight của các mục "Sắc màu ngũ hành", "Nghệ thuật
+     *  điểm xuyết", "Lời khuyên phong cách" ở trang AI Styling. */
     @ColorRes
     public static int getMenhTitleColorRes(String menh) {
         if (menh == null) return R.color.tc_menh_kim;
@@ -201,34 +202,14 @@ public class MenhCalculator {
         }
     }
 
-    /** Nền nhạt riêng theo mệnh — lớp nền phía sau mục "Sắc màu bản mệnh", "Điểm xuyết đúng mệnh",
-     *  "Hoạ tiết truyền đời" và thẻ "Lời khuyên phong cách" ở trang AI Styling. */
-    @ColorRes
-    public static int getMenhPanelBgColorRes(String menh) {
-        if (menh == null) return R.color.tc_menh_kim_bg;
-        switch (menh) {
-            case "Kim":  return R.color.tc_menh_kim_bg;
-            case "Mộc":  return R.color.tc_menh_moc_bg;
-            case "Thủy": return R.color.tc_menh_thuy_bg;
-            case "Hỏa":  return R.color.tc_menh_hoa_bg;
-            case "Thổ":  return R.color.tc_menh_tho_bg;
-            default:     return R.color.tc_menh_kim_bg;
-        }
-    }
-
-    /** Từ khoá cần highlight màu trong bài viết "Sắc màu bản mệnh", riêng theo từng mệnh. */
+    /** Từ khoá cần highlight màu trong bài viết "Sắc màu ngũ hành", riêng theo từng mệnh. */
     public static String[] getMenhColorKeywords(Context ctx, String menh) {
         return ctx.getResources().getStringArray(colorKeywordsArrayRes(menh));
     }
 
-    /** Từ khoá cần highlight màu trong bài viết "Điểm xuyết đúng mệnh", riêng theo từng mệnh. */
+    /** Từ khoá cần highlight màu trong bài viết "Nghệ thuật điểm xuyết", riêng theo từng mệnh. */
     public static String[] getMenhAccessoryKeywords(Context ctx, String menh) {
         return ctx.getResources().getStringArray(accessoryKeywordsArrayRes(menh));
-    }
-
-    /** Từ khoá cần highlight màu trong bài viết "Hoạ tiết truyền đời", riêng theo từng mệnh. */
-    public static String[] getMenhPatternKeywords(Context ctx, String menh) {
-        return ctx.getResources().getStringArray(patternKeywordsArrayRes(menh));
     }
 
     private static int colorKeywordsArrayRes(String menh) {
@@ -255,28 +236,16 @@ public class MenhCalculator {
         }
     }
 
-    private static int patternKeywordsArrayRes(String menh) {
-        if (menh == null) return R.array.aistyle_patterns_keywords_kim;
-        switch (menh) {
-            case "Kim":  return R.array.aistyle_patterns_keywords_kim;
-            case "Mộc":  return R.array.aistyle_patterns_keywords_moc;
-            case "Thủy": return R.array.aistyle_patterns_keywords_thuy;
-            case "Hỏa":  return R.array.aistyle_patterns_keywords_hoa;
-            case "Thổ":  return R.array.aistyle_patterns_keywords_tho;
-            default:     return R.array.aistyle_patterns_keywords_kim;
-        }
-    }
-
-    /** Ảnh minh hoạ cho mục "Màu hợp mệnh" (hiển thị nguyên khổ, không cắt xén), riêng theo từng
-     *  mệnh. */
+    /** Ảnh minh hoạ cho mục "Sắc màu ngũ hành" (hiển thị nguyên khổ, không cắt xén), riêng theo
+     *  từng mệnh — mỗi mệnh đúng một bảng màu. */
     public static int[] getMenhColorPhotos(String menh) {
         if (menh == null) return new int[0];
         switch (menh) {
-            case "Kim":  return new int[]{R.drawable.menh_kim_colors_1, R.drawable.menh_kim_colors_2};
-            case "Mộc":  return new int[]{R.drawable.menh_moc_colors_1, R.drawable.menh_moc_colors_2};
-            case "Thủy": return new int[]{R.drawable.menh_thuy_colors_1, R.drawable.menh_thuy_colors_2, R.drawable.menh_thuy_colors_3};
-            case "Hỏa":  return new int[]{R.drawable.menh_hoa_colors_1, R.drawable.menh_hoa_colors_2};
-            case "Thổ":  return new int[]{R.drawable.menh_tho_colors_1, R.drawable.menh_tho_colors_2};
+            case "Kim":  return new int[]{R.drawable.menh_kim_colors_1};
+            case "Mộc":  return new int[]{R.drawable.menh_moc_colors_1};
+            case "Thủy": return new int[]{R.drawable.menh_thuy_colors_1};
+            case "Hỏa":  return new int[]{R.drawable.menh_hoa_colors_1};
+            case "Thổ":  return new int[]{R.drawable.menh_tho_colors_1};
             default:     return new int[0];
         }
     }
@@ -308,14 +277,14 @@ public class MenhCalculator {
         }
     }
 
-    /** Ảnh minh hoạ cho mục "Phụ kiện hợp mệnh", riêng theo từng mệnh. */
+    /** Ảnh minh hoạ cho mục "Nghệ thuật điểm xuyết" (phụ kiện hợp mệnh), riêng theo từng mệnh. */
     public static int[] getMenhAccessoryPhotos(String menh) {
         if (menh == null) return new int[0];
         switch (menh) {
-            case "Kim":  return new int[]{R.drawable.menh_kim_accessories_1, R.drawable.menh_kim_accessories_2, R.drawable.menh_kim_accessories_3, R.drawable.menh_kim_accessories_4, R.drawable.menh_kim_accessories_5};
-            case "Mộc":  return new int[]{R.drawable.menh_moc_accessories_1, R.drawable.menh_moc_accessories_2, R.drawable.menh_moc_accessories_3, R.drawable.menh_moc_accessories_4, R.drawable.menh_moc_accessories_5};
-            case "Thủy": return new int[]{R.drawable.menh_thuy_accessories_1, R.drawable.menh_thuy_accessories_2, R.drawable.menh_thuy_accessories_3, R.drawable.menh_thuy_accessories_4};
-            case "Hỏa":  return new int[]{R.drawable.menh_hoa_accessories_1, R.drawable.menh_hoa_accessories_2, R.drawable.menh_hoa_accessories_3, R.drawable.menh_hoa_accessories_4, R.drawable.menh_hoa_accessories_5};
+            case "Kim":  return new int[]{R.drawable.menh_kim_accessories_1, R.drawable.menh_kim_accessories_3, R.drawable.menh_kim_accessories_4, R.drawable.menh_kim_accessories_5, R.drawable.menh_kim_accessories_6};
+            case "Mộc":  return new int[]{R.drawable.menh_moc_accessories_1, R.drawable.menh_moc_accessories_2, R.drawable.menh_moc_accessories_3, R.drawable.menh_moc_accessories_4, R.drawable.menh_moc_accessories_5, R.drawable.menh_moc_accessories_6};
+            case "Thủy": return new int[]{R.drawable.menh_thuy_accessories_1, R.drawable.menh_thuy_accessories_2, R.drawable.menh_thuy_accessories_3, R.drawable.menh_thuy_accessories_4, R.drawable.menh_thuy_accessories_5, R.drawable.menh_thuy_accessories_6};
+            case "Hỏa":  return new int[]{R.drawable.menh_hoa_accessories_1, R.drawable.menh_hoa_accessories_2, R.drawable.menh_hoa_accessories_3, R.drawable.menh_hoa_accessories_4, R.drawable.menh_hoa_accessories_5, R.drawable.menh_hoa_accessories_6};
             case "Thổ":  return new int[]{R.drawable.menh_tho_accessories_1, R.drawable.menh_tho_accessories_2, R.drawable.menh_tho_accessories_3, R.drawable.menh_tho_accessories_4, R.drawable.menh_tho_accessories_5, R.drawable.menh_tho_accessories_6};
             default:     return new int[0];
         }
@@ -330,32 +299,6 @@ public class MenhCalculator {
             case "Thủy": return ctx.getString(R.string.aistyle_accessories_text_thuy);
             case "Hỏa":  return ctx.getString(R.string.aistyle_accessories_text_hoa);
             case "Thổ":  return ctx.getString(R.string.aistyle_accessories_text_tho);
-            default:     return "";
-        }
-    }
-
-    /** Ảnh minh hoạ cho mục "Hoạ tiết hợp mệnh", riêng theo từng mệnh. */
-    public static int[] getMenhPatternPhotos(String menh) {
-        if (menh == null) return new int[0];
-        switch (menh) {
-            case "Kim":  return new int[]{R.drawable.menh_kim_patterns_1, R.drawable.menh_kim_patterns_2, R.drawable.menh_kim_patterns_3, R.drawable.menh_kim_patterns_4, R.drawable.menh_kim_patterns_5};
-            case "Mộc":  return new int[]{R.drawable.menh_moc_patterns_1, R.drawable.menh_moc_patterns_2, R.drawable.menh_moc_patterns_3, R.drawable.menh_moc_patterns_4, R.drawable.menh_moc_patterns_5, R.drawable.menh_moc_patterns_6, R.drawable.menh_moc_patterns_7};
-            case "Thủy": return new int[]{R.drawable.menh_thuy_patterns_1, R.drawable.menh_thuy_patterns_2, R.drawable.menh_thuy_patterns_3, R.drawable.menh_thuy_patterns_4};
-            case "Hỏa":  return new int[]{R.drawable.menh_hoa_patterns_1, R.drawable.menh_hoa_patterns_2, R.drawable.menh_hoa_patterns_3, R.drawable.menh_hoa_patterns_4, R.drawable.menh_hoa_patterns_5, R.drawable.menh_hoa_patterns_6, R.drawable.menh_hoa_patterns_7};
-            case "Thổ":  return new int[]{R.drawable.menh_tho_patterns_1, R.drawable.menh_tho_patterns_2, R.drawable.menh_tho_patterns_3, R.drawable.menh_tho_patterns_4, R.drawable.menh_tho_patterns_5, R.drawable.menh_tho_patterns_6};
-            default:     return new int[0];
-        }
-    }
-
-    /** Bài viết ngắn về hoạ tiết hợp mệnh, riêng theo từng mệnh. */
-    public static String getMenhPatternText(Context ctx, String menh) {
-        if (menh == null) return "";
-        switch (menh) {
-            case "Kim":  return ctx.getString(R.string.aistyle_patterns_text_kim);
-            case "Mộc":  return ctx.getString(R.string.aistyle_patterns_text_moc);
-            case "Thủy": return ctx.getString(R.string.aistyle_patterns_text_thuy);
-            case "Hỏa":  return ctx.getString(R.string.aistyle_patterns_text_hoa);
-            case "Thổ":  return ctx.getString(R.string.aistyle_patterns_text_tho);
             default:     return "";
         }
     }

@@ -59,7 +59,7 @@ public class WardrobeActivity extends BaseActivity {
             }
 
             @Override
-            public void onAddToCartClick(Product product) {
+            public void onAddToCartClick(Product product, View sourceView) {
                 // Bắt buộc chọn size -> Mở màn hình chi tiết
                 Intent intent = new Intent(WardrobeActivity.this, ProductDetailActivity.class);
                 intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());

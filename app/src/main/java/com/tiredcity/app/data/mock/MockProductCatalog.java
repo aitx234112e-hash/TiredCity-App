@@ -128,7 +128,8 @@ public final class MockProductCatalog {
         list.add(mockProduct(ctx, "AD02", R.string.mock_ad2_name, "ÁO DÀI", 1590000, "Xanh"));
         list.add(mockProduct(ctx, "AD03", R.string.mock_ad3_name, "ÁO DÀI", 1750000, "Vàng"));
         list.add(mockProduct(ctx, "AD04", R.string.mock_ad4_name, "ÁO DÀI", 1290000, "Hồng"));
-        list.add(mockProduct(ctx, "AD05", R.string.mock_ad5_name, "ÁO DÀI", 1450000, "Xanh", "Hồng"));
+        // Lục Thuỷ Hoàng Lan: chỉ còn Xanh Lam Ngọc Bích (đã gỡ khỏi Hồng Thạch Anh).
+        list.add(mockProduct(ctx, "AD05", R.string.mock_ad5_name, "ÁO DÀI", 1450000, "Xanh"));
         list.add(mockProduct(ctx, "AD06", R.string.mock_ad6_name, "ÁO DÀI", 1350000, "Hồng"));
 
         Product phanHoa = mockProduct(ctx, "AD07", R.string.mock_ad7_name, "ÁO DÀI", 1200000, "Trắng");
@@ -177,9 +178,11 @@ public final class MockProductCatalog {
 
     private static List<Product> buildYemDao(Context ctx) {
         List<Product> list = new ArrayList<>();
-        list.add(mockProduct(ctx, "yd1", R.string.mock_yd1_name, "YẾM ĐÀO", 2290000, "Đỏ"));
-        list.add(mockProduct(ctx, "yd2", R.string.mock_yd2_name, "YẾM ĐÀO", 2690000, "Xanh lá"));
-        list.add(mockProduct(ctx, "yd3", R.string.mock_yd3_name, "YẾM ĐÀO", 1990000, "Vàng", "Đỏ"));
+        // Đỏ Cẩm Thạch chỉ còn Trúc Lục Khuê Phòng; Sương Mai Bạch Vũ chuyển sang Xanh Lục Bảo,
+        // Yên Hoa Bạch Liên gỡ khỏi Đỏ (chỉ còn Vàng Hổ Phách).
+        list.add(mockProduct(ctx, "yd1", R.string.mock_yd1_name, "YẾM ĐÀO", 2290000, "Xanh lá"));
+        list.add(mockProduct(ctx, "yd2", R.string.mock_yd2_name, "YẾM ĐÀO", 2690000, "Đỏ"));
+        list.add(mockProduct(ctx, "yd3", R.string.mock_yd3_name, "YẾM ĐÀO", 1990000, "Vàng"));
         list.add(mockProduct(ctx, "yd4", R.string.mock_yd4_name, "YẾM ĐÀO", 2350000, "Xanh lá"));
         list.add(mockProduct(ctx, "yd5", R.string.mock_yd5_name, "YẾM ĐÀO", 2450000, "Vàng"));
         list.add(mockProduct(ctx, "yd6", R.string.mock_yd6_name, "YẾM ĐÀO", 2890000, "Hồng", "Xanh lá"));

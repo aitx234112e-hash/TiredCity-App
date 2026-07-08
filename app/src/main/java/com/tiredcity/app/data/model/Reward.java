@@ -11,23 +11,18 @@ public class Reward {
     private final String title;
     private final String subtitle;
     @DrawableRes private final int bannerRes;
-    private final int points;
     private final String code;
+    private final String validity;
+    private final String description;
 
-    public Reward(String title, String subtitle, @DrawableRes int bannerRes, int points) {
-        this(title, subtitle, bannerRes, points, null);
-    }
-
-    public Reward(String title, String subtitle, @DrawableRes int bannerRes, int points, String code) {
+    public Reward(String title, String subtitle, @DrawableRes int bannerRes,
+                  String code, String validity, String description) {
         this.title = title;
         this.subtitle = subtitle;
         this.bannerRes = bannerRes;
-        this.points = points;
         this.code = code;
-    }
-
-    public String getCode() {
-        return code;
+        this.validity = validity;
+        this.description = description;
     }
 
     public String getTitle() {
@@ -43,7 +38,18 @@ public class Reward {
         return bannerRes;
     }
 
-    public int getPoints() {
-        return points;
+    /** Mã dùng để sinh mã vạch ở màn "Sử dụng ngay". */
+    public String getCode() {
+        return code;
+    }
+
+    /** Khoảng thời gian hiệu lực, ví dụ "01/07/2026 - 31/07/2026". */
+    public String getValidity() {
+        return validity;
+    }
+
+    /** Nội dung chi tiết hiển thị ở màn Chi tiết voucher. */
+    public String getDescription() {
+        return description;
     }
 }

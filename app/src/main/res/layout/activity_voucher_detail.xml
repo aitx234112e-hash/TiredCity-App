@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary"
+    android:background="@color/tc_red"
     android:fitsSystemWindows="true">
 
-    <!-- ── Top bar ─────────────────────────────────────────────────────── -->
+    <!-- ── Top bar đỏ ──────────────────────────────────────────────────── -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/bg_primary"
+        android:background="@color/tc_red"
         android:paddingHorizontal="8dp">
 
         <ImageView
@@ -24,7 +24,7 @@
             android:contentDescription="@string/cd_back"
             android:padding="8dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/text_primary" />
+            app:tint="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             android:layout_gravity="center"
             android:letterSpacing="0.06"
             android:text="@string/reward_title"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
             android:contentDescription="@string/cd_share"
             android:padding="8dp"
             android:src="@android:drawable/ic_menu_share"
-            app:tint="@color/text_primary" />
+            app:tint="@color/white" />
     </FrameLayout>
 
     <!-- ── Nội dung cuộn ───────────────────────────────────────────────── -->
@@ -53,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@color/white"
         android:scrollbars="none">
 
         <LinearLayout
@@ -61,17 +62,18 @@
             android:orientation="vertical"
             android:paddingBottom="24dp">
 
-            <!-- Banner áo dài / Nhật Bình -->
-            <ImageView
+            <!-- Banner ưu đãi: hiện trọn ảnh vì chữ nằm trong ảnh -->
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_banner"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
-                android:background="@color/bg_subtle"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 android:contentDescription="@null"
-                tools:src="@drawable/banner_2" />
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Medium"
+                tools:src="@drawable/reward_tri_an" />
 
             <TextView
                 android:id="@+id/tv_title"
@@ -84,6 +86,16 @@
                 android:textStyle="bold"
                 android:lineSpacingExtra="2dp"
                 tools:text="Voucher Tri Ân" />
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                tools:text="Ra mắt Bộ Sưu Tập Nhật Bình" />
 
             <!-- Hiệu lực -->
             <LinearLayout
@@ -114,32 +126,15 @@
                     android:layout_marginStart="14dp"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_validity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/voucher_detail_validity"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_voucher_days_chip"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="@string/voucher_detail_days_left"
-                            android:textColor="@color/text_primary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                        android:text="@string/voucher_detail_validity"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="01/07/2026 - 31/07/2026" />
 
                     <TextView
                         android:layout_width="wrap_content"

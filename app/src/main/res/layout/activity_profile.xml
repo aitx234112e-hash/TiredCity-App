@@ -19,9 +19,11 @@
         app:titleTextColor="@color/white"
         app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
 
+    <!-- 0dp + weight=1: nhường chỗ cho thanh nav lơ lửng ở dưới, thay vì chiếm hết chiều cao. -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -625,4 +627,14 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Thanh nav lơ lửng — giữ nguyên ở màn "Tôi" thay vì biến mất như trước. -->
+    <include
+        android:id="@+id/bottomNavBar"
+        layout="@layout/view_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
 </LinearLayout>

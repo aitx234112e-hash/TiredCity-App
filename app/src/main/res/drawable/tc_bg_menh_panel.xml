@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Nền thẻ nhạt phía sau mục "Sắc màu bản mệnh" / "Hoạ tiết truyền đời" — màu được tô lại bằng
-     code theo đúng mệnh đang xem (xem AiStylingActivity — setTint trên background này). -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="@color/tc_menh_kim_bg" />
-    <corners android:radius="@dimen/tc_radius_lg" />
-</shape>

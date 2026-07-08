@@ -27,6 +27,11 @@ public class UserProfile {
     @SerializedName("province")
     private String province;
 
+    /**
+     * Quận/Huyện — cấp hành chính này đã bị bỏ từ 01/07/2025, không còn ô nhập nào ghi vào nữa.
+     * Giữ lại field để hồ sơ CŨ đã lưu trên Firestore vẫn đọc được và {@link #getFullAddress()}
+     * vẫn dựng đúng địa chỉ cũ; hồ sơ lưu mới luôn để rỗng.
+     */
     @SerializedName("district")
     private String district;
 

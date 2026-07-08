@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Một đoạn văn trong thân bài; từ khoá được in đậm bởi PostDetailActivity -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_paragraph"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:textColor="@color/text_primary"
+    android:textSize="15.5sp"
+    android:lineSpacingExtra="7dp"
+    tools:text="Nội dung đoạn văn…" />

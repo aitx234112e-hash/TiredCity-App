@@ -146,6 +146,23 @@
         <!-- Dòng tiêu đề nhỏ ("VUI LÒNG NHẬP NGÀY SINH...") mặc định quá nhỏ & mờ,
              gần như không đọc được → phóng to + màu đậm cho rõ. -->
         <item name="materialCalendarHeaderTitle">@style/Widget.TC.DatePicker.HeaderTitle</item>
+
+        <!-- Nút HỦY / OK dưới lịch (mtrl_picker_actions.xml lấy style từ buttonBar*ButtonStyle).
+             Chốt màu chữ bằng selector thay vì để Material tự suy từ colorPrimary: chữ ĐỎ khi
+             ngày sinh hợp lệ (nút enabled), xám mờ khi chưa chọn được. Riêng OK còn có nền
+             đỏ nhạt để nổi hơn nút HỦY. -->
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.TC.DatePicker.Button.Ok</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.TC.DatePicker.Button</item>
+    </style>
+
+    <style name="Widget.TC.DatePicker.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/tc_date_picker_button_text</item>
+        <item name="android:textStyle">bold</item>
+        <item name="rippleColor">@color/tc_red</item>
+    </style>
+
+    <style name="Widget.TC.DatePicker.Button.Ok">
+        <item name="backgroundTint">@color/tc_date_picker_ok_bg</item>
     </style>
 
     <style name="Widget.TC.DatePicker.DayTextView" parent="Widget.Material3.MaterialCalendar.DayTextView">

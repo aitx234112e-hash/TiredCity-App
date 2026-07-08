@@ -34,7 +34,9 @@ public class ArticleActivity extends BaseActivity {
             String title = article.getTitleVi() != null ? article.getTitleVi() : article.getTitle();
             if (HatBoiMagazineActivity.isFeatureArticle(title)) {
                 startActivity(new android.content.Intent(this, HatBoiMagazineActivity.class));
+                return;
             }
+            PostDetailActivity.start(this, PostContent.forArticle(article, getString(R.string.home_section_news)));
         });
 
         binding.swipeRefresh.setColorSchemeColors(getColor(R.color.tc_red));
@@ -67,6 +69,13 @@ public class ArticleActivity extends BaseActivity {
                 a.setTitleVi(HatBoiMagazineActivity.FEATURE_TITLE);
                 a.setAuthor("Tạp chí Văn Hóa");
                 a.setLocalImageRes(R.drawable.hb_cover);
+                continue;
+            }
+            // Bài chưa có ảnh riêng vẫn cần ảnh vuông — lấy từ kho ảnh nội bộ,
+            // cùng ảnh mà trang chi tiết sẽ dùng làm ảnh bìa.
+            boolean hasRemoteImage = a.getImageUrl() != null && !a.getImageUrl().isEmpty();
+            if (!hasRemoteImage && a.getLocalImageRes() == 0) {
+                a.setLocalImageRes(PostContent.heroForTitle(title));
             }
         }
         adapter.updateArticles(articles);

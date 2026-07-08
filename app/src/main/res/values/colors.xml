@@ -148,6 +148,8 @@
     <color name="tc_on_red_secondary">#FFD6D8</color>
     <color name="tc_on_red_divider">#33FFFFFF</color>
     <color name="tc_on_red_container">#1AFFFFFF</color>
+    <!-- Trắng 60% — dots chưa chọn khi nổi đè trên ảnh (chi tiết sản phẩm) -->
+    <color name="tc_on_red_60">#99FFFFFF</color>
 
     <!-- ─── Auth (nền đỏ son) ───────────────────────────────────────── -->
     <color name="tc_auth_bg">#A80D15</color>
@@ -170,12 +172,32 @@
     <color name="tc_divider">#1F1A1208</color>
     <color name="tc_stroke">#D9C9AC</color>
 
+    <!-- ─── Giỏ hàng: nền trắng nên cần viền/vạch trung tính rất nhạt ─ -->
+    <color name="tc_cart_bg">#FFFFFF</color>          <!-- nền trang giỏ hàng -->
+    <color name="tc_cart_card_stroke">#EDE7DD</color> <!-- viền thẻ trắng trên nền trắng -->
+    <color name="tc_cart_divider">#F1ECE4</color>     <!-- vạch giữa 2 sản phẩm trong cùng thẻ -->
+    <color name="tc_cart_pill_bg">#F7F2EA</color>     <!-- nền pill phân loại (size/màu) -->
+    <color name="tc_cart_header_dot">#F4C430</color>  <!-- chấm báo tin nhắn trên header đỏ -->
+    <color name="tc_cart_secure_note">#8E7B62</color> <!-- dòng "Thanh toán an toàn & bảo mật" -->
+
     <!-- ─── Translucent surfaces ────────────────────────────────────── -->
     <color name="tc_translucent_dark">#08000000</color>
     <color name="tc_translucent_light">#40FFFFFF</color>
 
     <!-- ─── Search box ──────────────────────────────────────────────── -->
     <color name="tc_search_box_bg">#F5EDE3</color>
+
+    <!-- ─── Trang Ưu đãi: thẻ voucher nền trắng mờ ──────────────────── -->
+    <color name="tc_reward_card_bg">#FCFAF7</color>       <!-- trắng ngà, chỉ hơi tách khỏi nền -->
+    <color name="tc_reward_card_stroke">#0F000000</color> <!-- viền đen 6% -->
+
+    <!-- ─── Thẻ Sự kiện / Tạp chí: viền đỏ nhạt ─────────────────────── -->
+    <color name="tc_event_card_stroke">#40A80D15</color> <!-- viền đỏ son 25% -->
+
+    <!-- ─── Trang Ưu đãi: tab bar nền đen ───────────────────────────── -->
+    <color name="tc_reward_tab_bg">#0F0A05</color>
+    <color name="tc_reward_tab_text">#99FFFFFF</color>
+    <color name="tc_reward_tab_text_selected">#FFFFFFFF</color>
 
     <!-- ─── Bottom nav icons (thanh nổi, tông đỏ) ───────────────────── -->
     <color name="tc_nav_icon_inactive">#80A80D15</color>
@@ -225,12 +247,8 @@
     <color name="tc_menh_hoa">#A80D15</color>  <!-- đỏ -->
     <color name="tc_menh_tho">#8C5A1E</color>  <!-- vàng đất đậm -->
 
-    <!-- ─── Nền nhạt riêng theo mệnh (lớp nền phía sau mục "Sắc màu bản mệnh", "Điểm xuyết đúng
-         mệnh", "Hoạ tiết truyền đời" và thẻ "Lời khuyên phong cách") — cùng tông với tc_menh_* ở
-         trên nhưng nhạt hẳn để làm nền. ─── -->
-    <color name="tc_menh_kim_bg">#F3ECDD</color>   <!-- be nhạt -->
-    <color name="tc_menh_moc_bg">#D6E0C8</color>  <!-- xanh rêu nhạt, cùng tông với tc_menh_moc (#124D1C) -->
-    <color name="tc_menh_thuy_bg">#DEE8F3</color> <!-- xanh lam nhạt -->
-    <color name="tc_menh_hoa_bg">#FBE1DE</color>  <!-- đỏ nhạt -->
-    <color name="tc_menh_tho_bg">#F6E4C6</color>  <!-- vàng đất nhạt -->
+    <!-- Nền thẻ "Lời khuyên phong cách" (trang AI Styling): trắng mờ nhất có thể — chỉ 15% alpha,
+         vừa đủ tách khỏi nền kem bg_primary (#F5EDE3) mà gần như không thấy viền. Các mục "Sắc màu
+         bản mệnh" / "Điểm xuyết đúng mệnh" nay để nền trang, không còn nền màu theo mệnh. -->
+    <color name="tc_tips_panel_bg">#26FFFFFF</color>
 </resources>

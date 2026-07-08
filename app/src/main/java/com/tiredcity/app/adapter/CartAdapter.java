@@ -30,6 +30,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private OnRemoveListener removeListener;
     private OnCartItemActionListener actionListener;
     private Runnable onCartChangeListener;
+    /** Bật khi khách bấm "Sửa" trên header — chỉ khi đó mới hiện nút thùng rác. */
+    private boolean editMode;
 
     /** Constructor used by CartActivity (lambda remove). */
     public CartAdapter(List<CartItem> cartItems, OnRemoveListener removeListener) {
@@ -51,6 +53,15 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         this.onCartChangeListener = listener;
     }
 
+    /** "Sửa" ở header bật/tắt nút xóa trên từng dòng. */
+    public void setEditMode(boolean editMode) {
+        if (this.editMode == editMode) return;
+        this.editMode = editMode;
+        notifyDataSetChanged();
+    }
+
+    public boolean isEditMode() { return editMode; }
+
     public void updateItems(List<CartItem> newItems) {
         this.cartItems = newItems;
         notifyDataSetChanged();
@@ -67,7 +78,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CartItem item = cartItems.get(position);
-        holder.bind(item, removeListener, actionListener, onCartChangeListener);
+        boolean isLast = position == getItemCount() - 1;
+        holder.bind(item, removeListener, actionListener, onCartChangeListener, editMode, isLast);
     }
 
     @Override
@@ -82,6 +94,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         final TextView   btnDecrease, btnIncrease;
         final ImageButton btnRemove;
         final CheckBox   cbSelect;
+        final View       vDivider;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,13 +108,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             btnIncrease = itemView.findViewById(R.id.btn_increase);
             btnRemove   = itemView.findViewById(R.id.btn_remove);
             cbSelect    = itemView.findViewById(R.id.cb_select);
+            vDivider    = itemView.findViewById(R.id.v_divider);
         }
 
         void bind(CartItem item, OnRemoveListener removeListener, OnCartItemActionListener actionListener,
-                  Runnable onCartChangeListener) {
+                  Runnable onCartChangeListener, boolean editMode, boolean isLast) {
             if (item.getProduct() == null) return;
 
             tvName.setText(item.getProduct().getName());
+            vDivider.setVisibility(isLast ? View.GONE : View.VISIBLE);
+            btnRemove.setVisibility(editMode ? View.VISIBLE : View.GONE);
 
             cbSelect.setOnCheckedChangeListener(null);
             cbSelect.setChecked(item.isSelected());

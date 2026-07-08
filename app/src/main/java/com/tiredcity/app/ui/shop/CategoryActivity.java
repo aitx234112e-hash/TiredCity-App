@@ -4,21 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.tiredcity.app.R;
 import com.tiredcity.app.adapter.ProductAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
 import com.tiredcity.app.data.local.FavoritesLocalStore;
 import com.tiredcity.app.data.mock.MockProductCatalog;
+import com.tiredcity.app.data.model.CartItem;
 import com.tiredcity.app.data.model.Product;
 import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.databinding.ActivityCategoryBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.CartActivity;
+import com.tiredcity.app.utils.CartFlyAnimation;
 import com.tiredcity.app.utils.ColorTaxonomy;
 import com.tiredcity.app.utils.Constants;
 
@@ -44,6 +50,13 @@ public class CategoryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Thanh tiêu đề nền đỏ chạy liền lên status bar (icon pin/wifi màu sáng cho đủ tương phản);
+        // root layout fitsSystemWindows nên nội dung vẫn nằm hẳn dưới status bar.
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.tc_red));
+        WindowInsetsControllerCompat insets =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        insets.setAppearanceLightStatusBars(false);
 
         categoryId = getIntent().getStringExtra(EXTRA_CATEGORY_ID);
         String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
@@ -88,10 +101,8 @@ public class CategoryActivity extends BaseActivity {
             }
 
             @Override
-            public void onAddToCartClick(Product product) {
-                Intent intent = new Intent(CategoryActivity.this, ProductDetailActivity.class);
-                intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
-                startSmoothActivity(intent);
+            public void onAddToCartClick(Product product, View sourceView) {
+                quickAddToCart(product, sourceView);
             }
         });
 
@@ -117,7 +128,8 @@ public class CategoryActivity extends BaseActivity {
 
     private void highlightViewMode() {
         int active = ContextCompat.getColor(this, R.color.tc_red);
-        int inactive = ContextCompat.getColor(this, R.color.tc_stroke);
+        // Nền trang là trắng nên tc_stroke (kem) gần như tàng hình — dùng xám chữ phụ.
+        int inactive = ContextCompat.getColor(this, R.color.tc_text_secondary);
         tint(binding.btnView1, spanCount == 1 ? active : inactive);
         tint(binding.btnView2, spanCount == 2 ? active : inactive);
         tint(binding.btnView3, spanCount == 3 ? active : inactive);
@@ -131,6 +143,37 @@ public class CategoryActivity extends BaseActivity {
         binding.btnFilter.setOnClickListener(v -> {
             // Future implementation
         });
+    }
+
+    /** Thêm nhanh vào giỏ từ lưới sản phẩm kèm hiệu ứng ảnh bay vào icon giỏ. */
+    private void quickAddToCart(Product product, View sourceView) {
+        // Sản phẩm bắt buộc chọn size (áo dài) thì mở chi tiết để chọn, không thêm mù.
+        if (product.getSizes() != null && !product.getSizes().isEmpty()) {
+            Intent intent = new Intent(this, ProductDetailActivity.class);
+            intent.putExtra(Constants.EXTRA_PRODUCT_ID, product.getId());
+            startSmoothActivity(intent);
+            Toast.makeText(this, "Vui lòng chọn Size trước khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new CartLocalStore(this).addItem(new CartItem(product, 1));
+        updateCartBadge();
+
+        final String image = product.getFirstImage();
+        CartFlyAnimation.fly(this, sourceView, binding.btnCart, target -> {
+            Object loadTarget = image;
+            if (image != null && !image.isEmpty()
+                    && !image.startsWith("http") && !image.startsWith("content")) {
+                int resId = getResources().getIdentifier(image, "drawable", getPackageName());
+                if (resId != 0) loadTarget = resId;
+            }
+            Glide.with(this)
+                    .load(loadTarget)
+                    .centerCrop()
+                    .placeholder(R.color.bg_subtle)
+                    .error(R.drawable.ic_wardrobe)
+                    .into(target);
+        });
+        Toast.makeText(this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
     }
 
     private void updateCartBadge() {

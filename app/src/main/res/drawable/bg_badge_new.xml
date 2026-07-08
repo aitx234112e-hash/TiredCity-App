@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tem "Mới" cạnh hàng voucher — nền đỏ son, bo góc nhẹ -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_red" />
+    <corners android:radius="5dp" />
+</shape>

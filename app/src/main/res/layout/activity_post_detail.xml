@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trang chi tiết dùng chung cho bài Sự kiện và bài Tin tức -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/tc_red"
+    android:fitsSystemWindows="true">
+
+    <!-- ── Header đỏ, chữ trắng, viết hoa, căn giữa ─────────────────────── -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/tc_red"
+        android:paddingHorizontal="8dp">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="start|center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            app:tint="@color/white"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/cd_back" />
+
+        <TextView
+            android:id="@+id/tv_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04"
+            android:fontFamily="sans-serif-medium"
+            tools:text="SỰ KIỆN" />
+    </FrameLayout>
+
+    <!-- ── Nội dung, nền trắng ──────────────────────────────────────────── -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Ảnh bìa bài viết -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_hero"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Large"
+                tools:src="@drawable/tc_post_1" />
+
+            <!-- Nhãn chuyên đề (chỉ bài đặc biệt) -->
+            <TextView
+                android:id="@+id/tv_kicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/hb_pill_gold"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:textColor="@color/tc_red"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06"
+                android:visibility="gone"
+                tools:text="CHUYÊN ĐỀ · TẠP CHÍ VĂN HÓA SỐ 27"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_post_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:lineSpacingExtra="4dp"
+                android:fontFamily="serif"
+                tools:text="Triển lãm Việt Phục Xuân 2025" />
+
+            <TextView
+                android:id="@+id/tv_post_meta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                tools:text="Tired City · 20/05/2025" />
+
+            <View
+                android:layout_width="44dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="14dp"
+                android:background="@color/brand_gold" />
+
+            <!-- Khối thông tin nhanh (sự kiện): thời gian + địa điểm -->
+            <LinearLayout
+                android:id="@+id/box_facts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_reward_card"
+                android:padding="14dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_fact_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    tools:text="🗓  25/05/2025" />
+
+                <TextView
+                    android:id="@+id/tv_fact_place"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    tools:text="📍  Nhà Văn hoá Thanh Niên, TP.HCM" />
+            </LinearLayout>
+
+            <!-- Thân bài dạng khối: tiêu đề mục / đoạn văn / ảnh xen giữa.
+                 Chỉ bài đặc biệt dùng khối này; bài thường dùng tv_post_body. -->
+            <LinearLayout
+                android:id="@+id/body_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_post_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15.5sp"
+                android:lineSpacingExtra="7dp"
+                tools:text="Nội dung bài viết…" />
+
+            <!-- Câu trích dẫn nổi bật (chỉ bài đặc biệt) -->
+            <LinearLayout
+                android:id="@+id/box_quote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical"
+                android:background="@drawable/post_quote_rule"
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_quote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:textColor="@color/tc_red"
+                    android:textSize="17sp"
+                    android:textStyle="italic"
+                    android:lineSpacingExtra="4dp"
+                    tools:text="“Mỗi nét vẽ và màu sắc đều có ý nghĩa biểu tượng.”" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_gallery_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:text="@string/post_detail_gallery"
+                android:textAllCaps="true"
+                android:textColor="@color/tc_red"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <!-- Ảnh minh hoạ / trang tạp chí — nhân bản item_post_gallery -->
+            <LinearLayout
+                android:id="@+id/gallery_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/tv_credit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/text_hint"
+                android:textSize="11.5sp"
+                android:visibility="gone"
+                tools:text="Tư liệu: Tạp chí Văn Hóa số 27"
+                tools:visibility="visible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

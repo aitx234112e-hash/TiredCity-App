@@ -19,10 +19,9 @@ import java.util.List;
 
 /**
  * Một tab trong trang "Ưu đãi".
- * - Tab có voucher (TẤT CẢ, SINH NHẬT) → hiển thị danh sách thẻ voucher.
- * - Tab chưa có voucher (LAST CHANCE, NỔI BẬT) → hiển thị empty state.
+ * Mỗi voucher có banner riêng, nội dung chi tiết riêng và mã vạch riêng.
  */
-public class RewardListFragment extends Fragment {
+public class RewardListFragment extends Fragment implements RewardAdapter.OnRewardClickListener {
 
     private static final String ARG_CATEGORY = "arg_category";
 
@@ -66,7 +65,7 @@ public class RewardListFragment extends Fragment {
     private void initView() {
         binding.rvRewards.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvRewards.setAdapter(adapter);
-        adapter.setOnRewardClickListener(this::openVoucherDetail);
+        adapter.setOnRewardClickListener(this);
 
         binding.btnExplore.setOnClickListener(v ->
                 Toast.makeText(requireContext(), R.string.reward_empty_title, Toast.LENGTH_SHORT).show());
@@ -92,37 +91,78 @@ public class RewardListFragment extends Fragment {
         binding.layoutEmpty.setVisibility(View.VISIBLE);
     }
 
-    /** Mở trang chi tiết voucher (không dùng hạng thành viên). */
-    private void openVoucherDetail(Reward reward) {
+    /** Bấm vào thẻ → xem thông tin chi tiết của ưu đãi. */
+    @Override
+    public void onOpenDetail(Reward reward) {
         Intent intent = new Intent(requireContext(), VoucherDetailActivity.class);
         intent.putExtra(VoucherDetailActivity.EXTRA_TITLE, reward.getTitle());
         intent.putExtra(VoucherDetailActivity.EXTRA_SUBTITLE, reward.getSubtitle());
         intent.putExtra(VoucherDetailActivity.EXTRA_BANNER, reward.getBannerRes());
         intent.putExtra(VoucherDetailActivity.EXTRA_CODE, reward.getCode());
+        intent.putExtra(VoucherDetailActivity.EXTRA_VALIDITY, reward.getValidity());
+        intent.putExtra(VoucherDetailActivity.EXTRA_DESC, reward.getDescription());
+        startActivity(intent);
+    }
+
+    /** Bấm "Sử dụng ngay" ngay trên thẻ → mở mã vạch của đúng voucher đó. */
+    @Override
+    public void onUseNow(Reward reward) {
+        Intent intent = new Intent(requireContext(), BarcodeActivity.class);
+        intent.putExtra(BarcodeActivity.EXTRA_CODE, reward.getCode());
+        intent.putExtra(BarcodeActivity.EXTRA_TITLE, reward.getTitle());
         startActivity(intent);
     }
 
     /** Dữ liệu mẫu offline cho bản demo giao diện. */
     private List<Reward> buildRewards(int category) {
         List<Reward> list = new ArrayList<>();
+
+        // SINH NHẬT — Birthday TO YOU.
         if (category == CATEGORY_ALL || category == CATEGORY_BIRTHDAY) {
             list.add(new Reward(
                     getString(R.string.reward_voucher_birthday_title),
                     getString(R.string.reward_voucher_birthday_subtitle),
-                    R.drawable.banner_1,
-                    0,
-                    getString(R.string.barcode_code_birthday)));
+                    R.drawable.reward_birthday,
+                    getString(R.string.barcode_code_birthday),
+                    getString(R.string.reward_voucher_birthday_validity),
+                    getString(R.string.reward_voucher_birthday_desc)));
         }
-        // Voucher Tri Ân — BST Áo Dài / Nhật Bình (không dùng hạng thành viên).
+
+        // LAST CHANCE — sắp hết hạn: giảm 30% áo dài lụa & mua 2 tặng 1.
+        if (category == CATEGORY_ALL || category == CATEGORY_LAST_CHANCE) {
+            list.add(new Reward(
+                    getString(R.string.reward_voucher_sale30_title),
+                    getString(R.string.reward_voucher_sale30_subtitle),
+                    R.drawable.reward_giam30,
+                    getString(R.string.barcode_code_sale30),
+                    getString(R.string.reward_voucher_sale30_validity),
+                    getString(R.string.reward_voucher_sale30_desc)));
+            list.add(new Reward(
+                    getString(R.string.reward_voucher_buy2get1_title),
+                    getString(R.string.reward_voucher_buy2get1_subtitle),
+                    R.drawable.reward_mua2tang1,
+                    getString(R.string.barcode_code_buy2get1),
+                    getString(R.string.reward_voucher_buy2get1_validity),
+                    getString(R.string.reward_voucher_buy2get1_desc)));
+        }
+
+        // NỔI BẬT — Voucher Tri Ân & quà tặng độc quyền cho đơn trên 1 triệu.
         if (category == CATEGORY_ALL || category == CATEGORY_FEATURED) {
             list.add(new Reward(
                     getString(R.string.reward_voucher_tri_an_title),
                     getString(R.string.reward_voucher_tri_an_subtitle),
-                    R.drawable.banner_2,
-                    0,
-                    getString(R.string.barcode_code_tri_an)));
+                    R.drawable.reward_tri_an,
+                    getString(R.string.barcode_code_tri_an),
+                    getString(R.string.reward_voucher_tri_an_validity),
+                    getString(R.string.voucher_detail_desc)));
+            list.add(new Reward(
+                    getString(R.string.reward_voucher_gift1m_title),
+                    getString(R.string.reward_voucher_gift1m_subtitle),
+                    R.drawable.reward_qua_tang,
+                    getString(R.string.barcode_code_gift1m),
+                    getString(R.string.reward_voucher_gift1m_validity),
+                    getString(R.string.reward_voucher_gift1m_desc)));
         }
-        // LAST CHANCE → để trống (empty state).
         return list;
     }
 

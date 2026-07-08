@@ -1,82 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<!-- Thẻ sự kiện: nền trắng mờ, ảnh full khổ bo góc, chữ nằm phía dưới (giống thẻ Ưu đãi).
+     Địa điểm & ngày diễn ra đứng sau một icon tròn nền đỏ nhạt. -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_event_card"
+    android:foreground="?attr/selectableItemBackground"
+    android:padding="12dp"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="10dp"
-    app:cardBackgroundColor="@color/bg_surface"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="24dp">
 
+    <!-- Ảnh bìa: hiện trọn ảnh, bo góc tròn -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_event_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Medium"
+        tools:src="@drawable/tc_post_1" />
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:id="@+id/tv_event_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="@color/tc_red"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        tools:text="Triển lãm Việt Phục Xuân 2025" />
+
+    <!-- Địa điểm — icon tròn nền đỏ nhạt -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp">
 
-        <!-- Cover image -->
         <ImageView
-            android:id="@+id/iv_event_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
+            android:id="@+id/iv_event_location_icon"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/tc_bg_circle_red_pale"
+            android:padding="8dp"
             android:scaleType="fitCenter"
-            android:background="@color/bg_subtle" />
+            android:src="@drawable/ic_pin"
+            app:tint="@color/tc_red"
+            android:contentDescription="@null" />
 
-        <!-- Info section -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_event_location"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
-
-            <TextView
-                android:id="@+id/tv_event_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:lineSpacingExtra="2dp"
-                android:layout_marginBottom="6dp"
-                tools:text="Triển lãm Việt Phục Xuân 2025" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📍 "
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tv_event_location"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    tools:text="Nhà Văn hoá Thanh Niên, TP.HCM" />
-
-                <TextView
-                    android:id="@+id/tv_event_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/brand_gold"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    tools:text="25/05/2025" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            tools:text="Nhà Văn hoá Thanh Niên, TP.HCM" />
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+
+    <!-- Ngày diễn ra — icon tròn nền đỏ nhạt -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/tc_bg_circle_red_pale"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_calendar"
+            app:tint="@color/tc_red"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/tv_event_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            tools:text="25/05/2025" />
+
+        <!-- Nút Xem chi tiết — cùng hàng với ngày -->
+        <Button
+            android:id="@+id/btn_event_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/tc_btn_red_pill"
+            android:paddingHorizontal="22dp"
+            android:text="@string/action_view_detail"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:stateListAnimator="@null" />
+    </LinearLayout>
+</LinearLayout>

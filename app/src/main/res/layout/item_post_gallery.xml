@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Một ảnh minh hoạ của trang chi tiết bài viết.
+
+  Hai chế độ, do PostDetailActivity quyết định theo việc ảnh có chú thích hay không:
+  · Có chú thích  → "trang tạp chí": khung viền vàng kim, ảnh giữ nguyên tỉ lệ (fitCenter),
+                    kèm dòng chú thích biên tập bên dưới.
+  · Không chú thích → ảnh minh hoạ thường: cắt vuông vắn 200dp (centerCrop), không khung.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/tc_space_lg"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/frame_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/hb_card_frame"
+        android:padding="5dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:contentDescription="@null"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Medium"
+            tools:src="@drawable/hb_history" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tc_space_sm"
+        android:lineSpacingExtra="3dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp"
+        tools:text="Trang 05–06 · Lịch sử Hát Bội" />
+</LinearLayout>

@@ -41,7 +41,7 @@ const MASTER = [
   ['ao-dai', 'clothing', 'Lam Lụa Cố Trạch', 'Xanh lam', 1590000],
   ['ao-dai', 'clothing', 'Kim Vũ Phong Hoa', 'Vàng', 1750000],
   ['ao-dai', 'clothing', 'Hồng Trần Mộc Dược', 'Hồng', 1290000],
-  ['ao-dai', 'clothing', 'Lục Thuỷ Hoàng Lan', 'Xanh - Hồng', 1450000],
+  ['ao-dai', 'clothing', 'Lục Thuỷ Hoàng Lan', 'Xanh lam', 1450000], // gỡ khỏi nhóm Hồng Thạch Anh
   ['ao-dai', 'clothing', 'Nguyệt Cầm Phấn Hồng', 'Hồng', 1350000],
   ['ao-dai', 'clothing', 'Phấn Hoa Cổ Điển', 'Trắng', 1200000], // giá sheet trống → theo mock
   // ── NHẬT BÌNH ──
@@ -70,9 +70,11 @@ const MASTER = [
   ['giao-linh', 'clothing', 'Cam Giao Lĩnh Bào', 'Đỏ thẫm hoa văn vàng kim', 1890000],
   ['giao-linh', 'clothing', 'Hắc Kim Mẫu Đơn', 'Đỏ đô thẫm', 2690000],
   // ── YẾM ĐÀO ──
-  ['yem-dao', 'clothing', 'Sương Mai Bạch Vũ', 'Đỏ đậm', 2290000],
-  ['yem-dao', 'clothing', 'Trúc Lục Khuê Phòng', 'Xanh lá', 2690000],
-  ['yem-dao', 'clothing', 'Yên Hoa Bạch Liên', 'Vàng đỏ', 1990000],
+  // Đỏ Cẩm Thạch chỉ còn Trúc Lục Khuê Phòng; Sương Mai Bạch Vũ sang Xanh Lục Bảo;
+  // Yên Hoa Bạch Liên gỡ khỏi Đỏ (chỉ còn Vàng Hổ Phách).
+  ['yem-dao', 'clothing', 'Sương Mai Bạch Vũ', 'Xanh lá', 2290000],
+  ['yem-dao', 'clothing', 'Trúc Lục Khuê Phòng', 'Đỏ', 2690000],
+  ['yem-dao', 'clothing', 'Yên Hoa Bạch Liên', 'Vàng', 1990000],
   ['yem-dao', 'clothing', 'Thanh Lam Trì Liên', 'Xanh lá ngọc', 2350000],
   ['yem-dao', 'clothing', 'Bích Lam Cẩm Tú', 'Vàng kem', 2450000],
   ['yem-dao', 'clothing', 'Dạ Kim Mẫu Đơn', 'Hồng xanh ngọc', 2890000],

@@ -1,9 +1,13 @@
 package com.tiredcity.app.ui.styling;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +18,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -83,8 +89,24 @@ public class AiStylingActivity extends BaseActivity {
     private final Runnable resumeAutoScrollRunnable = this::startAccessoriesAutoScroll;
 
     /** Mệnh thật của người dùng, tính từ ngày sinh (xem {@link MenhCalculator#tinhMenh}) — quyết
-     *  định toàn bộ nội dung trang (banner/màu/phụ kiện/hoạ tiết/lời khuyên/gợi ý). */
+     *  định toàn bộ nội dung trang (banner/màu/phụ kiện/lời khuyên/gợi ý). */
     private String realMenh = "Kim";
+
+    /** Thời lượng một lượt quét của dải sáng "tráng gương" trên ảnh bảng màu. */
+    private static final long SHEEN_DURATION_MS = 2600L;
+    /** Độ sáng cao nhất của dải sáng (trắng ~35% alpha) — đủ thấy ánh gương lướt qua nhưng không
+     *  làm bệt các ô màu bên dưới, vốn là nội dung chính của ảnh. */
+    private static final int SHEEN_PEAK_COLOR = 0x59FFFFFF;
+    /** Độ lệch pha giữa các ảnh bảng màu liên tiếp (nếu một mệnh có nhiều hơn 1 ảnh). */
+    private static final long SHEEN_STAGGER_MS = 400L;
+    /** Nhịp trôi lên xuống của thẻ ảnh bảng màu (một chiều; đi + về là 2×). */
+    private static final long FLOAT_DURATION_MS = 2800L;
+    /** Biên độ trôi lên xuống — cố tình nhỏ để "nhẹ nhàng", không giật khi cuộn trang. */
+    private static final float FLOAT_AMPLITUDE_DP = 5f;
+
+    /** Các animation vô hạn của mục "Sắc màu ngũ hành" (tráng gương + trôi lên xuống) — giữ tham
+     *  chiếu để huỷ ở onPause / khi dựng lại dải ảnh, xem {@link #stopMenhColorAnimations()}. */
+    private final List<Animator> menhColorAnimators = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -133,7 +155,7 @@ public class AiStylingActivity extends BaseActivity {
         String[] buckets = menhColorBuckets(realMenh);
         Intent intent = new Intent(this, com.tiredcity.app.ui.shop.CategoryActivity.class);
         intent.putExtra(com.tiredcity.app.ui.shop.CategoryActivity.EXTRA_CATEGORY_NAME,
-                getString(R.string.aistyle_suggestions).replace("✨", "").trim());
+                getString(R.string.aistyle_suggestions));
         if (buckets.length > 0) {
             intent.putExtra(com.tiredcity.app.ui.shop.CategoryActivity.EXTRA_TAG_FILTER, buckets[0]);
         }
@@ -153,8 +175,9 @@ public class AiStylingActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         // Màn hình không còn hiển thị — dừng hẳn animation/auto-scroll, tránh chạy ngầm vô ích.
-        // onResume sẽ tự dựng lại qua loadUserProfileAndRecommend() -> updateMenhAccessories/Patterns.
+        // onResume sẽ tự dựng lại qua loadUserProfileAndRecommend() -> updateMenhColors/Accessories.
         stopAccessoriesAutoScroll();
+        stopMenhColorAnimations();
     }
 
     private void loadUserProfileAndRecommend() {
@@ -187,21 +210,65 @@ public class AiStylingActivity extends BaseActivity {
     private void showMenhScreen(String menh) {
         loadHeroBanner(menh);
         updateMenhHeaderUi(menh);
+        updateDividers(menh);
         updateMenhColors(menh);
         updateMenhAccessories(menh);
-        updateTipsCardTheme(menh);
+        updateTipsAndSuggestionsTheme(menh);
         loadRecommendedProducts(menh);
     }
 
-    /** Tô nền thẻ + tiêu đề "Lời khuyên phong cách" theo đúng mệnh — tách riêng khỏi
-     *  {@link #loadAiStylingTip} (chạy sau khi Firestore trả dữ liệu, có độ trễ mạng) để card đổi
-     *  màu ngay lập tức khi chuyển mệnh, không đợi gợi ý trang phục tải xong. */
-    private void updateTipsCardTheme(String menh) {
+    /** Tô lại 4 gạch chân dưới tiêu đề các mục theo đúng màu mệnh (Kim be, Thổ vàng đất, Hoả đỏ,
+     *  Mộc xanh lá, Thuỷ xanh lam) — {@link R.drawable#tc_divider_gold} chỉ còn giữ dáng "mờ dần
+     *  hai đầu", màu vàng gốc bị tint đè. mutate() để 4 view không dùng chung constant state. */
+    private void updateDividers(String menh) {
         int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
-        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
-        binding.cardTips.setCardBackgroundColor(panelBg);
-        binding.cardTips.setStrokeColor(accent);
+        View[] dividers = {binding.dividerColors, binding.dividerAccessories,
+                binding.dividerTips, binding.dividerSuggestions};
+        for (View divider : dividers) {
+            divider.getBackground().mutate().setTint(accent);
+        }
+    }
+
+    /** Tô 2 tiêu đề "Lời khuyên phong cách" và "Gợi ý trang phục" theo đúng mệnh — tách riêng khỏi
+     *  {@link #loadAiStylingTip} / {@link #loadRecommendedProducts} (chạy sau khi Firestore trả dữ
+     *  liệu, có độ trễ mạng) để tiêu đề đổi màu ngay lập tức khi chuyển mệnh, không đợi nội dung
+     *  bên dưới tải xong. */
+    private void updateTipsAndSuggestionsTheme(String menh) {
+        int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
         binding.tvTipsTitle.setTextColor(accent);
+        binding.tvSuggestionsTitle.setTextColor(accent);
+
+        float density = getResources().getDisplayMetrics().density;
+
+        // Viền thẻ "Lời khuyên phong cách" theo đúng màu mệnh (Kim be, Thổ vàng đất, Hoả đỏ,
+        // Mộc xanh lá, Thuỷ xanh lam). mutate() để không đè lên constant state dùng chung.
+        if (binding.sectionTips.getBackground() instanceof GradientDrawable) {
+            GradientDrawable bg = (GradientDrawable) binding.sectionTips.getBackground().mutate();
+            bg.setStroke((int) (1.5f * density), accent);
+        }
+
+        // Nút "Xem thêm" — chữ, mũi tên và viền cùng đổi theo màu mệnh thay vì đỏ cố định.
+        binding.btnRefreshSuggestions.setTextColor(accent);
+        TextViewCompat.setCompoundDrawableTintList(binding.btnRefreshSuggestions,
+                ColorStateList.valueOf(accent));
+        // Dựng lại HẲN nền nút mỗi lần đổi mệnh: viền trong suốt bo góc + ripple nhạt cùng tông mệnh.
+        // Cách này chắc chắn hơn việc chọc vào từng lớp của RippleDrawable inflate từ XML (setStroke
+        // trên lớp con nhiều khi không vẽ lại đúng), nên viền luôn đổi màu theo mệnh.
+        binding.btnRefreshSuggestions.setBackground(buildSeeMoreBorder(accent, density));
+    }
+
+    /** Nền nút "Xem thêm": khung trong suốt, bo góc 24dp, viền dày 2dp theo đúng màu mệnh, kèm ripple
+     *  nhạt cùng tông (~25% alpha). Dựng mới mỗi lần đổi mệnh để viền chắc chắn đổi màu (Kim be, Thổ
+     *  vàng đất, Hoả đỏ, Mộc xanh lá, Thuỷ xanh lam) — đáng tin hơn việc setStroke lên lớp con của
+     *  RippleDrawable inflate từ XML (nhiều khi không vẽ lại). */
+    private RippleDrawable buildSeeMoreBorder(int accent, float density) {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setColor(0x00000000); // trong suốt
+        shape.setCornerRadius(24 * density);
+        shape.setStroke((int) (2 * density), accent);
+        int ripple = (accent & 0x00FFFFFF) | 0x40000000; // cùng màu mệnh, ~25% alpha cho ripple
+        return new RippleDrawable(ColorStateList.valueOf(ripple), shape, null);
     }
 
     /** Ưu tiên tính lại từ năm sinh (nạp âm đúng, chữa lành cache cũ) → mệnh đã lưu → "Kim". */
@@ -227,12 +294,13 @@ public class AiStylingActivity extends BaseActivity {
                 .into(binding.ivMenhHero);
     }
 
-    /** Tô lại tiêu đề lớn "Mệnh {tên}" (tô màu nhấn), câu mô tả và nhãn "mệnh của bạn" theo đúng
-     *  mệnh thật của người dùng. Dùng chung màu nhấn với 3 mục màu/phụ kiện/hoạ tiết bên dưới để
-     *  đồng bộ toàn màn hình. */
+    /** Tô lại nhãn "NGŨ HÀNH BẢN MỆNH", tiêu đề lớn "Mệnh {tên}" (tô màu nhấn), câu mô tả và nhãn
+     *  "mệnh của bạn" theo đúng mệnh thật của người dùng. Dùng chung màu nhấn với các mục màu/phụ
+     *  kiện/lời khuyên/gợi ý bên dưới để đồng bộ toàn màn hình. */
     private void updateMenhHeaderUi(String menh) {
         int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
 
+        binding.tvMenhEyebrow.setTextColor(accent);
         binding.tvMenhTitle.setText(MenhCalculator.getMenhTitleText(this, menh));
         binding.tvMenhTitle.setTextColor(accent);
         binding.tvMenhSubtitle.setText(MenhCalculator.getMenhDescText(this, menh));
@@ -241,7 +309,7 @@ public class AiStylingActivity extends BaseActivity {
         binding.tvYourMenhTag.getBackground().mutate().setTint(accent);
     }
 
-    /** "Phụ kiện hợp mệnh" — dải ảnh CAO BẰNG NHAU (rộng tự do theo đúng tỉ lệ gốc mỗi ảnh), tự
+    /** "Nghệ thuật điểm xuyết" — dải ảnh CAO BẰNG NHAU (rộng tự do theo đúng tỉ lệ gốc mỗi ảnh), tự
      *  trượt trái ⇄ phải liên tục + đôi lời riêng theo mệnh đang xem. Mệnh chưa có ảnh (xem
      *  {@link MenhCalculator#getMenhAccessoryPhotos}) thì ẩn cả mục. */
     private void updateMenhAccessories(String menh) {
@@ -254,8 +322,6 @@ public class AiStylingActivity extends BaseActivity {
         }
         binding.sectionMenhAccessories.setVisibility(View.VISIBLE);
         int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
-        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
-        binding.sectionMenhAccessories.getBackground().mutate().setTint(panelBg);
         binding.tvAccessoriesTitle.setTextColor(accent);
         setHighlightedText(binding.tvAccessoriesText, MenhCalculator.getMenhAccessoryText(this, menh),
                 MenhCalculator.getMenhAccessoryKeywords(this, menh), accent);
@@ -330,18 +396,19 @@ public class AiStylingActivity extends BaseActivity {
     private static final int ACCESSORIES_SCROLL_STEP_PX = 2;
     private static final long ACCESSORIES_SCROLL_INTERVAL_MS = 30;
 
-    /** "Màu hợp mệnh" — ảnh minh hoạ nguyên khổ (không cắt xén, giữ đúng tỉ lệ gốc) + bài viết
-     *  riêng theo mệnh đang xem. Mệnh chưa có ảnh thì ẩn cả mục. */
+    /** "Sắc màu ngũ hành" — ảnh minh hoạ nguyên khổ (không cắt xén, giữ đúng tỉ lệ gốc) + bài viết
+     *  riêng theo mệnh đang xem. Mỗi ảnh được bọc trong một FrameLayout để phủ thêm lớp "tráng
+     *  gương" (dải sáng quét ngang) và cho cả thẻ trôi lên xuống nhẹ nhàng — xem
+     *  {@link #startMirrorSheen} / {@link #startGentleFloat}. Mệnh chưa có ảnh thì ẩn cả mục. */
     private void updateMenhColors(String menh) {
         int[] photos = MenhCalculator.getMenhColorPhotos(menh);
+        stopMenhColorAnimations();
         if (photos.length == 0) {
             binding.sectionMenhColors.setVisibility(View.GONE);
             return;
         }
         binding.sectionMenhColors.setVisibility(View.VISIBLE);
         int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
-        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
-        binding.sectionMenhColors.getBackground().mutate().setTint(panelBg);
         binding.tvColorsTitle.setTextColor(accent);
         setHighlightedText(binding.tvColorsText, MenhCalculator.getMenhColorText(this, menh),
                 MenhCalculator.getMenhColorKeywords(this, menh), accent);
@@ -351,11 +418,17 @@ public class AiStylingActivity extends BaseActivity {
         int radius = (int) (16 * density);
         int marginBottom = (int) (10 * density);
         for (int i = 0; i < photos.length; i++) {
-            ImageView image = new ImageView(this);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+            // Thẻ bọc: cắt (clip) lớp sáng "tráng gương" theo đúng khung ảnh, đồng thời là view được
+            // trôi lên xuống — dịch chuyển cả thẻ thay vì riêng ảnh để lớp sáng đi theo cùng nhịp.
+            FrameLayout card = new FrameLayout(this);
+            LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            if (i < photos.length - 1) lp.bottomMargin = marginBottom;
-            image.setLayoutParams(lp);
+            if (i < photos.length - 1) cardLp.bottomMargin = marginBottom;
+            card.setLayoutParams(cardLp);
+
+            ImageView image = new ImageView(this);
+            image.setLayoutParams(new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
             image.setAdjustViewBounds(true);
             image.setScaleType(ImageView.ScaleType.FIT_CENTER);
             Glide.with(this)
@@ -363,8 +436,73 @@ public class AiStylingActivity extends BaseActivity {
                     .override(imageDecodeCap, imageDecodeCap)
                     .transform(new FitCenter(), new RoundedCorners(radius))
                     .into(image);
-            binding.layoutMenhColors.addView(image);
+            card.addView(image);
+
+            View sheen = new View(this);
+            sheen.setLayoutParams(new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            sheen.setBackground(buildSheenGradient(radius));
+            card.addView(sheen);
+
+            binding.layoutMenhColors.addView(card);
+
+            // Lệch pha giữa các ảnh (nếu sau này một mệnh có nhiều hơn 1 bảng màu) để dải sáng không
+            // quét đồng loạt — hiện mỗi mệnh chỉ có đúng 1 ảnh nên độ trễ luôn bằng 0.
+            long stagger = i * SHEEN_STAGGER_MS;
+            startMirrorSheen(card, sheen, stagger);
+            startGentleFloat(card, density, stagger);
         }
+    }
+
+    /** Dải sáng của hiệu ứng "tráng gương": trong suốt ở hai mép, sáng nhất ở giữa — quét ngang qua
+     *  ảnh sẽ cho cảm giác ánh sáng lướt trên mặt gương/kim loại. Bo góc bằng đúng {@code radius}
+     *  của ảnh để lớp sáng không tràn ra bốn góc. */
+    private static GradientDrawable buildSheenGradient(int radius) {
+        GradientDrawable sheen = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{0x00FFFFFF, 0x00FFFFFF, SHEEN_PEAK_COLOR, 0x00FFFFFF, 0x00FFFFFF});
+        sheen.setCornerRadius(radius);
+        return sheen;
+    }
+
+    /** Cho {@code sheen} quét từ mép trái sang mép phải của {@code card} rồi lặp lại vô hạn. Phải
+     *  đợi {@code card.post(...)} vì cần bề rộng thật của thẻ (lúc dựng view vẫn bằng 0). */
+    private void startMirrorSheen(View card, View sheen, long startDelay) {
+        card.post(() -> {
+            // Thẻ đã bị gỡ khỏi dải ảnh (người dùng đổi ngày sinh → updateMenhColors dựng lại bộ
+            // ảnh mới trước khi post này kịp chạy) → không dựng animation cho view chết.
+            if (binding == null || card.getParent() == null) return;
+            float width = card.getWidth();
+            if (width <= 0) return;
+            ObjectAnimator sweep = ObjectAnimator.ofFloat(sheen, View.TRANSLATION_X, -width, width);
+            sweep.setDuration(SHEEN_DURATION_MS);
+            sweep.setStartDelay(startDelay);
+            sweep.setRepeatCount(ValueAnimator.INFINITE);
+            sweep.setInterpolator(new AccelerateDecelerateInterpolator());
+            sweep.start();
+            menhColorAnimators.add(sweep);
+        });
+    }
+
+    /** Cho cả thẻ ảnh trôi lên xuống quanh vị trí gốc (biên độ {@link #FLOAT_AMPLITUDE_DP}) — dùng
+     *  translationY nên không kích hoạt layout lại, cuộn trang vẫn mượt. */
+    private void startGentleFloat(View card, float density, long startDelay) {
+        ObjectAnimator drift = ObjectAnimator.ofFloat(
+                card, View.TRANSLATION_Y, 0f, -FLOAT_AMPLITUDE_DP * density);
+        drift.setDuration(FLOAT_DURATION_MS);
+        drift.setStartDelay(startDelay);
+        drift.setRepeatCount(ValueAnimator.INFINITE);
+        drift.setRepeatMode(ValueAnimator.REVERSE);
+        drift.setInterpolator(new AccelerateDecelerateInterpolator());
+        drift.start();
+        menhColorAnimators.add(drift);
+    }
+
+    /** Huỷ mọi animation của mục "Sắc màu ngũ hành" — gọi trước khi dựng lại dải ảnh (đổi mệnh) và
+     *  ở onPause, tránh để animator vô hạn giữ tham chiếu tới view đã bị gỡ. */
+    private void stopMenhColorAnimations() {
+        for (Animator animator : menhColorAnimators) animator.cancel();
+        menhColorAnimators.clear();
     }
 
     /** Gán {@code fullText} lên {@code tv}, in đậm + tô màu {@code accent} lên MỌI lần xuất hiện

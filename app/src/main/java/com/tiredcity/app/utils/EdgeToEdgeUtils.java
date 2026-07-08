@@ -1,6 +1,7 @@
 package com.tiredcity.app.utils;
 
 import android.view.View;
+import android.view.ViewGroup;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,6 +27,26 @@ public final class EdgeToEdgeUtils {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(v.getPaddingLeft(), basePaddingTop + bars.top,
                     v.getPaddingRight(), v.getPaddingBottom());
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(view);
+    }
+
+    /**
+     * Đẩy {@code view} lên khỏi thanh điều hướng hệ thống: marginBottom = margin gốc trong XML +
+     * chiều cao thanh gesture/3-nút. Dùng cho thanh bottom-nav lơ lửng — nếu không đệm, edge-to-edge
+     * (targetSdk 35) sẽ vẽ nó chui xuống dưới thanh hệ thống, trông như bị dính đáy màn hình.
+     *
+     * <p>Giữ nguyên margin gốc (chỉ cộng inset một lần, không cộng dồn qua mỗi lần inset đổi).
+     */
+    public static void applyNavBarBottomMargin(View view) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        final int baseMarginBottom = lp.bottomMargin;
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.bottomMargin = baseMarginBottom + bars.bottom;
+            v.setLayoutParams(params);
             return insets;
         });
         ViewCompat.requestApplyInsets(view);

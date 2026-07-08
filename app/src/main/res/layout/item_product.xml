@@ -1,153 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Thẻ sản phẩm poster full-bleed — dùng chung cho cả 3 chế độ xem (1/2/3 cột) của
-     CategoryActivity: không viền, không bo góc, ảnh phủ kín toàn bộ thẻ. Lớp phủ tối dần đáy
-     để khối thông tin (tên, chất liệu, tag màu, sao, giá) đè lên đáy ảnh luôn đủ tương phản.
-     Chiều cao ảnh do ProductAdapter set theo số cột đang chọn (setSpanCount). -->
-<FrameLayout
+<!-- Thẻ sản phẩm poster bo góc — dùng chung cho cả 3 chế độ xem (1/2/3 cột) của CategoryActivity:
+     ảnh phủ kín toàn thẻ, bo góc tròn, phủ lớp "tráng gương" (gloss tĩnh + vệt sáng chéo quét qua).
+     Khối thông tin (tên, tag màu, giá) chữ TRẮNG đè lên đáy ảnh, có scrim tối dần đảm bảo tương phản.
+     Chiều cao ảnh, lề thẻ, bán kính góc và cỡ chữ do ProductAdapter set theo số cột (setSpanCount). -->
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fl_image"
+    android:id="@+id/cv_product"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:layout_margin="1dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    app:cardBackgroundColor="@color/bg_subtle"
+    app:cardCornerRadius="@dimen/tc_radius_lg"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="false"
+    app:contentPadding="0dp"
+    app:rippleColor="@color/tc_on_dark_divider">
 
-    <ImageView
-        android:id="@+id/iv_product_image"
+    <FrameLayout
+        android:id="@+id/fl_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:background="@color/bg_subtle"
-        android:contentDescription="@null"
-        tools:src="@android:drawable/ic_menu_gallery" />
+        android:layout_height="240dp">
 
-    <!-- Lớp phủ tối dần từ trong suốt (đỉnh) xuống đen mờ (đáy) để khối thông tin luôn nổi rõ -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/tc_category_card_scrim" />
-
-    <!-- Badge giảm giá -->
-    <TextView
-        android:id="@+id/tv_discount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_margin="8dp"
-        android:background="@drawable/tc_bg_discount"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="3dp"
-        android:textColor="@color/white"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-medium"
-        android:visibility="gone"
-        tools:text="-15%"
-        tools:visibility="visible" />
-
-    <!-- Nút lưu yêu thích -->
-    <com.tiredcity.app.ui.widget.FavoriteButton
-        android:id="@+id/ib_save"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="top|start"
-        android:layout_margin="8dp"
-        android:background="@drawable/tc_bg_circle_white"
-        android:contentDescription="@string/btn_save"
-        android:padding="7dp" />
-
-    <!-- Thông tin sản phẩm, đè lên đáy ảnh -->
-    <LinearLayout
-        android:id="@+id/ll_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/tv_product_name"
+        <ImageView
+            android:id="@+id/iv_product_image"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@color/bg_subtle"
+            android:contentDescription="@null"
+            tools:src="@android:drawable/ic_menu_gallery" />
+
+        <!-- Tráng gương (1): men bóng tĩnh hắt từ góc trên-trái -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tc_card_gloss" />
+
+        <!-- Tráng gương (2): vệt sáng chéo lướt 1 lần khi thẻ hiện ra -->
+        <View
+            android:id="@+id/shine_product_image"
+            android:layout_width="52dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/tc_shimmer_gradient"
+            android:rotation="-18" />
+
+        <!-- Lớp phủ tối dần về đáy để chữ trắng luôn nổi rõ trên mọi ảnh nền -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tc_category_card_scrim" />
+
+        <!-- Badge giảm giá -->
+        <TextView
+            android:id="@+id/tv_discount"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:background="@drawable/tc_bg_discount"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textColor="@color/white"
+            android:textSize="11sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            tools:text="Áo Dài Cổ Truyền" />
-
-        <TextView
-            android:id="@+id/tv_product_material"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/tc_on_dark_secondary"
-            android:textSize="11sp"
-            android:letterSpacing="0.02"
-            android:maxLines="1"
-            android:ellipsize="end"
-            tools:text="Lụa tơ tằm" />
-
-        <TextView
-            android:id="@+id/tv_color_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/tc_bg_color_tag"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="2dp"
-            android:textColor="@color/chip_text_default"
-            android:textSize="10sp"
-            android:fontFamily="sans-serif-medium"
             android:visibility="gone"
-            tools:text="Đỏ"
+            tools:text="-15%"
             tools:visibility="visible" />
 
-        <RatingBar
-            android:id="@+id/rb_rating"
-            style="@style/Widget.AppCompat.RatingBar.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:progressTint="@color/tc_gold"
-            android:secondaryProgressTint="@color/tc_on_dark_divider"
-            android:stepSize="0.5"
-            tools:rating="4.5" />
+        <!-- Nút lưu yêu thích -->
+        <com.tiredcity.app.ui.widget.FavoriteButton
+            android:id="@+id/ib_save"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|start"
+            android:layout_margin="8dp"
+            android:background="@drawable/tc_bg_circle_white"
+            android:contentDescription="@string/btn_save"
+            android:padding="7dp" />
 
+        <!-- Thông tin sản phẩm (chữ trắng), đè lên đáy ảnh -->
         <LinearLayout
+            android:id="@+id/ll_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="6dp">
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="12dp">
 
             <TextView
-                android:id="@+id/tv_product_price"
-                android:layout_width="0dp"
+                android:id="@+id/tv_product_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/tc_red"
-                android:textSize="15sp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
-                tools:text="850.000 ₫" />
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                tools:text="Khói Trắng Kết Duyên" />
 
-            <ImageButton
-                android:id="@+id/btn_quick_add"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@drawable/tc_bg_circle_red"
-                android:src="@drawable/ic_cart"
-                app:tint="@color/white"
-                android:padding="7dp"
-                android:scaleType="centerInside"
-                android:contentDescription="@string/btn_add_to_cart" />
+            <!-- Gạch chân mảnh ngăn tên và giá, đúng theo mẫu thiết kế -->
+            <View
+                android:id="@+id/v_info_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="64dp"
+                android:background="#73FFFFFF" />
+
+            <LinearLayout
+                android:id="@+id/ll_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_color_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tc_bg_color_tag_glass"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:visibility="gone"
+                    tools:text="Trắng"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tv_product_material"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/tc_on_dark_secondary"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.02"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    tools:text="Lụa tơ tằm" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="7dp">
+
+                <TextView
+                    android:id="@+id/tv_product_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:shadowColor="#80000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="3"
+                    tools:text="2.890.000 đ" />
+
+                <ImageButton
+                    android:id="@+id/btn_quick_add"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/tc_bg_circle_red"
+                    android:src="@drawable/ic_cart"
+                    app:tint="@color/white"
+                    android:padding="7dp"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/btn_add_to_cart" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</FrameLayout>
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/tc_space_lg"
                     android:lineSpacingExtra="5dp"
-                    android:text="Hát Bội (hay hát tuồng) là một trong những loại hình sân khấu cổ truyền đặc sắc bậc nhất của Việt Nam — nơi ca, múa và diễn xuất hòa quyện để kể lại những câu chuyện lịch sử, thần thoại và đạo lý làm người. Số 27 của Tạp chí Văn Hóa đưa bạn đi trọn hành trình ấy: từ cội nguồn, nhân vật, nghệ thuật hóa trang, những vở tuồng để đời, cho tới cuộc giao thoa của Hát Bội với đời sống hôm nay."
+                    android:text="Hát Bội (hay hát tuồng) là thể loại sân khấu cổ truyền đặc sắc bậc nhất của Việt Nam, đậm nét nhất ở miền Nam — nơi ca, múa và diễn xuất hòa quyện trong những vở diễn mang tính sử thi. Khởi nguồn từ hát múa dân gian Việt cổ, giao thoa cùng hí kịch Trung Hoa, hát bội đi từ nghi lễ đình – đền – chùa ra sân khấu, thăng hoa rồi lặng lẽ nhường bước trước cải lương.\n\nSố 27 của Tạp chí Văn Hóa đi trọn hành trình ấy: từ cội nguồn và những thăng trầm, các tuyến nhân vật Kép – Lão – Đào – Mụ, đỉnh cao nghệ thuật hóa trang, những vở tuồng để đời, cho tới luồng gió đương đại khi hát bội bước vào MV “Chân Ái” và đời sống của người trẻ hôm nay."
                     android:textColor="@color/text_primary"
                     android:textSize="15.5sp" />
 
@@ -192,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="serif"
-                    android:text="“Mỗi nét vẽ mặt, mỗi màu sắc trên sân khấu\nHát Bội đều mang một ý nghĩa biểu tượng.”"
+                    android:text="“Mỗi nét vẽ và màu sắc đều có ý nghĩa biểu tượng,\ngiúp khắc sâu thêm câu chuyện mà vở hát bội\nmuốn truyền tải.”"
                     android:textColor="@color/tc_red"
                     android:textSize="19sp"
                     android:textStyle="italic"

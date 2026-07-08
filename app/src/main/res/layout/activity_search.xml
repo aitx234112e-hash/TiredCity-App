@@ -377,4 +377,16 @@
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
     </LinearLayout>
+
+    <!-- Thanh nav lơ lửng — giữ nguyên ở màn Tìm kiếm thay vì biến mất như trước.
+         Ba khối layoutRecent/layoutResults/layoutEmpty ở trên đều 0dp+weight=1 và chỉ một khối
+         hiện mỗi lúc, nên thanh 60dp này luôn nhận đủ chỗ ở đáy. -->
+    <include
+        android:id="@+id/bottomNavBar"
+        layout="@layout/view_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
 </LinearLayout>

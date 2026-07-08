@@ -44,6 +44,8 @@ public final class Constants {
     public static final String EXTRA_ORDER_ID   = "extra_order_id";
     public static final String EXTRA_CATEGORY   = "extra_category";
     public static final String EXTRA_ACTION_REVIEW = "extra_action_review";
+    /** Mã ưu đãi khách đã chọn ở màn Giỏ hàng, chuyển tiếp sang màn Thanh toán. */
+    public static final String EXTRA_VOUCHER_CODE = "extra_voucher_code";
 
     // Languages
     public static final String LANG_VI          = "vi";

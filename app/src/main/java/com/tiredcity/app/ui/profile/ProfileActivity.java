@@ -15,6 +15,7 @@ import com.tiredcity.app.data.repository.AuthRepository;
 import com.tiredcity.app.databinding.ActivityProfileBinding;
 import com.tiredcity.app.ui.auth.LoginActivity;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.common.BottomNavBar;
 import com.tiredcity.app.ui.explore.ArticleActivity;
 import com.tiredcity.app.ui.explore.EventActivity;
 import com.tiredcity.app.ui.reward.RewardActivity;
@@ -45,6 +46,10 @@ public class ProfileActivity extends BaseActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.toolbar.setNavigationOnClickListener(v -> finish());
+
+        // Icon "Tôi" là chính màn này → tô đậm sẵn. Ba tab trong nav_graph để BottomNavBar tự gửi
+        // Intent về MainActivity (truyền null), vì ở đây không có NavController.
+        BottomNavBar.bind(this, binding.bottomNavBar, BottomNavBar.Tab.PROFILE, null);
 
         apiService = ApiClient.getApiService(preferenceManager.getToken());
         authRepository = new AuthRepository(apiService, preferenceManager);

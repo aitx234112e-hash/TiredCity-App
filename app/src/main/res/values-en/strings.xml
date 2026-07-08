@@ -30,6 +30,7 @@
     <string name="section_hot">Trending</string>
     <string name="section_categories">Categories</string>
     <string name="see_all">See All</string>
+    <string name="see_more">See More</string>
     <string name="home_eyebrow_recommended">RECOMMENDED</string>
     <string name="home_eyebrow_hot">TRENDING</string>
     <string name="footer_tagline">Vietnamese attire for a new generation</string>
@@ -156,6 +157,8 @@
     <string name="hint_password">Password</string>
     <string name="hint_fullname">Full Name</string>
     <string name="hint_phone">Phone Number</string>
+    <string name="error_phone_empty">Please enter your phone number</string>
+    <string name="error_phone_invalid">Phone number must have 10 digits, starting with 03, 05, 07, 08, 09 or 02</string>
     <string name="hint_birthdate">Birth Date</string>
     <string name="birthdate_picker_title">Enter your birth date</string>
     <string name="login_remember_me">Remember Me</string>
@@ -443,8 +446,8 @@
     <string name="desc_giao_linh_xanh_la">Bạch Sa Liên Vũ, Lam Ngọc Cổ Trấn, Lục Trúc Vân Khúc,…</string>
     <string name="desc_giao_linh_vang">Kim Sắc Hoàng Triều,…</string>
     <string name="desc_giao_linh_do">Cam Giao Lĩnh Bào, Hắc Kim Mẫu Đơn,…</string>
-    <string name="desc_yem_dao_do">Sương Mai Bạch Vũ,…</string>
-    <string name="desc_yem_dao_xanh_la">Trúc Lục Khuê Phòng, Thanh Lam Trì Liên,…</string>
+    <string name="desc_yem_dao_do">Trúc Lục Khuê Phòng,…</string>
+    <string name="desc_yem_dao_xanh_la">Sương Mai Bạch Vũ, Thanh Lam Trì Liên,…</string>
     <string name="desc_yem_dao_vang">Yên Hoa Bạch Liên, Bích Lam Cẩm Tú,…</string>
     <string name="desc_yem_dao_hong">Dạ Kim Mẫu Đơn,…</string>
 
@@ -516,6 +519,7 @@
     <string name="order_status_pending_desc">We\'ll confirm your order shortly.</string>
     <string name="order_track_button">Track order</string>
     <string name="order_view_detail_button">View details</string>
+    <string name="action_view_detail">View details</string>
     <string name="order_tab_all">All</string>
     <string name="order_tab_pending">Processing</string>
     <string name="order_tab_shipping">Shipping</string>
@@ -615,7 +619,7 @@
     <string name="aistyle_menh_desc_hoa">Warm and magnetic, in shades of vivid red, amber orange and bright pink.</string>
     <string name="aistyle_menh_desc_tho">Grounded and warm, in shades of ochre, deep brown and gentle beige.</string>
 
-    <string name="aistyle_colors_title">Your Element\'s Colors</string>
+    <string name="aistyle_colors_title">Five-Element Colors</string>
     <string name="aistyle_colors_text_kim">Those of the Metal element pair well with pristine white, gilded gold, gleaming silver and elegant gray. These are colors of understated luxury, quiet yet magnetic. Let white anchor your look, add touches of bronze or silver for refinement, and avoid fiery red or orange, since Fire overcomes Metal.</string>
     <string name="aistyle_colors_text_moc">Those of the Wood element pair well with fresh green, soft blue and mossy tones. These are colors of vitality and endless growth. Let green lead the look, balance it with moss tones, and avoid icy white or silver, since Metal overcomes Wood.</string>
     <string name="aistyle_colors_text_thuy">Those of the Water element pair well with mysterious black, deep navy and subtle purple. These are colors of wisdom and fluidity. Let navy or black anchor the look, add a touch of purple for depth, and avoid earthy yellow or brown, since Earth overcomes Water.</string>
@@ -651,71 +655,51 @@
         <item>gentle light orange</item>
     </string-array>
 
-    <string name="aistyle_accessories_title">Accents That Fit</string>
-    <string name="aistyle_accessories_text_kim">For the Metal element, choose accessories with a metallic sheen: silver earrings, white-gold necklaces, silver-faced watches or minimalist hairpins. Glossy materials and clean lines highlight your natural refinement.</string>
-    <string name="aistyle_accessories_text_moc">For the Wood element, accessories in wood, rattan or jade are ideal, like a sandalwood bracelet, a woven bag, or a hairpin carved with leaf motifs. Natural materials nurture Wood\'s growing energy.</string>
-    <string name="aistyle_accessories_text_thuy">For the Water element, black or navy accessories in soft materials like silk, pearl or obsidian add an air of mystery and depth. A pearl bracelet or a small silk scarf is a subtle, essential touch.</string>
-    <string name="aistyle_accessories_text_hoa">For the Fire element, choose accessories in red, fiery orange or copper tones, like a red quartz bracelet, statement earrings or a bold leather belt. Bold details channel your fiery energy.</string>
-    <string name="aistyle_accessories_text_tho">For the Earth element, accessories in ceramic, terracotta or warm brown leather add a grounded, dependable air. A leather bag or a rustic ceramic bangle suits your steady character perfectly.</string>
+    <string name="aistyle_accessories_title">The Art of Accents</string>
+    <string name="aistyle_accessories_text_kim">For the Metal element, the accents lie in refined traditional pieces: a khăn vấn head wrap coiled around the bun, an elegant mấn headpiece, a slender necklace, a parasol held at an angle and a hand fan. Glossy materials and clean lines highlight your natural refinement.</string>
+    <string name="aistyle_accessories_text_moc">For the Wood element, choose a green-toned khăn vấn head wrap, a mấn headpiece adorned with leaves, a sandalwood necklace, a rattan bracelet and a rustic bamboo fan. Natural materials nurture Wood\'s growing energy.</string>
+    <string name="aistyle_accessories_text_thuy">For the Water element, keep the accents soft and deep: a deep-blue silk khăn vấn head wrap, a simple mấn headpiece, a pearl necklace, a blue-stone bracelet and a light silk fan. Smooth materials and darker tones bring out your quiet depth.</string>
+    <string name="aistyle_accessories_text_hoa">For the Fire element, let brilliance shine through a crimson khăn vấn head wrap, a gilded mấn headpiece, a copper-toned necklace, a vivid parasol, an open hand fan and a graceful nón quai thao. Bold details channel your fiery energy.</string>
+    <string name="aistyle_accessories_text_tho">For the Earth element, the accents crown the head: a stately mão hat, a mấn headpiece in warm earthen brown, a nón quai thao, a ceremonial ô lộng parasol and a rustic nón ba tầm. Grounded, earthy details bring out your steady, dependable character.</string>
 
     <string-array name="aistyle_accessories_keywords_kim">
-        <item>silver earrings</item>
-        <item>white-gold necklaces</item>
-        <item>silver-faced watches</item>
+        <item>khăn vấn head wrap</item>
+        <item>mấn headpiece</item>
+        <item>necklace</item>
+        <item>parasol</item>
+        <item>hand fan</item>
     </string-array>
     <string-array name="aistyle_accessories_keywords_moc">
-        <item>sandalwood bracelet</item>
-        <item>woven bag</item>
-        <item>hairpin carved with leaf motifs</item>
+        <item>khăn vấn head wrap</item>
+        <item>mấn headpiece</item>
+        <item>sandalwood necklace</item>
+        <item>rattan bracelet</item>
+        <item>bamboo fan</item>
     </string-array>
     <string-array name="aistyle_accessories_keywords_thuy">
-        <item>pearl bracelet</item>
-        <item>silk scarf</item>
+        <item>khăn vấn head wrap</item>
+        <item>mấn headpiece</item>
+        <item>pearl necklace</item>
+        <item>blue-stone bracelet</item>
+        <item>silk fan</item>
     </string-array>
     <string-array name="aistyle_accessories_keywords_hoa">
-        <item>red quartz bracelet</item>
-        <item>statement earrings</item>
-        <item>bold leather belt</item>
+        <item>khăn vấn head wrap</item>
+        <item>mấn headpiece</item>
+        <item>necklace</item>
+        <item>parasol</item>
+        <item>hand fan</item>
+        <item>nón quai thao</item>
     </string-array>
     <string-array name="aistyle_accessories_keywords_tho">
-        <item>leather bag</item>
-        <item>rustic ceramic bangle</item>
+        <item>mão hat</item>
+        <item>mấn headpiece</item>
+        <item>nón quai thao</item>
+        <item>ô lộng</item>
+        <item>nón ba tầm</item>
     </string-array>
 
-    <string name="aistyle_patterns_title">Heritage Motifs</string>
-    <string name="aistyle_patterns_text_kim">Stylized clouds, wave motifs or minimalist geometry with a metallic sheen suit the Metal element beautifully, classic yet refined. Sharp, clean lines highlight the precision in your taste.</string>
-    <string name="aistyle_patterns_text_moc">Leaf motifs, floral branches or lush forest scenes suit the Wood element, evoking freshness and vitality. Soft, flowing curves echo the way plants grow and bend.</string>
-    <string name="aistyle_patterns_text_thuy">Wave patterns, cloud motifs or gently flowing lines suit the Water element, symbols of adaptability and endless change. Deep tones paired with fluid lines highlight your inner depth.</string>
-    <string name="aistyle_patterns_text_hoa">Phoenix motifs, stylized flames or richly layered patterns are the perfect accent for the Fire element. Bold, energetic lines mirror the passion burning within you.</string>
-    <string name="aistyle_patterns_text_tho">Geometric blocks, terracotta patterns or large warm color fields suit the Earth element, evoking stability and endurance. Rustic, nature-close details highlight your grounded warmth.</string>
-
-    <string-array name="aistyle_patterns_keywords_kim">
-        <item>Stylized clouds</item>
-        <item>wave motifs</item>
-        <item>minimalist geometry with a metallic sheen</item>
-    </string-array>
-    <string-array name="aistyle_patterns_keywords_moc">
-        <item>Leaf motifs</item>
-        <item>floral branches</item>
-        <item>lush forest scenes</item>
-    </string-array>
-    <string-array name="aistyle_patterns_keywords_thuy">
-        <item>Wave patterns</item>
-        <item>cloud motifs</item>
-        <item>gently flowing lines</item>
-    </string-array>
-    <string-array name="aistyle_patterns_keywords_hoa">
-        <item>Phoenix motifs</item>
-        <item>stylized flames</item>
-        <item>richly layered patterns</item>
-    </string-array>
-    <string-array name="aistyle_patterns_keywords_tho">
-        <item>Geometric blocks</item>
-        <item>terracotta patterns</item>
-        <item>large warm color fields</item>
-    </string-array>
-
-    <string name="aistyle_suggestions">✨  Outfit suggestions</string>
+    <string name="aistyle_suggestions">Outfit suggestions</string>
     <string name="aistyle_refresh">Refresh</string>
     <string name="aistyle_see_more">See more</string>
     <string name="aistyle_tips">Styling tips</string>
@@ -766,13 +750,36 @@
     <string name="reward_use_now">Use now</string>
     <string name="reward_empty_title">More rewards coming soon!</string>
     <string name="reward_explore">EXPLORE</string>
-    <string name="reward_voucher_birthday_title">Birthday TO YOU</string>
-    <string name="reward_voucher_birthday_subtitle">July birthday voucher</string>
     <string name="cd_gift">Gifts</string>
 
-    <!-- Reward: Appreciation Voucher (Ao Dai / Nhat Binh collection) -->
+    <!-- Reward 1: Birthday TO YOU -->
+    <string name="reward_voucher_birthday_title">Birthday TO YOU</string>
+    <string name="reward_voucher_birthday_subtitle">Birthday voucher · 10% off the Nhat Binh collection</string>
+    <string name="reward_voucher_birthday_validity">01/07/2026 - 31/07/2026</string>
+    <string name="reward_voucher_birthday_desc">Birthday TO YOU — Birthday voucher\n10% off designs from the Nhat Binh collection (*)\n\nValid: from 01/07/2026 to end of 31/07/2026\n\nTiredCity wishes you a happy birthday with an offer just for your birth month:\n- Instant 10% off full-priced traditional outfits.\n- Applicable both in store and online.\n- One use per customer during the birthday month.\n\n(*) Cannot be combined with other promotions.</string>
+
+    <!-- Reward 2: Appreciation Voucher (Nhat Binh collection) -->
     <string name="reward_voucher_tri_an_title">Appreciation Voucher</string>
-    <string name="reward_voucher_tri_an_subtitle">Ao Dai / Nhat Binh Collection</string>
+    <string name="reward_voucher_tri_an_subtitle">Introducing the Nhat Binh Collection</string>
+    <string name="reward_voucher_tri_an_validity">01/06/2026 - 30/06/2026</string>
+
+    <!-- Reward 3: 30% off silk Ao Dai -->
+    <string name="reward_voucher_sale30_title">30% Off Silk Ao Dai</string>
+    <string name="reward_voucher_sale30_subtitle">Special offer · Valid until the end of this month</string>
+    <string name="reward_voucher_sale30_validity">01/07/2026 - 31/07/2026</string>
+    <string name="reward_voucher_sale30_desc">Special offer — 30% off all silk Ao Dai (*)\n\nValid: until the end of this month (31/07/2026)\n\nTiredCity\'s entire silk Ao Dai line gets an instant 30% off in the final offer of the season:\n- Applies to all colours and sizes in stock.\n- Available in store and in the TiredCity app.\n\n(*) Limited quantities, offer ends when stock runs out. Cannot be combined with other promotions.</string>
+
+    <!-- Reward 4: Buy 2 get 1 free -->
+    <string name="reward_voucher_buy2get1_title">Buy 2 Get 1 Free</string>
+    <string name="reward_voucher_buy2get1_subtitle">Pick any 3 items · Free shipping on orders from 700K</string>
+    <string name="reward_voucher_buy2get1_validity">05/07/2026 - 20/07/2026</string>
+    <string name="reward_voucher_buy2get1_desc">Buy 2 Get 1 Free — pick any 3 items to unlock the offer (*)\n\nValid: from 05/07/2026 to end of 20/07/2026\n\nAdd any 3 items to your cart and the lowest-priced one is free:\n- Applies to all Local Art &amp; Gifts products.\n- Free nationwide shipping on orders from 700,000đ.\n\n(*) The offer is applied automatically at checkout. Cannot be combined with other promotions.</string>
+
+    <!-- Reward 5: Exclusive gift for orders over 1 million -->
+    <string name="reward_voucher_gift1m_title">Exclusive Gift</string>
+    <string name="reward_voucher_gift1m_subtitle">For orders over 1 million dong</string>
+    <string name="reward_voucher_gift1m_validity">01/07/2026 - 31/08/2026</string>
+    <string name="reward_voucher_gift1m_desc">For orders over 1 million — TiredCity sends you an exclusive gift (*)\n\nValid: from 01/07/2026 to end of 31/08/2026\n\nThe gift includes:\n- A limited-edition illustrated lucky money envelope set.\n- A TiredCity art print with a hang tag and its own gift bag.\n\n(*) Applies to orders with a payment value over 1,000,000đ. The gift ships with your order and cannot be exchanged for cash.</string>
 
     <!-- Voucher detail screen -->
     <string name="voucher_detail_validity">01/06/2026 - 30/06/2026</string>
@@ -780,6 +787,7 @@
     <string name="voucher_detail_days_left">4 DAYS LEFT</string>
     <string name="voucher_detail_desc">Appreciation Voucher - Ao Dai / Nhat Binh Collection\nDiscount on full-priced traditional outfits (*)\n\nValid: from 01/06/2026 to end of 30/06/2026\n\nTiredCity offers a special discount when you buy designs from the Ao Dai and Nhat Binh collections:\n- Instant discount on full-priced traditional outfits.\n- Applicable both in store and online.\n\n(*) Applicable across the entire TiredCity system for full-priced Ao Dai / Nhat Binh collection items. Cannot be combined with other promotions.</string>
     <string name="voucher_gifted">GIFTED</string>
+    <string name="voucher_gifted_done">Voucher saved to your rewards wallet</string>
     <string name="voucher_use_now">USE NOW</string>
     <string name="cd_share">Share</string>
 
@@ -790,8 +798,11 @@
     <string name="barcode_online_title">Online purchase: </string>
     <string name="barcode_online_desc">Enter this promo code at checkout in the TiredCity app or on www.tiredcity.com</string>
     <string name="barcode_code">39TRIAN0626O1VW1WCQXZ</string>
-    <string name="barcode_code_birthday">39SINHNHAT0626O1VW1WCQXZ</string>
+    <string name="barcode_code_birthday">39SINHNHAT0726O1VW1WCQXZ</string>
     <string name="barcode_code_tri_an">39TRIAN0626O1VW1WCQXZ</string>
+    <string name="barcode_code_sale30">39AODAILUA30O7K2M9PBTD</string>
+    <string name="barcode_code_buy2get1">39MUA2TANG1O7X4H8LZRN</string>
+    <string name="barcode_code_gift1m">39QUATANG1TRO8C5J3YSWF</string>
     <string name="barcode_copy">Copy</string>
     <string name="barcode_copied">Offer code copied</string>
 

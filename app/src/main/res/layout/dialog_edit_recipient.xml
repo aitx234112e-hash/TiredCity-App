@@ -98,6 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="phone"
+                    android:maxLength="12"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -140,64 +141,31 @@
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Quận/Huyện + Phường/Xã -->
-            <LinearLayout
+            <!-- Phường/Xã (dropdown, lọc theo Tỉnh/Thành phố đã chọn ở trên).
+                 Không còn ô Quận/Huyện: từ 01/07/2025 cấp huyện đã bị bỏ (xem AddressData). -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_ward"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:baselineAligned="false"
+                android:hint="@string/addr_ward"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxStrokeColor="@color/tc_input_stroke"
+                app:hintTextColor="@color/tc_red"
                 android:layout_marginBottom="12dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_district"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                <AutoCompleteTextView
+                    android:id="@+id/act_ward"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    android:hint="@string/addr_district"
-                    app:boxCornerRadiusTopStart="14dp"
-                    app:boxCornerRadiusTopEnd="14dp"
-                    app:boxCornerRadiusBottomStart="14dp"
-                    app:boxCornerRadiusBottomEnd="14dp"
-                    app:boxStrokeColor="@color/tc_input_stroke"
-                    app:hintTextColor="@color/tc_red">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/act_district"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:completionThreshold="1"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_ward"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:hint="@string/addr_ward"
-                    app:boxCornerRadiusTopStart="14dp"
-                    app:boxCornerRadiusTopEnd="14dp"
-                    app:boxCornerRadiusBottomStart="14dp"
-                    app:boxCornerRadiusBottomEnd="14dp"
-                    app:boxStrokeColor="@color/tc_input_stroke"
-                    app:hintTextColor="@color/tc_red">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/act_ward"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:completionThreshold="1"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                    android:inputType="textCapWords"
+                    android:completionThreshold="1"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Số nhà, tên đường -->
             <com.google.android.material.textfield.TextInputLayout

@@ -3,6 +3,7 @@ package com.tiredcity.app.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -67,9 +68,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             holder.ivImage.setImageResource(R.color.bg_subtle);
         }
 
-        holder.itemView.setOnClickListener(v -> {
+        View.OnClickListener openDetail = v -> {
             if (listener != null) listener.onArticleClick(article);
-        });
+        };
+        holder.itemView.setOnClickListener(openDetail);
+        holder.btnDetail.setOnClickListener(openDetail);
     }
 
     @Override
@@ -80,13 +83,15 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivImage;
         TextView tvTitle, tvAuthor, tvDate;
+        Button btnDetail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivImage  = itemView.findViewById(R.id.iv_article_image);
-            tvTitle  = itemView.findViewById(R.id.tv_article_title);
-            tvAuthor = itemView.findViewById(R.id.tv_author);
-            tvDate   = itemView.findViewById(R.id.tv_date);
+            ivImage   = itemView.findViewById(R.id.iv_article_image);
+            tvTitle   = itemView.findViewById(R.id.tv_article_title);
+            tvAuthor  = itemView.findViewById(R.id.tv_author);
+            tvDate    = itemView.findViewById(R.id.tv_date);
+            btnDetail = itemView.findViewById(R.id.btn_article_detail);
         }
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Nền nút OK của lịch chọn ngày sinh.
+    - Bấm được (ngày sinh hợp lệ) → nền ĐỎ NHẠT, nổi hơn nút HỦY bên cạnh.
+    - Bị vô hiệu (chưa chọn được ngày) → trong suốt, trông như nút chữ bình thường.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@android:color/transparent" android:state_enabled="false" />
+    <item android:color="@color/tc_red_pale" />
+</selector>
