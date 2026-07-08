@@ -34,7 +34,9 @@ public class ArticleActivity extends BaseActivity {
             String title = article.getTitleVi() != null ? article.getTitleVi() : article.getTitle();
             if (HatBoiMagazineActivity.isFeatureArticle(title)) {
                 startActivity(new android.content.Intent(this, HatBoiMagazineActivity.class));
+                return;
             }
+            PostDetailActivity.start(this, PostContent.forArticle(article, getString(R.string.home_section_news)));
         });
 
         binding.swipeRefresh.setColorSchemeColors(getColor(R.color.tc_red));
@@ -59,8 +61,23 @@ public class ArticleActivity extends BaseActivity {
 
     private void showArticles(List<Article> articles) {
         binding.swipeRefresh.setRefreshing(false);
-        // Giữ nguyên tên/ảnh của card từ Firestore; chỉ cần chạm vào card chuyên đề
-        // Hát Bội thì mở trang tạp chí HatBoiMagazineActivity (xử lý ở listener bên trên).
+        // Đổi diện card chuyên đề Hát Bội: dùng ảnh bìa nội bộ + tên/tác giả biên tập,
+        // để chạm vào mở trang tạp chí HatBoiMagazineActivity (bất kể nguồn Firestore).
+        for (Article a : articles) {
+            String title = a.getTitleVi() != null ? a.getTitleVi() : a.getTitle();
+            if (HatBoiMagazineActivity.isFeatureArticle(title)) {
+                a.setTitleVi(HatBoiMagazineActivity.FEATURE_TITLE);
+                a.setAuthor("Tạp chí Văn Hóa");
+                a.setLocalImageRes(R.drawable.hb_cover);
+                continue;
+            }
+            // Bài chưa có ảnh riêng vẫn cần ảnh vuông — lấy từ kho ảnh nội bộ,
+            // cùng ảnh mà trang chi tiết sẽ dùng làm ảnh bìa.
+            boolean hasRemoteImage = a.getImageUrl() != null && !a.getImageUrl().isEmpty();
+            if (!hasRemoteImage && a.getLocalImageRes() == 0) {
+                a.setLocalImageRes(PostContent.heroForTitle(title));
+            }
+        }
         adapter.updateArticles(articles);
         binding.tvEmpty.setVisibility(articles.isEmpty() ? View.VISIBLE : View.GONE);
     }

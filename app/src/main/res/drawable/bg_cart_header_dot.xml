@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chấm báo tin nhắn chưa đọc trên icon chat của header đỏ (vàng kim để nổi trên nền đỏ) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/tc_cart_header_dot" />
+    <size android:width="8dp" android:height="8dp" />
+</shape>

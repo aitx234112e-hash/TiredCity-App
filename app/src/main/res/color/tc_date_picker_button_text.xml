@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Chữ nút HỦY / OK của lịch chọn ngày sinh.
+    - Còn chọn được (ngày sinh hợp lệ, nằm trong [1920 → hôm nay]) → ĐỎ thương hiệu.
+    - Bị vô hiệu (chưa chọn / ngày không hợp lệ) → xám mờ, để người dùng thấy rõ là chưa bấm được.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/tc_text_secondary" android:alpha="0.38" android:state_enabled="false" />
+    <item android:color="@color/tc_red" />
+</selector>

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary"
+    android:background="@color/tc_red"
     android:fitsSystemWindows="true">
 
-    <!-- ── Top bar ─────────────────────────────────────────────────────── -->
+    <!-- ── Top bar đỏ ──────────────────────────────────────────────────── -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/bg_primary"
+        android:background="@color/tc_red"
         android:paddingHorizontal="8dp">
 
         <ImageView
@@ -23,7 +24,7 @@
             android:contentDescription="@string/cd_back"
             android:padding="8dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/text_primary" />
+            app:tint="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
             android:layout_gravity="center"
             android:letterSpacing="0.06"
             android:text="@string/reward_title"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
     </FrameLayout>
@@ -39,6 +40,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:scrollbars="none">
 
         <LinearLayout
@@ -48,6 +50,17 @@
             android:paddingHorizontal="24dp"
             android:paddingTop="16dp"
             android:paddingBottom="32dp">
+
+            <!-- Tên voucher đang dùng -->
+            <TextView
+                android:id="@+id/tv_voucher_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                tools:text="Birthday TO YOU" />
 
             <!-- Mua hàng tại cửa hàng -->
             <TextView

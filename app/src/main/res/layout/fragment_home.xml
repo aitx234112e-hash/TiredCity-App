@@ -259,31 +259,50 @@
                 android:id="@+id/layout_promo_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_marginTop="40dp"
                 android:paddingHorizontal="20dp"
                 android:alpha="0"
                 android:translationY="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/promo_strip_eyebrow"
-                    android:textColor="@color/tc_gold_deep"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.16" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/promo_strip_eyebrow"
+                        android:textColor="@color/tc_gold_deep"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.16" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/home_promo_title"
+                        android:textColor="@color/tc_text_primary"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium" />
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tv_promo_see_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="@string/home_promo_title"
-                    android:textColor="@color/tc_text_primary"
-                    android:textSize="19sp"
+                    android:text="@string/see_more"
+                    android:textColor="@color/tc_red"
+                    android:textSize="13sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingVertical="4dp" />
             </LinearLayout>
 
             <androidx.viewpager2.widget.ViewPager2
@@ -1068,6 +1087,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tv_hot_see_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/see_all"
@@ -1239,6 +1259,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_recommended_see_all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/see_all"

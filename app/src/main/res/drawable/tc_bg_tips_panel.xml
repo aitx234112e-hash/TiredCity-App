@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền thẻ "Lời khuyên phong cách" — trắng mờ nhất có thể (xem @color/tc_tips_panel_bg),
+     không viền, chỉ bo góc nhẹ để tách khỏi nền kem của trang. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/tc_tips_panel_bg" />
+    <corners android:radius="14dp" />
+</shape>

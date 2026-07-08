@@ -65,39 +65,44 @@
                         android:contentDescription="@string/app_name" />
                 </LinearLayout>
 
-                <!-- Spacer để cân bằng bề rộng nút quay lại, giữ wordmark ở giữa -->
-                <View
+                <!-- Nút giỏ hàng — cũng rộng 40dp nên vẫn cân bằng với nút quay lại,
+                     giữ wordmark ở giữa. -->
+                <ImageButton
+                    android:id="@+id/btn_cart"
                     android:layout_width="40dp"
-                    android:layout_height="1dp" />
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_cart"
+                    app:tint="@color/tc_on_red"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:contentDescription="@string/cart_title" />
             </LinearLayout>
 
-            <!-- ══════════ Hero — nền trắng, carousel ảnh sản phẩm full-bleed (banner ngang,
-                 không viền/bo góc) — liền mạch với khối đỏ phía trên và mục thông tin bên dưới,
-                 cùng kiểu với banner carousel màn Danh mục (fragment_styling.xml) ══════════ -->
-            <LinearLayout
+            <!-- ══════════ Hero — carousel ảnh sản phẩm full-bleed: không nền trắng, không bo
+                 góc, không viền đỏ. Ảnh chạm thẳng mép màn hình và khối đỏ phía trên; dots nổi
+                 đè lên đáy ảnh thay vì nằm trên một dải nền riêng. ══════════ -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@android:color/white"
-                android:paddingBottom="4dp">
+                android:layout_height="wrap_content">
 
-                <!-- Carousel ảnh sản phẩm — full-bleed, chạm thẳng mép khối đỏ phía trên -->
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/vp_product_images"
                     android:layout_width="match_parent"
                     android:layout_height="380dp" />
 
+                <!-- Dots overlay trên ảnh: chấm thường mờ, chấm đang chọn trắng -->
                 <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
                     android:id="@+id/dots_images"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    app:dotsColor="@color/tc_stroke"
-                    app:selectedDotColor="@color/tc_red"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="12dp"
+                    app:dotsColor="@color/tc_on_red_60"
+                    app:selectedDotColor="@color/tc_on_red"
                     app:dotsSize="6dp"
                     app:dotsSpacing="4dp" />
-            </LinearLayout>
+            </FrameLayout>
 
             <!-- Product info card — nền trắng liền mạch với hero phía trên, khung vuông hoàn toàn
                  (không bo góc) để không tạo khe hở/đứt đoạn với khối ảnh phía trên. -->
@@ -229,10 +234,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <!-- Màu sắc -->
+                        <!-- Màu sắc — cột co giãn: nhiều màu thì cuộn ngang thay vì đẩy Kích cỡ ra ngoài -->
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
@@ -245,20 +251,27 @@
                                 android:fontFamily="sans-serif-medium"
                                 android:layout_marginBottom="10dp" />
 
-                            <LinearLayout
-                                android:id="@+id/ll_colors"
-                                android:layout_width="wrap_content"
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal" />
+                                android:scrollbars="none"
+                                android:overScrollMode="never">
+
+                                <LinearLayout
+                                    android:id="@+id/ll_colors"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal" />
+                            </HorizontalScrollView>
                         </LinearLayout>
 
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:layout_marginHorizontal="14dp"
+                            android:layout_marginHorizontal="10dp"
                             android:background="@color/tc_stroke" />
 
-                        <!-- Kích cỡ -->
+                        <!-- Kích cỡ — luôn giữ đủ bề rộng cho S · M · L · XL -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -276,7 +289,7 @@
 
                             <LinearLayout
                                 android:id="@+id/ll_sizes"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:layout_marginBottom="20dp">

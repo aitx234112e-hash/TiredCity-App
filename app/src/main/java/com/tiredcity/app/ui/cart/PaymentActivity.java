@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.tiredcity.app.R;
 import com.tiredcity.app.utils.AddressData;
 import com.tiredcity.app.adapter.CheckoutItemAdapter;
 import com.tiredcity.app.data.local.CartLocalStore;
@@ -23,6 +24,7 @@ import com.tiredcity.app.databinding.ActivityPaymentBinding;
 import com.tiredcity.app.databinding.DialogEditRecipientBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.utils.CheckoutPriceCalculator;
+import com.tiredcity.app.utils.PhoneUtils;
 import com.tiredcity.app.utils.PriceUtils;
 import java.util.List;
 
@@ -103,12 +105,14 @@ public class PaymentActivity extends BaseActivity {
             if (vouchers != null && !vouchers.isEmpty()) {
                 CheckoutPriceCalculator.setLoadedVouchers(vouchers);
             }
+            applyPreselectedVoucher(); // mã Firestore chỉ khớp được sau khi nạp xong
         });
 
         setupOrderSummary();
         setupOrderItems();
         setupPaymentSelector();
         loadShippingMethods();
+        applyPreselectedVoucher();
 
         binding.rowVoucher.setOnClickListener(v -> showVoucherSheet());
         binding.tvChangeAddress.setOnClickListener(v -> showEditRecipientDialog());
@@ -153,7 +157,7 @@ public class PaymentActivity extends BaseActivity {
     private void bindRecipientCard() {
         UserProfile user = preferenceManager.getUser();
         String name = user != null ? user.getName() : "";
-        String phone = user != null ? user.getPhone() : "";
+        String phone = user != null ? PhoneUtils.format(user.getPhone()) : "";   // hiển thị 4-3-3
         String fullAddress = user != null ? user.getFullAddress() : "";
 
         boolean hasAddress = !TextUtils.isEmpty(fullAddress);
@@ -536,6 +540,23 @@ public class PaymentActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Mã ưu đãi khách đã chọn sẵn ở màn Giỏ hàng: áp ngay khi mở trang này.
+     * Gọi 2 lần (sau khi dựng tóm tắt đơn, và sau khi nạp voucher từ Firestore) — lần sau
+     * không làm gì nếu lần trước đã áp được.
+     */
+    private void applyPreselectedVoucher() {
+        if (priceCalculator.getAppliedVoucherCode() != null) return;
+        String code = getIntent().getStringExtra(com.tiredcity.app.utils.Constants.EXTRA_VOUCHER_CODE);
+        if (TextUtils.isEmpty(code)) return;
+
+        priceCalculator.setSubtotal(currentSubtotal());
+        if (priceCalculator.applyVoucher(code)) {
+            updateVoucherStatusLabel();
+            refreshTotals();
+        }
+    }
+
     /** Mở bottom sheet chọn mã giảm giá (kiểu Shopee) — chọn từ danh sách hoặc nhập tay. */
     private void showVoucherSheet() {
         VoucherBottomSheet sheet = new VoucherBottomSheet();
@@ -563,40 +584,30 @@ public class PaymentActivity extends BaseActivity {
         DialogEditRecipientBinding dialogBinding = DialogEditRecipientBinding.inflate(getLayoutInflater());
         UserProfile user = preferenceManager.getUser();
 
+        PhoneUtils.attach(dialogBinding.etRecipientPhone);   // tự cách 4-3-3, chặn quá 10 số
+
         // Prefill từ hồ sơ đã lưu
         if (user != null) {
             dialogBinding.etRecipientName.setText(user.getName());
-            dialogBinding.etRecipientPhone.setText(user.getPhone());
+            dialogBinding.etRecipientPhone.setText(PhoneUtils.format(user.getPhone()));
             dialogBinding.etRecipientAddress.setText(user.getStreet());
         }
 
-        // Dropdown địa chỉ 3 cấp: Tỉnh → Quận/Huyện → Phường/Xã (tái dùng AddressData)
+        // Dropdown địa chỉ 2 cấp: Tỉnh → Phường/Xã (tái dùng AddressData)
         AutoCompleteTextView actProvince = dialogBinding.actProvince;
-        AutoCompleteTextView actDistrict = dialogBinding.actDistrict;
         AutoCompleteTextView actWard = dialogBinding.actWard;
 
-        setDropdown(actProvince, new ArrayList<>(java.util.Arrays.asList(
-                getResources().getStringArray(com.tiredcity.app.R.array.vn_provinces))));
+        setDropdown(actProvince, AddressData.getProvinces());
 
         actProvince.setOnItemClickListener((parent, v, pos, id) -> {
             String prov = actProvince.getText().toString();
-            setDropdown(actDistrict, AddressData.getDistricts(prov));
-            actDistrict.setText("", false);
-            setDropdown(actWard, new ArrayList<>());
-            actWard.setText("", false);
-        });
-        actDistrict.setOnItemClickListener((parent, v, pos, id) -> {
-            String prov = actProvince.getText().toString();
-            String dist = actDistrict.getText().toString();
-            setDropdown(actWard, AddressData.getWards(prov, dist));
-            actWard.setText("", false);
+            setDropdown(actWard, AddressData.getWards(prov));
+            actWard.setText("", false);   // đổi tỉnh → phường cũ không còn hợp lệ
         });
 
         if (user != null) {
             actProvince.setText(user.getProvince(), false);
-            setDropdown(actDistrict, AddressData.getDistricts(user.getProvince()));
-            actDistrict.setText(user.getDistrict(), false);
-            setDropdown(actWard, AddressData.getWards(user.getProvince(), user.getDistrict()));
+            setDropdown(actWard, AddressData.getWards(user.getProvince()));
             actWard.setText(user.getWard(), false);
         }
 
@@ -610,12 +621,24 @@ public class PaymentActivity extends BaseActivity {
 
         dialogBinding.btnRecipientCancel.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnRecipientSave.setOnClickListener(v -> {
+            // Giao hàng bắt buộc có SĐT liên hệ hợp lệ.
+            String phone = dialogBinding.etRecipientPhone.getText().toString();
+            if (PhoneUtils.isEmpty(phone)) {
+                dialogBinding.etRecipientPhone.setError(getString(R.string.error_phone_empty));
+                return;
+            }
+            if (!PhoneUtils.isValid(phone)) {
+                dialogBinding.etRecipientPhone.setError(getString(R.string.error_phone_invalid));
+                return;
+            }
+            dialogBinding.etRecipientPhone.setError(null);
+
             UserProfile p = preferenceManager.getUser();
             if (p == null) p = new UserProfile();
             p.setName(dialogBinding.etRecipientName.getText().toString().trim());
-            p.setPhone(dialogBinding.etRecipientPhone.getText().toString().trim());
+            p.setPhone(PhoneUtils.digits(phone));   // lưu chỉ chữ số
             p.setProvince(actProvince.getText().toString().trim());
-            p.setDistrict(actDistrict.getText().toString().trim());
+            p.setDistrict("");   // cấp huyện đã bỏ — xoá giá trị cũ khỏi địa chỉ gộp
             p.setWard(actWard.getText().toString().trim());
             p.setStreet(dialogBinding.etRecipientAddress.getText().toString().trim());
             p.setAddress(p.getFullAddress());

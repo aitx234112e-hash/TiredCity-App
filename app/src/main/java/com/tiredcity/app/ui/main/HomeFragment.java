@@ -638,7 +638,10 @@ public class HomeFragment extends Fragment {
         binding.cvAiStrip.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChatBotActivity.class)));
         binding.btnCart.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tiredcity.app.ui.cart.CartActivity.class)));
         binding.btnNotification.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tiredcity.app.ui.notification.NotificationActivity.class)));
+        binding.tvPromoSeeAll.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tiredcity.app.ui.reward.RewardActivity.class)));
         binding.tvCategoriesSeeAll.setOnClickListener(v -> Navigation.findNavController(requireView()).navigate(R.id.stylingFragment));
+        binding.tvHotSeeAll.setOnClickListener(v -> Navigation.findNavController(requireView()).navigate(R.id.stylingFragment));
+        binding.tvRecommendedSeeAll.setOnClickListener(v -> Navigation.findNavController(requireView()).navigate(R.id.stylingFragment));
         binding.cardCatAoDai.setOnClickListener(v -> openStylingCategory("ÁO DÀI"));
         binding.cardCatNhatBinh.setOnClickListener(v -> openStylingCategory("NHẬT BÌNH"));
         binding.cardCatAoTac.setOnClickListener(v -> openStylingCategory("ÁO TẤC"));

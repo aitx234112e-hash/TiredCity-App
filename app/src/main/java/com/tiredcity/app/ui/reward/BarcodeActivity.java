@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Toast;
 import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.ActivityBarcodeBinding;
@@ -22,10 +23,12 @@ import com.tiredcity.app.ui.base.BaseActivity;
  */
 public class BarcodeActivity extends BaseActivity {
 
-    public static final String EXTRA_CODE = "extra_code";
+    public static final String EXTRA_CODE  = "extra_code";
+    public static final String EXTRA_TITLE = "extra_title";
 
     private ActivityBarcodeBinding binding;
     private String code;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +38,15 @@ public class BarcodeActivity extends BaseActivity {
 
         code = getIntent().getStringExtra(EXTRA_CODE);
         if (TextUtils.isEmpty(code)) code = getString(R.string.barcode_code);
+        title = getIntent().getStringExtra(EXTRA_TITLE);
 
         bindData();
         setupClicks();
     }
 
     private void bindData() {
+        binding.tvVoucherTitle.setText(title);
+        binding.tvVoucherTitle.setVisibility(TextUtils.isEmpty(title) ? View.GONE : View.VISIBLE);
         binding.tvInStore.setText(html(
                 getString(R.string.barcode_in_store_title), getString(R.string.barcode_in_store_desc)));
         binding.tvOnline.setText(html(

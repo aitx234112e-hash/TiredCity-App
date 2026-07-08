@@ -3,6 +3,7 @@ package com.tiredcity.app.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -46,12 +47,23 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Event event = events.get(position);
         holder.tvTitle.setText(event.getTitle());
-        holder.tvLocation.setText(event.isOnline() ? "🌐 Online"
+
+        // Sự kiện online dùng icon quả địa cầu, offline dùng ghim địa điểm
+        holder.tvLocation.setText(event.isOnline() ? "Online"
                 : (event.getLocation() != null ? event.getLocation() : ""));
+        holder.ivLocationIcon.setImageResource(
+                event.isOnline() ? R.drawable.ic_globe : R.drawable.ic_pin);
+
         holder.tvDate.setText(event.getEventDate() != null
                 ? DateUtils.formatDisplayDate(event.getEventDate()) : "");
 
-        if (event.getImageUrl() != null && !event.getImageUrl().isEmpty()) {
+        if (event.getLocalImageRes() != 0) {
+            Glide.with(holder.ivImage.getContext())
+                    .load(event.getLocalImageRes())
+                    .fitCenter()
+                    .placeholder(R.color.bg_subtle)
+                    .into(holder.ivImage);
+        } else if (event.getImageUrl() != null && !event.getImageUrl().isEmpty()) {
             Glide.with(holder.ivImage.getContext())
                     .load(event.getImageUrl())
                     .fitCenter()
@@ -61,9 +73,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             holder.ivImage.setImageResource(R.color.bg_subtle);
         }
 
-        holder.itemView.setOnClickListener(v -> {
+        View.OnClickListener openDetail = v -> {
             if (listener != null) listener.onEventClick(event);
-        });
+        };
+        holder.itemView.setOnClickListener(openDetail);
+        holder.btnDetail.setOnClickListener(openDetail);
     }
 
     @Override
@@ -72,15 +86,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivImage;
+        ImageView ivImage, ivLocationIcon;
         TextView tvTitle, tvLocation, tvDate;
+        Button btnDetail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivImage    = itemView.findViewById(R.id.iv_event_image);
-            tvTitle    = itemView.findViewById(R.id.tv_event_title);
-            tvLocation = itemView.findViewById(R.id.tv_event_location);
-            tvDate     = itemView.findViewById(R.id.tv_event_date);
+            ivImage        = itemView.findViewById(R.id.iv_event_image);
+            ivLocationIcon = itemView.findViewById(R.id.iv_event_location_icon);
+            tvTitle        = itemView.findViewById(R.id.tv_event_title);
+            tvLocation     = itemView.findViewById(R.id.tv_event_location);
+            tvDate         = itemView.findViewById(R.id.tv_event_date);
+            btnDetail      = itemView.findViewById(R.id.btn_event_detail);
         }
     }
 }

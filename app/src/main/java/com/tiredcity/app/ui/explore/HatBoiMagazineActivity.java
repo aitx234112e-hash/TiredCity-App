@@ -36,20 +36,25 @@ public class HatBoiMagazineActivity extends BaseActivity {
 
     /** Mỗi "kỳ báo": {drawable ảnh, số thứ tự, tên chương, phụ đề, chú thích}. */
     private static final Object[][] SPREADS = {
-            {R.drawable.hb_foreword, "01", "Lời tựa", "Măng-sét & thư ngỏ số 27",
-                    "Trang bìa lót mở đầu chuyên đề, giới thiệu ê-kíp thực hiện và tôn chỉ của số báo dành cho nghệ thuật Hát Bội."},
-            {R.drawable.hb_contents, "02", "Mục lục", "Bảy chương của hành trình",
-                    "Toàn cảnh nội dung: Lịch sử – Nhân vật – Mặt nạ – Tác phẩm để đời – Hát Bội với thời trang & giới trẻ."},
-            {R.drawable.hb_history, "03", "Lịch sử Hát Bội", "Từ nghi lễ dân gian đến sân khấu cung đình",
-                    "Khởi nguồn từ hát múa dân gian, giao thoa với hí kịch, Hát Bội thăng hoa rồi trải qua bao thăng trầm theo dòng lịch sử."},
-            {R.drawable.hb_characters, "04", "Nhân vật", "Kép, Lão, Đào và Mụ",
-                    "Mỗi tuyến nhân vật mang một phẩm cách và vai trò riêng, khắc họa những mâu thuẫn thiện – ác trên sân khấu."},
-            {R.drawable.hb_makeup, "05", "Nghệ thuật hóa trang", "Sắc màu vẽ mặt & thần thái",
-                    "Đỏ, vàng, xanh, trắng, đen — mỗi màu là một tính cách; từng đường nét vẽ mặt kể tiếp câu chuyện của vở tuồng."},
-            {R.drawable.hb_masterpiece, "06", "Tác phẩm để đời", "Đào Tam Xuân · Lôi Vũ · Ngọc Hân",
-                    "Những vở tuồng cổ điển kết tinh giá trị lịch sử, đạo lý và chất bi hùng của sân khấu truyền thống Việt Nam."},
-            {R.drawable.hb_modern, "07", "Giao thoa cũ & mới", "Hát Bội trong MV ‘Chân Ái’",
-                    "Luồng gió đương đại đưa Hát Bội đến gần giới trẻ, gợi mở cách bảo tồn và tiếp nối di sản trong đời sống hôm nay."},
+            {R.drawable.hb_foreword, "01", "Măng-sét", "Trang 01–02 · Thư ngỏ số 27",
+                    "Trang bìa lót ghi danh ê-kíp thực hiện số báo: tổng biên tập, cố vấn, thiết kế và nguồn hình ảnh sưu tầm."},
+            {R.drawable.hb_contents, "02", "Mục lục", "Trang 03–04 · Sáu chương của hành trình",
+                    "Lịch sử · Nhân vật · Mặt nạ · Tác phẩm để đời · Hát Bội với thời trang · Hát Bội với giới trẻ."},
+            {R.drawable.hb_history, "03", "Lịch sử Hát Bội", "Trang 05–06 · Phát triển và thăng trầm",
+                    "Bắt nguồn từ hát múa dân gian Việt cổ và giao thoa cùng hí kịch Trung Hoa, hát bội từ nghi lễ đình – đền – chùa "
+                            + "vươn lên thành sân khấu phổ biến khắp miền Nam cuối thế kỷ 19, rồi nhường bước trước cải lương thập niên 30–40."},
+            {R.drawable.hb_characters, "04", "Nhân vật", "Trang 07–08 · Kép, Lão, Đào và Mụ",
+                    "Kép chính trực, Lão dựng mạch truyện, Đào dịu dàng hiền thục, Mụ gian ngoa mưu mô — mỗi tuyến vai là một biểu tượng "
+                            + "phẩm hạnh, khắc họa mâu thuẫn thiện – ác và những bài học nhân sinh."},
+            {R.drawable.hb_makeup, "05", "Trang điểm Hát Bội", "Trang 09–10 · Đỉnh cao nghệ thuật hóa trang",
+                    "Màu sắc, vẽ mặt, mắt, môi và lông mày — mỗi chi tiết là một thông điệp. Đỏ, vàng, xanh, trắng, đen không chỉ làm đẹp "
+                            + "mà tượng trưng cho tính cách, vai trò và trạng thái của nhân vật."},
+            {R.drawable.hb_masterpiece, "06", "Tác phẩm để đời", "Trang 11–12 · Đào Tam Xuân · Lôi Vũ · Ngọc Hân",
+                    "Nữ tướng Đào Tam Xuân — người phụ nữ tài sắc vẹn toàn mà bạc phận — cùng Lôi Vũ và Ngọc Hân công chúa kết tinh "
+                            + "chất bi hùng, lòng trung thành và sự hy sinh của sân khấu tuồng cổ."},
+            {R.drawable.hb_modern, "07", "Giao thoa cũ & mới", "Trang 13–14 · Luồng gió mới từ MV ‘Chân Ái’",
+                    "Lấy bối cảnh sân khấu kịch thập niên 60, ‘Chân Ái’ (Orange × Khói × Châu Đăng Khoa) trộn rap, hip-hop và ballad "
+                            + "với hóa trang hát bội — đưa di sản đến gần giới trẻ và mở lại câu hỏi về cách bảo tồn."},
     };
 
     @Override

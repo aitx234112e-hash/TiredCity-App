@@ -23,6 +23,7 @@ import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.main.MainActivity;
 import com.tiredcity.app.utils.LocaleHelper;
 import com.tiredcity.app.utils.MenhCalculator;
+import com.tiredcity.app.utils.PhoneUtils;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -45,6 +46,7 @@ public class RegisterActivity extends BaseActivity {
         authRepository = new AuthRepository(ApiClient.getApiService(null), preferenceManager);
 
         binding.etBirthdate.setOnClickListener(v -> showDatePicker());
+        PhoneUtils.attach(binding.etPhone);   // tự cách 4-3-3, chặn quá 10 số
 
         binding.btnRegister.setOnClickListener(v -> {
             String name     = binding.etFullname.getText().toString().trim();
@@ -61,6 +63,15 @@ public class RegisterActivity extends BaseActivity {
                 binding.etEmail.setError("Nhập email");
                 return;
             }
+            if (PhoneUtils.isEmpty(phone)) {
+                binding.etPhone.setError(getString(R.string.error_phone_empty));
+                return;
+            }
+            if (!PhoneUtils.isValid(phone)) {
+                binding.etPhone.setError(getString(R.string.error_phone_invalid));
+                return;
+            }
+            binding.etPhone.setError(null);
             if (!dateChosen) {
                 binding.etBirthdate.setError(getString(R.string.error_birthdate));
                 Toast.makeText(this, getString(R.string.error_birthdate), Toast.LENGTH_SHORT).show();
@@ -80,7 +91,7 @@ public class RegisterActivity extends BaseActivity {
                 Toast.makeText(this, getString(R.string.error_agree_terms), Toast.LENGTH_SHORT).show();
                 return;
             }
-            attemptRegister(email, password, name, phone);
+            attemptRegister(email, password, name, PhoneUtils.digits(phone));   // lưu chỉ chữ số
         });
 
         binding.tvLogin.setOnClickListener(v -> navigateToLogin());

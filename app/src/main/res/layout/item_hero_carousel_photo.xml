@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Một trang của carousel ảnh sản phẩm ở đầu trang Chi tiết sản phẩm — ảnh full-bleed, không
-     viền/bo góc, liền mạch với khối trắng bao quanh (không còn kiểu "thẻ nổi" Arc/Curved Carousel
-     cũ) để toàn bộ khối ảnh + mục thông tin bên dưới đọc như 1 khối duy nhất.
+<!-- Một trang của carousel ảnh sản phẩm ở đầu trang Chi tiết sản phẩm — ảnh full-bleed, chạm
+     thẳng hai mép màn hình, không viền/bo góc, không nền.
      v_shine: dải sáng chéo quét ngang định kỳ qua ảnh, tạo hiệu ứng "tráng gương" bóng loáng. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

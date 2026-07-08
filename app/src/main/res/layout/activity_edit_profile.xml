@@ -112,9 +112,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/bg_input_field"
+                android:hint="@string/hint_phone_example"
                 android:inputType="phone"
+                android:maxLength="12"
                 android:paddingHorizontal="14dp"
                 android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"
                 android:textSize="14sp"
                 android:layout_marginBottom="16dp" />
 
@@ -198,60 +201,30 @@
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Quận/Huyện + Phường/Xã (cùng hàng) -->
-            <LinearLayout
+            <!-- Phường/Xã (dropdown, lọc theo Tỉnh/Thành phố đã chọn ở trên).
+                 Không còn ô Quận/Huyện: từ 01/07/2025 cấp huyện đã bị bỏ (xem AddressData). -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_ward"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:baselineAligned="false"
+                android:hint="@string/addr_ward"
+                app:boxStrokeColor="@color/tc_input_stroke"
+                app:hintTextColor="@color/tc_red"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
                 android:layout_marginBottom="12dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_district"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                <AutoCompleteTextView
+                    android:id="@+id/act_ward"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    android:hint="@string/addr_district"
-                    app:boxStrokeColor="@color/tc_input_stroke"
-                    app:hintTextColor="@color/tc_red"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp">
-                    <AutoCompleteTextView
-                        android:id="@+id/act_district"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_ward"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:hint="@string/addr_ward"
-                    app:boxStrokeColor="@color/tc_input_stroke"
-                    app:hintTextColor="@color/tc_red"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp">
-                    <AutoCompleteTextView
-                        android:id="@+id/act_ward"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                    android:inputType="text"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Số nhà, tên đường -->
             <com.google.android.material.textfield.TextInputLayout

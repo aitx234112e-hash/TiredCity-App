@@ -116,18 +116,17 @@
                     android:lineSpacingExtra="3dp"
                     tools:text="@string/aistyle_menh_desc_kim" />
 
-                <!-- ───────────── MÀU HỢP MỆNH — ảnh minh hoạ nguyên khổ (không cắt xén) + bài viết
-                     ngắn theo mệnh đang xem trên carousel. Ẩn hoàn toàn nếu mệnh chưa có ảnh (xem
-                     MenhCalculator#getMenhColorPhotos và updateMenhColors()). ───────────── -->
+                <!-- ───────────── SẮC MÀU NGŨ HÀNH — ảnh minh hoạ nguyên khổ (không cắt xén) + bài
+                     viết ngắn theo đúng mệnh của người dùng. Nền trắng như phần còn lại của trang;
+                     chỉ gạch chân dưới tiêu đề mang màu mệnh (xem updateMenhColors()). Ẩn hoàn toàn
+                     nếu mệnh chưa có ảnh (xem MenhCalculator#getMenhColorPhotos). ───────────── -->
                 <LinearLayout
                     android:id="@+id/section_menh_colors"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="14dp"
-                    android:background="@drawable/tc_bg_menh_panel"
-                    android:padding="18dp"
+                    android:layout_marginBottom="20dp"
                     android:visibility="gone"
                     tools:visibility="visible">
 
@@ -148,10 +147,14 @@
                         android:layout_marginBottom="12dp"
                         android:background="@drawable/tc_divider_gold" />
 
+                    <!-- clipChildren=false: thẻ ảnh bên trong trôi lên xuống bằng translationY (xem
+                         startGentleFloat()); nếu vẫn clip theo bounds của LinearLayout này thì mép
+                         trên của ảnh sẽ bị xén đúng bằng biên độ trôi. -->
                     <LinearLayout
                         android:id="@+id/layout_menh_colors"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clipChildren="false"
                         android:orientation="vertical" />
 
                     <TextView
@@ -165,17 +168,16 @@
                         tools:text="@string/aistyle_colors_text_kim" />
                 </LinearLayout>
 
-                <!-- ───────────── PHỤ KIỆN HỢP MỆNH — dải ảnh tự trượt trái ⇄ phải + bài viết ngắn
-                     theo mệnh đang xem trên carousel. Ẩn hoàn toàn nếu mệnh chưa có ảnh (xem
-                     MenhCalculator#getMenhAccessoryPhotos và updateMenhAccessories()). ───────────── -->
+                <!-- ───────────── NGHỆ THUẬT ĐIỂM XUYẾT — dải ảnh phụ kiện tự trượt trái ⇄ phải +
+                     bài viết ngắn theo đúng mệnh của người dùng. Nền trắng như phần còn lại của
+                     trang; chỉ gạch chân dưới tiêu đề mang màu mệnh (xem updateMenhAccessories()).
+                     Ẩn hoàn toàn nếu mệnh chưa có ảnh. ───────────── -->
                 <LinearLayout
                     android:id="@+id/section_menh_accessories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="14dp"
-                    android:background="@drawable/tc_bg_menh_panel"
-                    android:padding="18dp"
+                    android:layout_marginBottom="20dp"
                     android:visibility="gone"
                     tools:visibility="visible">
 
@@ -221,57 +223,49 @@
                         tools:text="@string/aistyle_accessories_text_kim" />
                 </LinearLayout>
 
-                <!-- ───────────── LỜI KHUYÊN PHONG CÁCH — nền thẻ nhạt + tiêu đề tô màu theo đúng
-                     mệnh đang xem, cùng ngôn ngữ thiết kế với 3 mục màu/phụ kiện/hoạ tiết bên
-                     trên. ───────────── -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_tips"
+                <!-- ───────────── LỜI KHUYÊN PHONG CÁCH — thẻ nền trắng mờ nhất có thể (15% alpha,
+                     xem @drawable/tc_bg_tips_panel), khác với 2 mục sắc màu/điểm xuyết bên trên vốn
+                     để trần trên nền trang. Tiêu đề + gạch chân mang màu mệnh (xem
+                     updateTipsAndSuggestionsTheme()). ───────────── -->
+                <LinearLayout
+                    android:id="@+id/section_tips"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    app:cardCornerRadius="@dimen/tc_radius_lg"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="1.5dp"
-                    app:strokeColor="@color/tc_menh_kim"
-                    app:cardBackgroundColor="@color/tc_menh_kim_bg">
+                    android:orientation="vertical"
+                    android:background="@drawable/tc_bg_tips_panel"
+                    android:padding="14dp"
+                    android:layout_marginBottom="20dp">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_tips_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/aistyle_tips"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/divider_tips"
+                        android:layout_width="48dp"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/tc_divider_gold" />
+
+                    <TextView
+                        android:id="@+id/tv_styling_tip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="6dp"
+                        tools:text="@string/aistyle_tip_desc_kim" />
+                </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/tv_tips_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/aistyle_tips"
-                            android:textColor="@color/text_primary"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <View
-                            android:id="@+id/divider_tips"
-                            android:layout_width="48dp"
-                            android:layout_height="2dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="14dp"
-                            android:background="@drawable/tc_divider_gold" />
-
-                        <TextView
-                            android:id="@+id/tv_styling_tip"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp"
-                            android:lineSpacingExtra="6dp"
-                            tools:text="@string/aistyle_tip_desc_kim" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- ───────────── GỢI Ý TRANG PHỤC (lưới thoáng trên nền kem) — theo đúng mệnh đang
-                     xem trên carousel, cùng với các mục màu/phụ kiện/hoạ tiết/lời khuyên bên
-                     trên. ───────────── -->
+                <!-- ───────────── GỢI Ý TRANG PHỤC (lưới thoáng trên nền kem) — theo đúng mệnh thật
+                     của người dùng, cùng với các mục màu/phụ kiện/lời khuyên bên trên. Tiêu đề mang
+                     màu mệnh (xem updateTipsAndSuggestionsTheme()). ───────────── -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -285,6 +279,7 @@
                         android:gravity="center_vertical">
 
                         <TextView
+                            android:id="@+id/tv_suggestions_title"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"

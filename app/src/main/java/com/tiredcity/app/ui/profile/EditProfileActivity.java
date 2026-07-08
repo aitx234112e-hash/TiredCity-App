@@ -26,6 +26,7 @@ import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.utils.AddressData;
 import com.tiredcity.app.utils.AvatarUtils;
 import com.tiredcity.app.utils.MenhCalculator;
+import com.tiredcity.app.utils.PhoneUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -70,23 +71,17 @@ public class EditProfileActivity extends BaseActivity {
         setupBirthDateFormatter();
         binding.ibPickBirthDate.setOnClickListener(v -> showBirthDatePicker());
 
-        // Dropdown địa chỉ 3 cấp: Tỉnh → Quận/Huyện → Phường/Xã
+        PhoneUtils.attach(binding.etPhone);   // tự cách 4-3-3, chặn quá 10 số
+
+        // Dropdown địa chỉ 2 cấp: Tỉnh → Phường/Xã. Danh sách tỉnh lấy từ chính vn_address.json
+        // nên mọi tỉnh chọn được đều chắc chắn sổ ra phường/xã.
         AddressData.init(this);
-        setDropdown(binding.actProvince,
-                new ArrayList<>(java.util.Arrays.asList(getResources().getStringArray(R.array.vn_provinces))));
+        setDropdown(binding.actProvince, AddressData.getProvinces());
 
         binding.actProvince.setOnItemClickListener((parent, v, pos, id) -> {
             String prov = binding.actProvince.getText().toString();
-            setDropdown(binding.actDistrict, AddressData.getDistricts(prov));
-            binding.actDistrict.setText("", false);
-            setDropdown(binding.actWard, new ArrayList<>());
-            binding.actWard.setText("", false);
-        });
-        binding.actDistrict.setOnItemClickListener((parent, v, pos, id) -> {
-            String prov = binding.actProvince.getText().toString();
-            String dist = binding.actDistrict.getText().toString();
-            setDropdown(binding.actWard, AddressData.getWards(prov, dist));
-            binding.actWard.setText("", false);
+            setDropdown(binding.actWard, AddressData.getWards(prov));
+            binding.actWard.setText("", false);   // đổi tỉnh → phường cũ không còn hợp lệ
         });
 
         UserProfile cached = preferenceManager.getUser();
@@ -281,14 +276,12 @@ public class EditProfileActivity extends BaseActivity {
     private void bindProfileToForm(UserProfile profile) {
         binding.etName.setText(profile.getName());
         binding.etEmail.setText(profile.getEmail());
-        binding.etPhone.setText(profile.getPhone());
+        binding.etPhone.setText(PhoneUtils.format(profile.getPhone()));
         binding.etBirthDate.setText(isoToDisplayBirthDate(profile.getBirthDate()));
 
         // Địa chỉ tách phần — nạp sẵn dropdown theo dữ liệu đã lưu
         binding.actProvince.setText(profile.getProvince(), false);
-        setDropdown(binding.actDistrict, AddressData.getDistricts(profile.getProvince()));
-        binding.actDistrict.setText(profile.getDistrict(), false);
-        setDropdown(binding.actWard, AddressData.getWards(profile.getProvince(), profile.getDistrict()));
+        setDropdown(binding.actWard, AddressData.getWards(profile.getProvince()));
         binding.actWard.setText(profile.getWard(), false);
         binding.etStreet.setText(profile.getStreet());
     }
@@ -300,10 +293,18 @@ public class EditProfileActivity extends BaseActivity {
             binding.etName.setError(getString(R.string.hint_fullname));
             return;
         }
+        // Để trống được (hồ sơ cũ có thể chưa có SĐT), nhưng đã nhập thì phải đúng định dạng.
+        String phone = binding.etPhone.getText().toString();
+        if (!PhoneUtils.isEmpty(phone) && !PhoneUtils.isValid(phone)) {
+            binding.etPhone.setError(getString(R.string.error_phone_invalid));
+            return;
+        }
+        binding.etPhone.setError(null);
+
         UserProfile p = preferenceManager.getUser();
         if (p == null) p = new UserProfile();
         p.setName(name);
-        p.setPhone(binding.etPhone.getText().toString().trim());
+        p.setPhone(PhoneUtils.digits(phone));   // lưu chỉ chữ số, khoảng trắng chỉ để hiển thị
 
         String birthInput = binding.etBirthDate.getText().toString().trim();
         if (!birthInput.isEmpty()) {
@@ -331,7 +332,7 @@ public class EditProfileActivity extends BaseActivity {
 
         // Địa chỉ tách phần + gộp lại thành address đầy đủ để hiển thị/giao hàng
         p.setProvince(binding.actProvince.getText().toString().trim());
-        p.setDistrict(binding.actDistrict.getText().toString().trim());
+        p.setDistrict("");   // cấp huyện đã bỏ — xoá giá trị cũ để địa chỉ gộp không còn quận/huyện
         p.setWard(binding.actWard.getText().toString().trim());
         p.setStreet(binding.etStreet.getText().toString().trim());
         p.setAddress(p.getFullAddress());

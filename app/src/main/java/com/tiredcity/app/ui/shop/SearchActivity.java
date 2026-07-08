@@ -30,6 +30,7 @@ import com.tiredcity.app.data.repository.FirestoreProductRepository;
 import com.tiredcity.app.databinding.ActivitySearchBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.CartActivity;
+import com.tiredcity.app.ui.common.BottomNavBar;
 import com.tiredcity.app.ui.explore.EventDetailActivity;
 import com.tiredcity.app.ui.main.MainActivity;
 import com.tiredcity.app.ui.reward.VoucherDetailActivity;
@@ -73,13 +74,17 @@ public class SearchActivity extends BaseActivity {
         binding.btnBack.setOnClickListener(v -> finishSmoothly());
         binding.btnClear.setOnClickListener(v -> binding.etSearch.setText(""));
 
+        // Icon "Tìm kiếm" là chính màn này → tô đậm sẵn. Ba tab trong nav_graph để BottomNavBar tự
+        // gửi Intent về MainActivity (truyền null), vì ở đây không có NavController.
+        BottomNavBar.bind(this, binding.bottomNavBar, BottomNavBar.Tab.SHOP, null);
+
         setupSuggestions();
 
         productAdapter = new ProductAdapter(new ArrayList<>());
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override public void onProductClick(Product p) { openProductDetail(p); }
             @Override public void onSaveToggle(Product p, boolean saved) { new FavoritesLocalStore(SearchActivity.this).toggleFavorite(p); }
-            @Override public void onAddToCartClick(Product p) { openProductDetail(p); }
+            @Override public void onAddToCartClick(Product p, View sourceView) { openProductDetail(p); }
         });
         binding.rvResults.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvResults.setAdapter(productAdapter);

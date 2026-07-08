@@ -3,16 +3,14 @@ package com.tiredcity.app.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 import com.tiredcity.app.R;
 import com.tiredcity.app.databinding.ActivityMainBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
+import com.tiredcity.app.ui.common.BottomNavBar;
 import com.tiredcity.app.ui.settings.PinActivity;
 import com.tiredcity.app.utils.Constants;
 
@@ -21,6 +19,10 @@ public class MainActivity extends BaseActivity {
     /** Extra: id danh mục cần mở sẵn ở tab "Danh mục" — dùng khi một Activity khác (vd. chip
      *  tên danh mục ở màn Tìm kiếm) muốn quay lại đây và nhảy thẳng vào đúng nhóm trang phục. */
     public static final String EXTRA_OPEN_CATEGORY_ID = "open_category_id";
+
+    /** Extra: tên {@link BottomNavBar.Tab} cần mở — dùng khi bấm tab trên thanh nav của
+     *  SearchActivity/ProfileActivity, vì 3 tab đó chỉ điều hướng được từ NavController ở đây. */
+    public static final String EXTRA_OPEN_TAB = "open_tab";
 
     private ActivityMainBinding binding;
     private NavController navController;
@@ -53,19 +55,14 @@ public class MainActivity extends BaseActivity {
         if (navHostFragment != null) {
             navController = navHostFragment.getNavController();
 
-            // Icon "tìm kiếm" ở bottom nav mở thẳng màn Tìm kiếm đầy đủ (SearchActivity) thay vì
-            // chuyển tab — giống cách navProfile mở ProfileActivity riêng, không phải nav destination.
-            binding.navShop.setOnClickListener(v -> startActivity(
-                    new Intent(this, com.tiredcity.app.ui.shop.SearchActivity.class)));
-            binding.navStyling.setOnClickListener(v -> navigateTab(R.id.stylingFragment));
-            binding.navHome.setOnClickListener(v -> navigateTab(R.id.homeFragment));
-            binding.navExplore.setOnClickListener(v -> navigateTab(R.id.exploreFragment));
-            binding.navProfile.setOnClickListener(v ->
-                    startActivity(new Intent(this, com.tiredcity.app.ui.profile.ProfileActivity.class)));
+            // Icon "Tìm kiếm"/"Tôi" mở Activity riêng, 3 icon còn lại đổi destination trong nav_graph.
+            BottomNavBar.bind(this, binding.bottomNavBar, tabOf(currentDestinationId()),
+                    tab -> navigateTab(destinationOf(tab)));
 
             navController.addOnDestinationChangedListener((controller, destination, args) ->
-                    updateSelected(destination.getId()));
+                    BottomNavBar.setSelected(this, binding.bottomNavBar, tabOf(destination.getId())));
 
+            handleOpenTabIntent(getIntent());
             handleOpenCategoryIntent(getIntent());
         }
     }
@@ -87,14 +84,24 @@ public class MainActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        handleOpenTabIntent(intent);
         handleOpenCategoryIntent(intent);
+    }
+
+    /** Bấm tab Trang chủ/Phối đồ/Khám phá trên thanh nav của SearchActivity/ProfileActivity. */
+    private void handleOpenTabIntent(Intent intent) {
+        String tabName = intent.getStringExtra(EXTRA_OPEN_TAB);
+        // navController còn null khi onNewIntent chạy lúc màn PIN đang chặn (initUI chưa gọi).
+        if (tabName == null || navController == null) return;
+        intent.removeExtra(EXTRA_OPEN_TAB); // tránh mở lại tab này ở lần onNewIntent kế tiếp
+        navigateTab(destinationOf(BottomNavBar.Tab.valueOf(tabName)));
     }
 
     /** Nếu Intent mang theo {@link #EXTRA_OPEN_CATEGORY_ID} thì mở thẳng tab Danh mục và chọn
      *  sẵn đúng nhóm trang phục đó (vd. bấm chip tên danh mục ở "gợi ý từ khóa" trong Tìm kiếm). */
     private void handleOpenCategoryIntent(Intent intent) {
         String categoryId = intent.getStringExtra(EXTRA_OPEN_CATEGORY_ID);
-        if (categoryId == null) return;
+        if (categoryId == null || navController == null) return;
 
         Bundle args = new Bundle();
         args.putString(StylingFragment.ARG_CATEGORY_ID, categoryId);
@@ -121,18 +128,27 @@ public class MainActivity extends BaseActivity {
         navController.navigate(destId, null, options);
     }
 
-    /** Tab đang chọn: icon đỏ đậm + nền pill sáng; còn lại đỏ nhạt. */
-    private void updateSelected(int destId) {
-        setIcon(binding.navStylingIcon, destId == R.id.stylingFragment);
-        setIcon(binding.navHomeIcon, destId == R.id.homeFragment);
-        setIcon(binding.navExploreIcon, destId == R.id.exploreFragment);
-        // navShop (mở SearchActivity) và navProfile là Activity riêng, không có trạng thái chọn.
+    private int currentDestinationId() {
+        return navController.getCurrentDestination() != null
+                ? navController.getCurrentDestination().getId()
+                : navController.getGraph().getStartDestinationId();
     }
 
-    private void setIcon(ImageView icon, boolean active) {
-        icon.setBackgroundResource(active ? R.drawable.tc_bg_nav_pill_active : 0);
-        @ColorInt int color = ContextCompat.getColor(this,
-                active ? R.color.tc_red : R.color.tc_nav_icon_inactive);
-        icon.setColorFilter(color);
+    /** Destination đang mở → mục cần tô đậm trên thanh nav. */
+    private static BottomNavBar.Tab tabOf(int destId) {
+        if (destId == R.id.stylingFragment) return BottomNavBar.Tab.STYLING;
+        if (destId == R.id.homeFragment) return BottomNavBar.Tab.HOME;
+        if (destId == R.id.exploreFragment) return BottomNavBar.Tab.EXPLORE;
+        return BottomNavBar.Tab.NONE; // vd. aboutFragment — không ứng với mục nào
+    }
+
+    /** Mục trên thanh nav → destination trong nav_graph (chỉ 3 tab nằm trong graph). */
+    private static int destinationOf(BottomNavBar.Tab tab) {
+        switch (tab) {
+            case STYLING: return R.id.stylingFragment;
+            case EXPLORE: return R.id.exploreFragment;
+            case HOME:
+            default: return R.id.homeFragment;
+        }
     }
 }

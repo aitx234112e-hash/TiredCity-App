@@ -31,8 +31,8 @@ const NEWS = [
     id: 'nghe-thuat-theu-tay-nhat-binh-cung-dinh',
     title: 'Hát Bội – Tinh hoa Đất Việt',
     date: '2026-07-05',
-    excerpt: 'Chuyên đề Tạp chí Văn Hóa số 27: hành trình Hát Bội từ cội nguồn, nhân vật, nghệ thuật hóa trang đến những vở tuồng để đời.',
-    content: 'Hát Bội (hay hát tuồng) là một trong những loại hình sân khấu cổ truyền đặc sắc bậc nhất của Việt Nam — nơi ca, múa và diễn xuất hòa quyện để kể lại những câu chuyện lịch sử, thần thoại và đạo lý làm người. Số 27 của Tạp chí Văn Hóa đưa bạn đi trọn hành trình ấy: từ cội nguồn, nhân vật, nghệ thuật hóa trang, những vở tuồng để đời, cho tới cuộc giao thoa của Hát Bội với đời sống hôm nay.',
+    excerpt: 'Chuyên đề Tạp chí Văn Hóa số 27: hành trình Hát Bội từ nghi lễ đình làng, các tuyến vai Kép – Lão – Đào – Mụ, đỉnh cao hóa trang, những vở tuồng để đời, đến luồng gió đương đại trong MV “Chân Ái”.',
+    content: 'Hát Bội (hay hát tuồng) là thể loại sân khấu cổ truyền đặc sắc bậc nhất của Việt Nam, đậm nét nhất ở miền Nam — nơi ca, múa và diễn xuất hòa quyện trong những vở diễn mang tính sử thi. Khởi nguồn từ hát múa dân gian Việt cổ, giao thoa cùng hí kịch Trung Hoa, hát bội đi từ nghi lễ đình – đền – chùa ra sân khấu, thăng hoa rồi lặng lẽ nhường bước trước cải lương. Số 27 của Tạp chí Văn Hóa đi trọn hành trình ấy: từ cội nguồn và những thăng trầm, các tuyến nhân vật Kép – Lão – Đào – Mụ, đỉnh cao nghệ thuật hóa trang, những vở tuồng để đời như Đào Tam Xuân, Lôi Vũ, Ngọc Hân công chúa, cho tới luồng gió đương đại khi hát bội bước vào MV “Chân Ái” và đời sống của người trẻ hôm nay.',
   },
   {
     id: 'ao-tac-ve-dep-toi-gian',

@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Trang Danh mục: thanh tiêu đề NỀN ĐỎ chữ trắng, phần còn lại nền TRẮNG.
+     fitsSystemWindows + nền đỏ ở root ⇒ dải status bar (pin/wifi) cũng đỏ liền mạch với header,
+     và toàn bộ nội dung (header + lưới) được đẩy xuống dưới status bar, không bị che. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary">
+    android:fitsSystemWindows="true"
+    android:background="@color/tc_red">
 
     <!-- ── Header: quay lại + tiêu đề canh giữa + giỏ hàng ── -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/bg_primary"
-        android:elevation="4dp">
+        android:background="@color/tc_red">
 
         <ImageButton
             android:id="@+id/btn_back"
@@ -23,7 +26,7 @@
             android:src="@drawable/ic_back"
             android:scaleType="centerInside"
             android:padding="10dp"
-            app:tint="@color/text_primary"
+            app:tint="@color/white"
             android:contentDescription="@string/nav_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,12 +39,12 @@
             android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.02"
-            tools:text="QUẦN ÁO NỮ"
+            tools:text="Trắng Bạch Ngọc"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_back"
             app:layout_constraintEnd_toStartOf="@id/btn_cart"
@@ -64,7 +67,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_cart"
-                app:tint="@color/tc_red"
+                app:tint="@color/white"
                 android:contentDescription="@string/cd_cart" />
 
             <TextView
@@ -76,8 +79,8 @@
                 android:minHeight="17dp"
                 android:paddingHorizontal="4dp"
                 android:gravity="center"
-                android:background="@drawable/tc_badge_count"
-                android:textColor="@color/white"
+                android:background="@drawable/tc_badge_count_on_red"
+                android:textColor="@color/tc_red"
                 android:textSize="9sp"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -87,98 +90,110 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- ── Hàng: chế độ xem (1/2/3 cột) + Bộ lọc ── -->
+    <!-- ── Thân trang: nền trắng ── -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@color/bg_primary"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="6dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@color/white">
 
-        <ImageButton
-            android:id="@+id/btn_view_1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_view_single"
-            android:scaleType="centerInside"
-            android:padding="9dp"
-            app:tint="@color/tc_text_secondary"
-            android:contentDescription="@string/cd_view_mode" />
+        <!-- Hàng: chế độ xem (1/2/3 cột) + Bộ lọc -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp">
 
-        <ImageButton
-            android:id="@+id/btn_view_2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_view_grid2"
-            android:scaleType="centerInside"
-            android:padding="9dp"
-            app:tint="@color/tc_text_secondary"
-            android:contentDescription="@string/cd_view_mode" />
+            <ImageButton
+                android:id="@+id/btn_view_1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_view_single"
+                android:scaleType="centerInside"
+                android:padding="9dp"
+                app:tint="@color/tc_text_secondary"
+                android:contentDescription="@string/cd_view_mode" />
 
-        <ImageButton
-            android:id="@+id/btn_view_3"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_view_grid3"
-            android:scaleType="centerInside"
-            android:padding="9dp"
-            app:tint="@color/tc_text_secondary"
-            android:contentDescription="@string/cd_view_mode" />
+            <ImageButton
+                android:id="@+id/btn_view_2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_view_grid2"
+                android:scaleType="centerInside"
+                android:padding="9dp"
+                app:tint="@color/tc_text_secondary"
+                android:contentDescription="@string/cd_view_mode" />
+
+            <ImageButton
+                android:id="@+id/btn_view_3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_view_grid3"
+                android:scaleType="centerInside"
+                android:padding="9dp"
+                app:tint="@color/tc_text_secondary"
+                android:contentDescription="@string/cd_view_mode" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/btn_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingHorizontal="10dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_filter"
+                    app:tint="@color/tc_red"
+                    android:contentDescription="@string/filter_label" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/filter_label"
+                    android:textColor="@color/tc_red"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+        </LinearLayout>
 
         <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:id="@+id/btn_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingHorizontal="10dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_filter"
-                app:tint="@color/text_primary"
-                android:contentDescription="@string/filter_label" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="@string/filter_label"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/tc_stroke" />
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_products"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:layout_height="1dp"
+            android:background="#1A000000" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_products"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:clipToPadding="false"
+                android:paddingTop="4dp"
+                android:paddingBottom="12dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
 </LinearLayout>

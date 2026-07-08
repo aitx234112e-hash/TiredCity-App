@@ -1,75 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<!-- Thẻ tin tức: nền trắng mờ như thẻ Ưu đãi, ảnh vuông bo góc, chữ nằm ngang cùng hàng với ảnh,
+     nút Xem chi tiết nằm dưới cùng bên phải -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_event_card"
+    android:foreground="?attr/selectableItemBackground"
+    android:padding="12dp"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="10dp"
-    app:cardBackgroundColor="@color/bg_surface"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="120dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <ImageView
+        <!-- Ảnh vuông, lấp đầy khung, bo góc tròn -->
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_article_image"
-            android:layout_width="112dp"
-            android:layout_height="102dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="12dp"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
             android:scaleType="centerCrop"
-            android:background="@color/bg_subtle" />
+            android:contentDescription="@null"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.TC.Medium"
+            tools:src="@drawable/tc_post_6" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center_vertical">
+            android:layout_marginStart="14dp"
+            android:orientation="vertical">
 
+            <!-- Tiêu đề -->
             <TextView
                 android:id="@+id/tv_article_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
+                android:textColor="@color/tc_red"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:lineSpacingExtra="2dp"
-                tools:text="Nghệ thuật thêu tay truyền thống trong trang phục Việt Phục" />
+                android:fontFamily="sans-serif-medium"
+                tools:text="Nghệ thuật thêu tay truyền thống" />
 
-            <LinearLayout
+            <!-- Tác giả -->
+            <TextView
+                android:id="@+id/tv_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="4dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                tools:text="Tired City" />
 
-                <TextView
-                    android:id="@+id/tv_author"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/brand_gold"
-                    android:textSize="12sp"
-                    tools:text="Tired City" />
-
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_hint"
-                    android:textSize="12sp"
-                    tools:text="20/05/2025" />
-            </LinearLayout>
+            <!-- Ngày đăng -->
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                tools:text="20/05/2025" />
         </LinearLayout>
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+
+    <!-- Nút Xem chi tiết -->
+    <Button
+        android:id="@+id/btn_article_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/tc_btn_red_pill"
+        android:paddingHorizontal="22dp"
+        android:text="@string/action_view_detail"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:stateListAnimator="@null" />
+</LinearLayout>

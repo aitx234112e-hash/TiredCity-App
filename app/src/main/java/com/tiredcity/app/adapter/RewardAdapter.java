@@ -16,6 +16,10 @@ import java.util.List;
 public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder> {
 
     public interface OnRewardClickListener {
+        /** Bấm vào thẻ → mở chi tiết voucher. */
+        void onOpenDetail(Reward reward);
+
+        /** Bấm "Sử dụng ngay" → mở thẳng mã vạch. */
         void onUseNow(Reward reward);
     }
 
@@ -50,12 +54,12 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder
         holder.ivBanner.setImageResource(reward.getBannerRes());
         holder.tvTitle.setText(reward.getTitle());
         holder.tvSubtitle.setText(reward.getSubtitle());
-        holder.tvPoints.setText(String.valueOf(reward.getPoints()));
+        holder.tvValidity.setText(reward.getValidity());
         holder.btnUseNow.setOnClickListener(v -> {
             if (listener != null) listener.onUseNow(reward);
         });
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onUseNow(reward);
+            if (listener != null) listener.onOpenDetail(reward);
         });
     }
 
@@ -66,7 +70,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView ivBanner;
-        final TextView tvTitle, tvSubtitle, tvPoints;
+        final TextView tvTitle, tvSubtitle, tvValidity;
         final Button btnUseNow;
 
         ViewHolder(@NonNull View itemView) {
@@ -74,7 +78,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder
             ivBanner   = itemView.findViewById(R.id.iv_reward_banner);
             tvTitle    = itemView.findViewById(R.id.tv_reward_title);
             tvSubtitle = itemView.findViewById(R.id.tv_reward_subtitle);
-            tvPoints   = itemView.findViewById(R.id.tv_reward_points);
+            tvValidity = itemView.findViewById(R.id.tv_reward_validity);
             btnUseNow  = itemView.findViewById(R.id.btn_use_now);
         }
     }

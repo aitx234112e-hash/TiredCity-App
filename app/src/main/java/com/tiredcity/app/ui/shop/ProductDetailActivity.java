@@ -53,6 +53,7 @@ import com.tiredcity.app.databinding.ItemRelatedProductBinding;
 import com.tiredcity.app.ui.base.BaseActivity;
 import com.tiredcity.app.ui.cart.CartActivity;
 import com.tiredcity.app.ui.support.PolicyActivity;
+import com.tiredcity.app.utils.CartFlyAnimation;
 import com.tiredcity.app.utils.ColorTaxonomy;
 import com.tiredcity.app.utils.Constants;
 import com.tiredcity.app.utils.PriceUtils;
@@ -122,6 +123,7 @@ public class ProductDetailActivity extends BaseActivity {
 
     private void initUI() {
         binding.btnBack.setOnClickListener(v -> finishSmoothly());
+        binding.btnCart.setOnClickListener(v -> startSmoothActivity(new Intent(this, CartActivity.class)));
         binding.btnAddToCart.setOnClickListener(v -> addToCart());
         binding.btnBuyNow.setOnClickListener(v -> addToCartAndBuyNow());
         binding.btnWriteReview.setOnClickListener(v -> showAddReviewDialog());
@@ -651,7 +653,28 @@ public class ProductDetailActivity extends BaseActivity {
             return;
         }
         cartStore.addItem(new CartItem(currentProduct, quantity, selectedSize, selectedColor));
+        playFlyToCart();
         Toast.makeText(this, getString(R.string.success_add_cart) + " 🛒", Toast.LENGTH_SHORT).show();
+    }
+
+    /** Ảnh sản phẩm bay theo đường cong từ hero vào icon giỏ hàng khi thêm vào giỏ. */
+    private void playFlyToCart() {
+        if (currentProduct == null) return;
+        final String image = currentProduct.getFirstImage();
+        CartFlyAnimation.fly(this, binding.vpProductImages, binding.btnCart, target -> {
+            Object loadTarget = image;
+            if (image != null && !image.isEmpty()
+                    && !image.startsWith("http") && !image.startsWith("content")) {
+                int resId = getResources().getIdentifier(image, "drawable", getPackageName());
+                if (resId != 0) loadTarget = resId;
+            }
+            Glide.with(this)
+                    .load(loadTarget)
+                    .centerCrop()
+                    .placeholder(R.color.tc_red_deep)
+                    .error(R.drawable.ic_wardrobe)
+                    .into(target);
+        });
     }
 
     private void addToCartAndBuyNow() {

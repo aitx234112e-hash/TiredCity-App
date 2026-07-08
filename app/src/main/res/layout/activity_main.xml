@@ -17,131 +17,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavBar" />
 
-    <!-- ════════════ THANH NAV LƠ LỬNG (Threads style) ════════════ -->
-    <LinearLayout
+    <!-- Thanh nav lơ lửng — xem view_bottom_nav.xml (dùng chung với Tìm kiếm / Tôi).
+         marginBottom 16dp là khoảng hở tối thiểu; MainActivity cộng thêm chiều cao thanh
+         điều hướng hệ thống lúc chạy qua EdgeToEdgeUtils.applyNavBarBottomMargin(). -->
+    <include
         android:id="@+id/bottomNavBar"
+        layout="@layout/view_bottom_nav"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:background="@drawable/tc_bg_navbar_float"
-        android:elevation="16dp"
-        android:paddingHorizontal="8dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Cửa hàng -->
-        <FrameLayout
-            android:id="@+id/navShop"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:id="@+id/navShopIcon"
-                android:layout_width="52dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:padding="6dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_search"
-                app:tint="@color/tc_nav_icon_inactive"
-                android:contentDescription="@string/nav_short_shop" />
-        </FrameLayout>
-
-        <!-- Phối đồ -->
-        <FrameLayout
-            android:id="@+id/navStyling"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:id="@+id/navStylingIcon"
-                android:layout_width="52dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:padding="6dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/tc_nav_styling"
-                app:tint="@color/tc_nav_icon_inactive"
-                android:contentDescription="@string/nav_short_styling" />
-        </FrameLayout>
-
-        <!-- Trang chủ -->
-        <FrameLayout
-            android:id="@+id/navHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:id="@+id/navHomeIcon"
-                android:layout_width="52dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:padding="6dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/tc_nav_home"
-                app:tint="@color/tc_nav_icon_inactive"
-                android:contentDescription="@string/nav_short_home" />
-        </FrameLayout>
-
-        <!-- Khám phá -->
-        <FrameLayout
-            android:id="@+id/navExplore"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:id="@+id/navExploreIcon"
-                android:layout_width="52dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:padding="6dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/tc_nav_explore"
-                app:tint="@color/tc_nav_icon_inactive"
-                android:contentDescription="@string/nav_short_explore" />
-        </FrameLayout>
-
-        <!-- Tôi (Profile) -->
-        <FrameLayout
-            android:id="@+id/navProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:id="@+id/navProfileIcon"
-                android:layout_width="52dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:padding="6dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/tc_nav_profile"
-                app:tint="@color/tc_nav_icon_inactive"
-                android:contentDescription="@string/nav_short_profile" />
-        </FrameLayout>
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

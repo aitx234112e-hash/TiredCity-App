@@ -59,11 +59,7 @@ public class EventActivity extends BaseActivity {
             startActivity(new android.content.Intent(this, WorkshopYeuNuocActivity.class));
             return;
         }
-        android.content.Intent intent = new android.content.Intent(this, EventDetailActivity.class);
-        if (event.getId() != null) {
-            intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_EVENT_ID, event.getId());
-        }
-        startActivity(intent);
+        PostDetailActivity.start(this, PostContent.forEvent(event, getString(R.string.home_section_events)));
     }
 
     /** Nhận diện đúng card này dù Firestore đã đổi tên hay chưa: khớp theo id
@@ -77,6 +73,14 @@ public class EventActivity extends BaseActivity {
 
     private void showEvents(List<Event> events) {
         binding.swipeRefresh.setRefreshing(false);
+        // Sự kiện chưa có ảnh riêng vẫn cần ảnh bìa — lấy từ kho ảnh sự kiện nội bộ,
+        // cùng ảnh mà trang chi tiết sẽ dùng.
+        for (Event e : events) {
+            boolean hasRemoteImage = e.getImageUrl() != null && !e.getImageUrl().isEmpty();
+            if (!hasRemoteImage && e.getLocalImageRes() == 0) {
+                e.setLocalImageRes(PostContent.heroForTitle(e.getTitle()));
+            }
+        }
         adapter.updateEvents(events);
         binding.tvEmpty.setVisibility(events.isEmpty() ? View.VISIBLE : View.GONE);
     }
