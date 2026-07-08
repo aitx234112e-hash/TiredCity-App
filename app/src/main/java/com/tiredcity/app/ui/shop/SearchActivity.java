@@ -36,7 +36,6 @@ import com.tiredcity.app.ui.reward.VoucherDetailActivity;
 import com.tiredcity.app.utils.Constants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -69,8 +68,7 @@ public class SearchActivity extends BaseActivity {
 
         firestoreRepository = new FirestoreProductRepository();
         recentSearchStore = new RecentSearchStore(this);
-        recentSearchStore.seedDefaultsIfNeeded(
-                Arrays.asList(getResources().getStringArray(R.array.search_recent_seed_keywords)));
+        recentSearchStore.clearLegacySeedsOnce();
 
         binding.btnBack.setOnClickListener(v -> finishSmoothly());
         binding.btnClear.setOnClickListener(v -> binding.etSearch.setText(""));
@@ -223,13 +221,8 @@ public class SearchActivity extends BaseActivity {
             "ÁO DÀI", "NHẬT BÌNH", "ÁO TẤC", "GIAO LĨNH", "YẾM ĐÀO", "PHỤ KIỆN"
     };
 
-    /** Số tên sản phẩm thật bơm thêm vào cuối danh sách gợi ý, sau khi Firestore tải xong. */
-    private static final int SUGGESTED_PRODUCT_KEYWORD_COUNT = 4;
-
     /**
-     * Vẽ lại toàn bộ chip "gợi ý từ khóa": 6 tên danh mục trước, rồi vài tên sản phẩm thật
-     * (nếu đã tải xong) — bấm vào tên danh mục sẽ mở đúng danh mục đó, bấm vào tên sản phẩm
-     * sẽ mở đúng trang chi tiết sản phẩm đó.
+     * Vẽ lại chip "gợi ý từ khóa": chỉ giữ 6 tên danh mục cho gọn — bấm vào sẽ mở đúng danh mục đó.
      */
     private void refreshSuggestedKeywords() {
         binding.chipGroupKeywords.removeAllViews();
@@ -237,13 +230,6 @@ public class SearchActivity extends BaseActivity {
             String categoryId = SUGGESTED_CATEGORY_IDS[i];
             Chip chip = createRedOutlineChip(getString(SUGGESTED_CATEGORY_LABELS[i]));
             chip.setOnClickListener(v -> openStylingCategoryTab(categoryId));
-            binding.chipGroupKeywords.addView(chip);
-        }
-
-        for (Product product : pickDiverseProducts(SUGGESTED_PRODUCT_KEYWORD_COUNT)) {
-            if (product.getName() == null) continue;
-            Chip chip = createRedOutlineChip(product.getName());
-            chip.setOnClickListener(v -> openProductDetail(product));
             binding.chipGroupKeywords.addView(chip);
         }
     }

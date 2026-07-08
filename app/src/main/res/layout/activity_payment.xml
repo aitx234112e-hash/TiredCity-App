@@ -2,13 +2,17 @@
 <!-- Thanh toán kiểu Shopee: các mục TRÀN FULL-WIDTH (không còn thẻ trắng bo góc nổi),
      ngăn cách bằng dải xám; tiêu đề mục VIẾT HOA IN ĐẬM (textAllCaps).
      Phương thức thanh toán = danh sách HÀNG NGANG (icon + tên + tích chọn). -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/tc_section_gap">
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/tc_section_gap">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -659,4 +663,34 @@
             android:fontFamily="sans-serif-medium"
             android:elevation="2dp" />
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+
+    <!-- Overlay xác nhận thanh toán: phủ kín màn checkout khi đang ghi đơn, tránh
+         cảnh "quay lại màn thanh toán" giữa lúc quét QR xong và màn Đặt hàng thành công. -->
+    <LinearLayout
+        android:id="@+id/overlay_processing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/bg_primary"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:indeterminateTint="@color/tc_red" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/pay_processing"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</FrameLayout>

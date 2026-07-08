@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { AdminApiService } from '../admin-api.service';
 import { UserApiService } from '../../user-api.service';
 import { ProductApiService } from '../../product-api.service';
@@ -46,9 +47,9 @@ export class Chatbot implements OnInit {
   ngOnInit(): void {
     this.push('bot', 'Xin chào 👋 Mình là trợ lý admin TiredCity. Bạn có thể hỏi mình về doanh thu, đơn hàng, người dùng, sản phẩm — hoặc tra cứu một đơn theo mã.');
     forkJoin({
-      orders: this.adminApi.getOrders(),
-      users: this.userApi.getUsers(),
-      products: this.productApi.getProducts(),
+      orders: this.adminApi.getOrders().pipe(take(1)),
+      users: this.userApi.getUsers().pipe(take(1)),
+      products: this.productApi.getProducts().pipe(take(1)),
     }).subscribe({
       next: ({ orders, users, products }) => {
         this.orders = orders || [];

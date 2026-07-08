@@ -51,11 +51,14 @@ public class RecentSearchStore {
         prefs.edit().remove(KEY_ITEMS).apply();
     }
 
-    /** Bơm sẵn vài từ khoá mẫu lần đầu mở app (chỉ chạy một lần, kể cả sau khi người dùng xoá hết). */
-    public void seedDefaultsIfNeeded(List<String> defaults) {
-        if (prefs.getBoolean(KEY_SEEDED, false)) return;
-        prefs.edit().putBoolean(KEY_SEEDED, true).apply();
-        save(defaults);
+    /**
+     * Xoá các từ khoá mẫu đã bơm sẵn ở phiên bản cũ (chạy một lần), để "Tìm kiếm gần đây"
+     * bắt đầu trống và chỉ hiện khi người dùng tìm thật.
+     */
+    public void clearLegacySeedsOnce() {
+        if (prefs.getBoolean(KEY_SEEDED, false)) {
+            prefs.edit().remove(KEY_ITEMS).remove(KEY_SEEDED).apply();
+        }
     }
 
     private void save(List<String> items) {

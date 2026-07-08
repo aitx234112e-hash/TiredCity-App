@@ -59,16 +59,8 @@ public class ArticleActivity extends BaseActivity {
 
     private void showArticles(List<Article> articles) {
         binding.swipeRefresh.setRefreshing(false);
-        // Đổi diện card chuyên đề Hát Bội: dùng ảnh bìa nội bộ + tên/tác giả biên tập,
-        // để chạm vào mở trang tạp chí HatBoiMagazineActivity (bất kể nguồn Firestore).
-        for (Article a : articles) {
-            String title = a.getTitleVi() != null ? a.getTitleVi() : a.getTitle();
-            if (HatBoiMagazineActivity.isFeatureArticle(title)) {
-                a.setTitleVi(HatBoiMagazineActivity.FEATURE_TITLE);
-                a.setAuthor("Tạp chí Văn Hóa");
-                a.setLocalImageRes(R.drawable.hb_cover);
-            }
-        }
+        // Giữ nguyên tên/ảnh của card từ Firestore; chỉ cần chạm vào card chuyên đề
+        // Hát Bội thì mở trang tạp chí HatBoiMagazineActivity (xử lý ở listener bên trên).
         adapter.updateArticles(articles);
         binding.tvEmpty.setVisibility(articles.isEmpty() ? View.VISIBLE : View.GONE);
     }

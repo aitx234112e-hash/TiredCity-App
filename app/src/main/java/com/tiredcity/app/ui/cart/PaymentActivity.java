@@ -73,7 +73,12 @@ public class PaymentActivity extends BaseActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && pendingAddress != null) {
-                    placeOrder(pendingAddress, selectedPaymentMethod);
+                    // placeOrder tự phủ overlay ngay (đồng bộ trong callback này) nên màn checkout
+                    // không kịp lộ lại; luồng khách thấy: QR → "Đang xác nhận thanh toán" → thành công.
+                    String qrOrderCode = result.getData() != null
+                            ? result.getData().getStringExtra(QrPaymentActivity.EXTRA_RESULT_ORDER_CODE)
+                            : null;
+                    placeOrder(pendingAddress, selectedPaymentMethod, qrOrderCode);
                 }
             });
 
@@ -129,7 +134,7 @@ public class PaymentActivity extends BaseActivity {
      */
     private void onVerified(String address) {
         if ("COD".equals(selectedPaymentMethod)) {
-            placeOrder(address, selectedPaymentMethod);
+            placeOrder(address, selectedPaymentMethod, null);
         } else {
             qrLauncher.launch(QrPaymentActivity.newIntent(
                     this, priceCalculator.getTotal(), selectedPaymentMethod));
@@ -631,7 +636,7 @@ public class PaymentActivity extends BaseActivity {
      * Ghi don hang thang vao Cloud Firestore (collection "orders") dung dinh dang
      * ma web-admin Angular doc: status/items/subTotal/shippingFee/totalPrice...
      */
-    private void placeOrder(String address, String paymentMethod) {
+    private void placeOrder(String address, String paymentMethod, String orderCodeFromQr) {
         binding.btnPlaceOrder.setEnabled(false);
         List<CartItem> items = selectedItems();
 
@@ -641,11 +646,20 @@ public class PaymentActivity extends BaseActivity {
             return;
         }
 
+        // Phủ overlay "Đang xác nhận thanh toán" che kín checkout suốt lúc ghi đơn (bất đồng bộ).
+        binding.overlayProcessing.setVisibility(View.VISIBLE);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String datePrefix = new SimpleDateFormat("yyMMdd", Locale.US).format(new Date());
-        // Tạo 4 số cuối ngẫu nhiên từ 1000-9999 để đảm bảo luôn có 4 chữ số
-        int randomSuffix = (int)(Math.random() * 9000) + 1000;
-        String orderCode = "TC-" + datePrefix + "-" + randomSuffix;
+        // Ưu tiên đúng mã đã hiển thị trên màn QR để khách thấy mã đơn nhất quán;
+        // COD (không qua QR) thì tự sinh mã "TC-yyMMdd-xxxx".
+        final String orderCode;
+        if (!TextUtils.isEmpty(orderCodeFromQr)) {
+            orderCode = orderCodeFromQr;
+        } else {
+            String datePrefix = new SimpleDateFormat("yyMMdd", Locale.US).format(new Date());
+            int randomSuffix = (int)(Math.random() * 9000) + 1000; // 4 chữ số 1000-9999
+            orderCode = "TC-" + datePrefix + "-" + randomSuffix;
+        }
 
         double subtotal = 0;
         List<Map<String, Object>> itemList = new ArrayList<>();
@@ -676,6 +690,7 @@ public class PaymentActivity extends BaseActivity {
         fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Map<String, Object> order = new HashMap<>();
+        order.put("orderCode", orderCode);
         order.put("userId", user != null ? user.getId() : null);
         order.put("user", user != null ? user.getId() : null);
         order.put("userName", user != null ? user.getName() : "");
@@ -704,6 +719,7 @@ public class PaymentActivity extends BaseActivity {
                     }
                     Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
                     intent.putExtra("order_id", ref.getId());
+                    intent.putExtra("order_code", orderCode);
                     intent.putExtra("order_total", total);
                     intent.putExtra("order_payment", paymentMethod);
                     intent.putExtra("order_item_count", items.size());
@@ -712,6 +728,7 @@ public class PaymentActivity extends BaseActivity {
                 })
                 .addOnFailureListener(e -> {
                     binding.btnPlaceOrder.setEnabled(true);
+                    binding.overlayProcessing.setVisibility(View.GONE);
                     Toast.makeText(PaymentActivity.this,
                             getString(com.tiredcity.app.R.string.error_order_failed) + ": " + e.getMessage(),
                             Toast.LENGTH_LONG).show();

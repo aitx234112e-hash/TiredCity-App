@@ -656,6 +656,7 @@
     <string name="captcha_verified">Đã xác minh</string>
     <string name="pay_grand_total">Tổng cộng</string>
     <string name="pay_place_order">Đặt hàng</string>
+    <string name="pay_processing">Đang xác nhận thanh toán…</string>
     <string name="pay_voucher_label">Mã giảm giá</string>
     <string name="pay_voucher_hint">Chọn hoặc nhập mã ưu đãi</string>
     <string name="pay_voucher_applied">Đã áp dụng: %s</string>

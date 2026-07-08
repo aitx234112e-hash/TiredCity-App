@@ -23,7 +23,7 @@
     </div>
 
     <!-- Suggestions -->
-    <div class="cb-suggestions" *ngIf="messages.length <= 2">
+    <div class="cb-suggestions">
       <button class="cb-chip" *ngFor="let s of suggestions" (click)="ask(s)">{{ s }}</button>
     </div>
 

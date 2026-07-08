@@ -26,10 +26,12 @@ public class HatBoiMagazineActivity extends BaseActivity {
     /** Tiêu đề hiển thị của card chuyên đề trong danh sách Bài viết. */
     public static final String FEATURE_TITLE = "Hát Bội – Tinh hoa Đất Việt";
 
-    /** Nhận diện đúng card mở chuyên đề này (card gốc "Nhật Bình" hoặc bản đã đổi tên). */
+    /** Nhận diện đúng card mở chuyên đề này (card gốc "Nhật Bình" hoặc bản đã đổi tên).
+     *  So khớp không phân biệt hoa/thường để bắt được cả "Hát Bội" lẫn "Hát bội". */
     public static boolean isFeatureArticle(String title) {
         if (title == null) return false;
-        return title.contains("Hát Bội") || title.contains("Nhật Bình");
+        String t = title.toLowerCase();
+        return t.contains("hát bội") || t.contains("nhật bình");
     }
 
     /** Mỗi "kỳ báo": {drawable ảnh, số thứ tự, tên chương, phụ đề, chú thích}. */

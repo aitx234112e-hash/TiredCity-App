@@ -30,6 +30,8 @@ public class QrPaymentActivity extends BaseActivity {
 
     public static final String EXTRA_AMOUNT = "qr_amount";
     public static final String EXTRA_METHOD = "qr_method";
+    /** Mã đơn hiển thị trên QR — trả lại cho PaymentActivity để màn thành công dùng đúng mã này. */
+    public static final String EXTRA_RESULT_ORDER_CODE = "qr_result_order_code";
 
     /** Thời gian hiệu lực mã QR: 10 phút. */
     private static final long EXPIRY_MILLIS = 10 * 60 * 1000L;
@@ -194,7 +196,9 @@ public class QrPaymentActivity extends BaseActivity {
     private void completePayment() {
         if (expired || completed) return;
         completed = true;
-        setResult(RESULT_OK);
+        Intent data = new Intent();
+        data.putExtra(EXTRA_RESULT_ORDER_CODE, orderCode);
+        setResult(RESULT_OK, data);
         finish();
     }
 
