@@ -61,6 +61,9 @@
 
         <!-- Bottom sheet -->
         <item name="bottomSheetDialogTheme">@style/Theme.TC.BottomSheetDialog</item>
+
+        <!-- Hộp thoại (MaterialAlertDialog): nút chữ ĐỎ thay vì vàng (tc_gold bị chìm nền kem) -->
+        <item name="materialAlertDialogTheme">@style/Theme.TC.AlertDialog</item>
     </style>
 
     <style name="Theme.TiredCity" parent="Base.Theme.TiredCity" />
@@ -82,6 +85,87 @@
         <item name="android:navigationBarColor">@color/tc_red</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowBackground">@color/tc_red</item>
+    </style>
+
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  ALERT DIALOG — nút chữ đỏ (HỦY / ĐĂNG XUẤT...)                    ║
+      ╚══════════════════════════════════════════════════════════════════╝
+    -->
+    <style name="Theme.TC.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.TC.AlertDialog.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.TC.AlertDialog.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.TC.AlertDialog.Button</item>
+    </style>
+
+    <style name="Widget.TC.AlertDialog.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/tc_red</item>
+    </style>
+
+    <!--
+      ╔══════════════════════════════════════════════════════════════════╗
+      ║  DATE PICKER — giữ lưới lịch Material nhưng BỎ animation mở        ║
+      ╚══════════════════════════════════════════════════════════════════╝
+      MaterialDatePicker mặc định phóng-to (scale) khi hiện ra; hiệu ứng này chạy CÙNG LÚC
+      với việc dựng lưới lịch nặng trên main thread → giật giựt. Gán windowAnimationStyle rỗng
+      để dialog bung ra TỨC THÌ, không animation → hết giật. Lưới lịch & màu sắc giữ nguyên
+      (kế thừa ThemeOverlay.Material3.MaterialCalendar). Dùng qua MaterialDatePicker.Builder.setTheme().
+    -->
+    <style name="Animation.TC.None" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+
+    <style name="Theme.TC.DatePicker" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="android:windowAnimationStyle">@style/Animation.TC.None</item>
+
+        <!-- Nền lịch TRẮNG hẳn (bỏ lớp tint kem/tím của surface mặc định). Material3 lấy nền
+             hộp lịch từ colorSurfaceContainerHigh; set cả nhóm surface về trắng cho chắc. -->
+        <item name="colorSurface">@android:color/white</item>
+        <item name="colorSurfaceContainerHigh">@android:color/white</item>
+        <item name="colorSurfaceContainer">@android:color/white</item>
+        <item name="colorSurfaceContainerLow">@android:color/white</item>
+        <item name="colorSurfaceContainerLowest">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/white</item>
+
+        <!-- QUAN TRỌNG: Material tự phủ lớp "elevation overlay" (ánh màu colorPrimary/colorOnSurface)
+             lên mọi surface có elevation (dialog) → nền trắng bị ánh hồng dù đã set colorSurface
+             trắng ở trên. Tắt hẳn elevationOverlayEnabled để nền trắng tinh thật sự. -->
+        <item name="elevationOverlayEnabled">false</item>
+
+        <!-- Hình tròn ngày được chọn: ĐỎ (thay vì vàng), số bên trong TRẮNG cho dễ đọc.
+             colorPrimary cũng nhuộm mũi tên ‹ › và nút HỦY/OK sang đỏ → đồng bộ. -->
+        <item name="colorPrimary">@color/tc_red</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+
+        <!-- Chữ ngày (1, 2, 3...) & nhãn thứ (CN, T2...): cỡ vừa phải, nét MỎNG
+             (không bold) cho thanh thoát — trước đây 22sp bold nên bị "bự & đậm quá". -->
+        <item name="materialCalendarDay">@style/Widget.TC.DatePicker.DayTextView</item>
+        <item name="materialCalendarDayOfWeekLabel">@style/Widget.TC.DatePicker.DayOfWeekLabel</item>
+
+        <!-- Dòng tiêu đề nhỏ ("VUI LÒNG NHẬP NGÀY SINH...") mặc định quá nhỏ & mờ,
+             gần như không đọc được → phóng to + màu đậm cho rõ. -->
+        <item name="materialCalendarHeaderTitle">@style/Widget.TC.DatePicker.HeaderTitle</item>
+    </style>
+
+    <style name="Widget.TC.DatePicker.DayTextView" parent="Widget.Material3.MaterialCalendar.DayTextView">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Widget.TC.DatePicker.DayOfWeekLabel" parent="Widget.Material3.MaterialCalendar.DayOfWeekLabel">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Widget.TC.DatePicker.HeaderTitle" parent="Widget.Material3.MaterialCalendar.HeaderTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/tc_text_primary</item>
+        <!-- Cho phép xuống 2 dòng để chữ to mà không bị cắt cụt "..." -->
+        <item name="android:singleLine">false</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">none</item>
     </style>
 
     <!--

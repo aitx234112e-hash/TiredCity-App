@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Trang chi tiết bài viết đặc biệt: chuyên đề "VĂN HÓA · HÁT BỘI" (Tinh hoa Đất Việt).
+  Bố cục tạp chí điện tử: hero bìa số 27 → măng-sét + lời tựa trên nền kem →
+  các "kỳ báo" (spread) được nhân bản trong spread_container bởi Activity → vĩ thanh.
+  Ảnh nạp bằng Glide trong HatBoiMagazineActivity.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tc_cream">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/tc_space_2xl">
+
+            <!-- ═══════════ HERO: bìa tạp chí ═══════════ -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#1C1310">
+
+                <ImageView
+                    android:id="@+id/iv_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:paddingHorizontal="14dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="20dp"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Bìa tạp chí Văn Hóa số 27 – Hát Bội" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="96dp"
+                    android:layout_gravity="top"
+                    android:background="@drawable/ynn_scrim_top" />
+
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="top|start"
+                    android:layout_marginStart="@dimen/tc_space_md"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    android:background="@drawable/tc_bg_circle_scrim"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_back"
+                    android:padding="8dp"
+                    app:tint="#FFFFFF"
+                    android:contentDescription="@string/cd_back" />
+            </FrameLayout>
+
+            <!-- ═══════════ MĂNG-SÉT + LỜI TỰA ═══════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/tc_space_xl"
+                android:paddingTop="@dimen/tc_space_2xl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/hb_pill_gold"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
+                    android:text="TẠP CHÍ VĂN HÓA · SỐ 27"
+                    android:textColor="@color/tc_red"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.06" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    android:fontFamily="serif"
+                    android:text="HÁT BỘI"
+                    android:textColor="@color/tc_red"
+                    android:textSize="46sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.02" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TINH HOA ĐẤT VIỆT"
+                    android:textColor="@color/brand_gold"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.28" />
+
+                <!-- Dòng thông tin -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_lg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tired City"
+                        android:textColor="@color/tc_red"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:background="@drawable/dot_separator" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="07/07/2026"
+                        android:textColor="@color/text_hint"
+                        android:textSize="13sp" />
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:background="@drawable/dot_separator" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7 kỳ · 14 trang"
+                        android:textColor="@color/text_hint"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="44dp"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="@dimen/tc_space_lg"
+                    android:background="@color/brand_gold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_lg"
+                    android:lineSpacingExtra="5dp"
+                    android:text="Hát Bội (hay hát tuồng) là một trong những loại hình sân khấu cổ truyền đặc sắc bậc nhất của Việt Nam — nơi ca, múa và diễn xuất hòa quyện để kể lại những câu chuyện lịch sử, thần thoại và đạo lý làm người. Số 27 của Tạp chí Văn Hóa đưa bạn đi trọn hành trình ấy: từ cội nguồn, nhân vật, nghệ thuật hóa trang, những vở tuồng để đời, cho tới cuộc giao thoa của Hát Bội với đời sống hôm nay."
+                    android:textColor="@color/text_primary"
+                    android:textSize="15.5sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_2xl"
+                    android:text="MỤC LỤC CHUYÊN ĐỀ"
+                    android:textColor="@color/text_hint"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.16" />
+            </LinearLayout>
+
+            <!-- ═══════════ CÁC KỲ BÁO (spread) ═══════════ -->
+            <LinearLayout
+                android:id="@+id/spread_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <!-- ═══════════ PULL-QUOTE ═══════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/tc_space_2xl"
+                android:layout_marginHorizontal="@dimen/tc_space_xl"
+                android:paddingStart="@dimen/tc_space_lg"
+                android:background="@drawable/hb_quote_rule">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:text="“Mỗi nét vẽ mặt, mỗi màu sắc trên sân khấu\nHát Bội đều mang một ý nghĩa biểu tượng.”"
+                    android:textColor="@color/tc_red"
+                    android:textSize="19sp"
+                    android:textStyle="italic"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+
+            <!-- ═══════════ VĨ THANH ═══════════ -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tc_space_2xl"
+                android:gravity="center"
+                android:text="❦"
+                android:textColor="@color/brand_gold"
+                android:textSize="22sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tc_space_sm"
+                android:gravity="center"
+                android:text="— HẾT —"
+                android:textColor="@color/text_hint"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.2" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tc_space_sm"
+                android:layout_marginHorizontal="@dimen/tc_space_2xl"
+                android:gravity="center"
+                android:text="Chuyên đề Hát Bội · Tạp chí Văn Hóa số 27\nHình ảnh: Pinterest, Behance sưu tầm · Biên tập: Tired City"
+                android:textColor="@color/text_hint"
+                android:textSize="11.5sp"
+                android:lineSpacingExtra="3dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

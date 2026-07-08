@@ -30,6 +30,8 @@ public class EventActivity extends BaseActivity {
         binding.rvEvents.setLayoutManager(new LinearLayoutManager(this));
         binding.rvEvents.setAdapter(adapter);
 
+        adapter.setOnEventClickListener(this::openEventDetail);
+
         binding.swipeRefresh.setColorSchemeColors(getColor(R.color.tc_red));
         binding.swipeRefresh.setOnRefreshListener(this::loadEvents);
 
@@ -50,6 +52,29 @@ public class EventActivity extends BaseActivity {
         });
     }
 
+    /** Riêng card "Yêu Nước Từ Trong Nôi" mở trang chi tiết biên tập sẵn;
+     *  các sự kiện khác dùng trang chi tiết chung. */
+    private void openEventDetail(Event event) {
+        if (isYeuNuocWorkshop(event)) {
+            startActivity(new android.content.Intent(this, WorkshopYeuNuocActivity.class));
+            return;
+        }
+        android.content.Intent intent = new android.content.Intent(this, EventDetailActivity.class);
+        if (event.getId() != null) {
+            intent.putExtra(com.tiredcity.app.utils.Constants.EXTRA_EVENT_ID, event.getId());
+        }
+        startActivity(intent);
+    }
+
+    /** Nhận diện đúng card này dù Firestore đã đổi tên hay chưa: khớp theo id
+     *  document seed, hoặc theo tiêu đề (tên mới "YÊU NƯỚC" lẫn tên cũ "phối đồ theo mệnh"). */
+    private boolean isYeuNuocWorkshop(Event event) {
+        String id = event.getId() != null ? event.getId() : "";
+        if (id.equals("workshop-phoi-do-theo-menh")) return true;
+        String title = event.getTitle() != null ? event.getTitle().toLowerCase() : "";
+        return title.contains("yêu nước") || title.contains("phối đồ theo mệnh");
+    }
+
     private void showEvents(List<Event> events) {
         binding.swipeRefresh.setRefreshing(false);
         adapter.updateEvents(events);
@@ -61,7 +86,7 @@ public class EventActivity extends BaseActivity {
         // title | location | daysFromNow | online
         Object[][] data = {
             {"Triển lãm Việt Phục Xuân 2025", "Nhà Văn hoá Thanh Niên, TP.HCM", 7, false},
-            {"Workshop phối đồ theo mệnh", "Tired City Store, Hà Nội", 14, false},
+            {"Workshop YÊU NƯỚC TỪ TRONG NÔI", "Tired City Store, Hà Nội", 14, false},
             {"Talkshow: Cổ phục & Gen Z", "Online qua Zoom", 3, true},
             {"Đêm trình diễn Nhật Bình", "Văn Miếu – Quốc Tử Giám", 21, false},
             {"Chợ phiên Việt phục cuối tuần", "Phố đi bộ Hồ Gươm", 10, false},

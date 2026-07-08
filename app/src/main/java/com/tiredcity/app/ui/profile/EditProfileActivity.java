@@ -171,11 +171,23 @@ public class EditProfileActivity extends BaseActivity {
             c.set(2000, 0, 1);
         }
 
+        // Bó dải lịch [1920 → hôm nay] và mở đúng tại ngày đang chọn: mặc định MaterialDatePicker
+        // nạp cả Jan 1900 → Dec 2100 (~2400 tháng) vào RecyclerView nên mở CHẬM và GIẬT.
+        Calendar startBound = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        startBound.clear();
+        startBound.set(1920, 0, 1);
+        long now = MaterialDatePicker.todayInUtcMilliseconds();
+        long openAt = Math.min(Math.max(c.getTimeInMillis(), startBound.getTimeInMillis()), now);
+
         CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setStart(startBound.getTimeInMillis())
+                .setEnd(now)
+                .setOpenAt(openAt)
                 .setValidator(DateValidatorPointBackward.now())
                 .build();
 
         MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
+                .setTheme(R.style.Theme_TC_DatePicker)   // bỏ animation mở → hết giật giựt
                 .setTitleText(R.string.hint_birthdate)
                 .setSelection(c.getTimeInMillis())
                 .setCalendarConstraints(constraints)

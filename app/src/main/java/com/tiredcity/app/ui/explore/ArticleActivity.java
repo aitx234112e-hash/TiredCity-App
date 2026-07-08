@@ -30,6 +30,13 @@ public class ArticleActivity extends BaseActivity {
         binding.rvArticles.setLayoutManager(new LinearLayoutManager(this));
         binding.rvArticles.setAdapter(adapter);
 
+        adapter.setOnArticleClickListener(article -> {
+            String title = article.getTitleVi() != null ? article.getTitleVi() : article.getTitle();
+            if (HatBoiMagazineActivity.isFeatureArticle(title)) {
+                startActivity(new android.content.Intent(this, HatBoiMagazineActivity.class));
+            }
+        });
+
         binding.swipeRefresh.setColorSchemeColors(getColor(R.color.tc_red));
         binding.swipeRefresh.setOnRefreshListener(this::loadArticles);
 
@@ -52,6 +59,16 @@ public class ArticleActivity extends BaseActivity {
 
     private void showArticles(List<Article> articles) {
         binding.swipeRefresh.setRefreshing(false);
+        // Đổi diện card chuyên đề Hát Bội: dùng ảnh bìa nội bộ + tên/tác giả biên tập,
+        // để chạm vào mở trang tạp chí HatBoiMagazineActivity (bất kể nguồn Firestore).
+        for (Article a : articles) {
+            String title = a.getTitleVi() != null ? a.getTitleVi() : a.getTitle();
+            if (HatBoiMagazineActivity.isFeatureArticle(title)) {
+                a.setTitleVi(HatBoiMagazineActivity.FEATURE_TITLE);
+                a.setAuthor("Tạp chí Văn Hóa");
+                a.setLocalImageRes(R.drawable.hb_cover);
+            }
+        }
         adapter.updateArticles(articles);
         binding.tvEmpty.setVisibility(articles.isEmpty() ? View.VISIBLE : View.GONE);
     }
@@ -59,7 +76,7 @@ public class ArticleActivity extends BaseActivity {
     /** Dữ liệu mẫu offline cho bản demo giao diện. */
     private List<Article> buildMockArticles() {
         String[][] data = {
-            {"Nghệ thuật thêu tay trên Nhật Bình cung đình", "Tired City", "2"},
+            {"Hát Bội – Tinh hoa Đất Việt", "Tạp chí Văn Hóa", "2"},
             {"Áo Tấc – vẻ đẹp tối giản của Việt phục", "Tired City", "6"},
             {"Phối màu trang phục theo Ngũ Hành mệnh", "Tired City", "11"},
             {"Hành trình phục dựng cổ phục Việt", "Tired City", "20"},

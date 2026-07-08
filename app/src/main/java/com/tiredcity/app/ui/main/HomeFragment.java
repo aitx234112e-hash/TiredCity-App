@@ -669,10 +669,7 @@ public class HomeFragment extends Fragment {
                 if (binding == null || events == null || events.isEmpty()) return;
                 com.tiredcity.app.data.model.Event latest = events.get(0);
                 latestEventId = latest.getId();
-                binding.tvHomeEventsTitle.setText(latest.getTitle());
-                if (latest.getImageUrl() != null && !latest.getImageUrl().isEmpty()) {
-                    Glide.with(HomeFragment.this).load(latest.getImageUrl()).centerCrop().into(binding.ivEventBanner);
-                }
+                // Giữ ảnh (main15) và tiêu đề tĩnh trong layout/strings; chỉ lấy id để mở chi tiết
             }
             @Override public void onError(String message) {}
         });
@@ -683,10 +680,7 @@ public class HomeFragment extends Fragment {
                 if (binding == null || articles == null || articles.isEmpty()) return;
                 com.tiredcity.app.data.model.Article latest = articles.get(0);
                 latestNewsId = latest.getId();
-                binding.tvHomeNewsTitle.setText(latest.getTitleVi());
-                if (latest.getImageUrl() != null && !latest.getImageUrl().isEmpty()) {
-                    Glide.with(HomeFragment.this).load(latest.getImageUrl()).centerCrop().into(binding.ivNewsBanner);
-                }
+                // Giữ ảnh (main13) và tiêu đề tĩnh trong layout/strings; chỉ lấy id để mở chi tiết
             }
             @Override public void onError(String message) {}
         });

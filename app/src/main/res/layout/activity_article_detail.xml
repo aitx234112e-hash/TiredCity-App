@@ -22,7 +22,7 @@
             app:toolbarId="@+id/toolbar">
 
             <ImageView
-                android:id="@+id/iv_header"
+                android:id="@+id/iv_hero"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -59,6 +59,7 @@
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/ad_title"
                 android:textColor="@color/text_primary"
                 android:textSize="22sp"
                 android:textStyle="bold"
@@ -75,6 +76,7 @@
                     android:id="@+id/tv_author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/ad_author"
                     android:textColor="@color/tc_red"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -90,6 +92,7 @@
                     android:id="@+id/tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/ad_date"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     tools:text="20/06/2026" />
@@ -107,6 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:lineSpacingExtra="6dp"
+                android:text="@string/ad_content"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 tools:text="Nội dung bài viết ở đây..." />

@@ -90,6 +90,13 @@
     <color name="tc_gold_pale">#E8D5A8</color>
     <color name="tc_gold_ripple">#33A80D15</color>     <!-- ripple đỏ trên nền vàng -->
 
+    <!-- ─── Yêu Nước Từ Trong Nôi (CANIFA Kid Tour) — bảng màu quốc kỳ ─── -->
+    <color name="ynn_red">#D3141A</color>          <!-- đỏ cờ tươi (key visual) -->
+    <color name="ynn_yellow">#F4C430</color>       <!-- vàng sao -->
+    <color name="ynn_green">#0E8A3C</color>        <!-- xanh lá dải đất -->
+    <color name="ynn_green_deep">#0A6B2E</color>
+    <color name="ynn_cream">#F7F0DD</color>        <!-- kem giấy dó (nền panel) -->
+
     <!-- ─── Vàng kim — gradient stops (ánh kim) ─────────────────────── -->
     <color name="tc_gold_sheen_top">#E3C885</color>
     <color name="tc_gold_sheen_mid">#C9A45C</color>

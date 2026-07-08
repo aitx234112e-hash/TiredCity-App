@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pill nhãn mục (caption chip) — nền đỏ cờ đặc cho tiêu đề spread -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/tc_red" />
+    <corners android:radius="@dimen/tc_radius_pill" />
+</shape>

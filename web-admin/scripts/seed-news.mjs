@@ -29,10 +29,10 @@ const AUTHOR = 'Tired City';
 const NEWS = [
   {
     id: 'nghe-thuat-theu-tay-nhat-binh-cung-dinh',
-    title: 'Nghệ thuật thêu tay trên Nhật Bình cung đình',
+    title: 'Hát Bội – Tinh hoa Đất Việt',
     date: '2026-07-05',
-    excerpt: 'Khám phá kỹ thuật thêu tay tinh xảo tạo nên vẻ lộng lẫy của áo Nhật Bình cung đình.',
-    content: 'Áo Nhật Bình là trang phục dành cho hoàng hậu, công chúa và các bậc mệnh phụ. Điểm nhấn nằm ở nghệ thuật thêu tay tỉ mỉ với hoa văn phượng, hoa lá và mây trời, mỗi đường chỉ đều mang ý nghĩa cát tường. Bài viết giới thiệu quy trình thêu tay công phu và giá trị văn hoá đằng sau từng chi tiết.',
+    excerpt: 'Chuyên đề Tạp chí Văn Hóa số 27: hành trình Hát Bội từ cội nguồn, nhân vật, nghệ thuật hóa trang đến những vở tuồng để đời.',
+    content: 'Hát Bội (hay hát tuồng) là một trong những loại hình sân khấu cổ truyền đặc sắc bậc nhất của Việt Nam — nơi ca, múa và diễn xuất hòa quyện để kể lại những câu chuyện lịch sử, thần thoại và đạo lý làm người. Số 27 của Tạp chí Văn Hóa đưa bạn đi trọn hành trình ấy: từ cội nguồn, nhân vật, nghệ thuật hóa trang, những vở tuồng để đời, cho tới cuộc giao thoa của Hát Bội với đời sống hôm nay.',
   },
   {
     id: 'ao-tac-ve-dep-toi-gian',

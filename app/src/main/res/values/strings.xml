@@ -39,6 +39,8 @@
     <!-- Birth date / Mệnh -->
     <string name="hint_birthdate">Ngày sinh</string>
     <string name="hint_birthdate_pick">Chọn ngày sinh</string>
+    <!-- Tiêu đề lịch chọn ngày sinh sau khi đăng nhập MXH (luồng tính Mệnh) -->
+    <string name="birthdate_picker_title">Nhập ngày sinh của bạn</string>
     <string name="error_birthdate">Vui lòng chọn ngày sinh</string>
     <string name="profile_avatar_desc">Trang cá nhân</string>
 
@@ -1390,6 +1392,12 @@
     <string name="settings_delete_confirm">Gửi yêu cầu xóa</string>
     <string name="settings_delete_submitted">Đã gửi yêu cầu xóa tài khoản.</string>
     <string name="cd_settings_row_chevron">Mở</string>
+    <!-- ═══ Chi tiết bài viết: SẮC PHỤC VIỆT (khớp ảnh bìa blog_1) ═══ -->
+    <string name="ad_title">Sắc Phục Việt</string>
+    <string name="ad_author">Tired City</string>
+    <string name="ad_date">07/07/2026</string>
+    <string name="ad_content">Sắc Phục Việt là hành trình khám phá vẻ đẹp của trang phục truyền thống Việt Nam qua từng thời kỳ. Cuốn sách đưa người đọc đi từ nguồn gốc lịch sử, cách phân loại Áo Dài cho đến những tầng ý nghĩa văn hóa ẩn sau mỗi đường kim mũi chỉ.\n\nTừ sắc đỏ rực rỡ của ngày hội đến những gam trầm nền nã của đời thường, mỗi bộ trang phục là một câu chuyện về bản sắc dân tộc. Moodboard lấy cảm hứng từ hoài niệm xưa cũ — những tấm biển hiệu, gam vàng son và đỏ thắm — gợi nhắc một Việt Nam vừa cổ điển vừa tràn đầy sức sống.</string>
+
     <!-- ═══ Chi tiết sự kiện: DÂN TỘC TỰ HÀO ═══ -->
     <string name="ed_toolbar_title">Chi tiết sự kiện</string>
     <string name="ed_hero_eyebrow">LỄ KHAI MẠC · TRƯNG BÀY THÁNG 9</string>

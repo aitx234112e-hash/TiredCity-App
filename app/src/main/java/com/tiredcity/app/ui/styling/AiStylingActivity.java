@@ -60,6 +60,11 @@ public class AiStylingActivity extends BaseActivity {
      *  nguồn to cỡ nào. */
     private static final int MAX_IMAGE_DECODE_PX = 1440;
 
+    /** Cỡ decode thực tế cho 2 dải màu/phụ kiện — không bao giờ vượt bề rộng màn hình (ảnh full-width
+     *  chỉ cần tới đó là đủ nét) và vẫn ≤ {@link #MAX_IMAGE_DECODE_PX} để chặn OOM. Giảm số pixel phải
+     *  bo góc (RoundedCorners) nên render lần đầu nhẹ và mượt hơn. Gán 1 lần trong {@link #onCreate}. */
+    private int imageDecodeCap = MAX_IMAGE_DECODE_PX;
+
     private ActivityAiStylingBinding binding;
     private ApiService apiService;
     private final FirestoreProductRepository firestoreRepository = new FirestoreProductRepository();
@@ -70,9 +75,12 @@ public class AiStylingActivity extends BaseActivity {
     private final Handler accessoriesScrollHandler = new Handler(Looper.getMainLooper());
     private Runnable accessoriesScrollRunnable;
     private int accessoriesScrollDir = 1;
-
-    /** Animator bồng bềnh lên ⇅ xuống của từng ảnh trong dải "Hoạ tiết hợp mệnh" — huỷ ở onPause. */
-    private final List<ObjectAnimator> patternAnimators = new ArrayList<>();
+    /** true khi mệnh hiện tại có ≥2 ảnh phụ kiện → mới đáng bật auto-trượt lại sau khi người dùng
+     *  ngừng cuộn trang (xem {@link #onCreate} listener của scrollRoot). */
+    private boolean accessoriesAutoScrollEligible = false;
+    /** Bật lại auto-trượt sau khi người dùng buông tay cuộn trang một lúc — tránh để hai animation
+     *  (auto-trượt + cuộn tay) tranh luồng chính gây giật. */
+    private final Runnable resumeAutoScrollRunnable = this::startAccessoriesAutoScroll;
 
     /** Mệnh thật của người dùng, tính từ ngày sinh (xem {@link MenhCalculator#tinhMenh}) — quyết
      *  định toàn bộ nội dung trang (banner/màu/phụ kiện/hoạ tiết/lời khuyên/gợi ý). */
@@ -90,6 +98,8 @@ public class AiStylingActivity extends BaseActivity {
 
         apiService = ApiClient.getApiService(preferenceManager.getToken());
 
+        imageDecodeCap = Math.min(MAX_IMAGE_DECODE_PX, getResources().getDisplayMetrics().widthPixels);
+
         applyHeroAspectRatio();
 
         recommendedAdapter = new ProductPhotoCardAdapter(null);
@@ -104,6 +114,17 @@ public class AiStylingActivity extends BaseActivity {
         });
 
         binding.btnRefreshSuggestions.setOnClickListener(v -> openSeeMoreSuggestions());
+
+        // Trong lúc người dùng cuộn trang, tạm ngưng vòng auto-trượt dải phụ kiện (nó tick 33 lần/s
+        // trên luồng chính) để cú vuốt mượt; chạy lại 900ms sau khi trang đứng yên.
+        binding.scrollRoot.setOnScrollChangeListener(
+                (androidx.core.widget.NestedScrollView.OnScrollChangeListener)
+                        (v, x, y, oldX, oldY) -> {
+                            stopAccessoriesAutoScroll();
+                            if (accessoriesAutoScrollEligible) {
+                                accessoriesScrollHandler.postDelayed(resumeAutoScrollRunnable, 900);
+                            }
+                        });
     }
 
     /** "Xem thêm" — mở lưới sản phẩm đầy đủ, lọc theo màu hợp mệnh đang xem hiện tại (không giới
@@ -134,7 +155,6 @@ public class AiStylingActivity extends BaseActivity {
         // Màn hình không còn hiển thị — dừng hẳn animation/auto-scroll, tránh chạy ngầm vô ích.
         // onResume sẽ tự dựng lại qua loadUserProfileAndRecommend() -> updateMenhAccessories/Patterns.
         stopAccessoriesAutoScroll();
-        stopPatternAnimations();
     }
 
     private void loadUserProfileAndRecommend() {
@@ -169,7 +189,6 @@ public class AiStylingActivity extends BaseActivity {
         updateMenhHeaderUi(menh);
         updateMenhColors(menh);
         updateMenhAccessories(menh);
-        updateMenhPatterns(menh);
         updateTipsCardTheme(menh);
         loadRecommendedProducts(menh);
     }
@@ -181,6 +200,7 @@ public class AiStylingActivity extends BaseActivity {
         int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
         int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
         binding.cardTips.setCardBackgroundColor(panelBg);
+        binding.cardTips.setStrokeColor(accent);
         binding.tvTipsTitle.setTextColor(accent);
     }
 
@@ -227,6 +247,7 @@ public class AiStylingActivity extends BaseActivity {
     private void updateMenhAccessories(String menh) {
         int[] photos = MenhCalculator.getMenhAccessoryPhotos(menh);
         stopAccessoriesAutoScroll();
+        accessoriesAutoScrollEligible = photos.length > 1;
         if (photos.length == 0) {
             binding.sectionMenhAccessories.setVisibility(View.GONE);
             return;
@@ -256,7 +277,7 @@ public class AiStylingActivity extends BaseActivity {
             image.setScaleType(ImageView.ScaleType.FIT_CENTER);
             Glide.with(this)
                     .load(photo)
-                    .override(MAX_IMAGE_DECODE_PX, MAX_IMAGE_DECODE_PX)
+                    .override(imageDecodeCap, imageDecodeCap)
                     .transform(new FitCenter(), new RoundedCorners(radius))
                     .into(image);
             binding.layoutMenhAccessories.addView(image);
@@ -300,6 +321,7 @@ public class AiStylingActivity extends BaseActivity {
     }
 
     private void stopAccessoriesAutoScroll() {
+        accessoriesScrollHandler.removeCallbacks(resumeAutoScrollRunnable);
         if (accessoriesScrollRunnable != null) {
             accessoriesScrollHandler.removeCallbacks(accessoriesScrollRunnable);
         }
@@ -307,64 +329,6 @@ public class AiStylingActivity extends BaseActivity {
 
     private static final int ACCESSORIES_SCROLL_STEP_PX = 2;
     private static final long ACCESSORIES_SCROLL_INTERVAL_MS = 30;
-
-    /** "Hoạ tiết hợp mệnh" — dải ảnh xếp DỌC từ trên xuống (không kéo ngang), mỗi ảnh tự bồng bềnh
-     *  lên ⇅ xuống liên tục để vẫn có chuyển động. Mệnh chưa có ảnh thì ẩn cả mục. */
-    private void updateMenhPatterns(String menh) {
-        int[] photos = MenhCalculator.getMenhPatternPhotos(menh);
-        stopPatternAnimations();
-        if (photos.length == 0) {
-            binding.sectionMenhPatterns.setVisibility(View.GONE);
-            return;
-        }
-        binding.sectionMenhPatterns.setVisibility(View.VISIBLE);
-        int accent = ContextCompat.getColor(this, MenhCalculator.getMenhTitleColorRes(menh));
-        int panelBg = ContextCompat.getColor(this, MenhCalculator.getMenhPanelBgColorRes(menh));
-        binding.sectionMenhPatterns.getBackground().mutate().setTint(panelBg);
-        binding.tvPatternsTitle.setTextColor(accent);
-        setHighlightedText(binding.tvPatternsText, MenhCalculator.getMenhPatternText(this, menh),
-                MenhCalculator.getMenhPatternKeywords(this, menh), accent);
-
-        binding.layoutMenhPatterns.removeAllViews();
-        float density = getResources().getDisplayMetrics().density;
-        int radius = (int) (16 * density);
-        float bobDistance = 8 * density;
-        // Khoảng đệm trên/dưới mỗi ảnh: vừa là khoảng cách giữa các ảnh xếp dọc, vừa chừa chỗ để
-        // ảnh bồng bềnh (translationY) không bị cắt bởi khung cha.
-        int bobBuffer = (int) bobDistance;
-        int verticalGap = (int) (16 * density) + bobBuffer;
-        for (int i = 0; i < photos.length; i++) {
-            ImageView image = new ImageView(this);
-            // Rộng hết cỡ (MATCH_PARENT) + xếp dọc từng ảnh một, không còn dải cuộn ngang.
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.topMargin = bobBuffer;
-            lp.bottomMargin = verticalGap;
-            image.setLayoutParams(lp);
-            image.setAdjustViewBounds(true);
-            image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(this)
-                    .load(photos[i])
-                    .override(MAX_IMAGE_DECODE_PX, MAX_IMAGE_DECODE_PX)
-                    .transform(new FitCenter(), new RoundedCorners(radius))
-                    .into(image);
-            binding.layoutMenhPatterns.addView(image);
-
-            ObjectAnimator bob = ObjectAnimator.ofFloat(image, View.TRANSLATION_Y, -bobDistance, bobDistance);
-            bob.setDuration(1500 + (i % 3) * 200L);
-            bob.setStartDelay(i * 150L);
-            bob.setRepeatCount(ValueAnimator.INFINITE);
-            bob.setRepeatMode(ValueAnimator.REVERSE);
-            bob.setInterpolator(new AccelerateDecelerateInterpolator());
-            bob.start();
-            patternAnimators.add(bob);
-        }
-    }
-
-    private void stopPatternAnimations() {
-        for (ObjectAnimator anim : patternAnimators) anim.cancel();
-        patternAnimators.clear();
-    }
 
     /** "Màu hợp mệnh" — ảnh minh hoạ nguyên khổ (không cắt xén, giữ đúng tỉ lệ gốc) + bài viết
      *  riêng theo mệnh đang xem. Mệnh chưa có ảnh thì ẩn cả mục. */
@@ -396,7 +360,7 @@ public class AiStylingActivity extends BaseActivity {
             image.setScaleType(ImageView.ScaleType.FIT_CENTER);
             Glide.with(this)
                     .load(photos[i])
-                    .override(MAX_IMAGE_DECODE_PX, MAX_IMAGE_DECODE_PX)
+                    .override(imageDecodeCap, imageDecodeCap)
                     .transform(new FitCenter(), new RoundedCorners(radius))
                     .into(image);
             binding.layoutMenhColors.addView(image);

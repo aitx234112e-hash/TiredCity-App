@@ -35,7 +35,7 @@ const EVENTS = [
   },
   {
     id: 'workshop-phoi-do-theo-menh',
-    title: 'Workshop phối đồ theo mệnh',
+    title: 'Workshop YÊU NƯỚC TỪ TRONG NÔI',
     date: '2026-07-21',
     location: 'Tired City Store, Hà Nội',
     description: 'Hướng dẫn phối màu trang phục theo Ngũ Hành mệnh, cùng chuyên gia tư vấn phong cách cá nhân.',

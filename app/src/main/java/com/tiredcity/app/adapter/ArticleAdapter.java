@@ -51,7 +51,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         holder.tvDate.setText(article.getPublishedDate() != null
                 ? DateUtils.formatDisplayDate(article.getPublishedDate()) : "");
 
-        if (article.getImageUrl() != null && !article.getImageUrl().isEmpty()) {
+        if (article.getLocalImageRes() != 0) {
+            Glide.with(holder.ivImage.getContext())
+                    .load(article.getLocalImageRes())
+                    .centerCrop()
+                    .placeholder(R.color.bg_subtle)
+                    .into(holder.ivImage);
+        } else if (article.getImageUrl() != null && !article.getImageUrl().isEmpty()) {
             Glide.with(holder.ivImage.getContext())
                     .load(article.getImageUrl())
                     .centerCrop()

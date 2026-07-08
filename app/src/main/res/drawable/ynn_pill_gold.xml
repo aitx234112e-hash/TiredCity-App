@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pill nhãn mục "kim tuyến" cho trang Yêu Nước Từ Trong Nôi -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ynn_yellow" />
+    <corners android:radius="@dimen/tc_radius_pill" />
+</shape>

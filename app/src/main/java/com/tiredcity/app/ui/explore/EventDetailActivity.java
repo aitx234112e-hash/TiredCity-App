@@ -61,8 +61,8 @@ public class EventDetailActivity extends BaseActivity {
     }
 
     private void bindEventData(Event event) {
-        binding.tvHeroTitle.setText(event.getTitle());
-        binding.tvHeroSubtitle.setText(event.getDescription());
+        // Bìa đầu luôn dùng banner cố định "DÂN TỘC TỰ HÀO" (event_1) nên giữ nguyên
+        // tiêu đề/phụ đề mặc định trong layout để khớp với chữ trên ảnh banner.
         binding.tvFactPlaceValue.setText(event.isOnline() ? "🌐 Online" : event.getLocation());
         binding.tvAboutBody.setText(event.getDescription());
         
@@ -70,11 +70,8 @@ public class EventDetailActivity extends BaseActivity {
             binding.tvFactTimeValue.setText(DateUtils.formatDisplayDate(event.getEventDate()));
         }
 
-        if (event.getImageUrl() != null && !event.getImageUrl().isEmpty()) {
-            Glide.with(this).load(event.getImageUrl()).centerCrop().into(binding.ivHero);
-        } else {
-            binding.ivHero.setImageResource(R.drawable.event_1);
-        }
+        // Bìa đầu luôn dùng ảnh cố định event_1.jpg cho đồng bộ
+        loadImage(binding.ivHero, R.drawable.event_1);
 
         // Keep other static images for demo feel
         loadImage(binding.ivDisplay, R.drawable.event_4);

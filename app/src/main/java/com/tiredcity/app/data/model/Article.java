@@ -33,6 +33,9 @@ public class Article implements Serializable {
     private Object publishedAt; // Can be String (ISO) or Timestamp
     private Object createdAt;
 
+    /** Ảnh drawable nội bộ cho bài đặc biệt (ưu tiên hơn imageUrl khi > 0). Không lưu Firestore. */
+    private transient int localImageRes;
+
     public Article() {}
 
     public String getId() { return id; }
@@ -111,4 +114,8 @@ public class Article implements Serializable {
 
     public Object getCreatedAt() { return createdAt; }
     public void setCreatedAt(Object createdAt) { this.createdAt = createdAt; }
+
+    @com.google.firebase.firestore.Exclude
+    public int getLocalImageRes() { return localImageRes; }
+    public void setLocalImageRes(int localImageRes) { this.localImageRes = localImageRes; }
 }

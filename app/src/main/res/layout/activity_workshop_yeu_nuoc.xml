@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Trang chi tiết sự kiện: Workshop "YÊU NƯỚC TỪ TRONG NÔI" (CANIFA Kid Tour).
+  Bố cục tạp chí: hero key-visual full-bleed → thẻ thông tin nhanh → các khối nội
+  dung trên nền kem, xen kẽ ảnh panel chiến dịch. Thanh "Đăng ký" cố định dưới cùng.
+  Ảnh nạp qua Glide trong WorkshopYeuNuocActivity.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tc_cream">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="92dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/tc_space_2xl">
+
+            <!-- ═══════════ HERO ═══════════ -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="320dp">
+
+                <ImageView
+                    android:id="@+id/iv_hero"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@color/ynn_red"
+                    android:contentDescription="Yêu nước từ trong nôi" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_gravity="top"
+                    android:background="@drawable/ynn_scrim_top" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/tc_gradient_bottom_scrim" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/tc_space_xl"
+                    android:paddingBottom="@dimen/tc_space_xl">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ynn_pill_gold"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="5dp"
+                        android:text="CANIFA · KID TOUR"
+                        android:textColor="@color/ynn_red"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/tc_space_md"
+                        android:text="YÊU NƯỚC\nTỪ TRONG NÔI"
+                        android:textColor="#FFFFFF"
+                        android:textSize="34sp"
+                        android:textStyle="bold"
+                        android:lineSpacingMultiplier="0.98"
+                        android:shadowColor="#80000000"
+                        android:shadowDx="0"
+                        android:shadowDy="2"
+                        android:shadowRadius="8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/tc_space_sm"
+                        android:text="Workshop trải nghiệm · Hành trình khám phá lịch sử – văn hóa Việt Nam dành riêng cho các bạn nhỏ"
+                        android:textColor="#F2FFFFFF"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="top|start"
+                    android:layout_marginStart="@dimen/tc_space_md"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    android:background="@drawable/tc_bg_circle_scrim"
+                    android:src="@drawable/ic_back"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    app:tint="#FFFFFF"
+                    android:contentDescription="@string/cd_back" />
+            </FrameLayout>
+
+            <!-- ═══════════ THẺ THÔNG TIN NHANH ═══════════ -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/tc_space_xl"
+                android:layout_marginTop="@dimen/tc_space_xl"
+                app:cardCornerRadius="@dimen/tc_radius_lg"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@color/card_white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/tc_space_lg">
+
+                    <!-- Thời gian -->
+                    <LinearLayout style="@style/YnnFactRow">
+                        <FrameLayout style="@style/YnnFactIconWrap">
+                            <ImageView style="@style/YnnFactIcon" android:src="@drawable/ic_calendar" />
+                        </FrameLayout>
+                        <LinearLayout style="@style/YnnFactText">
+                            <TextView style="@style/YnnFactLabel" android:text="Thời gian" />
+                            <TextView style="@style/YnnFactValue" android:text="Thứ Hai, 21/07/2026 · 09:00 – 11:30" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View style="@style/YnnFactDivider" />
+
+                    <!-- Địa điểm -->
+                    <LinearLayout style="@style/YnnFactRow">
+                        <FrameLayout style="@style/YnnFactIconWrap">
+                            <ImageView style="@style/YnnFactIcon" android:src="@drawable/ic_pin" />
+                        </FrameLayout>
+                        <LinearLayout style="@style/YnnFactText">
+                            <TextView style="@style/YnnFactLabel" android:text="Địa điểm" />
+                            <TextView style="@style/YnnFactValue" android:text="Tired City Store, Hà Nội" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View style="@style/YnnFactDivider" />
+
+                    <!-- Đối tượng -->
+                    <LinearLayout style="@style/YnnFactRow">
+                        <FrameLayout style="@style/YnnFactIconWrap">
+                            <ImageView style="@style/YnnFactIcon" android:src="@drawable/ic_person" />
+                        </FrameLayout>
+                        <LinearLayout style="@style/YnnFactText">
+                            <TextView style="@style/YnnFactLabel" android:text="Đối tượng" />
+                            <TextView style="@style/YnnFactValue" android:text="Các bạn nhỏ 4 – 12 tuổi (có phụ huynh đồng hành)" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View style="@style/YnnFactDivider" />
+
+                    <!-- Vé -->
+                    <LinearLayout style="@style/YnnFactRow">
+                        <FrameLayout style="@style/YnnFactIconWrap">
+                            <ImageView style="@style/YnnFactIcon" android:src="@drawable/ic_ticket" />
+                        </FrameLayout>
+                        <LinearLayout style="@style/YnnFactText">
+                            <TextView style="@style/YnnFactLabel" android:text="Tham dự" />
+                            <TextView style="@style/YnnFactValue" android:text="Miễn phí · Số lượng có hạn, cần đăng ký trước" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Ảnh động: logo reveal -->
+            <com.google.android.material.card.MaterialCardView style="@style/YnnImageCard">
+                <ImageView
+                    android:id="@+id/iv_anim_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Logo động Yêu Nước Từ Trong Nôi" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ═══════════ VỀ WORKSHOP ═══════════ -->
+            <TextView
+                style="@style/YnnSectionLabel"
+                android:text="VỀ WORKSHOP" />
+
+            <TextView
+                style="@style/YnnHeading"
+                android:text="Gieo tình yêu nước từ những trải nghiệm đầu đời" />
+
+            <TextView
+                style="@style/YnnBody"
+                android:text="“Yêu nước từ trong nôi” là sợi chỉ đỏ xuyên suốt cả hành trình — khơi gợi niềm tự hào dân tộc và kết nối thế hệ nhỏ tuổi với di sản văn hóa Việt Nam ngay từ những trải nghiệm đầu tiên." />
+
+            <TextView
+                style="@style/YnnBody"
+                android:layout_marginTop="@dimen/tc_space_md"
+                android:text="Trong buổi workshop, các bạn nhỏ sẽ hóa thân thành những nhà khám phá tí hon, cùng linh vật Bé Sao đi qua từng “trạm di sản”: tranh Đông Hồ, múa rối nước, nón lá, cờ Tổ quốc… Mỗi hoạt động là một câu chuyện, một mảnh ghép để các con tự tay chạm vào văn hóa nước mình." />
+
+            <!-- Ảnh Key Visual -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/YnnImageCard">
+                <ImageView
+                    android:id="@+id/iv_keyvisual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Key visual Yêu Nước Từ Trong Nôi" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ═══════════ HOẠT ĐỘNG TRẢI NGHIỆM ═══════════ -->
+            <TextView
+                style="@style/YnnSectionLabel"
+                android:text="HOẠT ĐỘNG TRẢI NGHIỆM" />
+
+            <TextView
+                style="@style/YnnHeading"
+                android:text="Bốn trạm sáng tạo trong buổi workshop" />
+
+            <!-- 1 -->
+            <com.google.android.material.card.MaterialCardView style="@style/YnnActivityCard">
+                <LinearLayout style="@style/YnnActivityInner">
+                    <TextView style="@style/YnnActivityNum" android:text="1" />
+                    <LinearLayout style="@style/YnnActivityText">
+                        <TextView style="@style/YnnActivityTitle" android:text="Việt Nam trong tôi" />
+                        <TextView style="@style/YnnActivityDesc" android:text="Ghép những mảnh mẹt tre thành tấm bản đồ Việt Nam rực rỡ sắc cờ." />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2 -->
+            <com.google.android.material.card.MaterialCardView style="@style/YnnActivityCard">
+                <LinearLayout style="@style/YnnActivityInner">
+                    <TextView style="@style/YnnActivityNum" android:text="2" />
+                    <LinearLayout style="@style/YnnActivityText">
+                        <TextView style="@style/YnnActivityTitle" android:text="Nhà thiết kế nhí" />
+                        <TextView style="@style/YnnActivityDesc" android:text="Thiết kế trang phục từ vật liệu tái chế — sáng tạo mà vẫn xanh." />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3 -->
+            <com.google.android.material.card.MaterialCardView style="@style/YnnActivityCard">
+                <LinearLayout style="@style/YnnActivityInner">
+                    <TextView style="@style/YnnActivityNum" android:text="3" />
+                    <LinearLayout style="@style/YnnActivityText">
+                        <TextView style="@style/YnnActivityTitle" android:text="Rối di sản" />
+                        <TextView style="@style/YnnActivityDesc" android:text="Tự tay làm một chú rối nước mini và kể câu chuyện của riêng mình." />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4 -->
+            <com.google.android.material.card.MaterialCardView style="@style/YnnActivityCard">
+                <LinearLayout style="@style/YnnActivityInner">
+                    <TextView style="@style/YnnActivityNum" android:text="4" />
+                    <LinearLayout style="@style/YnnActivityText">
+                        <TextView style="@style/YnnActivityTitle" android:text="Rùa Tiến sĩ" />
+                        <TextView style="@style/YnnActivityDesc" android:text="DIY linh vật học tập lấy cảm hứng từ bia Tiến sĩ ở Văn Miếu." />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ═══════════ BÉ SAO ═══════════ -->
+            <TextView
+                style="@style/YnnSectionLabel"
+                android:text="NGƯỜI BẠN ĐỒNG HÀNH" />
+
+            <TextView
+                style="@style/YnnHeading"
+                android:text="Bé Sao — ngôi sao vàng trong nôi đỏ" />
+
+            <TextView
+                style="@style/YnnBody"
+                android:text="Hiếu động, ham khám phá và giàu lòng tự hào dân tộc, Bé Sao là người bạn dẫn dắt các con qua từng trạm trải nghiệm — và cũng là biểu tượng sống động của thông điệp “Yêu nước từ trong nôi”." />
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/YnnImageCard">
+                <ImageView
+                    android:id="@+id/iv_mascot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Mascot Bé Sao" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ═══════════ HỘ CHIẾU DI SẢN ═══════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/tc_space_xl"
+                android:layout_marginTop="@dimen/tc_space_2xl"
+                android:orientation="vertical"
+                android:background="@drawable/ynn_card_gold_stroke"
+                android:padding="@dimen/tc_space_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🛂  KỶ NIỆM MANG VỀ"
+                    android:textColor="@color/ynn_green_deep"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.06" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Hộ chiếu di sản"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Mỗi bạn nhỏ nhận một cuốn “hộ chiếu” đặc biệt, đóng dấu qua từng trạm và mang về như tấm vé kỷ niệm của cả hành trình."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="3dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tc_space_md"
+                    app:cardCornerRadius="@dimen/tc_radius_md"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#0A0A0A">
+                    <ImageView
+                        android:id="@+id/iv_anim_passport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Hộ chiếu di sản (ảnh động)" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- ═══════════ THƯ VIỆN DỰ ÁN ═══════════ -->
+            <TextView
+                style="@style/YnnSectionLabel"
+                android:text="THƯ VIỆN DỰ ÁN" />
+
+            <TextView
+                style="@style/YnnHeading"
+                android:text="Khoảnh khắc từ hành trình" />
+
+            <com.google.android.material.card.MaterialCardView style="@style/YnnImageCard">
+                <ImageView
+                    android:id="@+id/iv_activity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Hoạt động Kid Tour" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/YnnImageCard">
+                <ImageView
+                    android:id="@+id/iv_merch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Merchandise Yêu Nước Từ Trong Nôi" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Ảnh động: bộ sticker Bé Sao -->
+            <com.google.android.material.card.MaterialCardView style="@style/YnnGifCardDark">
+                <ImageView
+                    android:id="@+id/iv_anim_stickers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Sticker Bé Sao (ảnh động)" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/tc_space_xl"
+                android:layout_marginTop="@dimen/tc_space_xl"
+                android:gravity="center"
+                android:text="Một dự án của CANIFA — Tự hào Thương hiệu Quốc gia"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ═══════════ THANH ĐĂNG KÝ CỐ ĐỊNH ═══════════ -->
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/card_white"
+        android:elevation="12dp"
+        android:paddingHorizontal="@dimen/tc_space_xl"
+        android:paddingVertical="@dimen/tc_space_md">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phí tham dự"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Miễn phí"
+                android:textColor="@color/ynn_red"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_register"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:paddingHorizontal="@dimen/tc_space_2xl"
+            android:text="Đăng ký tham gia"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/ynn_red"
+            app:cornerRadius="26dp"
+            app:iconGravity="textEnd"
+            app:icon="@drawable/ic_arrow_right"
+            app:iconTint="#FFFFFF"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+</FrameLayout>

@@ -144,12 +144,22 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.explore.HatBoiMagazineActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.explore.EventActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.explore.EventDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.explore.WorkshopYeuNuocActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

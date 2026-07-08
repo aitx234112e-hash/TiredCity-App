@@ -240,9 +240,7 @@ public class SearchActivity extends BaseActivity {
             binding.chipGroupKeywords.addView(chip);
         }
 
-        int count = Math.min(SUGGESTED_PRODUCT_KEYWORD_COUNT, allProducts.size());
-        for (int i = 0; i < count; i++) {
-            Product product = allProducts.get(i);
+        for (Product product : pickDiverseProducts(SUGGESTED_PRODUCT_KEYWORD_COUNT)) {
             if (product.getName() == null) continue;
             Chip chip = createRedOutlineChip(product.getName());
             chip.setOnClickListener(v -> openProductDetail(product));
@@ -315,11 +313,39 @@ public class SearchActivity extends BaseActivity {
 
     private void refreshSuggestionProducts() {
         List<SearchItem> items = buildStaticSuggestions();
-        int count = Math.min(SUGGESTION_PRODUCT_COUNT, allProducts.size());
-        for (int i = 0; i < count; i++) {
-            items.add(new ProductItem(allProducts.get(i)));
+        for (Product product : pickDiverseProducts(SUGGESTION_PRODUCT_COUNT)) {
+            items.add(new ProductItem(product));
         }
         suggestionAdapter.updateItems(items);
+    }
+
+    /**
+     * Chọn tối đa {@code max} sản phẩm nhưng ưu tiên trải đều các danh mục (Áo dài, Nhật bình,
+     * Áo tấc...) thay vì lấy nguyên cụm sản phẩm đầu tiên — để phần gợi ý đa dạng, không toàn Áo dài.
+     * Duyệt vòng: mỗi lượt lấy 1 sản phẩm của mỗi danh mục theo thứ tự xuất hiện, lặp tới khi đủ.
+     */
+    private List<Product> pickDiverseProducts(int max) {
+        java.util.LinkedHashMap<String, List<Product>> byCategory = new java.util.LinkedHashMap<>();
+        for (Product p : allProducts) {
+            String key = p.getCategory() != null ? p.getCategory() : "";
+            byCategory.computeIfAbsent(key, k -> new ArrayList<>()).add(p);
+        }
+
+        List<Product> picked = new ArrayList<>();
+        int index = 0;
+        boolean tookAny = true;
+        while (picked.size() < max && tookAny) {
+            tookAny = false;
+            for (List<Product> group : byCategory.values()) {
+                if (index < group.size()) {
+                    picked.add(group.get(index));
+                    tookAny = true;
+                    if (picked.size() >= max) break;
+                }
+            }
+            index++;
+        }
+        return picked;
     }
 
     private void openVoucherDetail(PromotionItem item) {

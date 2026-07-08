@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pill nhãn "TẠP CHÍ VĂN HÓA" — vàng kim đặc, chữ đỏ cờ -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/brand_gold" />
+    <corners android:radius="@dimen/tc_radius_pill" />
+</shape>

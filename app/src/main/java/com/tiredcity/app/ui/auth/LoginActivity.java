@@ -85,6 +85,10 @@ public class LoginActivity extends BaseActivity {
 
     private GoogleSignInClient googleSignInClient;
     private ActivityResultLauncher<Intent> googleSignInLauncher;
+    // Hộp chọn tài khoản Google được DỰNG SẴN (đăng xuất phiên cũ + tạo signInIntent) ngay trong
+    // onCreate, cache tại đây. Khi người dùng bấm nút Google chỉ việc launch → mở tức thì, không
+    // phải chờ round-trip signOut() tới Google Play Services như trước (đó là lý do bị "chậm").
+    private Intent googleSignInIntent;
     private final FirestoreUserRepository userRepository = new FirestoreUserRepository();
 
     @Override
@@ -114,6 +118,14 @@ public class LoginActivity extends BaseActivity {
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             int ime = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
             v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), ime);
+
+            // Đỉnh: đệm status bar cho NỘI DUNG cuộn (login_scroll đã clipToPadding=false nên
+            // vẫn cuộn bình thường) → nút chuyển ngôn ngữ ở trên cùng không còn bị notch/wifi/pin
+            // che mất. Không đệm cho root/splash overlay để lớp phủ đỏ vẫn phủ kín cả status bar.
+            int top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+            binding.loginScroll.setPadding(
+                    binding.loginScroll.getPaddingLeft(), top,
+                    binding.loginScroll.getPaddingRight(), binding.loginScroll.getPaddingBottom());
             return insets;
         });
 
@@ -228,6 +240,22 @@ public class LoginActivity extends BaseActivity {
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> handleGoogleResult(result.getData()));
+
+        // Dựng sẵn hộp chọn tài khoản ngay từ bây giờ để lúc bấm nút không phải chờ.
+        prewarmGoogleSignIn();
+    }
+
+    /**
+     * Đăng xuất phiên Google cũ (để LUÔN hiện hộp chọn tài khoản) và tạo sẵn signInIntent trên nền,
+     * cache vào {@link #googleSignInIntent}. Nhờ vậy khi người dùng bấm nút Google ta launch NGAY,
+     * không phải chờ signOut() rồi mới getSignInIntent() tại thời điểm bấm (nguyên nhân bị chậm).
+     */
+    private void prewarmGoogleSignIn() {
+        googleSignInClient.signOut().addOnCompleteListener(t -> {
+            if (binding != null) {
+                googleSignInIntent = googleSignInClient.getSignInIntent();
+            }
+        });
     }
 
     private boolean isWebClientIdConfigured() {
@@ -238,7 +266,16 @@ public class LoginActivity extends BaseActivity {
     private void launchGoogleSignIn() {
         // Không còn Toast "chế độ demo" gây hiểu nhầm — chỉ báo khi đăng nhập THẬT SỰ lỗi
         // (xử lý trong handleGoogleResult). Sign-in cơ bản (email + tên) vẫn chạy bình thường.
-        // Đăng xuất phiên cũ để LUÔN hiện hộp chọn tài khoản (không tự đăng nhập lại tài khoản trước).
+        if (googleSignInIntent != null) {
+            // Đã dựng sẵn ở onCreate (prewarmGoogleSignIn) → mở hộp chọn tài khoản TỨC THÌ.
+            Intent intent = googleSignInIntent;
+            googleSignInIntent = null;            // đã dùng — tránh mở lại intent cũ
+            googleSignInLauncher.launch(intent);
+            prewarmGoogleSignIn();                // dựng lại cho lần bấm kế tiếp
+            return;
+        }
+        // Chưa kịp dựng xong (bấm quá sớm) → quay về cách cũ: đăng xuất rồi mở, vẫn luôn hiện
+        // hộp chọn tài khoản (không tự đăng nhập lại tài khoản trước).
         googleSignInClient.signOut().addOnCompleteListener(t ->
                 googleSignInLauncher.launch(googleSignInClient.getSignInIntent()));
     }
@@ -313,6 +350,9 @@ public class LoginActivity extends BaseActivity {
             binding.splashOverlay.animate()
                     .alpha(0f)
                     .setDuration(450)
+                    // Dựng layer phần cứng trong lúc mờ dần: cả lớp phủ đỏ (nền gradient full-screen)
+                    // được gộp thành 1 texture GPU, hết giật khi alpha đổi từng khung hình.
+                    .withLayer()
                     .withEndAction(() -> {
                         if (binding != null) binding.splashOverlay.setVisibility(View.GONE);
                     })
@@ -518,17 +558,40 @@ public class LoginActivity extends BaseActivity {
      * Chọn xong → tính Mệnh/Cung hoàng đạo/Con giáp tại máy, lưu hồ sơ, rồi vào Onboarding.
      * Đóng/huỷ vẫn cho vào app (có thể bổ sung ngày sinh sau trong Hồ sơ).
      */
+    /**
+     * Ràng buộc cho lịch chọn NGÀY SINH. Mặc định MaterialDatePicker nạp cả dải Jan 1900 → Dec 2100
+     * (~2400 tháng) vào RecyclerView, khiến lịch mở CHẬM và GIẬT khi đang chạy animation hiện ra
+     * (DateValidatorPointBackward chỉ làm mờ ngày tương lai chứ KHÔNG bỏ chúng khỏi adapter).
+     * Bó dải về [1920 → hôm nay] và mở đúng tại {@code openAtMillis} → adapter nhỏ hơn nhiều,
+     * cuộn tới vị trí mở ngắn hơn → mở nhanh và mượt.
+     */
+    private static CalendarConstraints buildBirthDateConstraints(long openAtMillis) {
+        Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        start.clear();
+        start.set(1920, 0, 1);
+
+        long now = MaterialDatePicker.todayInUtcMilliseconds();
+        // openAt phải nằm trong [start, now]; nếu ngày đang chọn ở tương lai thì mở tại hôm nay.
+        long openAt = Math.min(Math.max(openAtMillis, start.getTimeInMillis()), now);
+
+        return new CalendarConstraints.Builder()
+                .setStart(start.getTimeInMillis())
+                .setEnd(now)
+                .setOpenAt(openAt)
+                .setValidator(DateValidatorPointBackward.now())   // chặn chọn ngày tương lai
+                .build();
+    }
+
     private void promptBirthDateForMenh() {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         c.clear();
         c.set(2000, 0, 1);
 
-        CalendarConstraints constraints = new CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointBackward.now())   // chặn chọn ngày tương lai
-                .build();
+        CalendarConstraints constraints = buildBirthDateConstraints(c.getTimeInMillis());
 
         MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(R.string.hint_birthdate)
+                .setTheme(R.style.Theme_TC_DatePicker)   // bỏ animation mở → hết giật giựt
+                .setTitleText(R.string.birthdate_picker_title)
                 .setSelection(c.getTimeInMillis())
                 .setCalendarConstraints(constraints)
                 .build();
@@ -561,7 +624,12 @@ public class LoginActivity extends BaseActivity {
         picker.addOnNegativeButtonClickListener(v -> goToOnboarding());
         picker.addOnCancelListener(d -> goToOnboarding());
 
-        picker.show(getSupportFragmentManager(), "social_birthdate_picker");
+        // GIẬT khi mở: promptBirthDateForMenh() chạy ngay trong frame xử lý đăng nhập MXH
+        // (lưu hồ sơ + ApiClient.reset() + Toast). Nếu show() ngay trong frame đó, lịch phải
+        // vẽ ra khi CPU/GPU còn bận → rớt frame, nhìn như giật. Hoãn show() sang frame kế
+        // (post) để frame đăng nhập vẽ xong trước, lịch hiện mượt hơn.
+        binding.getRoot().post(() ->
+                picker.show(getSupportFragmentManager(), "social_birthdate_picker"));
     }
 
     /** Biến phần email thành tên dễ nhìn: "nguyen_van.a" → "Nguyen Van A". */

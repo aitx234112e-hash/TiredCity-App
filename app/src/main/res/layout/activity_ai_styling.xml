@@ -21,6 +21,7 @@
         app:titleTextAppearance="@style/TextAppearance.TiredCity.Toolbar" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -220,55 +221,6 @@
                         tools:text="@string/aistyle_accessories_text_kim" />
                 </LinearLayout>
 
-                <!-- ───────────── HOẠ VĂN HỢP MỆNH — dải ảnh xếp dọc từ trên xuống (không kéo
-                     ngang), mỗi ảnh tự bồng bềnh lên ⇅ xuống + bài viết ngắn theo mệnh đang xem
-                     trên carousel. Ẩn hoàn toàn nếu mệnh chưa có ảnh (xem MenhCalculator#getMenhPatternPhotos và
-                     updateMenhPatterns()). ───────────── -->
-                <LinearLayout
-                    android:id="@+id/section_menh_patterns"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="14dp"
-                    android:background="@drawable/tc_bg_menh_panel"
-                    android:padding="18dp"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <TextView
-                        android:id="@+id/tv_patterns_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/aistyle_patterns_title"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <View
-                        android:id="@+id/divider_patterns"
-                        android:layout_width="48dp"
-                        android:layout_height="2dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:background="@drawable/tc_divider_gold" />
-
-                    <LinearLayout
-                        android:id="@+id/layout_menh_patterns"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-
-                    <TextView
-                        android:id="@+id/tv_patterns_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="6dp"
-                        tools:text="@string/aistyle_patterns_text_kim" />
-                </LinearLayout>
-
                 <!-- ───────────── LỜI KHUYÊN PHONG CÁCH — nền thẻ nhạt + tiêu đề tô màu theo đúng
                      mệnh đang xem, cùng ngôn ngữ thiết kế với 3 mục màu/phụ kiện/hoạ tiết bên
                      trên. ───────────── -->
@@ -278,7 +230,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     app:cardCornerRadius="@dimen/tc_radius_lg"
-                    app:cardElevation="0dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="1.5dp"
+                    app:strokeColor="@color/tc_menh_kim"
                     app:cardBackgroundColor="@color/tc_menh_kim_bg">
 
                     <LinearLayout

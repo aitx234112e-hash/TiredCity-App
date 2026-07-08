@@ -54,7 +54,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         if (event.getImageUrl() != null && !event.getImageUrl().isEmpty()) {
             Glide.with(holder.ivImage.getContext())
                     .load(event.getImageUrl())
-                    .centerCrop()
+                    .fitCenter()
                     .placeholder(R.color.bg_subtle)
                     .into(holder.ivImage);
         } else {
