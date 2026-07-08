@@ -98,7 +98,7 @@ public class EditProfileActivity extends BaseActivity {
         view.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items));
     }
 
-    /** Tự chèn dấu "/" khi gõ 6 chữ số ngày sinh (DD/MM/YY) — người dùng chỉ cần gõ số, không cần
+    /** Tự chèn dấu "/" khi gõ 8 chữ số ngày sinh (DD/MM/YYYY) — người dùng chỉ cần gõ số, không cần
      *  tự gõ dấu "/". Giữ đúng vị trí con trỏ khi sửa giữa chuỗi (đếm số chữ số trước con trỏ rồi
      *  quy về vị trí tương ứng sau khi định dạng lại), và khi bấm xoá đúng 1 lần trúng dấu "/" tự
      *  chèn (số chữ số không đổi dù chuỗi ngắn lại) thì xoá luôn chữ số liền trước — để không bị
@@ -137,7 +137,7 @@ public class EditProfileActivity extends BaseActivity {
                     digits = digits.substring(0, digitsBeforeCursor - 1) + digits.substring(digitsBeforeCursor);
                     digitsBeforeCursor--;
                 }
-                if (digits.length() > 6) digits = digits.substring(0, 6);
+                if (digits.length() > 8) digits = digits.substring(0, 8);
 
                 StringBuilder sb = new StringBuilder();
                 int newCursor = digitsBeforeCursor <= 0 ? 0 : -1;
@@ -201,40 +201,39 @@ public class EditProfileActivity extends BaseActivity {
             int day = sel.get(Calendar.DAY_OF_MONTH);
             binding.etBirthDate.setError(null);
             binding.etBirthDate.setText(
-                    String.format(Locale.US, "%02d/%02d/%02d", day, month, year % 100));
+                    String.format(Locale.US, "%02d/%02d/%04d", day, month, year));
         });
 
         picker.show(getSupportFragmentManager(), "birthdate_picker");
     }
 
-    /** yyyy-MM-dd (lưu trữ) → dd/MM/yy (hiển thị/chỉnh sửa). Rỗng nếu chưa có/không đúng định dạng. */
+    /** yyyy-MM-dd (lưu trữ) → dd/MM/yyyy (hiển thị/chỉnh sửa). Rỗng nếu chưa có/không đúng định dạng. */
     private String isoToDisplayBirthDate(String iso) {
         if (iso == null || iso.length() < 10) return "";
         try {
             String dd = iso.substring(8, 10);
             String mm = iso.substring(5, 7);
-            String yy = iso.substring(2, 4);
-            return dd + "/" + mm + "/" + yy;
+            String yyyy = iso.substring(0, 4);
+            return dd + "/" + mm + "/" + yyyy;
         } catch (Exception e) {
             return "";
         }
     }
 
-    /** dd/MM/yy (nhập tay, 2 số cuối năm) → yyyy-MM-dd (lưu trữ, để {@link UserProfile#getBirthYear()}
-     *  và MenhCalculator đọc đúng). Năm 2 số suy ra thế kỷ theo nguyên tắc "không sinh trong tương
-     *  lai": YY lớn hơn 2 số cuối năm hiện tại → 19YY, ngược lại → 20YY. Trả về null nếu chưa nhập
-     *  đủ 6 số hoặc ngày/tháng không hợp lệ. */
+    /** dd/MM/yyyy (nhập tay, năm 4 số) → yyyy-MM-dd (lưu trữ, để {@link UserProfile#getBirthYear()}
+     *  và MenhCalculator đọc đúng). Trả về null nếu chưa nhập đủ 8 số, năm ngoài [1920, năm hiện
+     *  tại] hoặc ngày/tháng không hợp lệ. */
     private String displayToIsoBirthDate(String display) {
         String digits = display.replaceAll("[^0-9]", "");
-        if (digits.length() != 6) return null;
+        if (digits.length() != 8) return null;
 
         int day = Integer.parseInt(digits.substring(0, 2));
         int month = Integer.parseInt(digits.substring(2, 4));
-        int yy = Integer.parseInt(digits.substring(4, 6));
+        int year = Integer.parseInt(digits.substring(4, 8));
         if (month < 1 || month > 12 || day < 1 || day > 31) return null;
 
-        int currentYY = Calendar.getInstance().get(Calendar.YEAR) % 100;
-        int year = (yy > currentYY ? 1900 : 2000) + yy;
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        if (year < 1920 || year > currentYear) return null;
 
         return String.format(Locale.US, "%04d-%02d-%02d", year, month, day);
     }
